@@ -1,5 +1,5 @@
 {
-  "name": "@gmtool",
+  "name": "@gmtool/method",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,8 +9,5 @@
   "type": "module",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "lodash": "^4.17.21"
-  }
+  "license": "ISC"
 }
