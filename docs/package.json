@@ -1,0 +1,28 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:dev": "vitepress dev .",
+    "docs:build": "vitepress build .",
+    "docs:serve": "vitepress serve ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+
+  "peerDependencyRules": {
+    "ignoreMissing": [
+      "@algolia/client-search",
+      "@types/react",
+      "react",
+      "react-dom"
+    ]
+  },
+  "devDependencies": {
+    "vitepress": "1.0.0-alpha.4",
+    "vue": "^3.0.0"
+  }
+}
