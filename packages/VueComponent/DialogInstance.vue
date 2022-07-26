@@ -2,12 +2,13 @@
   <div>
     <slot name="trigger" :triggerMethod="handleCreate">
       <el-button :type="isNotEmpty(content) ? 'warning' : 'primary'" @click="handleCreate">
-        {{ isNotEmpty(content) ? "编辑" : buttonName }}</el-button
+        {{ isNotEmpty(content) ? "编辑" : '创建' }}
+      </el-button
       >
     </slot>
     <el-dialog v-model="dialogVisible" title="配置" append-to-body show-close>
       <slot :content="localContent">
-        <table-reward v-model="localContent" v-bind="$attrs"></table-reward>
+        <!--        <table-reward v-model="localContent" v-bind="$attrs"></table-reward>-->
       </slot>
       <template #footer>
         <span class="dialog-footer">
@@ -20,15 +21,18 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, unref, defineExpose } from "vue-demi";
-import { useVModels } from "@vueuse/core";
-import { cloneDeep } from "lodash";
+import {ref, defineProps, defineEmits, unref, defineExpose} from "vue-demi";
+import {useVModels} from "@vueuse/core";
+import {cloneDeep} from "lodash";
+import {ElButton, ElDialog} from 'element-plus'
 
 const props = defineProps({
-  buttonName: "创建"
+  buttonName: {type: String, default: '创建'},
+  content: {type: Array, default: []},
+  checkHandle: Function
 });
-const emit = defineEmits(["handleConfirm", "update:content"]);
-const { content, buttonName } = useVModels(props, emit);
+const emit = defineEmits(["update:content"]);
+const {content, buttonName} = useVModels(props, emit);
 const localContent = ref();
 const dialogVisible = ref(false);
 
@@ -54,5 +58,5 @@ function closeDialog() {
   dialogVisible.value = false;
 }
 
-defineExpose({ dialogVisible, closeDialog });
+defineExpose({dialogVisible, closeDialog});
 </script>

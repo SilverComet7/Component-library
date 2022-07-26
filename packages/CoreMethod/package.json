@@ -4,10 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --module es2015 --outDir dist/esm -d",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
   },
   "type": "module",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  }
 }
