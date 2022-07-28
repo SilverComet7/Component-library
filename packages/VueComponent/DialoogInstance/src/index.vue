@@ -3,12 +3,10 @@
     <slot name="trigger" :triggerMethod="handleCreate">
       <el-button :type="isNotEmpty(content) ? 'warning' : 'primary'" @click="handleCreate">
         {{ isNotEmpty(content) ? "编辑" : '创建' }}
-      </el-button
-      >
+      </el-button>
     </slot>
     <el-dialog v-model="dialogVisible" title="配置" append-to-body show-close>
       <slot :content="localContent">
-        <!--        <table-reward v-model="localContent" v-bind="$attrs"></table-reward>-->
       </slot>
       <template #footer>
         <span class="dialog-footer">

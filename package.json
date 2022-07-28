@@ -4,11 +4,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "workspaces": [
+    "packages/*",
+    "docs"
+  ],
   "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "@gmtool/vue-components": "workspace:*",
+    "@gmtool/method": "workspace:*"
   }
 }
