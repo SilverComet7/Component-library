@@ -1,121 +1,5 @@
-import { openBlock, createElementBlock, createElementVNode, warn, getCurrentInstance as getCurrentInstance$1, computed as computed$1, ref as ref$1, inject, unref as unref$1, watch as watch$1, onMounted, watchEffect, onBeforeUnmount, isRef, onScopeDispose as onScopeDispose$1, defineComponent, mergeProps, renderSlot, provide, nextTick, useSlots, Text, normalizeClass, normalizeStyle, Fragment, createBlock, withCtx, resolveDynamicComponent, createCommentVNode, reactive, toRef, createVNode, h, withModifiers, toDisplayString, Teleport, Transition, withDirectives, createSlots, vShow, createTextVNode } from "vue";
-import { ref, getCurrentScope, onScopeDispose, unref, getCurrentInstance, isVue2, watch, computed } from "vue-demi";
-var _a;
-const isClient = typeof window !== "undefined";
-const isDef = (val) => typeof val !== "undefined";
-const isBoolean = (val) => typeof val === "boolean";
-const isNumber = (val) => typeof val === "number";
-isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && /iP(ad|hone|od)/.test(window.navigator.userAgent);
-function tryOnScopeDispose(fn) {
-  if (getCurrentScope()) {
-    onScopeDispose(fn);
-    return true;
-  }
-  return false;
-}
-function useTimeoutFn(cb, interval, options = {}) {
-  const {
-    immediate = true
-  } = options;
-  const isPending = ref(false);
-  let timer = null;
-  function clear() {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-  function stop() {
-    isPending.value = false;
-    clear();
-  }
-  function start(...args) {
-    clear();
-    isPending.value = true;
-    timer = setTimeout(() => {
-      isPending.value = false;
-      timer = null;
-      cb(...args);
-    }, unref(interval));
-  }
-  if (immediate) {
-    isPending.value = true;
-    if (isClient)
-      start();
-  }
-  tryOnScopeDispose(stop);
-  return {
-    isPending,
-    start,
-    stop
-  };
-}
-isClient ? window : void 0;
-isClient ? window.document : void 0;
-isClient ? window.navigator : void 0;
-isClient ? window.location : void 0;
-const _global = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-const globalKey = "__vueuse_ssr_handlers__";
-_global[globalKey] = _global[globalKey] || {};
-_global[globalKey];
-var SwipeDirection;
-(function(SwipeDirection2) {
-  SwipeDirection2["UP"] = "UP";
-  SwipeDirection2["RIGHT"] = "RIGHT";
-  SwipeDirection2["DOWN"] = "DOWN";
-  SwipeDirection2["LEFT"] = "LEFT";
-  SwipeDirection2["NONE"] = "NONE";
-})(SwipeDirection || (SwipeDirection = {}));
-function useVModel(props, key, emit, options = {}) {
-  var _a2, _b, _c, _d, _e;
-  const {
-    passive = false,
-    eventName,
-    deep = false,
-    defaultValue
-  } = options;
-  const vm = getCurrentInstance();
-  const _emit = emit || (vm == null ? void 0 : vm.emit) || ((_a2 = vm == null ? void 0 : vm.$emit) == null ? void 0 : _a2.bind(vm)) || ((_c = (_b = vm == null ? void 0 : vm.proxy) == null ? void 0 : _b.$emit) == null ? void 0 : _c.bind(vm == null ? void 0 : vm.proxy));
-  let event = eventName;
-  if (!key) {
-    if (isVue2) {
-      const modelOptions = (_e = (_d = vm == null ? void 0 : vm.proxy) == null ? void 0 : _d.$options) == null ? void 0 : _e.model;
-      key = (modelOptions == null ? void 0 : modelOptions.value) || "value";
-      if (!eventName)
-        event = (modelOptions == null ? void 0 : modelOptions.event) || "input";
-    } else {
-      key = "modelValue";
-    }
-  }
-  event = eventName || event || `update:${key.toString()}`;
-  const getValue2 = () => isDef(props[key]) ? props[key] : defaultValue;
-  if (passive) {
-    const proxy = ref(getValue2());
-    watch(() => props[key], (v) => proxy.value = v);
-    watch(proxy, (v) => {
-      if (v !== props[key] || deep)
-        _emit(event, v);
-    }, {
-      deep
-    });
-    return proxy;
-  } else {
-    return computed({
-      get() {
-        return getValue2();
-      },
-      set(value) {
-        _emit(event, value);
-      }
-    });
-  }
-}
-function useVModels(props, emit, options = {}) {
-  const ret = {};
-  for (const key in props)
-    ret[key] = useVModel(props, key, emit, options);
-  return ret;
-}
+import { ref, getCurrentScope, onScopeDispose, unref, defineComponent as defineComponent$1 } from "vue-demi";
+import { openBlock, createElementBlock, createElementVNode, warn, getCurrentInstance, computed, ref as ref$1, inject, unref as unref$1, watch, onMounted, watchEffect, onBeforeUnmount, isRef, onScopeDispose as onScopeDispose$1, defineComponent, mergeProps, renderSlot, provide, nextTick, useSlots, Text, normalizeClass, normalizeStyle, Fragment, createBlock, withCtx, resolveDynamicComponent, createCommentVNode, reactive, toRef, createVNode, h, withModifiers, toDisplayString, Teleport, Transition, withDirectives, createSlots, vShow, createTextVNode } from "vue";
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var lodash = { exports: {} };
 /**
@@ -5936,6 +5820,55 @@ function fromPairs(pairs) {
 function isNil(value) {
   return value == null;
 }
+var _a;
+const isClient = typeof window !== "undefined";
+const isBoolean = (val) => typeof val === "boolean";
+const isNumber = (val) => typeof val === "number";
+isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && /iP(ad|hone|od)/.test(window.navigator.userAgent);
+function tryOnScopeDispose(fn) {
+  if (getCurrentScope()) {
+    onScopeDispose(fn);
+    return true;
+  }
+  return false;
+}
+function useTimeoutFn(cb, interval, options = {}) {
+  const {
+    immediate = true
+  } = options;
+  const isPending = ref(false);
+  let timer = null;
+  function clear() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  function stop() {
+    isPending.value = false;
+    clear();
+  }
+  function start(...args) {
+    clear();
+    isPending.value = true;
+    timer = setTimeout(() => {
+      isPending.value = false;
+      timer = null;
+      cb(...args);
+    }, unref(interval));
+  }
+  if (immediate) {
+    isPending.value = true;
+    if (isClient)
+      start();
+  }
+  tryOnScopeDispose(stop);
+  return {
+    isPending,
+    start,
+    stop
+  };
+}
 process.env.NODE_ENV !== "production" ? Object.freeze({}) : {};
 process.env.NODE_ENV !== "production" ? Object.freeze([]) : [];
 const NOOP = () => {
@@ -6195,17 +6128,17 @@ const dialogInjectionKey = Symbol("dialogInjectionKey");
 const formContextKey = Symbol("formContextKey");
 const formItemContextKey = Symbol("formItemContextKey");
 const useProp = (name) => {
-  const vm = getCurrentInstance$1();
-  return computed$1(() => {
+  const vm = getCurrentInstance();
+  return computed(() => {
     var _a2, _b;
     return (_b = ((_a2 = vm.proxy) == null ? void 0 : _a2.$props)[name]) != null ? _b : void 0;
   });
 };
 const globalConfig = ref$1();
 function useGlobalConfig(key, defaultValue = void 0) {
-  const config = getCurrentInstance$1() ? inject(configProviderContextKey, globalConfig) : globalConfig;
+  const config = getCurrentInstance() ? inject(configProviderContextKey, globalConfig) : globalConfig;
   if (key) {
-    return computed$1(() => {
+    return computed(() => {
       var _a2, _b;
       return (_b = (_a2 = config.value) == null ? void 0 : _a2[key]) != null ? _b : defaultValue;
     });
@@ -6224,15 +6157,15 @@ const useSize = (fallback, ignore = {}) => {
   const globalConfig2 = ignore.global ? emptyRef : useGlobalConfig("size");
   const form = ignore.form ? { size: void 0 } : inject(formContextKey, void 0);
   const formItem = ignore.formItem ? { size: void 0 } : inject(formItemContextKey, void 0);
-  return computed$1(() => size.value || unref$1(fallback) || (formItem == null ? void 0 : formItem.size) || (form == null ? void 0 : form.size) || globalConfig2.value || "");
+  return computed(() => size.value || unref$1(fallback) || (formItem == null ? void 0 : formItem.size) || (form == null ? void 0 : form.size) || globalConfig2.value || "");
 };
 const useDisabled = (fallback) => {
   const disabled = useProp("disabled");
   const form = inject(formContextKey, void 0);
-  return computed$1(() => disabled.value || unref$1(fallback) || (form == null ? void 0 : form.disabled) || false);
+  return computed(() => disabled.value || unref$1(fallback) || (form == null ? void 0 : form.disabled) || false);
 };
 const useDeprecated = ({ from, replacement, scope, version, ref: ref2, type = "API" }, condition) => {
-  watch$1(() => unref$1(condition), (val) => {
+  watch(() => unref$1(condition), (val) => {
     if (val) {
       debugWarn(scope, `[${type}] ${from} is about to be deprecated in version ${version}, please use ${replacement} instead.
 For more detail, please visit: ${ref2}
@@ -6315,7 +6248,7 @@ usage: app.provide(ID_INJECTION_KEY, {
   current: number,
 })`);
   }
-  const idRef = computed$1(() => unref$1(deterministicId) || `el-id-${idInjection.prefix}-${idInjection.current++}`);
+  const idRef = computed(() => unref$1(deterministicId) || `el-id-${idInjection.prefix}-${idInjection.current++}`);
   return idRef;
 };
 const useFormItem = () => {
@@ -6488,7 +6421,7 @@ const translate = (path, option, locale) => get(locale, path, path).replace(/\{(
   return `${(_a2 = option == null ? void 0 : option[key]) != null ? _a2 : `{${key}}`}`;
 });
 const buildLocaleContext = (locale) => {
-  const lang = computed$1(() => unref$1(locale).name);
+  const lang = computed(() => unref$1(locale).name);
   const localeRef = isRef(locale) ? locale : ref$1(locale);
   return {
     lang,
@@ -6498,7 +6431,7 @@ const buildLocaleContext = (locale) => {
 };
 const useLocale = () => {
   const locale = useGlobalConfig("locale");
-  return buildLocaleContext(computed$1(() => locale.value || English));
+  return buildLocaleContext(computed(() => locale.value || English));
 };
 const useLockscreen = (trigger) => {
   if (!isRef(trigger)) {
@@ -6517,7 +6450,7 @@ const useLockscreen = (trigger) => {
       document.body.style.paddingRight = bodyPaddingRight;
     }
   };
-  watch$1(trigger, (val) => {
+  watch(trigger, (val) => {
     if (!val) {
       cleanup();
       return;
@@ -6597,7 +6530,7 @@ const _bem = (namespace, block, blockSuffix, element, modifier) => {
 };
 const useNamespace = (block) => {
   const globalConfig2 = useGlobalConfig("namespace");
-  const namespace = computed$1(() => globalConfig2.value || defaultNamespace);
+  const namespace = computed(() => globalConfig2.value || defaultNamespace);
   const b = (blockSuffix = "") => _bem(unref$1(namespace), block, blockSuffix, "", "");
   const e = (element) => element ? _bem(unref$1(namespace), block, "", element, "") : "";
   const m = (modifier) => modifier ? _bem(unref$1(namespace), block, "", "", modifier) : "";
@@ -6644,7 +6577,7 @@ const useNamespace = (block) => {
 const zIndex = ref$1(0);
 const useZIndex = () => {
   const initialZIndex = useGlobalConfig("zIndex", 2e3);
-  const currentZIndex = computed$1(() => initialZIndex.value + zIndex.value);
+  const currentZIndex = computed(() => initialZIndex.value + zIndex.value);
   const nextZIndex = () => {
     zIndex.value++;
     return currentZIndex.value;
@@ -6655,7 +6588,7 @@ const useZIndex = () => {
     nextZIndex
   };
 };
-var _export_sfc = (sfc, props) => {
+var _export_sfc$1 = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
     target[key] = val;
@@ -6680,7 +6613,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   setup(__props) {
     const props = __props;
     const ns = useNamespace("icon");
-    const style = computed$1(() => {
+    const style = computed(() => {
       if (!props.size && !props.color)
         return {};
       return {
@@ -6698,7 +6631,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var Icon = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/icon/src/icon.vue"]]);
+var Icon = /* @__PURE__ */ _export_sfc$1(_sfc_main$6, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/icon/src/icon.vue"]]);
 const ElIcon = withInstall(Icon);
 const obtainAllFocusableElements = (element) => {
   const nodes = [];
@@ -6818,13 +6751,13 @@ const _sfc_main$5 = defineComponent({
     "focusout-prevented",
     "release-requested"
   ],
-  setup(props, { emit }) {
+  setup(props, { emit: emit2 }) {
     const forwardRef = ref$1();
     let lastFocusBeforeTrapped;
     let lastFocusAfterTrapped;
     useEscapeKeydown((event) => {
       if (props.trapped && !focusLayer.paused) {
-        emit("release-requested", event);
+        emit2("release-requested", event);
       }
     });
     const focusLayer = {
@@ -6852,19 +6785,19 @@ const _sfc_main$5 = defineComponent({
         if (!isTabbable) {
           if (currentFocusingEl === container) {
             e.preventDefault();
-            emit("focusout-prevented");
+            emit2("focusout-prevented");
           }
         } else {
           if (!shiftKey && currentFocusingEl === last) {
             e.preventDefault();
             if (loop)
               tryFocus(first, true);
-            emit("focusout-prevented");
+            emit2("focusout-prevented");
           } else if (shiftKey && [first, container].includes(currentFocusingEl)) {
             e.preventDefault();
             if (loop)
               tryFocus(last, true);
-            emit("focusout-prevented");
+            emit2("focusout-prevented");
           }
         }
       }
@@ -6873,12 +6806,12 @@ const _sfc_main$5 = defineComponent({
       focusTrapRef: forwardRef,
       onKeydown
     });
-    watch$1(() => props.focusTrapEl, (focusTrapEl) => {
+    watch(() => props.focusTrapEl, (focusTrapEl) => {
       if (focusTrapEl) {
         forwardRef.value = focusTrapEl;
       }
     }, { immediate: true });
-    watch$1([forwardRef], ([forwardRef2], [oldForwardRef]) => {
+    watch([forwardRef], ([forwardRef2], [oldForwardRef]) => {
       if (forwardRef2) {
         forwardRef2.addEventListener("keydown", onKeydown);
         forwardRef2.addEventListener("focusin", onFocusIn);
@@ -6891,9 +6824,9 @@ const _sfc_main$5 = defineComponent({
       }
     });
     const trapOnFocus = (e) => {
-      emit(ON_TRAP_FOCUS_EVT, e);
+      emit2(ON_TRAP_FOCUS_EVT, e);
     };
-    const releaseOnFocus = (e) => emit(ON_RELEASE_FOCUS_EVT, e);
+    const releaseOnFocus = (e) => emit2(ON_RELEASE_FOCUS_EVT, e);
     const onFocusIn = (e) => {
       const trapContainer = unref$1(forwardRef);
       if (!trapContainer)
@@ -6901,7 +6834,7 @@ const _sfc_main$5 = defineComponent({
       const target = e.target;
       const isFocusedInTrap = target && trapContainer.contains(target);
       if (isFocusedInTrap)
-        emit("focusin", e);
+        emit2("focusin", e);
       if (focusLayer.paused)
         return;
       if (props.trapped) {
@@ -6929,7 +6862,7 @@ const _sfc_main$5 = defineComponent({
         const target = e.target;
         const isFocusedInTrap = target && trapContainer.contains(target);
         if (!isFocusedInTrap)
-          emit("focusout", e);
+          emit2("focusout", e);
       }
     };
     async function startTrap() {
@@ -6982,7 +6915,7 @@ const _sfc_main$5 = defineComponent({
       if (props.trapped) {
         startTrap();
       }
-      watch$1(() => props.trapped, (trapped) => {
+      watch(() => props.trapped, (trapped) => {
         if (trapped) {
           startTrap();
         } else {
@@ -7000,10 +6933,10 @@ const _sfc_main$5 = defineComponent({
     };
   }
 });
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return renderSlot(_ctx.$slots, "default", { handleKeydown: _ctx.onKeydown });
 }
-var ElFocusTrap = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render], ["__file", "/home/runner/work/element-plus/element-plus/packages/components/focus-trap/src/focus-trap.vue"]]);
+var ElFocusTrap = /* @__PURE__ */ _export_sfc$1(_sfc_main$5, [["render", _sfc_render$1], ["__file", "/home/runner/work/element-plus/element-plus/packages/components/focus-trap/src/focus-trap.vue"]]);
 const buttonTypes = [
   "default",
   "primary",
@@ -7928,7 +7861,7 @@ function darken(color, amount = 20) {
 function useButtonCustomStyle(props) {
   const _disabled = useDisabled();
   const ns = useNamespace("button");
-  return computed$1(() => {
+  return computed(() => {
     let styles = {};
     const buttonColor = props.color;
     if (buttonColor) {
@@ -7983,7 +7916,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   ...__default__$3,
   props: buttonProps,
   emits: buttonEmits,
-  setup(__props, { expose, emit }) {
+  setup(__props, { expose, emit: emit2 }) {
     const props = __props;
     const slots = useSlots();
     useDeprecated({
@@ -7992,20 +7925,20 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       version: "3.0.0",
       scope: "props",
       ref: "https://element-plus.org/en-US/component/button.html#button-attributes"
-    }, computed$1(() => props.type === "text"));
+    }, computed(() => props.type === "text"));
     const buttonGroupContext = inject(buttonGroupContextKey, void 0);
     const globalConfig2 = useGlobalConfig("button");
     const ns = useNamespace("button");
     const { form } = useFormItem();
-    const _size = useSize(computed$1(() => buttonGroupContext == null ? void 0 : buttonGroupContext.size));
+    const _size = useSize(computed(() => buttonGroupContext == null ? void 0 : buttonGroupContext.size));
     const _disabled = useDisabled();
     const _ref = ref$1();
-    const _type = computed$1(() => props.type || (buttonGroupContext == null ? void 0 : buttonGroupContext.type) || "");
-    const autoInsertSpace = computed$1(() => {
+    const _type = computed(() => props.type || (buttonGroupContext == null ? void 0 : buttonGroupContext.type) || "");
+    const autoInsertSpace = computed(() => {
       var _a2, _b, _c;
       return (_c = (_b = props.autoInsertSpace) != null ? _b : (_a2 = globalConfig2.value) == null ? void 0 : _a2.autoInsertSpace) != null ? _c : false;
     });
-    const shouldAddSpace = computed$1(() => {
+    const shouldAddSpace = computed(() => {
       var _a2;
       const defaultSlot = (_a2 = slots.default) == null ? void 0 : _a2.call(slots);
       if (autoInsertSpace.value && (defaultSlot == null ? void 0 : defaultSlot.length) === 1) {
@@ -8022,7 +7955,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       if (props.nativeType === "reset") {
         form == null ? void 0 : form.resetFields();
       }
-      emit("click", evt);
+      emit2("click", evt);
     };
     expose({
       ref: _ref,
@@ -8081,7 +8014,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var Button = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button.vue"]]);
+var Button = /* @__PURE__ */ _export_sfc$1(_sfc_main$4, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button.vue"]]);
 const buttonGroupProps = {
   size: buttonProps.size,
   type: buttonProps.type
@@ -8108,7 +8041,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var ButtonGroup = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button-group.vue"]]);
+var ButtonGroup = /* @__PURE__ */ _export_sfc$1(_sfc_main$3, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button-group.vue"]]);
 const ElButton = withInstall(Button, {
   ButtonGroup
 });
@@ -8140,10 +8073,10 @@ var Overlay = defineComponent({
   name: "ElOverlay",
   props: overlayProps,
   emits: overlayEmits,
-  setup(props, { slots, emit }) {
+  setup(props, { slots, emit: emit2 }) {
     const ns = useNamespace("overlay");
     const onMaskClick = (e) => {
-      emit("click", e);
+      emit2("click", e);
     };
     const { onClick, onMousedown, onMouseup } = useSameTarget(props.customMaskEvent ? void 0 : onMaskClick);
     return () => {
@@ -8204,7 +8137,7 @@ const dialogContentEmits = {
   close: () => true
 };
 const _hoisted_1$2 = ["aria-label"];
-const _hoisted_2$1 = ["id"];
+const _hoisted_2 = ["id"];
 const __default__$1 = { name: "ElDialogContent" };
 const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   ...__default__$1,
@@ -8217,7 +8150,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const { dialogRef, headerRef, bodyId, ns, style } = inject(dialogInjectionKey);
     const { focusTrapRef } = inject(FOCUS_TRAP_INJECTION_KEY);
     const composedDialogRef = composeRefs(focusTrapRef, dialogRef);
-    const draggable = computed$1(() => props.draggable);
+    const draggable = computed(() => props.draggable);
     useDraggable(dialogRef, headerRef, draggable);
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", {
@@ -8267,7 +8200,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
           class: normalizeClass(unref$1(ns).e("body"))
         }, [
           renderSlot(_ctx.$slots, "default")
-        ], 10, _hoisted_2$1),
+        ], 10, _hoisted_2),
         _ctx.$slots.footer ? (openBlock(), createElementBlock("footer", {
           key: 0,
           class: normalizeClass(unref$1(ns).e("footer"))
@@ -8278,7 +8211,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var ElDialogContent = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog-content.vue"]]);
+var ElDialogContent = /* @__PURE__ */ _export_sfc$1(_sfc_main$2, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog-content.vue"]]);
 const dialogProps = buildProps({
   ...dialogContentProps,
   appendToBody: {
@@ -8345,8 +8278,8 @@ const dialogEmits = {
   closeAutoFocus: () => true
 };
 const useDialog = (props, targetRef) => {
-  const instance = getCurrentInstance$1();
-  const emit = instance.emit;
+  const instance = getCurrentInstance();
+  const emit2 = instance.emit;
   const { nextZIndex } = useZIndex();
   let lastPosition = "";
   const titleId = useId();
@@ -8358,7 +8291,7 @@ const useDialog = (props, targetRef) => {
   let openTimer = void 0;
   let closeTimer = void 0;
   const namespace = useGlobalConfig("namespace", defaultNamespace);
-  const style = computed$1(() => {
+  const style = computed(() => {
     const style2 = {};
     const varPrefix = `--${namespace.value}-dialog`;
     if (!props.fullscreen) {
@@ -8372,17 +8305,17 @@ const useDialog = (props, targetRef) => {
     return style2;
   });
   function afterEnter() {
-    emit("opened");
+    emit2("opened");
   }
   function afterLeave() {
-    emit("closed");
-    emit(UPDATE_MODEL_EVENT, false);
+    emit2("closed");
+    emit2(UPDATE_MODEL_EVENT, false);
     if (props.destroyOnClose) {
       rendered.value = false;
     }
   }
   function beforeLeave() {
-    emit("close");
+    emit2("close");
   }
   function open() {
     closeTimer == null ? void 0 : closeTimer();
@@ -8429,10 +8362,10 @@ const useDialog = (props, targetRef) => {
     visible.value = false;
   }
   function onOpenAutoFocus() {
-    emit("openAutoFocus");
+    emit2("openAutoFocus");
   }
   function onCloseAutoFocus() {
-    emit("closeAutoFocus");
+    emit2("closeAutoFocus");
   }
   if (props.lockScroll) {
     useLockscreen(visible);
@@ -8442,12 +8375,12 @@ const useDialog = (props, targetRef) => {
       handleClose();
     }
   }
-  watch$1(() => props.modelValue, (val) => {
+  watch(() => props.modelValue, (val) => {
     if (val) {
       closed.value = false;
       open();
       rendered.value = true;
-      emit("open");
+      emit2("open");
       zIndex2.value = props.zIndex ? zIndex2.value++ : nextZIndex();
       nextTick(() => {
         if (targetRef.value) {
@@ -8460,7 +8393,7 @@ const useDialog = (props, targetRef) => {
       }
     }
   });
-  watch$1(() => props.fullscreen, (val) => {
+  watch(() => props.fullscreen, (val) => {
     if (!targetRef.value)
       return;
     if (val) {
@@ -8514,7 +8447,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       replacement: "the header slot",
       version: "3.0.0",
       ref: "https://element-plus.org/en-US/component/dialog.html#slots"
-    }, computed$1(() => !!slots.title));
+    }, computed(() => !!slots.title));
     const ns = useNamespace("dialog");
     const dialogRef = ref$1();
     const headerRef = ref$1();
@@ -8544,7 +8477,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       style
     });
     const overlayEvent = useSameTarget(onModalClick);
-    const draggable = computed$1(() => props.draggable && !props.fullscreen);
+    const draggable = computed(() => props.draggable && !props.fullscreen);
     expose({
       visible,
       dialogContentRef
@@ -8638,22 +8571,24 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var Dialog = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog.vue"]]);
+var Dialog = /* @__PURE__ */ _export_sfc$1(_sfc_main$1, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog.vue"]]);
 const ElDialog = withInstall(Dialog);
-const _hoisted_1 = { class: "dialog-footer" };
-const _hoisted_2 = /* @__PURE__ */ createTextVNode("\u53D6\u6D88");
-const _hoisted_3 = /* @__PURE__ */ createTextVNode("\u786E\u8BA4");
-const _sfc_main = {
-  __name: "index",
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main = defineComponent$1({
+  components: { ElButton, ElDialog },
   props: {
     buttonName: { type: String, default: "\u521B\u5EFA" },
     content: { type: Array, default: [] },
     checkHandle: Function
   },
   emits: ["update:content"],
-  setup(__props, { expose, emit }) {
-    const props = __props;
-    const { content, buttonName } = useVModels(props, emit);
+  setup(props) {
     const localContent = ref();
     const dialogVisible = ref(false);
     function handleCreate() {
@@ -8675,57 +8610,26 @@ const _sfc_main = {
     function closeDialog() {
       dialogVisible.value = false;
     }
-    expose({ dialogVisible, closeDialog });
-    return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", null, [
-        renderSlot(_ctx.$slots, "trigger", { triggerMethod: handleCreate }, () => [
-          createVNode(unref$1(ElButton), {
-            type: isNotEmpty(unref$1(content)) ? "warning" : "primary",
-            onClick: handleCreate
-          }, {
-            default: withCtx(() => [
-              createTextVNode(toDisplayString(isNotEmpty(unref$1(content)) ? "\u7F16\u8F91" : "\u521B\u5EFA"), 1)
-            ]),
-            _: 1
-          }, 8, ["type"])
-        ]),
-        createVNode(unref$1(ElDialog), {
-          modelValue: dialogVisible.value,
-          "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => dialogVisible.value = $event),
-          title: "\u914D\u7F6E",
-          "append-to-body": "",
-          "show-close": ""
-        }, {
-          footer: withCtx(() => [
-            createElementVNode("span", _hoisted_1, [
-              createVNode(unref$1(ElButton), {
-                onClick: _cache[0] || (_cache[0] = ($event) => dialogVisible.value = false)
-              }, {
-                default: withCtx(() => [
-                  _hoisted_2
-                ]),
-                _: 1
-              }),
-              createVNode(unref$1(ElButton), {
-                type: "primary",
-                onClick: handleConfirm
-              }, {
-                default: withCtx(() => [
-                  _hoisted_3
-                ]),
-                _: 1
-              })
-            ])
-          ]),
-          default: withCtx(() => [
-            renderSlot(_ctx.$slots, "default", { content: localContent.value })
-          ]),
-          _: 3
-        }, 8, ["modelValue"])
-      ]);
+    return {
+      localContent,
+      dialogVisible,
+      handleConfirm,
+      handleCreate,
+      isNotEmpty,
+      closeDialog
     };
-  }
-};
+  },
+  expose: []
+});
+const _hoisted_1 = /* @__PURE__ */ createTextVNode(" 123 ");
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", null, [
+    renderSlot(_ctx.$slots, "trigger", { triggerMethod: _ctx.handleCreate }, () => [
+      _hoisted_1
+    ])
+  ]);
+}
+const DialogInstance = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 export {
-  _sfc_main as DialogInstance
+  DialogInstance
 };

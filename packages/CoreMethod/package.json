@@ -2,12 +2,9 @@
   "name": "@gmtool/method",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc --module es2015 --outDir dist/esm -d",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
   "keywords": [],
@@ -15,5 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "vite": "latest",
+    "@vueuse/core": "^8.9.4",
+    "vue-demi": "latest"
   }
 }

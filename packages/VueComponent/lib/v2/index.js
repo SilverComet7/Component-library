@@ -1,74 +1,6 @@
-import { getCurrentInstance, isVue2, ref, watch, computed, defineProps, defineEmits, defineExpose } from "vue-demi";
-var _a;
-const isClient = typeof window !== "undefined";
-const isDef = (val) => typeof val !== "undefined";
-isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && /iP(ad|hone|od)/.test(window.navigator.userAgent);
-isClient ? window : void 0;
-isClient ? window.document : void 0;
-isClient ? window.navigator : void 0;
-isClient ? window.location : void 0;
-const _global = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-const globalKey = "__vueuse_ssr_handlers__";
-_global[globalKey] = _global[globalKey] || {};
-_global[globalKey];
-var SwipeDirection;
-(function(SwipeDirection2) {
-  SwipeDirection2["UP"] = "UP";
-  SwipeDirection2["RIGHT"] = "RIGHT";
-  SwipeDirection2["DOWN"] = "DOWN";
-  SwipeDirection2["LEFT"] = "LEFT";
-  SwipeDirection2["NONE"] = "NONE";
-})(SwipeDirection || (SwipeDirection = {}));
-function useVModel(props2, key, emit2, options = {}) {
-  var _a2, _b, _c, _d, _e;
-  const {
-    passive = false,
-    eventName,
-    deep = false,
-    defaultValue
-  } = options;
-  const vm = getCurrentInstance();
-  const _emit = emit2 || (vm == null ? void 0 : vm.emit) || ((_a2 = vm == null ? void 0 : vm.$emit) == null ? void 0 : _a2.bind(vm)) || ((_c = (_b = vm == null ? void 0 : vm.proxy) == null ? void 0 : _b.$emit) == null ? void 0 : _c.bind(vm == null ? void 0 : vm.proxy));
-  let event = eventName;
-  if (!key) {
-    if (isVue2) {
-      const modelOptions = (_e = (_d = vm == null ? void 0 : vm.proxy) == null ? void 0 : _d.$options) == null ? void 0 : _e.model;
-      key = (modelOptions == null ? void 0 : modelOptions.value) || "value";
-      if (!eventName)
-        event = (modelOptions == null ? void 0 : modelOptions.event) || "input";
-    } else {
-      key = "modelValue";
-    }
-  }
-  event = eventName || event || `update:${key.toString()}`;
-  const getValue = () => isDef(props2[key]) ? props2[key] : defaultValue;
-  if (passive) {
-    const proxy = ref(getValue());
-    watch(() => props2[key], (v) => proxy.value = v);
-    watch(proxy, (v) => {
-      if (v !== props2[key] || deep)
-        _emit(event, v);
-    }, {
-      deep
-    });
-    return proxy;
-  } else {
-    return computed({
-      get() {
-        return getValue();
-      },
-      set(value) {
-        _emit(event, value);
-      }
-    });
-  }
-}
-function useVModels(props2, emit2, options = {}) {
-  const ret = {};
-  for (const key in props2)
-    ret[key] = useVModel(props2, key, emit2, options);
-  return ret;
-}
+"use strict";
+Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
+const vueDemi = require("vue-demi");
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var lodash = { exports: {} };
 /**
@@ -79,7 +11,7 @@ var lodash = { exports: {} };
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
-(function(module, exports) {
+(function(module2, exports2) {
   (function() {
     var undefined$1;
     var VERSION = "4.17.21";
@@ -405,8 +337,8 @@ var lodash = { exports: {} };
     var freeGlobal = typeof commonjsGlobal == "object" && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
     var freeSelf = typeof self == "object" && self && self.Object === Object && self;
     var root = freeGlobal || freeSelf || Function("return this")();
-    var freeExports = exports && !exports.nodeType && exports;
-    var freeModule = freeExports && true && module && !module.nodeType && module;
+    var freeExports = exports2 && !exports2.nodeType && exports2;
+    var freeModule = freeExports && true && module2 && !module2.nodeType && module2;
     var moduleExports = freeModule && freeModule.exports === freeExports;
     var freeProcess = moduleExports && freeGlobal.process;
     var nodeUtil = function() {
@@ -620,8 +552,8 @@ var lodash = { exports: {} };
       }
       return result;
     }
-    function baseToPairs(object, props2) {
-      return arrayMap(props2, function(key) {
+    function baseToPairs(object, props) {
+      return arrayMap(props, function(key) {
         return [key, object[key]];
       });
     }
@@ -633,8 +565,8 @@ var lodash = { exports: {} };
         return func(value);
       };
     }
-    function baseValues(object, props2) {
-      return arrayMap(props2, function(key) {
+    function baseValues(object, props) {
+      return arrayMap(props, function(key) {
         return object[key];
       });
     }
@@ -782,7 +714,7 @@ var lodash = { exports: {} };
       var reIsNative = RegExp2(
         "^" + funcToString.call(hasOwnProperty).replace(reRegExpChar, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
       );
-      var Buffer = moduleExports ? context.Buffer : undefined$1, Symbol = context.Symbol, Uint8Array = context.Uint8Array, allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined$1, getPrototype = overArg(Object2.getPrototypeOf, Object2), objectCreate = Object2.create, propertyIsEnumerable = objectProto.propertyIsEnumerable, splice = arrayProto.splice, spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined$1, symIterator = Symbol ? Symbol.iterator : undefined$1, symToStringTag = Symbol ? Symbol.toStringTag : undefined$1;
+      var Buffer = moduleExports ? context.Buffer : undefined$1, Symbol2 = context.Symbol, Uint8Array = context.Uint8Array, allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined$1, getPrototype = overArg(Object2.getPrototypeOf, Object2), objectCreate = Object2.create, propertyIsEnumerable = objectProto.propertyIsEnumerable, splice = arrayProto.splice, spreadableSymbol = Symbol2 ? Symbol2.isConcatSpreadable : undefined$1, symIterator = Symbol2 ? Symbol2.iterator : undefined$1, symToStringTag = Symbol2 ? Symbol2.toStringTag : undefined$1;
       var defineProperty = function() {
         try {
           var func = getNative(Object2, "defineProperty");
@@ -797,7 +729,7 @@ var lodash = { exports: {} };
       var metaMap = WeakMap && new WeakMap();
       var realNames = {};
       var dataViewCtorString = toSource(DataView), mapCtorString = toSource(Map), promiseCtorString = toSource(Promise2), setCtorString = toSource(Set), weakMapCtorString = toSource(WeakMap);
-      var symbolProto = Symbol ? Symbol.prototype : undefined$1, symbolValueOf = symbolProto ? symbolProto.valueOf : undefined$1, symbolToString = symbolProto ? symbolProto.toString : undefined$1;
+      var symbolProto = Symbol2 ? Symbol2.prototype : undefined$1, symbolValueOf = symbolProto ? symbolProto.valueOf : undefined$1, symbolToString = symbolProto ? symbolProto.toString : undefined$1;
       function lodash2(value) {
         if (isObjectLike(value) && !isArray(value) && !(value instanceof LazyWrapper)) {
           if (value instanceof LodashWrapper) {
@@ -888,10 +820,10 @@ var lodash = { exports: {} };
             index += dir;
             var iterIndex = -1, value = array[index];
             while (++iterIndex < iterLength) {
-              var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed2 = iteratee2(value);
+              var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed = iteratee2(value);
               if (type == LAZY_MAP_FLAG) {
-                value = computed2;
-              } else if (!computed2) {
+                value = computed;
+              } else if (!computed) {
                 if (type == LAZY_FILTER_FLAG) {
                   continue outer;
                 } else {
@@ -1217,9 +1149,9 @@ var lodash = { exports: {} };
           });
         }
         var keysFunc = isFull ? isFlat ? getAllKeysIn : getAllKeys : isFlat ? keysIn : keys;
-        var props2 = isArr ? undefined$1 : keysFunc(value);
-        arrayEach(props2 || value, function(subValue, key2) {
-          if (props2) {
+        var props = isArr ? undefined$1 : keysFunc(value);
+        arrayEach(props || value, function(subValue, key2) {
+          if (props) {
             key2 = subValue;
             subValue = value[key2];
           }
@@ -1228,19 +1160,19 @@ var lodash = { exports: {} };
         return result2;
       }
       function baseConforms(source) {
-        var props2 = keys(source);
+        var props = keys(source);
         return function(object) {
-          return baseConformsTo(object, source, props2);
+          return baseConformsTo(object, source, props);
         };
       }
-      function baseConformsTo(object, source, props2) {
-        var length = props2.length;
+      function baseConformsTo(object, source, props) {
+        var length = props.length;
         if (object == null) {
           return !length;
         }
         object = Object2(object);
         while (length--) {
-          var key = props2[length], predicate = source[key], value = object[key];
+          var key = props[length], predicate = source[key], value = object[key];
           if (value === undefined$1 && !(key in object) || !predicate(value)) {
             return false;
           }
@@ -1273,17 +1205,17 @@ var lodash = { exports: {} };
         }
         outer:
           while (++index < length) {
-            var value = array[index], computed2 = iteratee2 == null ? value : iteratee2(value);
+            var value = array[index], computed = iteratee2 == null ? value : iteratee2(value);
             value = comparator || value !== 0 ? value : 0;
-            if (isCommon && computed2 === computed2) {
+            if (isCommon && computed === computed) {
               var valuesIndex = valuesLength;
               while (valuesIndex--) {
-                if (values2[valuesIndex] === computed2) {
+                if (values2[valuesIndex] === computed) {
                   continue outer;
                 }
               }
               result2.push(value);
-            } else if (!includes2(values2, computed2, comparator)) {
+            } else if (!includes2(values2, computed, comparator)) {
               result2.push(value);
             }
           }
@@ -1303,8 +1235,8 @@ var lodash = { exports: {} };
         var index = -1, length = array.length;
         while (++index < length) {
           var value = array[index], current = iteratee2(value);
-          if (current != null && (computed2 === undefined$1 ? current === current && !isSymbol(current) : comparator(current, computed2))) {
-            var computed2 = current, result2 = value;
+          if (current != null && (computed === undefined$1 ? current === current && !isSymbol(current) : comparator(current, computed))) {
+            var computed = current, result2 = value;
           }
         }
         return result2;
@@ -1360,8 +1292,8 @@ var lodash = { exports: {} };
       function baseForOwnRight(object, iteratee2) {
         return object && baseForRight(object, iteratee2, keys);
       }
-      function baseFunctions(object, props2) {
-        return arrayFilter(props2, function(key) {
+      function baseFunctions(object, props) {
+        return arrayFilter(props, function(key) {
           return isFunction(object[key]);
         });
       }
@@ -1409,18 +1341,18 @@ var lodash = { exports: {} };
         var index = -1, seen = caches[0];
         outer:
           while (++index < length && result2.length < maxLength) {
-            var value = array[index], computed2 = iteratee2 ? iteratee2(value) : value;
+            var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
             value = comparator || value !== 0 ? value : 0;
-            if (!(seen ? cacheHas(seen, computed2) : includes2(result2, computed2, comparator))) {
+            if (!(seen ? cacheHas(seen, computed) : includes2(result2, computed, comparator))) {
               othIndex = othLength;
               while (--othIndex) {
                 var cache = caches[othIndex];
-                if (!(cache ? cacheHas(cache, computed2) : includes2(arrays[othIndex], computed2, comparator))) {
+                if (!(cache ? cacheHas(cache, computed) : includes2(arrays[othIndex], computed, comparator))) {
                   continue outer;
                 }
               }
               if (seen) {
-                seen.push(computed2);
+                seen.push(computed);
               }
               result2.push(value);
             }
@@ -1723,8 +1655,8 @@ var lodash = { exports: {} };
           seen = arrayMap(array, baseUnary(iteratee2));
         }
         while (++index < length) {
-          var fromIndex = 0, value = values2[index], computed2 = iteratee2 ? iteratee2(value) : value;
-          while ((fromIndex = indexOf2(seen, computed2, fromIndex, comparator)) > -1) {
+          var fromIndex = 0, value = values2[index], computed = iteratee2 ? iteratee2(value) : value;
+          while ((fromIndex = indexOf2(seen, computed, fromIndex, comparator)) > -1) {
             if (seen !== array) {
               splice.call(seen, fromIndex, 1);
             }
@@ -1852,8 +1784,8 @@ var lodash = { exports: {} };
         var low = 0, high = array == null ? low : array.length;
         if (typeof value == "number" && value === value && high <= HALF_MAX_ARRAY_LENGTH) {
           while (low < high) {
-            var mid = low + high >>> 1, computed2 = array[mid];
-            if (computed2 !== null && !isSymbol(computed2) && (retHighest ? computed2 <= value : computed2 < value)) {
+            var mid = low + high >>> 1, computed = array[mid];
+            if (computed !== null && !isSymbol(computed) && (retHighest ? computed <= value : computed < value)) {
               low = mid + 1;
             } else {
               high = mid;
@@ -1871,7 +1803,7 @@ var lodash = { exports: {} };
         value = iteratee2(value);
         var valIsNaN = value !== value, valIsNull = value === null, valIsSymbol = isSymbol(value), valIsUndefined = value === undefined$1;
         while (low < high) {
-          var mid = nativeFloor((low + high) / 2), computed2 = iteratee2(array[mid]), othIsDefined = computed2 !== undefined$1, othIsNull = computed2 === null, othIsReflexive = computed2 === computed2, othIsSymbol = isSymbol(computed2);
+          var mid = nativeFloor((low + high) / 2), computed = iteratee2(array[mid]), othIsDefined = computed !== undefined$1, othIsNull = computed === null, othIsReflexive = computed === computed, othIsSymbol = isSymbol(computed);
           if (valIsNaN) {
             var setLow = retHighest || othIsReflexive;
           } else if (valIsUndefined) {
@@ -1883,7 +1815,7 @@ var lodash = { exports: {} };
           } else if (othIsNull || othIsSymbol) {
             setLow = false;
           } else {
-            setLow = retHighest ? computed2 <= value : computed2 < value;
+            setLow = retHighest ? computed <= value : computed < value;
           }
           if (setLow) {
             low = mid + 1;
@@ -1896,9 +1828,9 @@ var lodash = { exports: {} };
       function baseSortedUniq(array, iteratee2) {
         var index = -1, length = array.length, resIndex = 0, result2 = [];
         while (++index < length) {
-          var value = array[index], computed2 = iteratee2 ? iteratee2(value) : value;
-          if (!index || !eq(computed2, seen)) {
-            var seen = computed2;
+          var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
+          if (!index || !eq(computed, seen)) {
+            var seen = computed;
             result2[resIndex++] = value === 0 ? 0 : value;
           }
         }
@@ -1944,22 +1876,22 @@ var lodash = { exports: {} };
         }
         outer:
           while (++index < length) {
-            var value = array[index], computed2 = iteratee2 ? iteratee2(value) : value;
+            var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
             value = comparator || value !== 0 ? value : 0;
-            if (isCommon && computed2 === computed2) {
+            if (isCommon && computed === computed) {
               var seenIndex = seen.length;
               while (seenIndex--) {
-                if (seen[seenIndex] === computed2) {
+                if (seen[seenIndex] === computed) {
                   continue outer;
                 }
               }
               if (iteratee2) {
-                seen.push(computed2);
+                seen.push(computed);
               }
               result2.push(value);
-            } else if (!includes2(seen, computed2, comparator)) {
+            } else if (!includes2(seen, computed, comparator)) {
               if (seen !== result2) {
-                seen.push(computed2);
+                seen.push(computed);
               }
               result2.push(value);
             }
@@ -2005,11 +1937,11 @@ var lodash = { exports: {} };
         }
         return baseUniq(baseFlatten(result2, 1), iteratee2, comparator);
       }
-      function baseZipObject(props2, values2, assignFunc) {
-        var index = -1, length = props2.length, valsLength = values2.length, result2 = {};
+      function baseZipObject(props, values2, assignFunc) {
+        var index = -1, length = props.length, valsLength = values2.length, result2 = {};
         while (++index < length) {
           var value = index < valsLength ? values2[index] : undefined$1;
-          assignFunc(result2, props2[index], value);
+          assignFunc(result2, props[index], value);
         }
         return result2;
       }
@@ -2129,12 +2061,12 @@ var lodash = { exports: {} };
         }
         return array;
       }
-      function copyObject(source, props2, object, customizer) {
+      function copyObject(source, props, object, customizer) {
         var isNew = !object;
         object || (object = {});
-        var index = -1, length = props2.length;
+        var index = -1, length = props.length;
         while (++index < length) {
-          var key = props2[index];
+          var key = props[index];
           var newValue = customizer ? customizer(object[key], source[key], key, object, source) : undefined$1;
           if (newValue === undefined$1) {
             newValue = source[key];
@@ -2196,9 +2128,9 @@ var lodash = { exports: {} };
       }
       function createBaseFor(fromRight) {
         return function(object, iteratee2, keysFunc) {
-          var index = -1, iterable = Object2(object), props2 = keysFunc(object), length = props2.length;
+          var index = -1, iterable = Object2(object), props = keysFunc(object), length = props.length;
           while (length--) {
-            var key = props2[fromRight ? length : ++index];
+            var key = props[fromRight ? length : ++index];
             if (iteratee2(iterable[key], key, iterable) === false) {
               break;
             }
@@ -3547,11 +3479,11 @@ var lodash = { exports: {} };
         return baseXor(arrayFilter(arrays, isArrayLikeObject), undefined$1, comparator);
       });
       var zip = baseRest(unzip);
-      function zipObject(props2, values2) {
-        return baseZipObject(props2 || [], values2 || [], assignValue);
+      function zipObject(props, values2) {
+        return baseZipObject(props || [], values2 || [], assignValue);
       }
-      function zipObjectDeep(props2, values2) {
-        return baseZipObject(props2 || [], values2 || [], baseSet);
+      function zipObjectDeep(props, values2) {
+        return baseZipObject(props || [], values2 || [], baseSet);
       }
       var zipWith = baseRest(function(arrays) {
         var length = arrays.length, iteratee2 = length > 1 ? arrays[length - 1] : undefined$1;
@@ -4311,11 +4243,11 @@ var lodash = { exports: {} };
         }
         while (++index < length) {
           var source = sources[index];
-          var props2 = keysIn(source);
+          var props = keysIn(source);
           var propsIndex = -1;
-          var propsLength = props2.length;
+          var propsLength = props.length;
           while (++propsIndex < propsLength) {
-            var key = props2[propsIndex];
+            var key = props[propsIndex];
             var value = object[key];
             if (value === undefined$1 || eq(value, objectProto[key]) && !hasOwnProperty.call(object, key)) {
               object[key] = source[key];
@@ -4438,11 +4370,11 @@ var lodash = { exports: {} };
         if (object == null) {
           return {};
         }
-        var props2 = arrayMap(getAllKeysIn(object), function(prop) {
+        var props = arrayMap(getAllKeysIn(object), function(prop) {
           return [prop];
         });
         predicate = getIteratee(predicate);
-        return basePickBy(object, props2, function(value, path) {
+        return basePickBy(object, props, function(value, path) {
           return predicate(value, path[0]);
         });
       }
@@ -4893,8 +4825,8 @@ var lodash = { exports: {} };
         };
       });
       function mixin(object, source, options) {
-        var props2 = keys(source), methodNames = baseFunctions(source, props2);
-        if (options == null && !(isObject(source) && (methodNames.length || !props2.length))) {
+        var props = keys(source), methodNames = baseFunctions(source, props);
+        if (options == null && !(isObject(source) && (methodNames.length || !props.length))) {
           options = source;
           source = object;
           object = this;
@@ -5513,54 +5445,10 @@ var render = function() {
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
   return _c("div", [_vm._t("trigger", function() {
-    return [_c("el-button", {
-      attrs: {
-        "type": _vm.isNotEmpty(_vm.content) ? "warning" : "primary"
-      },
-      on: {
-        "click": _vm.handleCreate
-      }
-    }, [_vm._v(" " + _vm._s(_vm.isNotEmpty(_vm.content) ? "\u7F16\u8F91" : "\u521B\u5EFA") + " ")])];
+    return [_vm._v(" 123 ")];
   }, {
     "triggerMethod": _vm.handleCreate
-  }), _c("el-dialog", {
-    attrs: {
-      "title": "\u914D\u7F6E",
-      "append-to-body": "",
-      "show-close": ""
-    },
-    scopedSlots: _vm._u([{
-      key: "footer",
-      fn: function() {
-        return [_c("span", {
-          staticClass: "dialog-footer"
-        }, [_c("el-button", {
-          on: {
-            "click": function($event) {
-              _vm.dialogVisible = false;
-            }
-          }
-        }, [_vm._v("\u53D6\u6D88")]), _c("el-button", {
-          attrs: {
-            "type": "primary"
-          },
-          on: {
-            "click": _vm.handleConfirm
-          }
-        }, [_vm._v("\u786E\u8BA4")])], 1)];
-      },
-      proxy: true
-    }]),
-    model: {
-      value: _vm.dialogVisible,
-      callback: function($$v) {
-        _vm.dialogVisible = $$v;
-      },
-      expression: "dialogVisible"
-    }
-  }, [_vm._t("default", null, {
-    "content": _vm.localContent
-  })], 2)], 2);
+  })], 2);
 };
 var staticRenderFns = [];
 function normalizeComponent(scriptExports, render2, staticRenderFns2, functionalTemplate, injectStyles, scopeId, moduleIdentifier, shadowMode) {
@@ -5617,20 +5505,46 @@ function normalizeComponent(scriptExports, render2, staticRenderFns2, functional
     options
   };
 }
-const props = defineProps({
-  buttonName: { type: String, default: "\u521B\u5EFA" },
-  content: { type: Array, default: [] },
-  checkHandle: Function
+const __vue2_script = vueDemi.defineComponent({
+  props: {
+    buttonName: { type: String, default: "\u521B\u5EFA" },
+    content: { type: Array, default: [] },
+    checkHandle: Function
+  },
+  emits: ["update:content"],
+  setup(props) {
+    const localContent = vueDemi.ref();
+    const dialogVisible = vueDemi.ref(false);
+    function handleCreate() {
+      localContent.value = lodash.exports.cloneDeep(vueDemi.unref(props.content));
+      dialogVisible.value = true;
+    }
+    function handleConfirm() {
+      if (props.checkHandle && !props.checkHandle(localContent.value))
+        return;
+      emit("update:content", localContent.value);
+      dialogVisible.value = false;
+    }
+    function isNotEmpty(value) {
+      if (Array.isArray(value)) {
+        return value.length;
+      }
+      return false;
+    }
+    function closeDialog() {
+      dialogVisible.value = false;
+    }
+    return {
+      localContent,
+      dialogVisible,
+      handleConfirm,
+      handleCreate,
+      isNotEmpty,
+      closeDialog
+    };
+  },
+  expose: []
 });
-const emit = defineEmits(["update:content"]);
-useVModels(props, emit);
-ref();
-const dialogVisible = ref(false);
-function closeDialog() {
-  dialogVisible.value = false;
-}
-defineExpose({ dialogVisible, closeDialog });
-const __vue2_script = {};
 const __cssModules = {};
 var __component__ = /* @__PURE__ */ normalizeComponent(
   __vue2_script,
@@ -5650,6 +5564,4 @@ function __vue2_injectStyles(context) {
 const DialogInstance = /* @__PURE__ */ function() {
   return __component__.exports;
 }();
-export {
-  DialogInstance
-};
+exports.DialogInstance = DialogInstance;

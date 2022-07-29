@@ -1,123 +1,7 @@
 "use strict";
 Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-const vue = require("vue");
 const vueDemi = require("vue-demi");
-var _a;
-const isClient = typeof window !== "undefined";
-const isDef = (val) => typeof val !== "undefined";
-const isBoolean = (val) => typeof val === "boolean";
-const isNumber = (val) => typeof val === "number";
-isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && /iP(ad|hone|od)/.test(window.navigator.userAgent);
-function tryOnScopeDispose(fn) {
-  if (vueDemi.getCurrentScope()) {
-    vueDemi.onScopeDispose(fn);
-    return true;
-  }
-  return false;
-}
-function useTimeoutFn(cb, interval, options = {}) {
-  const {
-    immediate = true
-  } = options;
-  const isPending = vueDemi.ref(false);
-  let timer = null;
-  function clear() {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-  function stop() {
-    isPending.value = false;
-    clear();
-  }
-  function start(...args) {
-    clear();
-    isPending.value = true;
-    timer = setTimeout(() => {
-      isPending.value = false;
-      timer = null;
-      cb(...args);
-    }, vueDemi.unref(interval));
-  }
-  if (immediate) {
-    isPending.value = true;
-    if (isClient)
-      start();
-  }
-  tryOnScopeDispose(stop);
-  return {
-    isPending,
-    start,
-    stop
-  };
-}
-isClient ? window : void 0;
-isClient ? window.document : void 0;
-isClient ? window.navigator : void 0;
-isClient ? window.location : void 0;
-const _global = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-const globalKey = "__vueuse_ssr_handlers__";
-_global[globalKey] = _global[globalKey] || {};
-_global[globalKey];
-var SwipeDirection;
-(function(SwipeDirection2) {
-  SwipeDirection2["UP"] = "UP";
-  SwipeDirection2["RIGHT"] = "RIGHT";
-  SwipeDirection2["DOWN"] = "DOWN";
-  SwipeDirection2["LEFT"] = "LEFT";
-  SwipeDirection2["NONE"] = "NONE";
-})(SwipeDirection || (SwipeDirection = {}));
-function useVModel(props, key, emit, options = {}) {
-  var _a2, _b, _c, _d, _e;
-  const {
-    passive = false,
-    eventName,
-    deep = false,
-    defaultValue
-  } = options;
-  const vm = vueDemi.getCurrentInstance();
-  const _emit = emit || (vm == null ? void 0 : vm.emit) || ((_a2 = vm == null ? void 0 : vm.$emit) == null ? void 0 : _a2.bind(vm)) || ((_c = (_b = vm == null ? void 0 : vm.proxy) == null ? void 0 : _b.$emit) == null ? void 0 : _c.bind(vm == null ? void 0 : vm.proxy));
-  let event = eventName;
-  if (!key) {
-    if (vueDemi.isVue2) {
-      const modelOptions = (_e = (_d = vm == null ? void 0 : vm.proxy) == null ? void 0 : _d.$options) == null ? void 0 : _e.model;
-      key = (modelOptions == null ? void 0 : modelOptions.value) || "value";
-      if (!eventName)
-        event = (modelOptions == null ? void 0 : modelOptions.event) || "input";
-    } else {
-      key = "modelValue";
-    }
-  }
-  event = eventName || event || `update:${key.toString()}`;
-  const getValue2 = () => isDef(props[key]) ? props[key] : defaultValue;
-  if (passive) {
-    const proxy = vueDemi.ref(getValue2());
-    vueDemi.watch(() => props[key], (v) => proxy.value = v);
-    vueDemi.watch(proxy, (v) => {
-      if (v !== props[key] || deep)
-        _emit(event, v);
-    }, {
-      deep
-    });
-    return proxy;
-  } else {
-    return vueDemi.computed({
-      get() {
-        return getValue2();
-      },
-      set(value) {
-        _emit(event, value);
-      }
-    });
-  }
-}
-function useVModels(props, emit, options = {}) {
-  const ret = {};
-  for (const key in props)
-    ret[key] = useVModel(props, key, emit, options);
-  return ret;
-}
+const vue = require("vue");
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var lodash = { exports: {} };
 /**
@@ -5938,6 +5822,55 @@ function fromPairs(pairs) {
 function isNil(value) {
   return value == null;
 }
+var _a;
+const isClient = typeof window !== "undefined";
+const isBoolean = (val) => typeof val === "boolean";
+const isNumber = (val) => typeof val === "number";
+isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && /iP(ad|hone|od)/.test(window.navigator.userAgent);
+function tryOnScopeDispose(fn) {
+  if (vueDemi.getCurrentScope()) {
+    vueDemi.onScopeDispose(fn);
+    return true;
+  }
+  return false;
+}
+function useTimeoutFn(cb, interval, options = {}) {
+  const {
+    immediate = true
+  } = options;
+  const isPending = vueDemi.ref(false);
+  let timer = null;
+  function clear() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  function stop() {
+    isPending.value = false;
+    clear();
+  }
+  function start(...args) {
+    clear();
+    isPending.value = true;
+    timer = setTimeout(() => {
+      isPending.value = false;
+      timer = null;
+      cb(...args);
+    }, vueDemi.unref(interval));
+  }
+  if (immediate) {
+    isPending.value = true;
+    if (isClient)
+      start();
+  }
+  tryOnScopeDispose(stop);
+  return {
+    isPending,
+    start,
+    stop
+  };
+}
 process.env.NODE_ENV !== "production" ? Object.freeze({}) : {};
 process.env.NODE_ENV !== "production" ? Object.freeze([]) : [];
 const NOOP = () => {
@@ -6657,7 +6590,7 @@ const useZIndex = () => {
     nextZIndex
   };
 };
-var _export_sfc = (sfc, props) => {
+var _export_sfc$1 = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
     target[key] = val;
@@ -6700,7 +6633,7 @@ const _sfc_main$6 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var Icon = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/icon/src/icon.vue"]]);
+var Icon = /* @__PURE__ */ _export_sfc$1(_sfc_main$6, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/icon/src/icon.vue"]]);
 const ElIcon = withInstall(Icon);
 const obtainAllFocusableElements = (element) => {
   const nodes = [];
@@ -6820,13 +6753,13 @@ const _sfc_main$5 = vue.defineComponent({
     "focusout-prevented",
     "release-requested"
   ],
-  setup(props, { emit }) {
+  setup(props, { emit: emit2 }) {
     const forwardRef = vue.ref();
     let lastFocusBeforeTrapped;
     let lastFocusAfterTrapped;
     useEscapeKeydown((event) => {
       if (props.trapped && !focusLayer.paused) {
-        emit("release-requested", event);
+        emit2("release-requested", event);
       }
     });
     const focusLayer = {
@@ -6854,19 +6787,19 @@ const _sfc_main$5 = vue.defineComponent({
         if (!isTabbable) {
           if (currentFocusingEl === container) {
             e.preventDefault();
-            emit("focusout-prevented");
+            emit2("focusout-prevented");
           }
         } else {
           if (!shiftKey && currentFocusingEl === last) {
             e.preventDefault();
             if (loop)
               tryFocus(first, true);
-            emit("focusout-prevented");
+            emit2("focusout-prevented");
           } else if (shiftKey && [first, container].includes(currentFocusingEl)) {
             e.preventDefault();
             if (loop)
               tryFocus(last, true);
-            emit("focusout-prevented");
+            emit2("focusout-prevented");
           }
         }
       }
@@ -6893,9 +6826,9 @@ const _sfc_main$5 = vue.defineComponent({
       }
     });
     const trapOnFocus = (e) => {
-      emit(ON_TRAP_FOCUS_EVT, e);
+      emit2(ON_TRAP_FOCUS_EVT, e);
     };
-    const releaseOnFocus = (e) => emit(ON_RELEASE_FOCUS_EVT, e);
+    const releaseOnFocus = (e) => emit2(ON_RELEASE_FOCUS_EVT, e);
     const onFocusIn = (e) => {
       const trapContainer = vue.unref(forwardRef);
       if (!trapContainer)
@@ -6903,7 +6836,7 @@ const _sfc_main$5 = vue.defineComponent({
       const target = e.target;
       const isFocusedInTrap = target && trapContainer.contains(target);
       if (isFocusedInTrap)
-        emit("focusin", e);
+        emit2("focusin", e);
       if (focusLayer.paused)
         return;
       if (props.trapped) {
@@ -6931,7 +6864,7 @@ const _sfc_main$5 = vue.defineComponent({
         const target = e.target;
         const isFocusedInTrap = target && trapContainer.contains(target);
         if (!isFocusedInTrap)
-          emit("focusout", e);
+          emit2("focusout", e);
       }
     };
     async function startTrap() {
@@ -7002,10 +6935,10 @@ const _sfc_main$5 = vue.defineComponent({
     };
   }
 });
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.renderSlot(_ctx.$slots, "default", { handleKeydown: _ctx.onKeydown });
 }
-var ElFocusTrap = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render], ["__file", "/home/runner/work/element-plus/element-plus/packages/components/focus-trap/src/focus-trap.vue"]]);
+var ElFocusTrap = /* @__PURE__ */ _export_sfc$1(_sfc_main$5, [["render", _sfc_render$1], ["__file", "/home/runner/work/element-plus/element-plus/packages/components/focus-trap/src/focus-trap.vue"]]);
 const buttonTypes = [
   "default",
   "primary",
@@ -7985,7 +7918,7 @@ const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
   ...__default__$3,
   props: buttonProps,
   emits: buttonEmits,
-  setup(__props, { expose, emit }) {
+  setup(__props, { expose, emit: emit2 }) {
     const props = __props;
     const slots = vue.useSlots();
     useDeprecated({
@@ -8024,7 +7957,7 @@ const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
       if (props.nativeType === "reset") {
         form == null ? void 0 : form.resetFields();
       }
-      emit("click", evt);
+      emit2("click", evt);
     };
     expose({
       ref: _ref,
@@ -8083,7 +8016,7 @@ const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var Button = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button.vue"]]);
+var Button = /* @__PURE__ */ _export_sfc$1(_sfc_main$4, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button.vue"]]);
 const buttonGroupProps = {
   size: buttonProps.size,
   type: buttonProps.type
@@ -8110,7 +8043,7 @@ const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var ButtonGroup = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button-group.vue"]]);
+var ButtonGroup = /* @__PURE__ */ _export_sfc$1(_sfc_main$3, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/button/src/button-group.vue"]]);
 const ElButton = withInstall(Button, {
   ButtonGroup
 });
@@ -8142,10 +8075,10 @@ var Overlay = vue.defineComponent({
   name: "ElOverlay",
   props: overlayProps,
   emits: overlayEmits,
-  setup(props, { slots, emit }) {
+  setup(props, { slots, emit: emit2 }) {
     const ns = useNamespace("overlay");
     const onMaskClick = (e) => {
-      emit("click", e);
+      emit2("click", e);
     };
     const { onClick, onMousedown, onMouseup } = useSameTarget(props.customMaskEvent ? void 0 : onMaskClick);
     return () => {
@@ -8206,7 +8139,7 @@ const dialogContentEmits = {
   close: () => true
 };
 const _hoisted_1$2 = ["aria-label"];
-const _hoisted_2$1 = ["id"];
+const _hoisted_2 = ["id"];
 const __default__$1 = { name: "ElDialogContent" };
 const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
   ...__default__$1,
@@ -8269,7 +8202,7 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
           class: vue.normalizeClass(vue.unref(ns).e("body"))
         }, [
           vue.renderSlot(_ctx.$slots, "default")
-        ], 10, _hoisted_2$1),
+        ], 10, _hoisted_2),
         _ctx.$slots.footer ? (vue.openBlock(), vue.createElementBlock("footer", {
           key: 0,
           class: vue.normalizeClass(vue.unref(ns).e("footer"))
@@ -8280,7 +8213,7 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var ElDialogContent = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog-content.vue"]]);
+var ElDialogContent = /* @__PURE__ */ _export_sfc$1(_sfc_main$2, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog-content.vue"]]);
 const dialogProps = buildProps({
   ...dialogContentProps,
   appendToBody: {
@@ -8348,7 +8281,7 @@ const dialogEmits = {
 };
 const useDialog = (props, targetRef) => {
   const instance = vue.getCurrentInstance();
-  const emit = instance.emit;
+  const emit2 = instance.emit;
   const { nextZIndex } = useZIndex();
   let lastPosition = "";
   const titleId = useId();
@@ -8374,17 +8307,17 @@ const useDialog = (props, targetRef) => {
     return style2;
   });
   function afterEnter() {
-    emit("opened");
+    emit2("opened");
   }
   function afterLeave() {
-    emit("closed");
-    emit(UPDATE_MODEL_EVENT, false);
+    emit2("closed");
+    emit2(UPDATE_MODEL_EVENT, false);
     if (props.destroyOnClose) {
       rendered.value = false;
     }
   }
   function beforeLeave() {
-    emit("close");
+    emit2("close");
   }
   function open() {
     closeTimer == null ? void 0 : closeTimer();
@@ -8431,10 +8364,10 @@ const useDialog = (props, targetRef) => {
     visible.value = false;
   }
   function onOpenAutoFocus() {
-    emit("openAutoFocus");
+    emit2("openAutoFocus");
   }
   function onCloseAutoFocus() {
-    emit("closeAutoFocus");
+    emit2("closeAutoFocus");
   }
   if (props.lockScroll) {
     useLockscreen(visible);
@@ -8449,7 +8382,7 @@ const useDialog = (props, targetRef) => {
       closed.value = false;
       open();
       rendered.value = true;
-      emit("open");
+      emit2("open");
       zIndex2.value = props.zIndex ? zIndex2.value++ : nextZIndex();
       vue.nextTick(() => {
         if (targetRef.value) {
@@ -8640,22 +8573,24 @@ const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-var Dialog = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog.vue"]]);
+var Dialog = /* @__PURE__ */ _export_sfc$1(_sfc_main$1, [["__file", "/home/runner/work/element-plus/element-plus/packages/components/dialog/src/dialog.vue"]]);
 const ElDialog = withInstall(Dialog);
-const _hoisted_1 = { class: "dialog-footer" };
-const _hoisted_2 = /* @__PURE__ */ vue.createTextVNode("\u53D6\u6D88");
-const _hoisted_3 = /* @__PURE__ */ vue.createTextVNode("\u786E\u8BA4");
-const _sfc_main = {
-  __name: "index",
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main = vueDemi.defineComponent({
+  components: { ElButton, ElDialog },
   props: {
     buttonName: { type: String, default: "\u521B\u5EFA" },
     content: { type: Array, default: [] },
     checkHandle: Function
   },
   emits: ["update:content"],
-  setup(__props, { expose, emit }) {
-    const props = __props;
-    const { content, buttonName } = useVModels(props, emit);
+  setup(props) {
     const localContent = vueDemi.ref();
     const dialogVisible = vueDemi.ref(false);
     function handleCreate() {
@@ -8677,55 +8612,24 @@ const _sfc_main = {
     function closeDialog() {
       dialogVisible.value = false;
     }
-    expose({ dialogVisible, closeDialog });
-    return (_ctx, _cache) => {
-      return vue.openBlock(), vue.createElementBlock("div", null, [
-        vue.renderSlot(_ctx.$slots, "trigger", { triggerMethod: handleCreate }, () => [
-          vue.createVNode(vue.unref(ElButton), {
-            type: isNotEmpty(vue.unref(content)) ? "warning" : "primary",
-            onClick: handleCreate
-          }, {
-            default: vue.withCtx(() => [
-              vue.createTextVNode(vue.toDisplayString(isNotEmpty(vue.unref(content)) ? "\u7F16\u8F91" : "\u521B\u5EFA"), 1)
-            ]),
-            _: 1
-          }, 8, ["type"])
-        ]),
-        vue.createVNode(vue.unref(ElDialog), {
-          modelValue: dialogVisible.value,
-          "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => dialogVisible.value = $event),
-          title: "\u914D\u7F6E",
-          "append-to-body": "",
-          "show-close": ""
-        }, {
-          footer: vue.withCtx(() => [
-            vue.createElementVNode("span", _hoisted_1, [
-              vue.createVNode(vue.unref(ElButton), {
-                onClick: _cache[0] || (_cache[0] = ($event) => dialogVisible.value = false)
-              }, {
-                default: vue.withCtx(() => [
-                  _hoisted_2
-                ]),
-                _: 1
-              }),
-              vue.createVNode(vue.unref(ElButton), {
-                type: "primary",
-                onClick: handleConfirm
-              }, {
-                default: vue.withCtx(() => [
-                  _hoisted_3
-                ]),
-                _: 1
-              })
-            ])
-          ]),
-          default: vue.withCtx(() => [
-            vue.renderSlot(_ctx.$slots, "default", { content: localContent.value })
-          ]),
-          _: 3
-        }, 8, ["modelValue"])
-      ]);
+    return {
+      localContent,
+      dialogVisible,
+      handleConfirm,
+      handleCreate,
+      isNotEmpty,
+      closeDialog
     };
-  }
-};
-exports.DialogInstance = _sfc_main;
+  },
+  expose: []
+});
+const _hoisted_1 = /* @__PURE__ */ vue.createTextVNode(" 123 ");
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createElementBlock("div", null, [
+    vue.renderSlot(_ctx.$slots, "trigger", { triggerMethod: _ctx.handleCreate }, () => [
+      _hoisted_1
+    ])
+  ]);
+}
+const DialogInstance = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+exports.DialogInstance = DialogInstance;

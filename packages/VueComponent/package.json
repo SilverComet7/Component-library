@@ -2,33 +2,32 @@
   "name": "@gmtool/vue-components",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build3 && npm run build2",
-    "build2": "npx vue-demi-switch 2 && vite build --config v2/vite.config.ts",
+    "build2": "npx vue-demi-switch 2 && cd v2  && vite build",
     "build3": "npx vue-demi-switch 3 && vite build --config vite.config.ts"
   },
   "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@vueuse/core": "^8.9.4",
-    "vue-demi": "latest"
-  },
   "devDependencies": {
+    "@vueuse/core": "^8.9.4",
+    "vue-demi": "latest",
     "element-plus": "2.2.10",
     "vite": "^3.0.3",
     "vue": "^3.0.0",
-    "@vitejs/plugin-vue": "latest",
-    "vite-plugin-vue2": "latest"
+    "@vitejs/plugin-vue": "latest"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",
     "vue": "^2.0.0 || >=3.0.0"
   },
   "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    },
     "@vue/composition-api": {
       "optional": true
     }

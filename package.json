@@ -2,7 +2,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pnpm run build:elp && pnpm run build:elu && pnpm run build:shared",
+    "build:elp": "pnpm run -C packages/element-plus build",
+    "build:elu": "pnpm run -C packages/element-ui build",
+    "build:method": "pnpm run -C packages/CoreMethod build"
   },
   "workspaces": [
     "packages/*",
@@ -16,5 +19,8 @@
     "lodash": "^4.17.21",
     "@gmtool/vue-components": "workspace:*",
     "@gmtool/method": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "latest"
   }
 }

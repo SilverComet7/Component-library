@@ -1,12 +1,9 @@
+import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import { createVuePlugin } from 'vite-plugin-vue2';
-import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [createVuePlugin()],
-  optimizeDeps: {
-    exclude: ['vue-demi'],
-  },
   build: {
     outDir: resolve(__dirname, '../lib/v2'),
     minify: false, // 不压缩代码,方便开发调试

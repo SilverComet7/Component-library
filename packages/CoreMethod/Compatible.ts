@@ -1,6 +1,11 @@
-import { cloneDeep } from "lodash";
+import { cloneDeep } from 'lodash';
 
-export function CompatibleWithDefaultConfig(defaultConfig, listData) {
+
+interface CompatibleWithDefaultConfigParams {
+  [key: string]: any;
+}
+
+export function CompatibleWithDefaultConfig(defaultConfig: CompatibleWithDefaultConfigParams, listData: Array<any> | CompatibleWithDefaultConfigParams) {
   for (const key in defaultConfig) {
     if (Object.prototype.hasOwnProperty.call(defaultConfig, key)) {
       if (Array.isArray(listData)) {

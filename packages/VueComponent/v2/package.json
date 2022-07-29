@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "devDependencies": {
+    "@vueuse/core": "^8.9.4"
+  },
   "dependencies": {
     "@vue/composition-api": "^1.6.2",
     "vite": "latest",
