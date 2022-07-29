@@ -5620,19 +5620,19 @@
       options
     };
   }
-  const props = vueDemi.defineProps({
+  const props = defineProps({
     buttonName: { type: String, default: "\u521B\u5EFA" },
     content: { type: Array, default: [] },
     checkHandle: Function
   });
-  const emit = vueDemi.defineEmits(["update:content"]);
+  const emit = defineEmits(["update:content"]);
   useVModels(props, emit);
   vueDemi.ref();
   const dialogVisible = vueDemi.ref(false);
   function closeDialog() {
     dialogVisible.value = false;
   }
-  vueDemi.defineExpose({ dialogVisible, closeDialog });
+  defineExpose({ dialogVisible, closeDialog });
   const __vue2_script = {};
   const __cssModules = {};
   var __component__ = /* @__PURE__ */ normalizeComponent(

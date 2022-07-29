@@ -1,0 +1,3627 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 4,
+    "total": 4,
+    "workspacePrefix": "D:\\module"
+  },
+  "1 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "docs",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "docs:dev": "vitepress dev . --host",
+        "docs:build": "vitepress build .",
+        "docs:serve": "vitepress serve ."
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "peerDependencyRules": {
+        "ignoreMissing": [
+          "@algolia/client-search",
+          "@types/react",
+          "react",
+          "react-dom"
+        ]
+      },
+      "devDependencies": {
+        "vitepress": "1.0.0-alpha.4",
+        "vue": "^3.0.0",
+        "element-plus": "latest"
+      }
+    },
+    "prefix": "D:\\module\\docs"
+  },
+  "2 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "@gmtool/method",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npx rimraf dist && npm run build:esm && npm run build:cjs",
+        "build:esm": "tsc --module es2015 --outDir dist/esm -d",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs"
+      },
+      "type": "module",
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "dependencies": {
+        "typescript": "^4.7.4"
+      }
+    },
+    "prefix": "D:\\module\\packages\\CoreMethod"
+  },
+  "3 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "@gmtool/vue-components",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npm run build3 && npm run build2",
+        "build2": "npx vue-demi-switch 2 && cd v2  && vite build",
+        "build3": "npx vue-demi-switch 3 && vite build --config vite.config.ts"
+      },
+      "type": "module",
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "devDependencies": {
+        "@vueuse/core": "^8.9.4",
+        "vue-demi": "latest",
+        "element-plus": "2.2.10",
+        "vite": "^3.0.3",
+        "vue": "^3.0.0",
+        "@vitejs/plugin-vue": "latest"
+      },
+      "peerDependencies": {
+        "@vue/composition-api": "^1.0.0-rc.1",
+        "vue": "^2.0.0 || >=3.0.0"
+      },
+      "peerDependenciesMeta": {
+        "vue": {
+          "optional": true
+        },
+        "@vue/composition-api": {
+          "optional": true
+        }
+      }
+    },
+    "prefix": "D:\\module\\packages\\VueComponent"
+  },
+  "4 debug pnpm:package-manifest": {
+    "initial": {
+      "version": "1.0.0",
+      "description": "",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "workspaces": [
+        "packages/*",
+        "docs"
+      ],
+      "type": "module",
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "dependencies": {
+        "lodash": "^4.17.21",
+        "@gmtool/vue-components": "workspace:*",
+        "@gmtool/method": "workspace:*"
+      }
+    },
+    "prefix": "D:\\module"
+  },
+  "5 debug pnpm:context": {
+    "currentLockfileExists": true,
+    "storeDir": "D:\\.pnpm-store\\v3",
+    "virtualStoreDir": "D:\\module\\node_modules\\.pnpm"
+  },
+  "6 debug pnpm:stage": {
+    "prefix": "D:\\module",
+    "stage": "resolution_started"
+  },
+  "7 debug pnpm:_dependency_resolved": {
+    "resolution": "link:packages/VueComponent",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@gmtool/vue-components",
+      "rawSpec": "workspace:*"
+    }
+  },
+  "8 debug pnpm:_dependency_resolved": {
+    "resolution": "link:packages/CoreMethod",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@gmtool/method",
+      "rawSpec": "workspace:*"
+    }
+  },
+  "9 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vitepress/1.0.0-alpha.4",
+    "wanted": {
+      "dependentId": "docs",
+      "name": "vitepress",
+      "rawSpec": "1.0.0-alpha.4"
+    }
+  },
+  "10 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vue/3.2.37",
+    "wanted": {
+      "dependentId": "docs",
+      "name": "vue",
+      "rawSpec": "^3.0.0"
+    }
+  },
+  "11 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vueuse/core/8.9.4",
+    "wanted": {
+      "dependentId": "packages/VueComponent",
+      "name": "@vueuse/core",
+      "rawSpec": "^8.9.4"
+    }
+  },
+  "12 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/element-plus/2.2.10",
+    "wanted": {
+      "dependentId": "packages/VueComponent",
+      "name": "element-plus",
+      "rawSpec": "2.2.10"
+    }
+  },
+  "13 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vite/3.0.3",
+    "wanted": {
+      "dependentId": "packages/VueComponent",
+      "name": "vite",
+      "rawSpec": "^3.0.3"
+    }
+  },
+  "14 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vue/3.2.37",
+    "wanted": {
+      "dependentId": "packages/VueComponent",
+      "name": "vue",
+      "rawSpec": "^3.0.0"
+    }
+  },
+  "15 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash/4.17.21",
+    "wanted": {
+      "dependentId": ".",
+      "name": "lodash",
+      "rawSpec": "^4.17.21"
+    }
+  },
+  "16 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vue/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "17 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vue/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "18 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vite/3.0.3",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "19 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vite/3.0.3",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "20 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vue-demi/0.13.6",
+    "wanted": {
+      "dependentId": "packages/VueComponent",
+      "name": "vue-demi",
+      "rawSpec": "latest"
+    }
+  },
+  "21 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vue-demi/0.13.6",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "22 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vitejs/plugin-vue/3.0.1",
+    "wanted": {
+      "dependentId": "packages/VueComponent",
+      "name": "@vitejs/plugin-vue",
+      "rawSpec": "latest"
+    }
+  },
+  "23 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vitejs/plugin-vue/3.0.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "24 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vueuse/core/8.9.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "25 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vueuse/core/8.9.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "26 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vitepress/1.0.0-alpha.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "27 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vitepress/1.0.0-alpha.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "28 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/element-plus/2.2.11",
+    "wanted": {
+      "dependentId": "docs",
+      "name": "element-plus",
+      "rawSpec": "latest"
+    }
+  },
+  "29 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/element-plus/2.2.11",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "30 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/vue/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "31 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-dom/3.2.37",
+    "wanted": {
+      "dependentId": "/vue/3.2.37",
+      "name": "@vue/compiler-dom",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "32 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/runtime-dom/3.2.37",
+    "wanted": {
+      "dependentId": "/vue/3.2.37",
+      "name": "@vue/runtime-dom",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "33 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-sfc/3.2.37",
+    "wanted": {
+      "dependentId": "/vue/3.2.37",
+      "name": "@vue/compiler-sfc",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "34 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@docsearch/css/3.1.1",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "@docsearch/css",
+      "rawSpec": "^3.0.0"
+    }
+  },
+  "35 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@docsearch/js/3.1.1",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "@docsearch/js",
+      "rawSpec": "^3.0.0"
+    }
+  },
+  "36 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vitejs/plugin-vue/2.3.3",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "@vitejs/plugin-vue",
+      "rawSpec": "^2.3.2"
+    }
+  },
+  "37 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/devtools-api/6.2.1",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "@vue/devtools-api",
+      "rawSpec": "^6.1.4"
+    }
+  },
+  "38 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vueuse/core/8.9.4",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "@vueuse/core",
+      "rawSpec": "^8.5.0"
+    }
+  },
+  "39 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/body-scroll-lock/4.0.0-beta.0",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "body-scroll-lock",
+      "rawSpec": "^4.0.0-beta.0"
+    }
+  },
+  "40 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/shiki/0.10.1",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "shiki",
+      "rawSpec": "^0.10.1"
+    }
+  },
+  "41 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vite/2.9.14",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "vite",
+      "rawSpec": "^2.9.7"
+    }
+  },
+  "42 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vue/3.2.37",
+    "wanted": {
+      "dependentId": "/vitepress/1.0.0-alpha.4",
+      "name": "vue",
+      "rawSpec": "^3.2.33"
+    }
+  },
+  "43 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/server-renderer/3.2.37",
+    "wanted": {
+      "dependentId": "/vue/3.2.37",
+      "name": "@vue/server-renderer",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "44 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@ctrl/tinycolor/3.4.1",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@ctrl/tinycolor",
+      "rawSpec": "^3.4.1"
+    }
+  },
+  "45 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@ctrl/tinycolor/3.4.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "46 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@sxzz/popperjs-es/2.11.7",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@popperjs/core",
+      "rawSpec": "npm:@sxzz/popperjs-es@^2.11.7"
+    }
+  },
+  "47 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@sxzz/popperjs-es/2.11.7",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "48 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@element-plus/icons-vue/2.0.6",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@element-plus/icons-vue",
+      "rawSpec": "^2.0.6"
+    }
+  },
+  "49 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@element-plus/icons-vue/2.0.6",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "50 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@types/lodash-es/4.17.6",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@types/lodash-es",
+      "rawSpec": "^4.17.6"
+    }
+  },
+  "51 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@types/lodash-es/4.17.6",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "52 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@floating-ui/dom/0.5.4",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@floating-ui/dom",
+      "rawSpec": "^0.5.4"
+    }
+  },
+  "53 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@floating-ui/dom/0.5.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "54 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/escape-html/1.0.3",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "escape-html",
+      "rawSpec": "^1.0.3"
+    }
+  },
+  "55 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/escape-html/1.0.3",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "56 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@types/lodash/4.14.182",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@types/lodash",
+      "rawSpec": "^4.14.182"
+    }
+  },
+  "57 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@types/lodash/4.14.182",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "58 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/async-validator/4.2.5",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "async-validator",
+      "rawSpec": "^4.2.5"
+    }
+  },
+  "59 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/async-validator/4.2.5",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "60 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash-unified/1.0.2",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "lodash-unified",
+      "rawSpec": "^1.0.2"
+    }
+  },
+  "61 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/lodash-unified/1.0.2",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "62 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash-es/4.17.21",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "lodash-es",
+      "rawSpec": "^4.17.21"
+    }
+  },
+  "63 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/lodash-es/4.17.21",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "64 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash/4.17.21",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "lodash",
+      "rawSpec": "^4.17.21"
+    }
+  },
+  "65 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/lodash/4.17.21",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "66 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/normalize-wheel-es/1.2.0",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "normalize-wheel-es",
+      "rawSpec": "^1.2.0"
+    }
+  },
+  "67 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/normalize-wheel-es/1.2.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "68 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/memoize-one/6.0.0",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "memoize-one",
+      "rawSpec": "^6.0.0"
+    }
+  },
+  "69 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/memoize-one/6.0.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "70 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/dayjs/1.11.4",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "dayjs",
+      "rawSpec": "^1.11.3"
+    }
+  },
+  "71 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/dayjs/1.11.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "72 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vueuse/core/8.9.4",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.11",
+      "name": "@vueuse/core",
+      "rawSpec": "^8.7.5"
+    }
+  },
+  "73 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@types/lodash/4.14.182",
+    "wanted": {
+      "dependentId": "/@types/lodash-es/4.17.6",
+      "name": "@types/lodash",
+      "rawSpec": "*"
+    }
+  },
+  "74 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@floating-ui/core/0.7.3",
+    "wanted": {
+      "dependentId": "/@floating-ui/dom/0.5.4",
+      "name": "@floating-ui/core",
+      "rawSpec": "^0.7.3"
+    }
+  },
+  "75 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@floating-ui/core/0.7.3",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "76 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/element-plus/2.2.10",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "77 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/element-plus/2.2.10",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "78 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@sxzz/popperjs-es/2.11.7",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@popperjs/core",
+      "rawSpec": "npm:@sxzz/popperjs-es@^2.11.7"
+    }
+  },
+  "79 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild/0.14.50",
+    "wanted": {
+      "dependentId": "/vite/3.0.3",
+      "name": "esbuild",
+      "rawSpec": "^0.14.47"
+    }
+  },
+  "80 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/postcss/8.4.14",
+    "wanted": {
+      "dependentId": "/vite/3.0.3",
+      "name": "postcss",
+      "rawSpec": "^8.4.14"
+    }
+  },
+  "81 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/resolve/1.22.1",
+    "wanted": {
+      "dependentId": "/vite/3.0.3",
+      "name": "resolve",
+      "rawSpec": "^1.22.1"
+    }
+  },
+  "82 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/rollup/2.77.1",
+    "wanted": {
+      "dependentId": "/vite/3.0.3",
+      "name": "rollup",
+      "rawSpec": "^2.75.6"
+    }
+  },
+  "83 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@types/web-bluetooth/0.0.14",
+    "wanted": {
+      "dependentId": "/@vueuse/core/8.9.4",
+      "name": "@types/web-bluetooth",
+      "rawSpec": "^0.0.14"
+    }
+  },
+  "84 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vueuse/shared/8.9.4",
+    "wanted": {
+      "dependentId": "/@vueuse/core/8.9.4",
+      "name": "@vueuse/shared",
+      "rawSpec": "8.9.4"
+    }
+  },
+  "85 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vue-demi/0.13.6",
+    "wanted": {
+      "dependentId": "/@vueuse/core/8.9.4",
+      "name": "vue-demi",
+      "rawSpec": "*"
+    }
+  },
+  "86 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@ctrl/tinycolor/3.4.1",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@ctrl/tinycolor",
+      "rawSpec": "^3.4.1"
+    }
+  },
+  "87 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@element-plus/icons-vue/2.0.6",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@element-plus/icons-vue",
+      "rawSpec": "^2.0.6"
+    }
+  },
+  "88 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@floating-ui/dom/0.5.4",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@floating-ui/dom",
+      "rawSpec": "^0.5.4"
+    }
+  },
+  "89 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@types/lodash/4.14.182",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@types/lodash",
+      "rawSpec": "^4.14.182"
+    }
+  },
+  "90 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@types/lodash-es/4.17.6",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@types/lodash-es",
+      "rawSpec": "^4.17.6"
+    }
+  },
+  "91 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vueuse/core/8.9.4",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "@vueuse/core",
+      "rawSpec": "^8.7.5"
+    }
+  },
+  "92 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/async-validator/4.2.5",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "async-validator",
+      "rawSpec": "^4.2.5"
+    }
+  },
+  "93 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/dayjs/1.11.4",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "dayjs",
+      "rawSpec": "^1.11.3"
+    }
+  },
+  "94 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/escape-html/1.0.3",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "escape-html",
+      "rawSpec": "^1.0.3"
+    }
+  },
+  "95 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash/4.17.21",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "lodash",
+      "rawSpec": "^4.17.21"
+    }
+  },
+  "96 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash-es/4.17.21",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "lodash-es",
+      "rawSpec": "^4.17.21"
+    }
+  },
+  "97 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/lodash-unified/1.0.2",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "lodash-unified",
+      "rawSpec": "^1.0.2"
+    }
+  },
+  "98 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/memoize-one/6.0.0",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "memoize-one",
+      "rawSpec": "^6.0.0"
+    }
+  },
+  "99 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/normalize-wheel-es/1.2.0",
+    "wanted": {
+      "dependentId": "/element-plus/2.2.10",
+      "name": "normalize-wheel-es",
+      "rawSpec": "^1.1.2"
+    }
+  },
+  "100 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vueuse/metadata/8.9.4",
+    "wanted": {
+      "dependentId": "/@vueuse/core/8.9.4",
+      "name": "@vueuse/metadata",
+      "rawSpec": "8.9.4"
+    }
+  },
+  "101 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/fsevents/2.3.2: wanted {\"cpu\":[\"any\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "102 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/fsevents/2.3.2: wanted {\"cpu\":[\"any\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/fsevents/2.3.2",
+      "name": "fsevents",
+      "version": "2.3.2"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "103 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/fsevents/2.3.2",
+    "wanted": {
+      "dependentId": "/vite/3.0.3",
+      "name": "fsevents",
+      "rawSpec": "~2.3.2"
+    }
+  },
+  "104 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/fsevents/2.3.2",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "105 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/lodash/4.17.21",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "106 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vue-demi/0.13.6",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "107 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vitejs/plugin-vue/3.0.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "108 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-dom/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "109 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-dom/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "110 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-sfc/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "111 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-sfc/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "112 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@docsearch/css/3.1.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "113 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@docsearch/css/3.1.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "114 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "115 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "116 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@docsearch/js/3.1.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "117 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@docsearch/js/3.1.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "118 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/runtime-dom/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "119 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/runtime-dom/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "120 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vitejs/plugin-vue/2.3.3",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "121 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vitejs/plugin-vue/2.3.3",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "122 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/devtools-api/6.2.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "123 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/devtools-api/6.2.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "124 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/body-scroll-lock/4.0.0-beta.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "125 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/body-scroll-lock/4.0.0-beta.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "126 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vite/2.9.14",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "127 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vite/2.9.14",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "128 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/shiki/0.10.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "129 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/shiki/0.10.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "130 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/preact/10.10.0",
+    "wanted": {
+      "dependentId": "/@docsearch/js/3.1.1",
+      "name": "preact",
+      "rawSpec": "^10.0.0"
+    }
+  },
+  "131 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild/0.14.50",
+    "wanted": {
+      "dependentId": "/vite/2.9.14",
+      "name": "esbuild",
+      "rawSpec": "^0.14.27"
+    }
+  },
+  "132 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/postcss/8.4.14",
+    "wanted": {
+      "dependentId": "/vite/2.9.14",
+      "name": "postcss",
+      "rawSpec": "^8.4.13"
+    }
+  },
+  "133 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/fsevents/2.3.2: wanted {\"cpu\":[\"any\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "134 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/fsevents/2.3.2: wanted {\"cpu\":[\"any\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/fsevents/2.3.2",
+      "name": "fsevents",
+      "version": "2.3.2"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "135 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/fsevents/2.3.2",
+    "wanted": {
+      "dependentId": "/vite/2.9.14",
+      "name": "fsevents",
+      "rawSpec": "~2.3.2"
+    }
+  },
+  "136 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/resolve/1.22.1",
+    "wanted": {
+      "dependentId": "/vite/2.9.14",
+      "name": "resolve",
+      "rawSpec": "^1.22.0"
+    }
+  },
+  "137 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/rollup/2.77.1",
+    "wanted": {
+      "dependentId": "/vite/2.9.14",
+      "name": "rollup",
+      "rawSpec": "^2.59.0"
+    }
+  },
+  "138 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vscode-oniguruma/1.6.2",
+    "wanted": {
+      "dependentId": "/shiki/0.10.1",
+      "name": "vscode-oniguruma",
+      "rawSpec": "^1.6.1"
+    }
+  },
+  "139 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vscode-textmate/5.2.0",
+    "wanted": {
+      "dependentId": "/shiki/0.10.1",
+      "name": "vscode-textmate",
+      "rawSpec": "5.2.0"
+    }
+  },
+  "140 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@docsearch/react/3.1.1",
+    "wanted": {
+      "dependentId": "/@docsearch/js/3.1.1",
+      "name": "@docsearch/react",
+      "rawSpec": "3.1.1"
+    }
+  },
+  "141 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/jsonc-parser/3.1.0",
+    "wanted": {
+      "dependentId": "/shiki/0.10.1",
+      "name": "jsonc-parser",
+      "rawSpec": "^3.0.0"
+    }
+  },
+  "142 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/server-renderer/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "143 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/server-renderer/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "144 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-dom/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "145 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-core/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-dom/3.2.37",
+      "name": "@vue/compiler-core",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "146 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@babel/parser/7.18.9",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "@babel/parser",
+      "rawSpec": "^7.16.4"
+    }
+  },
+  "147 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-core/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "@vue/compiler-core",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "148 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-dom/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "@vue/compiler-dom",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "149 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-ssr/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "@vue/compiler-ssr",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "150 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/reactivity-transform/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "@vue/reactivity-transform",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "151 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "152 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/estree-walker/2.0.2",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "estree-walker",
+      "rawSpec": "^2.0.2"
+    }
+  },
+  "153 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/magic-string/0.25.9",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "magic-string",
+      "rawSpec": "^0.25.7"
+    }
+  },
+  "154 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/source-map/0.6.1",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "source-map",
+      "rawSpec": "^0.6.1"
+    }
+  },
+  "155 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/postcss/8.4.14",
+    "wanted": {
+      "dependentId": "/@vue/compiler-sfc/3.2.37",
+      "name": "postcss",
+      "rawSpec": "^8.1.10"
+    }
+  },
+  "156 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/runtime-dom/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "157 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/runtime-core/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/runtime-dom/3.2.37",
+      "name": "@vue/runtime-core",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "158 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/csstype/2.6.20",
+    "wanted": {
+      "dependentId": "/@vue/runtime-dom/3.2.37",
+      "name": "csstype",
+      "rawSpec": "^2.6.8"
+    }
+  },
+  "159 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/server-renderer/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "160 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-ssr/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/server-renderer/3.2.37",
+      "name": "@vue/compiler-ssr",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "161 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/element-plus/2.2.11",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "162 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@sxzz/popperjs-es/2.11.7",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "163 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@ctrl/tinycolor/3.4.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "164 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@element-plus/icons-vue/2.0.6",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "165 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@types/lodash-es/4.17.6",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "166 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@floating-ui/dom/0.5.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "167 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/escape-html/1.0.3",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "168 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@types/lodash/4.14.182",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "169 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/lodash-unified/1.0.2",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "170 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/async-validator/4.2.5",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "171 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/lodash-es/4.17.21",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "172 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/normalize-wheel-es/1.2.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "173 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/memoize-one/6.0.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "174 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/dayjs/1.11.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "175 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@floating-ui/core/0.7.3",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "176 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild/0.14.50",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "177 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "178 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/resolve/1.22.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "179 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/resolve/1.22.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "180 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/rollup/2.77.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "181 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/rollup/2.77.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "182 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/postcss/8.4.14",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "183 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/postcss/8.4.14",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "184 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/is-core-module/2.9.0",
+    "wanted": {
+      "dependentId": "/resolve/1.22.1",
+      "name": "is-core-module",
+      "rawSpec": "^2.9.0"
+    }
+  },
+  "185 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/nanoid/3.3.4",
+    "wanted": {
+      "dependentId": "/postcss/8.4.14",
+      "name": "nanoid",
+      "rawSpec": "^3.3.4"
+    }
+  },
+  "186 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/picocolors/1.0.0",
+    "wanted": {
+      "dependentId": "/postcss/8.4.14",
+      "name": "picocolors",
+      "rawSpec": "^1.0.0"
+    }
+  },
+  "187 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/source-map-js/1.0.2",
+    "wanted": {
+      "dependentId": "/postcss/8.4.14",
+      "name": "source-map-js",
+      "rawSpec": "^1.0.2"
+    }
+  },
+  "188 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/path-parse/1.0.7",
+    "wanted": {
+      "dependentId": "/resolve/1.22.1",
+      "name": "path-parse",
+      "rawSpec": "^1.0.7"
+    }
+  },
+  "189 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/supports-preserve-symlinks-flag/1.0.0",
+    "wanted": {
+      "dependentId": "/resolve/1.22.1",
+      "name": "supports-preserve-symlinks-flag",
+      "rawSpec": "^1.0.0"
+    }
+  },
+  "190 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@types/web-bluetooth/0.0.14",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "191 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@types/web-bluetooth/0.0.14",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "192 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vueuse/shared/8.9.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "193 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vueuse/shared/8.9.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "194 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vueuse/metadata/8.9.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "195 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vueuse/metadata/8.9.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "196 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vscode-textmate/5.2.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "197 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vscode-textmate/5.2.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "198 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-android-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"android\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "199 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-android-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"android\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-android-64/0.14.50",
+      "name": "esbuild-android-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "200 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-android-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-android-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "201 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-android-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "202 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-android-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"android\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "203 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-android-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"android\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-android-arm64/0.14.50",
+      "name": "esbuild-android-arm64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "204 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-android-arm64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-android-arm64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "205 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-android-arm64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "206 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-darwin-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "207 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-darwin-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-darwin-64/0.14.50",
+      "name": "esbuild-darwin-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "208 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-darwin-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-darwin-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "209 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-darwin-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "210 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-freebsd-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"freebsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "211 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-freebsd-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"freebsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-freebsd-64/0.14.50",
+      "name": "esbuild-freebsd-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "212 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-freebsd-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-freebsd-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "213 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-freebsd-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "214 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-darwin-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "215 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-darwin-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-darwin-arm64/0.14.50",
+      "name": "esbuild-darwin-arm64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "216 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-darwin-arm64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-darwin-arm64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "217 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-darwin-arm64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "218 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/fsevents/2.3.2: wanted {\"cpu\":[\"any\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "219 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/fsevents/2.3.2: wanted {\"cpu\":[\"any\"],\"os\":[\"darwin\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/fsevents/2.3.2",
+      "name": "fsevents",
+      "version": "2.3.2"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "220 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/fsevents/2.3.2",
+    "wanted": {
+      "dependentId": "/rollup/2.77.1",
+      "name": "fsevents",
+      "rawSpec": "~2.3.2"
+    }
+  },
+  "221 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/vue-demi/0.13.6",
+    "wanted": {
+      "dependentId": "/@vueuse/shared/8.9.4",
+      "name": "vue-demi",
+      "rawSpec": "*"
+    }
+  },
+  "222 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-freebsd-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"freebsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "223 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-freebsd-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"freebsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-freebsd-arm64/0.14.50",
+      "name": "esbuild-freebsd-arm64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "224 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-freebsd-arm64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-freebsd-arm64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "225 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-freebsd-arm64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "226 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-32/0.14.50: wanted {\"cpu\":[\"ia32\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "227 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-32/0.14.50: wanted {\"cpu\":[\"ia32\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-32/0.14.50",
+      "name": "esbuild-linux-32",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "228 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-32/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-32",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "229 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-32/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "230 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "231 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-64/0.14.50",
+      "name": "esbuild-linux-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "232 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "233 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "234 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-arm/0.14.50: wanted {\"cpu\":[\"arm\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "235 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-arm/0.14.50: wanted {\"cpu\":[\"arm\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-arm/0.14.50",
+      "name": "esbuild-linux-arm",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "236 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-arm/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-arm",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "237 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-arm/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "238 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "239 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-arm64/0.14.50",
+      "name": "esbuild-linux-arm64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "240 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-arm64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-arm64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "241 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-arm64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "242 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-mips64le/0.14.50: wanted {\"cpu\":[\"mips64el\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "243 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-mips64le/0.14.50: wanted {\"cpu\":[\"mips64el\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-mips64le/0.14.50",
+      "name": "esbuild-linux-mips64le",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "244 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-mips64le/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-mips64le",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "245 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-mips64le/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "246 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-ppc64le/0.14.50: wanted {\"cpu\":[\"ppc64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "247 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-ppc64le/0.14.50: wanted {\"cpu\":[\"ppc64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-ppc64le/0.14.50",
+      "name": "esbuild-linux-ppc64le",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "248 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-ppc64le/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-ppc64le",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "249 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-ppc64le/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "250 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-riscv64/0.14.50: wanted {\"cpu\":[\"riscv64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "251 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-riscv64/0.14.50: wanted {\"cpu\":[\"riscv64\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-riscv64/0.14.50",
+      "name": "esbuild-linux-riscv64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "252 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-riscv64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-riscv64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "253 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-riscv64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "254 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-linux-s390x/0.14.50: wanted {\"cpu\":[\"s390x\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "255 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-linux-s390x/0.14.50: wanted {\"cpu\":[\"s390x\"],\"os\":[\"linux\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-linux-s390x/0.14.50",
+      "name": "esbuild-linux-s390x",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "256 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-linux-s390x/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-linux-s390x",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "257 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-linux-s390x/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "258 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-netbsd-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"netbsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "259 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-netbsd-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"netbsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-netbsd-64/0.14.50",
+      "name": "esbuild-netbsd-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "260 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-netbsd-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-netbsd-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "261 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-netbsd-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "262 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-openbsd-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"openbsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "263 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-openbsd-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"openbsd\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-openbsd-64/0.14.50",
+      "name": "esbuild-openbsd-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "264 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-openbsd-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-openbsd-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "265 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-openbsd-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "266 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@docsearch/react/3.1.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "267 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@docsearch/react/3.1.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "268 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-windows-32/0.14.50: wanted {\"cpu\":[\"ia32\"],\"os\":[\"win32\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "269 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-windows-32/0.14.50: wanted {\"cpu\":[\"ia32\"],\"os\":[\"win32\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-windows-32/0.14.50",
+      "name": "esbuild-windows-32",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "270 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-windows-32/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-windows-32",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "271 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-windows-32/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "272 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-sunos-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"sunos\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "273 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-sunos-64/0.14.50: wanted {\"cpu\":[\"x64\"],\"os\":[\"sunos\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-sunos-64/0.14.50",
+      "name": "esbuild-sunos-64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "274 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-sunos-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-sunos-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "275 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-sunos-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "276 warn pnpm:install-check": {
+    "message": "Unsupported platform for registry.npmmirror.com/esbuild-windows-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"win32\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "prefix": "D:\\module"
+  },
+  "277 debug pnpm:skipped-optional-dependency": {
+    "details": "Error: Unsupported platform for registry.npmmirror.com/esbuild-windows-arm64/0.14.50: wanted {\"cpu\":[\"arm64\"],\"os\":[\"win32\"]} (current: {\"os\":\"win32\",\"cpu\":\"x64\"})",
+    "package": {
+      "id": "registry.npmmirror.com/esbuild-windows-arm64/0.14.50",
+      "name": "esbuild-windows-arm64",
+      "version": "0.14.50"
+    },
+    "prefix": "D:\\module",
+    "reason": "unsupported_platform"
+  },
+  "278 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-windows-arm64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-windows-arm64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "279 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-windows-arm64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "280 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/esbuild-windows-64/0.14.50",
+    "wanted": {
+      "dependentId": "/esbuild/0.14.50",
+      "name": "esbuild-windows-64",
+      "rawSpec": "0.14.50"
+    }
+  },
+  "281 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-windows-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "282 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vscode-oniguruma/1.6.2",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "283 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/vscode-oniguruma/1.6.2",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "284 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/preact/10.10.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "285 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/preact/10.10.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "286 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/autocomplete-core/1.7.1",
+    "wanted": {
+      "dependentId": "/@docsearch/react/3.1.1",
+      "name": "@algolia/autocomplete-core",
+      "rawSpec": "1.7.1"
+    }
+  },
+  "287 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/autocomplete-preset-algolia/1.7.1",
+    "wanted": {
+      "dependentId": "/@docsearch/react/3.1.1",
+      "name": "@algolia/autocomplete-preset-algolia",
+      "rawSpec": "1.7.1"
+    }
+  },
+  "288 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@docsearch/css/3.1.1",
+    "wanted": {
+      "dependentId": "/@docsearch/react/3.1.1",
+      "name": "@docsearch/css",
+      "rawSpec": "3.1.1"
+    }
+  },
+  "289 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/algoliasearch/4.14.1",
+    "wanted": {
+      "dependentId": "/@docsearch/react/3.1.1",
+      "name": "algoliasearch",
+      "rawSpec": "^4.0.0"
+    }
+  },
+  "290 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/jsonc-parser/3.1.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "291 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/jsonc-parser/3.1.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "292 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@babel/parser/7.18.9",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "293 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@babel/parser/7.18.9",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "294 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-core/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "295 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-core/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "296 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/reactivity-transform/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "297 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/reactivity-transform/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "298 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-ssr/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "299 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/compiler-ssr/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "300 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-core/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "301 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@babel/parser/7.18.9",
+    "wanted": {
+      "dependentId": "/@vue/compiler-core/3.2.37",
+      "name": "@babel/parser",
+      "rawSpec": "^7.16.4"
+    }
+  },
+  "302 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/estree-walker/2.0.2",
+    "wanted": {
+      "dependentId": "/@vue/compiler-core/3.2.37",
+      "name": "estree-walker",
+      "rawSpec": "^2.0.2"
+    }
+  },
+  "303 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/source-map/0.6.1",
+    "wanted": {
+      "dependentId": "/@vue/compiler-core/3.2.37",
+      "name": "source-map",
+      "rawSpec": "^0.6.1"
+    }
+  },
+  "304 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/estree-walker/2.0.2",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "305 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/estree-walker/2.0.2",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "306 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/magic-string/0.25.9",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "307 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/magic-string/0.25.9",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "308 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/csstype/2.6.20",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "309 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/csstype/2.6.20",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "310 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/runtime-core/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "311 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/runtime-core/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "312 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/source-map/0.6.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "313 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/source-map/0.6.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "314 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/runtime-core/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "315 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/reactivity/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/runtime-core/3.2.37",
+      "name": "@vue/reactivity",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "316 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@babel/types/7.18.9",
+    "wanted": {
+      "dependentId": "/@babel/parser/7.18.9",
+      "name": "@babel/types",
+      "rawSpec": "^7.8.3"
+    }
+  },
+  "317 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@babel/parser/7.18.9",
+    "wanted": {
+      "dependentId": "/@vue/reactivity-transform/3.2.37",
+      "name": "@babel/parser",
+      "rawSpec": "^7.16.4"
+    }
+  },
+  "318 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-core/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/reactivity-transform/3.2.37",
+      "name": "@vue/compiler-core",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "319 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/reactivity-transform/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "320 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/estree-walker/2.0.2",
+    "wanted": {
+      "dependentId": "/@vue/reactivity-transform/3.2.37",
+      "name": "estree-walker",
+      "rawSpec": "^2.0.2"
+    }
+  },
+  "321 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/magic-string/0.25.9",
+    "wanted": {
+      "dependentId": "/@vue/reactivity-transform/3.2.37",
+      "name": "magic-string",
+      "rawSpec": "^0.25.7"
+    }
+  },
+  "322 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-ssr/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "323 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/compiler-dom/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/compiler-ssr/3.2.37",
+      "name": "@vue/compiler-dom",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "324 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/sourcemap-codec/1.4.8",
+    "wanted": {
+      "dependentId": "/magic-string/0.25.9",
+      "name": "sourcemap-codec",
+      "rawSpec": "^1.4.8"
+    }
+  },
+  "325 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/picocolors/1.0.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "326 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/picocolors/1.0.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "327 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/is-core-module/2.9.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "328 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/is-core-module/2.9.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "329 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/nanoid/3.3.4",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "330 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/nanoid/3.3.4",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "331 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/path-parse/1.0.7",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "332 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/path-parse/1.0.7",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "333 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/supports-preserve-symlinks-flag/1.0.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "334 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/supports-preserve-symlinks-flag/1.0.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "335 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/has/1.0.3",
+    "wanted": {
+      "dependentId": "/is-core-module/2.9.0",
+      "name": "has",
+      "rawSpec": "^1.0.3"
+    }
+  },
+  "336 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/esbuild-windows-64/0.14.50",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "337 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/source-map-js/1.0.2",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "338 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/source-map-js/1.0.2",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "339 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/autocomplete-core/1.7.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "340 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/autocomplete-core/1.7.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "341 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/autocomplete-preset-algolia/1.7.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "342 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/autocomplete-preset-algolia/1.7.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "343 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/algoliasearch/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "344 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/algoliasearch/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "345 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/autocomplete-shared/1.7.1",
+    "wanted": {
+      "dependentId": "/@algolia/autocomplete-core/1.7.1",
+      "name": "@algolia/autocomplete-shared",
+      "rawSpec": "1.7.1"
+    }
+  },
+  "346 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/autocomplete-shared/1.7.1",
+    "wanted": {
+      "dependentId": "/@algolia/autocomplete-preset-algolia/1.7.1",
+      "name": "@algolia/autocomplete-shared",
+      "rawSpec": "1.7.1"
+    }
+  },
+  "347 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/cache-browser-local-storage/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/cache-browser-local-storage",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "348 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/cache-common/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/cache-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "349 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/cache-in-memory/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/cache-in-memory",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "350 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/client-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "351 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-personalization/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/client-personalization",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "352 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-search/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/client-search",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "353 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/logger-common/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/logger-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "354 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/logger-console/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/logger-console",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "355 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-browser-xhr/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/requester-browser-xhr",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "356 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "357 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-node-http/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/requester-node-http",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "358 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-account/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/client-account",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "359 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-analytics/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/client-analytics",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "360 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "wanted": {
+      "dependentId": "/algoliasearch/4.14.1",
+      "name": "@algolia/transporter",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "361 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@babel/types/7.18.9",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "362 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@babel/types/7.18.9",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "363 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/to-fast-properties/2.0.0",
+    "wanted": {
+      "dependentId": "/@babel/types/7.18.9",
+      "name": "to-fast-properties",
+      "rawSpec": "^2.0.0"
+    }
+  },
+  "364 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/sourcemap-codec/1.4.8",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "365 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/sourcemap-codec/1.4.8",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "366 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/reactivity/3.2.37",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "367 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@vue/reactivity/3.2.37",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "368 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@babel/helper-validator-identifier/7.18.6",
+    "wanted": {
+      "dependentId": "/@babel/types/7.18.9",
+      "name": "@babel/helper-validator-identifier",
+      "rawSpec": "^7.18.6"
+    }
+  },
+  "369 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@vue/shared/3.2.37",
+    "wanted": {
+      "dependentId": "/@vue/reactivity/3.2.37",
+      "name": "@vue/shared",
+      "rawSpec": "3.2.37"
+    }
+  },
+  "370 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/has/1.0.3",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "371 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/has/1.0.3",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "372 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/function-bind/1.1.1",
+    "wanted": {
+      "dependentId": "/has/1.0.3",
+      "name": "function-bind",
+      "rawSpec": "^1.1.1"
+    }
+  },
+  "373 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/autocomplete-shared/1.7.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "374 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/autocomplete-shared/1.7.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "375 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/cache-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "376 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/cache-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "377 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/cache-browser-local-storage/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "378 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/cache-browser-local-storage/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "379 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/logger-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "380 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/logger-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "381 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/cache-in-memory/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "382 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/cache-in-memory/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "383 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/logger-console/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "384 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/logger-console/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "385 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/requester-browser-xhr/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "386 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/requester-browser-xhr/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "387 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-search/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "388 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-search/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "389 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-account/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "390 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-account/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "391 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "392 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "393 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-personalization/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "394 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-personalization/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "395 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "396 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "397 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "398 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "399 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-analytics/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "400 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/client-analytics/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "401 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@babel/helper-validator-identifier/7.18.6",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "402 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@babel/helper-validator-identifier/7.18.6",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "403 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/to-fast-properties/2.0.0",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "404 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/to-fast-properties/2.0.0",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "405 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/requester-node-http/4.14.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "406 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/@algolia/requester-node-http/4.14.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "407 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/cache-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/cache-browser-local-storage/4.14.1",
+      "name": "@algolia/cache-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "408 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/cache-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/cache-in-memory/4.14.1",
+      "name": "@algolia/cache-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "409 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/logger-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/logger-console/4.14.1",
+      "name": "@algolia/logger-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "410 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/requester-browser-xhr/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "411 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-search/4.14.1",
+      "name": "@algolia/client-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "412 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-search/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "413 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-search/4.14.1",
+      "name": "@algolia/transporter",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "414 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-account/4.14.1",
+      "name": "@algolia/client-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "415 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-search/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-account/4.14.1",
+      "name": "@algolia/client-search",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "416 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-account/4.14.1",
+      "name": "@algolia/transporter",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "417 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-common/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "418 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-common/4.14.1",
+      "name": "@algolia/transporter",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "419 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-personalization/4.14.1",
+      "name": "@algolia/client-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "420 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-personalization/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "421 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-personalization/4.14.1",
+      "name": "@algolia/transporter",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "422 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/cache-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/transporter/4.14.1",
+      "name": "@algolia/cache-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "423 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/logger-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/transporter/4.14.1",
+      "name": "@algolia/logger-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "424 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/transporter/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "425 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-analytics/4.14.1",
+      "name": "@algolia/client-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "426 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/client-search/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-analytics/4.14.1",
+      "name": "@algolia/client-search",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "427 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-analytics/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "428 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/transporter/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/client-analytics/4.14.1",
+      "name": "@algolia/transporter",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "429 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmmirror.com/@algolia/requester-common/4.14.1",
+    "wanted": {
+      "dependentId": "/@algolia/requester-node-http/4.14.1",
+      "name": "@algolia/requester-common",
+      "rawSpec": "4.14.1"
+    }
+  },
+  "430 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/function-bind/1.1.1",
+    "requester": "D:\\module",
+    "status": "found_in_store"
+  },
+  "431 debug pnpm:progress": {
+    "packageId": "registry.npmmirror.com/function-bind/1.1.1",
+    "requester": "D:\\module",
+    "status": "resolved"
+  },
+  "432 debug pnpm:package-manifest": {
+    "prefix": "D:\\module\\docs",
+    "updated": {
+      "name": "docs",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "docs:dev": "vitepress dev . --host",
+        "docs:build": "vitepress build .",
+        "docs:serve": "vitepress serve ."
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "peerDependencyRules": {
+        "ignoreMissing": [
+          "@algolia/client-search",
+          "@types/react",
+          "react",
+          "react-dom"
+        ]
+      },
+      "devDependencies": {
+        "vitepress": "1.0.0-alpha.4",
+        "vue": "^3.0.0",
+        "element-plus": "latest"
+      }
+    }
+  },
+  "433 debug pnpm:package-manifest": {
+    "prefix": "D:\\module\\packages\\CoreMethod",
+    "updated": {
+      "name": "@gmtool/method",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npx rimraf dist && npm run build:esm && npm run build:cjs",
+        "build:esm": "tsc --module es2015 --outDir dist/esm -d",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs"
+      },
+      "type": "module",
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "dependencies": {
+        "typescript": "^4.7.4"
+      }
+    }
+  },
+  "434 debug pnpm:package-manifest": {
+    "prefix": "D:\\module\\packages\\VueComponent",
+    "updated": {
+      "name": "@gmtool/vue-components",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npm run build3 && npm run build2",
+        "build2": "npx vue-demi-switch 2 && cd v2  && vite build",
+        "build3": "npx vue-demi-switch 3 && vite build --config vite.config.ts"
+      },
+      "type": "module",
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "devDependencies": {
+        "@vueuse/core": "^8.9.4",
+        "vue-demi": "latest",
+        "element-plus": "2.2.10",
+        "vite": "^3.0.3",
+        "vue": "^3.0.0",
+        "@vitejs/plugin-vue": "latest"
+      },
+      "peerDependencies": {
+        "@vue/composition-api": "^1.0.0-rc.1",
+        "vue": "^2.0.0 || >=3.0.0"
+      },
+      "peerDependenciesMeta": {
+        "vue": {
+          "optional": true
+        },
+        "@vue/composition-api": {
+          "optional": true
+        }
+      }
+    }
+  },
+  "435 debug pnpm:package-manifest": {
+    "prefix": "D:\\module",
+    "updated": {
+      "version": "1.0.0",
+      "description": "",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "workspaces": [
+        "packages/*",
+        "docs"
+      ],
+      "type": "module",
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "dependencies": {
+        "lodash": "^4.17.21",
+        "@gmtool/vue-components": "workspace:*",
+        "@gmtool/method": "workspace:*"
+      }
+    }
+  },
+  "436 debug pnpm:stage": {
+    "prefix": "D:\\module",
+    "stage": "resolution_done"
+  },
+  "437 debug pnpm:removal": "D:\\module\\packages\\VueComponent\\node_modules\\vite-plugin-vue2",
+  "438 debug pnpm:root": {
+    "prefix": "D:\\module\\packages\\VueComponent",
+    "removed": {
+      "dependencyType": "dev",
+      "name": "vite-plugin-vue2",
+      "version": "2.0.2"
+    }
+  },
+  "439 debug pnpm:stats": {
+    "prefix": "D:\\module",
+    "removed": 115
+  },
+  "440 debug pnpm:removal": "D:\\module\\node_modules\\@ampproject\\remapping",
+  "441 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\code-frame",
+  "442 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\compat-data",
+  "443 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\core",
+  "444 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\generator",
+  "445 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-annotate-as-pure",
+  "446 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-compilation-targets",
+  "447 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-create-class-features-plugin",
+  "448 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-environment-visitor",
+  "449 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-function-name",
+  "450 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-hoist-variables",
+  "451 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-member-expression-to-functions",
+  "452 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-module-imports",
+  "453 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-module-transforms",
+  "454 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-optimise-call-expression",
+  "455 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-plugin-utils",
+  "456 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-replace-supers",
+  "457 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-simple-access",
+  "458 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-skip-transparent-expression-wrappers",
+  "459 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-split-export-declaration",
+  "460 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helper-validator-option",
+  "461 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\helpers",
+  "462 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\highlight",
+  "463 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-proposal-class-properties",
+  "464 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-proposal-decorators",
+  "465 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-proposal-nullish-coalescing-operator",
+  "466 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-proposal-object-rest-spread",
+  "467 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-proposal-optional-chaining",
+  "468 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-syntax-decorators",
+  "469 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-syntax-jsx",
+  "470 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-syntax-nullish-coalescing-operator",
+  "471 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-syntax-object-rest-spread",
+  "472 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-syntax-optional-chaining",
+  "473 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-syntax-typescript",
+  "474 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-arrow-functions",
+  "475 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-block-scoping",
+  "476 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-computed-properties",
+  "477 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-destructuring",
+  "478 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-parameters",
+  "479 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-spread",
+  "480 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\plugin-transform-typescript",
+  "481 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\template",
+  "482 debug pnpm:removal": "D:\\module\\node_modules\\@babel\\traverse",
+  "483 debug pnpm:removal": "D:\\module\\node_modules\\@jridgewell\\gen-mapping",
+  "484 debug pnpm:removal": "D:\\module\\node_modules\\@jridgewell\\resolve-uri",
+  "485 debug pnpm:removal": "D:\\module\\node_modules\\@jridgewell\\set-array",
+  "486 debug pnpm:removal": "D:\\module\\node_modules\\@jridgewell\\sourcemap-codec",
+  "487 debug pnpm:removal": "D:\\module\\node_modules\\@jridgewell\\trace-mapping",
+  "488 debug pnpm:removal": "D:\\module\\node_modules\\@rollup\\pluginutils",
+  "489 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-helper-vue-jsx-merge-props",
+  "490 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-plugin-transform-vue-jsx",
+  "491 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-preset-jsx",
+  "492 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-sugar-composition-api-inject-h",
+  "493 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-sugar-composition-api-render-instance",
+  "494 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-sugar-functional-vue",
+  "495 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-sugar-inject-h",
+  "496 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-sugar-v-model",
+  "497 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\babel-sugar-v-on",
+  "498 debug pnpm:removal": "D:\\module\\node_modules\\@vue\\component-compiler-utils",
+  "499 debug pnpm:removal": "D:\\module\\node_modules\\ansi-styles",
+  "500 debug pnpm:removal": "D:\\module\\node_modules\\bluebird",
+  "501 debug pnpm:removal": "D:\\module\\node_modules\\browserslist",
+  "502 debug pnpm:removal": "D:\\module\\node_modules\\camelcase",
+  "503 debug pnpm:removal": "D:\\module\\node_modules\\caniuse-lite",
+  "504 debug pnpm:removal": "D:\\module\\node_modules\\chalk",
+  "505 debug pnpm:removal": "D:\\module\\node_modules\\color-convert",
+  "506 debug pnpm:removal": "D:\\module\\node_modules\\color-name",
+  "507 debug pnpm:removal": "D:\\module\\node_modules\\consolidate",
+  "508 debug pnpm:removal": "D:\\module\\node_modules\\convert-source-map",
+  "509 debug pnpm:removal": "D:\\module\\node_modules\\cssesc",
+  "510 debug pnpm:removal": "D:\\module\\node_modules\\debug",
+  "511 debug pnpm:removal": "D:\\module\\node_modules\\deepmerge",
+  "512 debug pnpm:removal": "D:\\module\\node_modules\\electron-to-chromium",
+  "513 debug pnpm:removal": "D:\\module\\node_modules\\escalade",
+  "514 debug pnpm:removal": "D:\\module\\node_modules\\escape-string-regexp",
+  "515 debug pnpm:removal": "D:\\module\\node_modules\\fs-extra",
+  "516 debug pnpm:removal": "D:\\module\\node_modules\\gensync",
+  "517 debug pnpm:removal": "D:\\module\\node_modules\\globals",
+  "518 debug pnpm:removal": "D:\\module\\node_modules\\graceful-fs",
+  "519 debug pnpm:removal": "D:\\module\\node_modules\\has-flag",
+  "520 debug pnpm:removal": "D:\\module\\node_modules\\hash-sum",
+  "521 debug pnpm:removal": "D:\\module\\node_modules\\html-tags",
+  "522 debug pnpm:removal": "D:\\module\\node_modules\\js-tokens",
+  "523 debug pnpm:removal": "D:\\module\\node_modules\\jsesc",
+  "524 debug pnpm:removal": "D:\\module\\node_modules\\json5",
+  "525 debug pnpm:removal": "D:\\module\\node_modules\\jsonfile",
+  "526 debug pnpm:removal": "D:\\module\\node_modules\\lodash.kebabcase",
+  "527 debug pnpm:removal": "D:\\module\\node_modules\\lru-cache",
+  "528 debug pnpm:removal": "D:\\module\\node_modules\\magic-string",
+  "529 debug pnpm:removal": "D:\\module\\node_modules\\merge-source-map",
+  "530 debug pnpm:removal": "D:\\module\\node_modules\\ms",
+  "531 debug pnpm:removal": "D:\\module\\node_modules\\node-releases",
+  "532 debug pnpm:removal": "D:\\module\\node_modules\\picomatch",
+  "533 debug pnpm:removal": "D:\\module\\node_modules\\postcss-selector-parser",
+  "534 debug pnpm:removal": "D:\\module\\node_modules\\prettier",
+  "535 debug pnpm:removal": "D:\\module\\node_modules\\pseudomap",
+  "536 debug pnpm:removal": "D:\\module\\node_modules\\querystring",
+  "537 debug pnpm:removal": "D:\\module\\node_modules\\safe-buffer",
+  "538 debug pnpm:removal": "D:\\module\\node_modules\\semver",
+  "539 debug pnpm:removal": "D:\\module\\node_modules\\slash",
+  "540 debug pnpm:removal": "D:\\module\\node_modules\\source-map",
+  "541 debug pnpm:removal": "D:\\module\\node_modules\\supports-color",
+  "542 debug pnpm:removal": "D:\\module\\node_modules\\svg-tags",
+  "543 debug pnpm:removal": "D:\\module\\node_modules\\universalify",
+  "544 debug pnpm:removal": "D:\\module\\node_modules\\update-browserslist-db",
+  "545 debug pnpm:removal": "D:\\module\\node_modules\\util-deprecate",
+  "546 debug pnpm:removal": "D:\\module\\node_modules\\vite-plugin-vue2",
+  "547 debug pnpm:removal": "D:\\module\\node_modules\\vue-template-babel-compiler",
+  "548 debug pnpm:removal": "D:\\module\\node_modules\\vue-template-es2015-compiler",
+  "549 debug pnpm:removal": "D:\\module\\node_modules\\yallist",
+  "550 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\browserslist",
+  "551 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\cssesc",
+  "552 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\jsesc",
+  "553 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\json5",
+  "554 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\prettier",
+  "555 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\semver",
+  "556 debug pnpm:removal": "D:\\module\\node_modules\\.bin\\browserslist-lint",
+  "557 debug pnpm:stage": {
+    "prefix": "D:\\module",
+    "stage": "importing_started"
+  },
+  "558 debug pnpm:stats": {
+    "added": 0,
+    "prefix": "D:\\module"
+  },
+  "559 debug pnpm:stage": {
+    "prefix": "D:\\module",
+    "stage": "importing_done"
+  },
+  "560 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vitepress@1.0.0-alpha.4\\node_modules\\vitepress",
+    "link": "D:\\module\\docs\\node_modules\\vitepress"
+  },
+  "561 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vue@3.2.37\\node_modules\\vue",
+    "link": "D:\\module\\docs\\node_modules\\vue"
+  },
+  "562 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\element-plus@2.2.11_vue@3.2.37\\node_modules\\element-plus",
+    "link": "D:\\module\\docs\\node_modules\\element-plus"
+  },
+  "563 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vueuse+core@8.9.4_vue@3.2.37\\node_modules\\@vueuse\\core",
+    "link": "D:\\module\\packages\\VueComponent\\node_modules\\@vueuse\\core"
+  },
+  "564 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vue-demi@0.13.6_vue@3.2.37\\node_modules\\vue-demi",
+    "link": "D:\\module\\packages\\VueComponent\\node_modules\\vue-demi"
+  },
+  "565 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\element-plus@2.2.10_vue@3.2.37\\node_modules\\element-plus",
+    "link": "D:\\module\\packages\\VueComponent\\node_modules\\element-plus"
+  },
+  "566 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vite@3.0.3\\node_modules\\vite",
+    "link": "D:\\module\\packages\\VueComponent\\node_modules\\vite"
+  },
+  "567 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vue@3.2.37\\node_modules\\vue",
+    "link": "D:\\module\\packages\\VueComponent\\node_modules\\vue"
+  },
+  "568 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vitejs+plugin-vue@3.0.1_vite@3.0.3+vue@3.2.37\\node_modules\\@vitejs\\plugin-vue",
+    "link": "D:\\module\\packages\\VueComponent\\node_modules\\@vitejs\\plugin-vue"
+  },
+  "569 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\lodash@4.17.21\\node_modules\\lodash",
+    "link": "D:\\module\\node_modules\\lodash"
+  },
+  "570 debug pnpm": "No entry for \"/fsevents/2.3.2\" in pnpm-lock.yaml",
+  "571 debug pnpm": "No entry for \"/esbuild-android-64/0.14.50\" in pnpm-lock.yaml",
+  "572 debug pnpm": "No entry for \"/esbuild-android-arm64/0.14.50\" in pnpm-lock.yaml",
+  "573 debug pnpm": "No entry for \"/esbuild-darwin-64/0.14.50\" in pnpm-lock.yaml",
+  "574 debug pnpm": "No entry for \"/esbuild-darwin-arm64/0.14.50\" in pnpm-lock.yaml",
+  "575 debug pnpm": "No entry for \"/esbuild-freebsd-64/0.14.50\" in pnpm-lock.yaml",
+  "576 debug pnpm": "No entry for \"/esbuild-freebsd-arm64/0.14.50\" in pnpm-lock.yaml",
+  "577 debug pnpm": "No entry for \"/esbuild-linux-32/0.14.50\" in pnpm-lock.yaml",
+  "578 debug pnpm": "No entry for \"/esbuild-linux-64/0.14.50\" in pnpm-lock.yaml",
+  "579 debug pnpm": "No entry for \"/esbuild-linux-arm/0.14.50\" in pnpm-lock.yaml",
+  "580 debug pnpm": "No entry for \"/esbuild-linux-arm64/0.14.50\" in pnpm-lock.yaml",
+  "581 debug pnpm": "No entry for \"/esbuild-linux-mips64le/0.14.50\" in pnpm-lock.yaml",
+  "582 debug pnpm": "No entry for \"/esbuild-linux-ppc64le/0.14.50\" in pnpm-lock.yaml",
+  "583 debug pnpm": "No entry for \"/esbuild-linux-riscv64/0.14.50\" in pnpm-lock.yaml",
+  "584 debug pnpm": "No entry for \"/esbuild-linux-s390x/0.14.50\" in pnpm-lock.yaml",
+  "585 debug pnpm": "No entry for \"/esbuild-netbsd-64/0.14.50\" in pnpm-lock.yaml",
+  "586 debug pnpm": "No entry for \"/esbuild-openbsd-64/0.14.50\" in pnpm-lock.yaml",
+  "587 debug pnpm": "No entry for \"/esbuild-sunos-64/0.14.50\" in pnpm-lock.yaml",
+  "588 debug pnpm": "No entry for \"/esbuild-windows-32/0.14.50\" in pnpm-lock.yaml",
+  "589 debug pnpm": "No entry for \"/esbuild-windows-arm64/0.14.50\" in pnpm-lock.yaml",
+  "590 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vitepress@1.0.0-alpha.4\\node_modules\\vitepress",
+    "link": "D:\\module\\node_modules\\vitepress"
+  },
+  "591 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vue@3.2.37\\node_modules\\vue",
+    "link": "D:\\module\\node_modules\\vue"
+  },
+  "592 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\element-plus@2.2.11_vue@3.2.37\\node_modules\\element-plus",
+    "link": "D:\\module\\node_modules\\element-plus"
+  },
+  "593 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\typescript@4.7.4\\node_modules\\typescript",
+    "link": "D:\\module\\node_modules\\typescript"
+  },
+  "594 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vueuse+core@8.9.4_vue@3.2.37\\node_modules\\@vueuse\\core",
+    "link": "D:\\module\\node_modules\\@vueuse\\core"
+  },
+  "595 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vue-demi@0.13.6_vue@3.2.37\\node_modules\\vue-demi",
+    "link": "D:\\module\\node_modules\\vue-demi"
+  },
+  "596 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vite@3.0.3\\node_modules\\vite",
+    "link": "D:\\module\\node_modules\\vite"
+  },
+  "597 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vitejs+plugin-vue@3.0.1_vite@3.0.3+vue@3.2.37\\node_modules\\@vitejs\\plugin-vue",
+    "link": "D:\\module\\node_modules\\@vitejs\\plugin-vue"
+  },
+  "598 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@types+web-bluetooth@0.0.14\\node_modules\\@types\\web-bluetooth",
+    "link": "D:\\module\\node_modules\\@types\\web-bluetooth"
+  },
+  "599 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vueuse+metadata@8.9.4\\node_modules\\@vueuse\\metadata",
+    "link": "D:\\module\\node_modules\\@vueuse\\metadata"
+  },
+  "600 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vueuse+shared@8.9.4_vue@3.2.37\\node_modules\\@vueuse\\shared",
+    "link": "D:\\module\\node_modules\\@vueuse\\shared"
+  },
+  "601 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@ctrl+tinycolor@3.4.1\\node_modules\\@ctrl\\tinycolor",
+    "link": "D:\\module\\node_modules\\@ctrl\\tinycolor"
+  },
+  "602 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@element-plus+icons-vue@2.0.6_vue@3.2.37\\node_modules\\@element-plus\\icons-vue",
+    "link": "D:\\module\\node_modules\\@element-plus\\icons-vue"
+  },
+  "603 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@floating-ui+dom@0.5.4\\node_modules\\@floating-ui\\dom",
+    "link": "D:\\module\\node_modules\\@floating-ui\\dom"
+  },
+  "604 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@sxzz+popperjs-es@2.11.7\\node_modules\\@sxzz\\popperjs-es",
+    "link": "D:\\module\\node_modules\\@popperjs\\core"
+  },
+  "605 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@types+lodash@4.14.182\\node_modules\\@types\\lodash",
+    "link": "D:\\module\\node_modules\\@types\\lodash"
+  },
+  "606 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@types+lodash-es@4.17.6\\node_modules\\@types\\lodash-es",
+    "link": "D:\\module\\node_modules\\@types\\lodash-es"
+  },
+  "607 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\async-validator@4.2.5\\node_modules\\async-validator",
+    "link": "D:\\module\\node_modules\\async-validator"
+  },
+  "608 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\dayjs@1.11.4\\node_modules\\dayjs",
+    "link": "D:\\module\\node_modules\\dayjs"
+  },
+  "609 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\escape-html@1.0.3\\node_modules\\escape-html",
+    "link": "D:\\module\\node_modules\\escape-html"
+  },
+  "610 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\lodash-es@4.17.21\\node_modules\\lodash-es",
+    "link": "D:\\module\\node_modules\\lodash-es"
+  },
+  "611 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\lodash-unified@1.0.2_3ib2ivapxullxkx3xftsimdk7u\\node_modules\\lodash-unified",
+    "link": "D:\\module\\node_modules\\lodash-unified"
+  },
+  "612 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\memoize-one@6.0.0\\node_modules\\memoize-one",
+    "link": "D:\\module\\node_modules\\memoize-one"
+  },
+  "613 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\normalize-wheel-es@1.2.0\\node_modules\\normalize-wheel-es",
+    "link": "D:\\module\\node_modules\\normalize-wheel-es"
+  },
+  "614 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\esbuild@0.14.50\\node_modules\\esbuild",
+    "link": "D:\\module\\node_modules\\esbuild"
+  },
+  "615 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\postcss@8.4.14\\node_modules\\postcss",
+    "link": "D:\\module\\node_modules\\postcss"
+  },
+  "616 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\resolve@1.22.1\\node_modules\\resolve",
+    "link": "D:\\module\\node_modules\\resolve"
+  },
+  "617 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\rollup@2.77.1\\node_modules\\rollup",
+    "link": "D:\\module\\node_modules\\rollup"
+  },
+  "618 debug pnpm:hoist": {
+    "hoistFailedFor": "/fsevents/2.3.2"
+  },
+  "619 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@docsearch+css@3.1.1\\node_modules\\@docsearch\\css",
+    "link": "D:\\module\\node_modules\\@docsearch\\css"
+  },
+  "620 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@docsearch+js@3.1.1\\node_modules\\@docsearch\\js",
+    "link": "D:\\module\\node_modules\\@docsearch\\js"
+  },
+  "621 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+devtools-api@6.2.1\\node_modules\\@vue\\devtools-api",
+    "link": "D:\\module\\node_modules\\@vue\\devtools-api"
+  },
+  "622 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\body-scroll-lock@4.0.0-beta.0\\node_modules\\body-scroll-lock",
+    "link": "D:\\module\\node_modules\\body-scroll-lock"
+  },
+  "623 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\shiki@0.10.1\\node_modules\\shiki",
+    "link": "D:\\module\\node_modules\\shiki"
+  },
+  "624 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+compiler-dom@3.2.37\\node_modules\\@vue\\compiler-dom",
+    "link": "D:\\module\\node_modules\\@vue\\compiler-dom"
+  },
+  "625 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+compiler-sfc@3.2.37\\node_modules\\@vue\\compiler-sfc",
+    "link": "D:\\module\\node_modules\\@vue\\compiler-sfc"
+  },
+  "626 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+runtime-dom@3.2.37\\node_modules\\@vue\\runtime-dom",
+    "link": "D:\\module\\node_modules\\@vue\\runtime-dom"
+  },
+  "627 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+server-renderer@3.2.37_vue@3.2.37\\node_modules\\@vue\\server-renderer",
+    "link": "D:\\module\\node_modules\\@vue\\server-renderer"
+  },
+  "628 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+shared@3.2.37\\node_modules\\@vue\\shared",
+    "link": "D:\\module\\node_modules\\@vue\\shared"
+  },
+  "629 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@docsearch+react@3.1.1\\node_modules\\@docsearch\\react",
+    "link": "D:\\module\\node_modules\\@docsearch\\react"
+  },
+  "630 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\preact@10.10.0\\node_modules\\preact",
+    "link": "D:\\module\\node_modules\\preact"
+  },
+  "631 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@floating-ui+core@0.7.3\\node_modules\\@floating-ui\\core",
+    "link": "D:\\module\\node_modules\\@floating-ui\\core"
+  },
+  "632 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+compiler-core@3.2.37\\node_modules\\@vue\\compiler-core",
+    "link": "D:\\module\\node_modules\\@vue\\compiler-core"
+  },
+  "633 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@babel+parser@7.18.9\\node_modules\\@babel\\parser",
+    "link": "D:\\module\\node_modules\\@babel\\parser"
+  },
+  "634 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+compiler-ssr@3.2.37\\node_modules\\@vue\\compiler-ssr",
+    "link": "D:\\module\\node_modules\\@vue\\compiler-ssr"
+  },
+  "635 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+reactivity-transform@3.2.37\\node_modules\\@vue\\reactivity-transform",
+    "link": "D:\\module\\node_modules\\@vue\\reactivity-transform"
+  },
+  "636 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\estree-walker@2.0.2\\node_modules\\estree-walker",
+    "link": "D:\\module\\node_modules\\estree-walker"
+  },
+  "637 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\magic-string@0.25.9\\node_modules\\magic-string",
+    "link": "D:\\module\\node_modules\\magic-string"
+  },
+  "638 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\source-map@0.6.1\\node_modules\\source-map",
+    "link": "D:\\module\\node_modules\\source-map"
+  },
+  "639 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+runtime-core@3.2.37\\node_modules\\@vue\\runtime-core",
+    "link": "D:\\module\\node_modules\\@vue\\runtime-core"
+  },
+  "640 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\csstype@2.6.20\\node_modules\\csstype",
+    "link": "D:\\module\\node_modules\\csstype"
+  },
+  "641 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-android-64/0.14.50"
+  },
+  "642 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-android-arm64/0.14.50"
+  },
+  "643 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-darwin-64/0.14.50"
+  },
+  "644 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-darwin-arm64/0.14.50"
+  },
+  "645 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-freebsd-64/0.14.50"
+  },
+  "646 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-freebsd-arm64/0.14.50"
+  },
+  "647 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-32/0.14.50"
+  },
+  "648 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-64/0.14.50"
+  },
+  "649 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-arm/0.14.50"
+  },
+  "650 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-arm64/0.14.50"
+  },
+  "651 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-mips64le/0.14.50"
+  },
+  "652 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-ppc64le/0.14.50"
+  },
+  "653 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-riscv64/0.14.50"
+  },
+  "654 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-linux-s390x/0.14.50"
+  },
+  "655 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-netbsd-64/0.14.50"
+  },
+  "656 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-openbsd-64/0.14.50"
+  },
+  "657 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-sunos-64/0.14.50"
+  },
+  "658 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-windows-32/0.14.50"
+  },
+  "659 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\esbuild-windows-64@0.14.50\\node_modules\\esbuild-windows-64",
+    "link": "D:\\module\\node_modules\\esbuild-windows-64"
+  },
+  "660 debug pnpm:hoist": {
+    "hoistFailedFor": "/esbuild-windows-arm64/0.14.50"
+  },
+  "661 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\nanoid@3.3.4\\node_modules\\nanoid",
+    "link": "D:\\module\\node_modules\\nanoid"
+  },
+  "662 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\picocolors@1.0.0\\node_modules\\picocolors",
+    "link": "D:\\module\\node_modules\\picocolors"
+  },
+  "663 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\source-map-js@1.0.2\\node_modules\\source-map-js",
+    "link": "D:\\module\\node_modules\\source-map-js"
+  },
+  "664 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\is-core-module@2.9.0\\node_modules\\is-core-module",
+    "link": "D:\\module\\node_modules\\is-core-module"
+  },
+  "665 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\path-parse@1.0.7\\node_modules\\path-parse",
+    "link": "D:\\module\\node_modules\\path-parse"
+  },
+  "666 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\supports-preserve-symlinks-flag@1.0.0\\node_modules\\supports-preserve-symlinks-flag",
+    "link": "D:\\module\\node_modules\\supports-preserve-symlinks-flag"
+  },
+  "667 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\jsonc-parser@3.1.0\\node_modules\\jsonc-parser",
+    "link": "D:\\module\\node_modules\\jsonc-parser"
+  },
+  "668 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vscode-oniguruma@1.6.2\\node_modules\\vscode-oniguruma",
+    "link": "D:\\module\\node_modules\\vscode-oniguruma"
+  },
+  "669 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\vscode-textmate@5.2.0\\node_modules\\vscode-textmate",
+    "link": "D:\\module\\node_modules\\vscode-textmate"
+  },
+  "670 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@babel+types@7.18.9\\node_modules\\@babel\\types",
+    "link": "D:\\module\\node_modules\\@babel\\types"
+  },
+  "671 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+autocomplete-core@1.7.1\\node_modules\\@algolia\\autocomplete-core",
+    "link": "D:\\module\\node_modules\\@algolia\\autocomplete-core"
+  },
+  "672 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+autocomplete-preset-algolia@1.7.1_algoliasearch@4.14.1\\node_modules\\@algolia\\autocomplete-preset-algolia",
+    "link": "D:\\module\\node_modules\\@algolia\\autocomplete-preset-algolia"
+  },
+  "673 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\algoliasearch@4.14.1\\node_modules\\algoliasearch",
+    "link": "D:\\module\\node_modules\\algoliasearch"
+  },
+  "674 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@vue+reactivity@3.2.37\\node_modules\\@vue\\reactivity",
+    "link": "D:\\module\\node_modules\\@vue\\reactivity"
+  },
+  "675 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\has@1.0.3\\node_modules\\has",
+    "link": "D:\\module\\node_modules\\has"
+  },
+  "676 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\sourcemap-codec@1.4.8\\node_modules\\sourcemap-codec",
+    "link": "D:\\module\\node_modules\\sourcemap-codec"
+  },
+  "677 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+autocomplete-shared@1.7.1\\node_modules\\@algolia\\autocomplete-shared",
+    "link": "D:\\module\\node_modules\\@algolia\\autocomplete-shared"
+  },
+  "678 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@babel+helper-validator-identifier@7.18.6\\node_modules\\@babel\\helper-validator-identifier",
+    "link": "D:\\module\\node_modules\\@babel\\helper-validator-identifier"
+  },
+  "679 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\to-fast-properties@2.0.0\\node_modules\\to-fast-properties",
+    "link": "D:\\module\\node_modules\\to-fast-properties"
+  },
+  "680 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+cache-browser-local-storage@4.14.1\\node_modules\\@algolia\\cache-browser-local-storage",
+    "link": "D:\\module\\node_modules\\@algolia\\cache-browser-local-storage"
+  },
+  "681 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+cache-common@4.14.1\\node_modules\\@algolia\\cache-common",
+    "link": "D:\\module\\node_modules\\@algolia\\cache-common"
+  },
+  "682 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+cache-in-memory@4.14.1\\node_modules\\@algolia\\cache-in-memory",
+    "link": "D:\\module\\node_modules\\@algolia\\cache-in-memory"
+  },
+  "683 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+client-account@4.14.1\\node_modules\\@algolia\\client-account",
+    "link": "D:\\module\\node_modules\\@algolia\\client-account"
+  },
+  "684 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+client-analytics@4.14.1\\node_modules\\@algolia\\client-analytics",
+    "link": "D:\\module\\node_modules\\@algolia\\client-analytics"
+  },
+  "685 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+client-common@4.14.1\\node_modules\\@algolia\\client-common",
+    "link": "D:\\module\\node_modules\\@algolia\\client-common"
+  },
+  "686 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+client-personalization@4.14.1\\node_modules\\@algolia\\client-personalization",
+    "link": "D:\\module\\node_modules\\@algolia\\client-personalization"
+  },
+  "687 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+client-search@4.14.1\\node_modules\\@algolia\\client-search",
+    "link": "D:\\module\\node_modules\\@algolia\\client-search"
+  },
+  "688 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+logger-common@4.14.1\\node_modules\\@algolia\\logger-common",
+    "link": "D:\\module\\node_modules\\@algolia\\logger-common"
+  },
+  "689 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+logger-console@4.14.1\\node_modules\\@algolia\\logger-console",
+    "link": "D:\\module\\node_modules\\@algolia\\logger-console"
+  },
+  "690 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+requester-browser-xhr@4.14.1\\node_modules\\@algolia\\requester-browser-xhr",
+    "link": "D:\\module\\node_modules\\@algolia\\requester-browser-xhr"
+  },
+  "691 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+requester-common@4.14.1\\node_modules\\@algolia\\requester-common",
+    "link": "D:\\module\\node_modules\\@algolia\\requester-common"
+  },
+  "692 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+requester-node-http@4.14.1\\node_modules\\@algolia\\requester-node-http",
+    "link": "D:\\module\\node_modules\\@algolia\\requester-node-http"
+  },
+  "693 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\@algolia+transporter@4.14.1\\node_modules\\@algolia\\transporter",
+    "link": "D:\\module\\node_modules\\@algolia\\transporter"
+  },
+  "694 debug pnpm:link": {
+    "target": "D:\\module\\node_modules\\.pnpm\\function-bind@1.1.1\\node_modules\\function-bind",
+    "link": "D:\\module\\node_modules\\function-bind"
+  },
+  "695 debug pnpm:lockfile": {
+    "message": "`pnpm-lock.yaml` differs from `node_modules\\.pnpm\\lock.yaml`",
+    "prefix": "D:\\module"
+  },
+  "696 debug pnpm:summary": {
+    "prefix": "D:\\module"
+  }
+}

@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-const vueDemi = require("vue-demi");
+import { getCurrentInstance, isVue2, ref, watch, computed } from "vue-demi";
 var _a;
 const isClient = typeof window !== "undefined";
 const isDef = (val) => typeof val !== "undefined";
@@ -29,11 +27,11 @@ function useVModel(props2, key, emit2, options = {}) {
     deep = false,
     defaultValue
   } = options;
-  const vm = vueDemi.getCurrentInstance();
+  const vm = getCurrentInstance();
   const _emit = emit2 || (vm == null ? void 0 : vm.emit) || ((_a2 = vm == null ? void 0 : vm.$emit) == null ? void 0 : _a2.bind(vm)) || ((_c = (_b = vm == null ? void 0 : vm.proxy) == null ? void 0 : _b.$emit) == null ? void 0 : _c.bind(vm == null ? void 0 : vm.proxy));
   let event = eventName;
   if (!key) {
-    if (vueDemi.isVue2) {
+    if (isVue2) {
       const modelOptions = (_e = (_d = vm == null ? void 0 : vm.proxy) == null ? void 0 : _d.$options) == null ? void 0 : _e.model;
       key = (modelOptions == null ? void 0 : modelOptions.value) || "value";
       if (!eventName)
@@ -45,9 +43,9 @@ function useVModel(props2, key, emit2, options = {}) {
   event = eventName || event || `update:${key.toString()}`;
   const getValue = () => isDef(props2[key]) ? props2[key] : defaultValue;
   if (passive) {
-    const proxy = vueDemi.ref(getValue());
-    vueDemi.watch(() => props2[key], (v) => proxy.value = v);
-    vueDemi.watch(proxy, (v) => {
+    const proxy = ref(getValue());
+    watch(() => props2[key], (v) => proxy.value = v);
+    watch(proxy, (v) => {
       if (v !== props2[key] || deep)
         _emit(event, v);
     }, {
@@ -55,7 +53,7 @@ function useVModel(props2, key, emit2, options = {}) {
     });
     return proxy;
   } else {
-    return vueDemi.computed({
+    return computed({
       get() {
         return getValue();
       },
@@ -81,7 +79,7 @@ var lodash = { exports: {} };
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
-(function(module2, exports2) {
+(function(module, exports) {
   (function() {
     var undefined$1;
     var VERSION = "4.17.21";
@@ -407,8 +405,8 @@ var lodash = { exports: {} };
     var freeGlobal = typeof commonjsGlobal == "object" && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
     var freeSelf = typeof self == "object" && self && self.Object === Object && self;
     var root = freeGlobal || freeSelf || Function("return this")();
-    var freeExports = exports2 && !exports2.nodeType && exports2;
-    var freeModule = freeExports && true && module2 && !module2.nodeType && module2;
+    var freeExports = exports && !exports.nodeType && exports;
+    var freeModule = freeExports && true && module && !module.nodeType && module;
     var moduleExports = freeModule && freeModule.exports === freeExports;
     var freeProcess = moduleExports && freeGlobal.process;
     var nodeUtil = function() {
@@ -784,7 +782,7 @@ var lodash = { exports: {} };
       var reIsNative = RegExp2(
         "^" + funcToString.call(hasOwnProperty).replace(reRegExpChar, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
       );
-      var Buffer = moduleExports ? context.Buffer : undefined$1, Symbol2 = context.Symbol, Uint8Array = context.Uint8Array, allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined$1, getPrototype = overArg(Object2.getPrototypeOf, Object2), objectCreate = Object2.create, propertyIsEnumerable = objectProto.propertyIsEnumerable, splice = arrayProto.splice, spreadableSymbol = Symbol2 ? Symbol2.isConcatSpreadable : undefined$1, symIterator = Symbol2 ? Symbol2.iterator : undefined$1, symToStringTag = Symbol2 ? Symbol2.toStringTag : undefined$1;
+      var Buffer = moduleExports ? context.Buffer : undefined$1, Symbol = context.Symbol, Uint8Array = context.Uint8Array, allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined$1, getPrototype = overArg(Object2.getPrototypeOf, Object2), objectCreate = Object2.create, propertyIsEnumerable = objectProto.propertyIsEnumerable, splice = arrayProto.splice, spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined$1, symIterator = Symbol ? Symbol.iterator : undefined$1, symToStringTag = Symbol ? Symbol.toStringTag : undefined$1;
       var defineProperty = function() {
         try {
           var func = getNative(Object2, "defineProperty");
@@ -799,7 +797,7 @@ var lodash = { exports: {} };
       var metaMap = WeakMap && new WeakMap();
       var realNames = {};
       var dataViewCtorString = toSource(DataView), mapCtorString = toSource(Map), promiseCtorString = toSource(Promise2), setCtorString = toSource(Set), weakMapCtorString = toSource(WeakMap);
-      var symbolProto = Symbol2 ? Symbol2.prototype : undefined$1, symbolValueOf = symbolProto ? symbolProto.valueOf : undefined$1, symbolToString = symbolProto ? symbolProto.toString : undefined$1;
+      var symbolProto = Symbol ? Symbol.prototype : undefined$1, symbolValueOf = symbolProto ? symbolProto.valueOf : undefined$1, symbolToString = symbolProto ? symbolProto.toString : undefined$1;
       function lodash2(value) {
         if (isObjectLike(value) && !isArray(value) && !(value instanceof LazyWrapper)) {
           if (value instanceof LodashWrapper) {
@@ -890,10 +888,10 @@ var lodash = { exports: {} };
             index += dir;
             var iterIndex = -1, value = array[index];
             while (++iterIndex < iterLength) {
-              var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed = iteratee2(value);
+              var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed2 = iteratee2(value);
               if (type == LAZY_MAP_FLAG) {
-                value = computed;
-              } else if (!computed) {
+                value = computed2;
+              } else if (!computed2) {
                 if (type == LAZY_FILTER_FLAG) {
                   continue outer;
                 } else {
@@ -1275,17 +1273,17 @@ var lodash = { exports: {} };
         }
         outer:
           while (++index < length) {
-            var value = array[index], computed = iteratee2 == null ? value : iteratee2(value);
+            var value = array[index], computed2 = iteratee2 == null ? value : iteratee2(value);
             value = comparator || value !== 0 ? value : 0;
-            if (isCommon && computed === computed) {
+            if (isCommon && computed2 === computed2) {
               var valuesIndex = valuesLength;
               while (valuesIndex--) {
-                if (values2[valuesIndex] === computed) {
+                if (values2[valuesIndex] === computed2) {
                   continue outer;
                 }
               }
               result2.push(value);
-            } else if (!includes2(values2, computed, comparator)) {
+            } else if (!includes2(values2, computed2, comparator)) {
               result2.push(value);
             }
           }
@@ -1305,8 +1303,8 @@ var lodash = { exports: {} };
         var index = -1, length = array.length;
         while (++index < length) {
           var value = array[index], current = iteratee2(value);
-          if (current != null && (computed === undefined$1 ? current === current && !isSymbol(current) : comparator(current, computed))) {
-            var computed = current, result2 = value;
+          if (current != null && (computed2 === undefined$1 ? current === current && !isSymbol(current) : comparator(current, computed2))) {
+            var computed2 = current, result2 = value;
           }
         }
         return result2;
@@ -1411,18 +1409,18 @@ var lodash = { exports: {} };
         var index = -1, seen = caches[0];
         outer:
           while (++index < length && result2.length < maxLength) {
-            var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
+            var value = array[index], computed2 = iteratee2 ? iteratee2(value) : value;
             value = comparator || value !== 0 ? value : 0;
-            if (!(seen ? cacheHas(seen, computed) : includes2(result2, computed, comparator))) {
+            if (!(seen ? cacheHas(seen, computed2) : includes2(result2, computed2, comparator))) {
               othIndex = othLength;
               while (--othIndex) {
                 var cache = caches[othIndex];
-                if (!(cache ? cacheHas(cache, computed) : includes2(arrays[othIndex], computed, comparator))) {
+                if (!(cache ? cacheHas(cache, computed2) : includes2(arrays[othIndex], computed2, comparator))) {
                   continue outer;
                 }
               }
               if (seen) {
-                seen.push(computed);
+                seen.push(computed2);
               }
               result2.push(value);
             }
@@ -1725,8 +1723,8 @@ var lodash = { exports: {} };
           seen = arrayMap(array, baseUnary(iteratee2));
         }
         while (++index < length) {
-          var fromIndex = 0, value = values2[index], computed = iteratee2 ? iteratee2(value) : value;
-          while ((fromIndex = indexOf2(seen, computed, fromIndex, comparator)) > -1) {
+          var fromIndex = 0, value = values2[index], computed2 = iteratee2 ? iteratee2(value) : value;
+          while ((fromIndex = indexOf2(seen, computed2, fromIndex, comparator)) > -1) {
             if (seen !== array) {
               splice.call(seen, fromIndex, 1);
             }
@@ -1854,8 +1852,8 @@ var lodash = { exports: {} };
         var low = 0, high = array == null ? low : array.length;
         if (typeof value == "number" && value === value && high <= HALF_MAX_ARRAY_LENGTH) {
           while (low < high) {
-            var mid = low + high >>> 1, computed = array[mid];
-            if (computed !== null && !isSymbol(computed) && (retHighest ? computed <= value : computed < value)) {
+            var mid = low + high >>> 1, computed2 = array[mid];
+            if (computed2 !== null && !isSymbol(computed2) && (retHighest ? computed2 <= value : computed2 < value)) {
               low = mid + 1;
             } else {
               high = mid;
@@ -1873,7 +1871,7 @@ var lodash = { exports: {} };
         value = iteratee2(value);
         var valIsNaN = value !== value, valIsNull = value === null, valIsSymbol = isSymbol(value), valIsUndefined = value === undefined$1;
         while (low < high) {
-          var mid = nativeFloor((low + high) / 2), computed = iteratee2(array[mid]), othIsDefined = computed !== undefined$1, othIsNull = computed === null, othIsReflexive = computed === computed, othIsSymbol = isSymbol(computed);
+          var mid = nativeFloor((low + high) / 2), computed2 = iteratee2(array[mid]), othIsDefined = computed2 !== undefined$1, othIsNull = computed2 === null, othIsReflexive = computed2 === computed2, othIsSymbol = isSymbol(computed2);
           if (valIsNaN) {
             var setLow = retHighest || othIsReflexive;
           } else if (valIsUndefined) {
@@ -1885,7 +1883,7 @@ var lodash = { exports: {} };
           } else if (othIsNull || othIsSymbol) {
             setLow = false;
           } else {
-            setLow = retHighest ? computed <= value : computed < value;
+            setLow = retHighest ? computed2 <= value : computed2 < value;
           }
           if (setLow) {
             low = mid + 1;
@@ -1898,9 +1896,9 @@ var lodash = { exports: {} };
       function baseSortedUniq(array, iteratee2) {
         var index = -1, length = array.length, resIndex = 0, result2 = [];
         while (++index < length) {
-          var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
-          if (!index || !eq(computed, seen)) {
-            var seen = computed;
+          var value = array[index], computed2 = iteratee2 ? iteratee2(value) : value;
+          if (!index || !eq(computed2, seen)) {
+            var seen = computed2;
             result2[resIndex++] = value === 0 ? 0 : value;
           }
         }
@@ -1946,22 +1944,22 @@ var lodash = { exports: {} };
         }
         outer:
           while (++index < length) {
-            var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
+            var value = array[index], computed2 = iteratee2 ? iteratee2(value) : value;
             value = comparator || value !== 0 ? value : 0;
-            if (isCommon && computed === computed) {
+            if (isCommon && computed2 === computed2) {
               var seenIndex = seen.length;
               while (seenIndex--) {
-                if (seen[seenIndex] === computed) {
+                if (seen[seenIndex] === computed2) {
                   continue outer;
                 }
               }
               if (iteratee2) {
-                seen.push(computed);
+                seen.push(computed2);
               }
               result2.push(value);
-            } else if (!includes2(seen, computed, comparator)) {
+            } else if (!includes2(seen, computed2, comparator)) {
               if (seen !== result2) {
-                seen.push(computed);
+                seen.push(computed2);
               }
               result2.push(value);
             }
@@ -5619,19 +5617,19 @@ function normalizeComponent(scriptExports, render2, staticRenderFns2, functional
     options
   };
 }
-const props = vueDemi.defineProps({
+const props = defineProps({
   buttonName: { type: String, default: "\u521B\u5EFA" },
   content: { type: Array, default: [] },
   checkHandle: Function
 });
-const emit = vueDemi.defineEmits(["update:content"]);
+const emit = defineEmits(["update:content"]);
 useVModels(props, emit);
-vueDemi.ref();
-const dialogVisible = vueDemi.ref(false);
+ref();
+const dialogVisible = ref(false);
 function closeDialog() {
   dialogVisible.value = false;
 }
-vueDemi.defineExpose({ dialogVisible, closeDialog });
+defineExpose({ dialogVisible, closeDialog });
 const __vue2_script = {};
 const __cssModules = {};
 var __component__ = /* @__PURE__ */ normalizeComponent(
@@ -5652,4 +5650,6 @@ function __vue2_injectStyles(context) {
 const DialogInstance = /* @__PURE__ */ function() {
   return __component__.exports;
 }();
-exports.DialogInstance = DialogInstance;
+export {
+  DialogInstance
+};
