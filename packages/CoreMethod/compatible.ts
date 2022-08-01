@@ -11,10 +11,10 @@ export function CompatibleWithDefaultConfig(defaultConfig: CompatibleWithDefault
       if (Array.isArray(listData)) {
         listData.forEach(item => {
           const cloneItem = cloneDeep(defaultConfig[key]);
-          item[key] = item[key] || cloneItem;
+          item[key] = item[key] ?? cloneItem;
         });
       } else {
-        listData[key] = listData[key] || cloneDeep(defaultConfig[key]);
+        listData[key] = listData[key] ?? cloneDeep(defaultConfig[key]);
       }
     }
   }

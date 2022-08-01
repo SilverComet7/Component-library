@@ -1,25 +1,25 @@
 <template>
-  <div id='app'>
-    <img alt='Vue logo' src='./assets/logo.png'>
-    <DialogInstance msg='Welcome to Your Vue.js App' />
-    <!--    <SketchRule msg='Welcome to Your Vue.js App' />-->
+  <div id="app">
+    <img alt="Vue logo" src="./assets/logo.png" />
+    <DialogInstance msg="Welcome to Your Vue.js App" />
   </div>
 </template>
 
 <script>
 // import { DialogInstance } from '../../../packages/VueComponent/lib/v2/index.mjs';
-import {
-  DialogInstance,
-}
-  from
-
-    '../../../../vue3-sketch-ruler/lib/v2/index.es';
+import { CompatibleWithDefaultConfig } from "../../../packages/CoreMethod/dist/index.js";
+import { DialogInstance } from "../../../../vue3-sketch-ruler/lib/v2/index.es";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     DialogInstance,
-    // SketchRule
+  },
+  mounted() {
+    CompatibleWithDefaultConfig({a:1},[])
+  },
+  methods: {
+
   },
 };
 </script>

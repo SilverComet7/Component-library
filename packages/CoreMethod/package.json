@@ -1,14 +1,12 @@
 {
   "name": "gmtool-method",
   "version": "1.0.0",
-  "description": "",
+  "description": "gmtool internal common method",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build"
   },
   "type": "module",
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "typescript": "^4.7.4"
@@ -16,6 +14,7 @@
   "devDependencies": {
     "vite": "latest",
     "@vueuse/core": "^8.9.4",
-    "vue-demi": "latest"
+    "vue-demi": "latest",
+    "lodash": "latest"
   }
 }

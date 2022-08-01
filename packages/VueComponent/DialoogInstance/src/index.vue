@@ -69,13 +69,4 @@ export default defineComponent({
   },
   expose: [],
 });
-
-// const props = defineProps({
-//   buttonName: { type: String, default: '创建' },
-//   content: { type: Array, default: [] },
-//   checkHandle: Function,
-// });
-// const emit = defineEmits(['update:content']);
-
-
 </script>

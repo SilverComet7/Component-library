@@ -14,6 +14,7 @@
     "vue-demi": "^0.13.1"
   },
   "devDependencies": {
+    "gmtool-method": "latest",
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
     "@vue/cli-plugin-babel": "~5.0.0",

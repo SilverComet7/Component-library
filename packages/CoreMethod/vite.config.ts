@@ -3,6 +3,10 @@ import { defineConfig } from 'vite'
 
 
 export default defineConfig({
+    esbuild: {
+        jsxFactory: 'h',
+        jsxFragment: 'Fragment'
+    },
     build: {
         lib: {
             entry: resolve(__dirname, 'index.ts'),
@@ -11,7 +15,7 @@ export default defineConfig({
             formats: ['es', 'cjs', 'umd']
         },
         rollupOptions: {
-            external: ['vue-demi'],
+            external: ['vue-demi',"lodash"],
             output: {
                 globals: {
                     vue: 'Vue'
