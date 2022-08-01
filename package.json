@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "description": "",
+  "description": "gmtool-packages",
   "scripts": {
     "build": "pnpm run build:elp && pnpm run build:elu && pnpm run build:shared",
     "build:elp": "pnpm run -C packages/element-plus build",
