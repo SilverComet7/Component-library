@@ -1,4 +1,4 @@
 
-export * from './compatible'
-export * from './format'
+export * from './utils/compatible'
+export * from './utils/format'
 
