@@ -1,19 +1,21 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
-    <DialogInstance msg="Welcome to Your Vue.js App" />
+    <DialogInstance />
+    <SketchRule />
   </div>
 </template>
 
 <script>
-// import { DialogInstance } from '../../../packages/VueComponent/lib/v2/index.mjs';
+// import { DialogInstance } from '../../../packages/VueComponent/lib/v2/index.mjs';    // 本地打包
 import { CompatibleWithDefaultConfig } from "../../../packages/CoreMethod/dist/index.js";
-import { DialogInstance } from "../../../../vue3-sketch-ruler/lib/v2/index.es";
+import { DialogInstance,SketchRule } from "../../../../vue3-sketch-ruler/lib/v2/index.es";  // 案例打包
 
 export default {
   name: "App",
   components: {
     DialogInstance,
+    SketchRule
   },
   mounted() {
     CompatibleWithDefaultConfig({a:1},[])

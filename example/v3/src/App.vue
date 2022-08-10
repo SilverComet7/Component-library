@@ -2,7 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from './components/HelloWorld.vue'
-import { DialogInstance } from "../../../../vue3-sketch-ruler/lib/v3/index.es";  // 案例打包
+import { DialogInstance } from "../../../../vue3-sketch-ruler/lib/v3/index.es.js";  // 案例打包
 </script>
 
 <template>

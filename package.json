@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "description": "gmtool-packages",
   "scripts": {
-    "build": "pnpm run build:elp && pnpm run build:elu && pnpm run build:shared",
+    "build": "pnpm run build:elp && pnpm run build:elu && pnpm run build:method",
     "build:elp": "pnpm run -C packages/element-plus build",
     "build:elu": "pnpm run -C packages/element-ui build",
     "build:method": "pnpm run -C packages/CoreMethod build"
@@ -17,8 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.21",
-    "@gmtool/vue-components": "workspace:*",
-    "@gmtool/method": "workspace:*"
+    "gmtool-vue-components": "workspace:*",
+    "gmtool-method": "workspace:*"
   },
   "devDependencies": {
     "vite": "latest"
