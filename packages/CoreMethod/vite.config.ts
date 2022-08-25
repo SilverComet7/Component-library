@@ -1,27 +1,33 @@
-import { resolve } from 'path'
-import { defineConfig } from 'vite'
-
+/// <reference types="vitest" />
+import { defineConfig } from "vite";
 
 export default defineConfig({
-    esbuild: {
-        jsxFactory: 'h',
-        jsxFragment: 'Fragment'
+  test: {
+    coverage: {
+      provider: "c8",
+      reporter: ["text", "json", "html"],
     },
-    build: {
-        lib: {
-            entry: resolve(__dirname, 'index.ts'),
-            name:'method',
-            fileName: 'index',
-            formats: ['es', 'cjs', 'umd']
+  },
+  esbuild: {
+    jsxFactory: "h",
+    jsxFragment: "Fragment",
+  },
+  build: {
+    outDir: "lib",
+    lib: {
+      entry: "./src/index.ts",
+      name: "method",
+      fileName: "index",
+      formats: ["es", "cjs", "umd"],
+    },
+    rollupOptions: {
+      external: ["vue-demi", "lodash"],
+      output: {
+        globals: {
+          vue: "Vue",
         },
-        rollupOptions: {
-            external: ['vue-demi',"lodash"],
-            output: {
-                globals: {
-                    vue: 'Vue'
-                },
-                exports: 'auto'
-            }
-        }
-    }
-})
+        exports: "auto",
+      },
+    },
+  },
+});
