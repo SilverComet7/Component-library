@@ -1,5 +1,5 @@
 (function(global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("vue-demi"), require("vue")) : typeof define === "function" && define.amd ? define(["exports", "vue-demi", "vue"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.DialogInstance = {}, global.vueDemi, global.Vue));
+  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("vue-demi"), require("vue")) : typeof define === "function" && define.amd ? define(["exports", "vue-demi", "vue"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.commonVueCmp = {}, global.vueDemi, global.Vue));
 })(this, function(exports2, vueDemi, vue) {
   "use strict";
   /*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */

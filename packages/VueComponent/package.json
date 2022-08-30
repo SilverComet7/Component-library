@@ -5,8 +5,8 @@
   "main": "lib/v3",
   "scripts": {
     "build": "npm run build3 && npm run build2",
-    "build2": "npx vue-demi-switch 2 && cd v2  && vite build",
-    "build3": "npx vue-demi-switch 3 && vite build --config vite.config.ts"
+    "build2": "npx vue-demi-switch 2 && vite build --config build/v2/vite.config.ts",
+    "build3": "npx vue-demi-switch 3 && vite build --config build/v3/vite.config.ts"
   },
   "type": "module",
   "keywords": [],

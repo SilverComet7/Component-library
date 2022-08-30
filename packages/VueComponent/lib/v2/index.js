@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-const vueDemi = require("vue-demi");
+import { defineComponent, ref, unref } from "vue-demi";
 /*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
 var current_ansi = 1252;
 var VALID_ANSI = [874, 932, 936, 949, 950, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1e4];
@@ -1877,8 +1875,8 @@ var CRC32 = /* @__PURE__ */ function() {
   return CRC322;
 }();
 var CFB = /* @__PURE__ */ function _CFB() {
-  var exports2 = {};
-  exports2.version = "1.2.1";
+  var exports = {};
+  exports.version = "1.2.1";
   function namecmp(l, r) {
     var L = l.split("/"), R = r.split("/");
     for (var i2 = 0, c = 0, Z = Math.min(L.length, R.length); i2 < Z; ++i2) {
@@ -3603,12 +3601,12 @@ var CFB = /* @__PURE__ */ function _CFB() {
   function cfb_gc(cfb) {
     rebuild_cfb(cfb, true);
   }
-  exports2.find = find;
-  exports2.read = read;
-  exports2.parse = parse;
-  exports2.write = write;
-  exports2.writeFile = write_file;
-  exports2.utils = {
+  exports.find = find;
+  exports.read = read;
+  exports.parse = parse;
+  exports.write = write;
+  exports.writeFile = write_file;
+  exports.utils = {
     cfb_new,
     cfb_add,
     cfb_del,
@@ -3623,7 +3621,7 @@ var CFB = /* @__PURE__ */ function _CFB() {
     _inflateRaw: _inflate,
     consts
   };
-  return exports2;
+  return exports;
 }();
 function read_binary(path) {
   if (typeof Deno !== "undefined")
@@ -6952,14 +6950,14 @@ function parse_NameCmt(blob, length, opts) {
   return [name, comment];
 }
 function parse_ShrFmla(blob, length, opts) {
-  var ref = parse_RefU(blob);
+  var ref2 = parse_RefU(blob);
   blob.l++;
   var cUse = blob.read_shift(1);
   length -= 8;
-  return [parse_SharedParsedFormula(blob, length, opts), cUse, ref];
+  return [parse_SharedParsedFormula(blob, length, opts), cUse, ref2];
 }
 function parse_Array(blob, length, opts) {
-  var ref = parse_Ref(blob);
+  var ref2 = parse_Ref(blob);
   switch (opts.biff) {
     case 2:
       blob.l++;
@@ -6974,7 +6972,7 @@ function parse_Array(blob, length, opts) {
       blob.l += 6;
       length -= 12;
   }
-  return [ref, parse_ArrayParsedFormula(blob, length, opts)];
+  return [ref2, parse_ArrayParsedFormula(blob, length, opts)];
 }
 function parse_MTRSettings(blob) {
   var fMTREnabled = blob.read_shift(4) !== 0;
@@ -7081,17 +7079,17 @@ function parse_TxO(blob, length, opts) {
   }
 }
 function parse_HLink(blob, length) {
-  var ref = parse_Ref8U(blob);
+  var ref2 = parse_Ref8U(blob);
   blob.l += 16;
   var hlink = parse_Hyperlink(blob, length - 24);
-  return [ref, hlink];
+  return [ref2, hlink];
 }
 function parse_HLinkTooltip(blob, length) {
   blob.read_shift(2);
-  var ref = parse_Ref8U(blob);
+  var ref2 = parse_Ref8U(blob);
   var wzTooltip = blob.read_shift((length - 10) / 2, "dbcs-cont");
   wzTooltip = wzTooltip.replace(chr0, "");
-  return [ref, wzTooltip];
+  return [ref2, wzTooltip];
 }
 function parse_Country(blob) {
   var o = [0, 0], d;
@@ -8868,8 +8866,8 @@ var WK_ = /* @__PURE__ */ function() {
       for (var C = range.s.c; C <= range.e.c; ++C) {
         if (R === range.s.r)
           cols[C] = encode_col(C);
-        var ref = cols[C] + rr;
-        var cell = dense ? (ws[R] || [])[C] : ws[ref];
+        var ref2 = cols[C] + rr;
+        var cell = dense ? (ws[R] || [])[C] : ws[ref2];
         if (!cell || cell.t == "z")
           continue;
         if (cell.t == "n") {
@@ -8911,8 +8909,8 @@ var WK_ = /* @__PURE__ */ function() {
         for (var C = range.s.c; C <= range.e.c; ++C) {
           if (R === range.s.r)
             cols[C] = encode_col(C);
-          var ref = cols[C] + rr;
-          var cell = dense ? (ws[R] || [])[C] : ws[ref];
+          var ref2 = cols[C] + rr;
+          var cell = dense ? (ws[R] || [])[C] : ws[ref2];
           if (!cell || cell.t == "z")
             continue;
           if (cell.t == "n") {
@@ -14443,9 +14441,9 @@ function parse_ws_xml(data, opts, idx, rels, wb, themes, styles) {
     parse_ws_xml_sheetpr2(sheetPr[0], sheetPr[1] || "", s, wb, idx);
   var ridx = (data1.match(/<(?:\w*:)?dimension/) || { index: -1 }).index;
   if (ridx > 0) {
-    var ref = data1.slice(ridx, ridx + 50).match(dimregex);
-    if (ref)
-      parse_ws_xml_dim(s, ref[1]);
+    var ref2 = data1.slice(ridx, ridx + 50).match(dimregex);
+    if (ref2)
+      parse_ws_xml_dim(s, ref2[1]);
   }
   var svs = data1.match(svsregex);
   if (svs && svs[1])
@@ -15074,7 +15072,7 @@ function parse_ws_bin(data, _opts, idx, rels, wb, themes, styles) {
   if (!rels)
     rels = { "!id": {} };
   var s = opts.dense ? [] : {};
-  var ref;
+  var ref2;
   var refguess = { s: { r: 2e6, c: 2e6 }, e: { r: 0, c: 0 } };
   var pass = false, end = false;
   var row, p, cf, R, C, addr, sstr, rr, cell;
@@ -15105,7 +15103,7 @@ function parse_ws_bin(data, _opts, idx, rels, wb, themes, styles) {
       return;
     switch (RT) {
       case 148:
-        ref = val;
+        ref2 = val;
         break;
       case 0:
         row = val;
@@ -15395,8 +15393,8 @@ function parse_ws_bin(data, _opts, idx, rels, wb, themes, styles) {
   }, opts);
   delete opts.supbooks;
   delete opts["!row"];
-  if (!s["!ref"] && (refguess.s.r < 2e6 || ref && (ref.e.r > 0 || ref.e.c > 0 || ref.s.r > 0 || ref.s.c > 0)))
-    s["!ref"] = encode_range(ref || refguess);
+  if (!s["!ref"] && (refguess.s.r < 2e6 || ref2 && (ref2.e.r > 0 || ref2.e.c > 0 || ref2.s.r > 0 || ref2.s.c > 0)))
+    s["!ref"] = encode_range(ref2 || refguess);
   if (opts.sheetRows && s["!ref"]) {
     var tmpref = safe_decode_range(s["!ref"]);
     if (opts.sheetRows <= +tmpref.e.r) {
@@ -21197,11 +21195,11 @@ function parse_TST_TableModelArchive(M, root, ws) {
   var _R = 0;
   tile[1].forEach(function(t) {
     var tl = parse_shallow(t.data);
-    var ref = M[parse_TSP_Reference(tl[2][0].data)][0];
-    var mtype = varint_to_i32(ref.meta[1][0].data);
+    var ref2 = M[parse_TSP_Reference(tl[2][0].data)][0];
+    var mtype = varint_to_i32(ref2.meta[1][0].data);
     if (mtype != 6002)
       throw new Error("6001 unexpected reference to ".concat(mtype));
-    var _tile = parse_TST_Tile(M, ref);
+    var _tile = parse_TST_Tile(M, ref2);
     _tile.data.forEach(function(row, R) {
       row.forEach(function(buf, C) {
         var addr = encode_cell({ r: _R + R, c: C });
@@ -22161,10 +22159,10 @@ function sheet_add_json(_ws, js, opts) {
       var v = JS[k];
       var t = "z";
       var z = "";
-      var ref = encode_cell({ c: _C + C, r: _R + R + offset });
-      cell = ws_get_cell_stub(ws, ref);
+      var ref2 = encode_cell({ c: _C + C, r: _R + R + offset });
+      cell = ws_get_cell_stub(ws, ref2);
       if (v && typeof v === "object" && !(v instanceof Date)) {
-        ws[ref] = v;
+        ws[ref2] = v;
       } else {
         if (typeof v == "number")
           t = "n";
@@ -22184,7 +22182,7 @@ function sheet_add_json(_ws, js, opts) {
           v = 0;
         }
         if (!cell)
-          ws[ref] = cell = { t, v };
+          ws[ref2] = cell = { t, v };
         else {
           cell.t = t;
           cell.v = v;
@@ -22359,7 +22357,7 @@ var utils = {
     SHEET_VERY_HIDDEN: 2
   }
 };
-const __vue2_script = vueDemi.defineComponent({
+const __vue2_script = defineComponent({
   name: "ImportExcel",
   props: {
     dateFormat: {
@@ -22372,8 +22370,8 @@ const __vue2_script = vueDemi.defineComponent({
   },
   emits: ["success", "error"],
   setup(props, { emit }) {
-    const inputRef = vueDemi.ref(null);
-    const loadingRef = vueDemi.ref(false);
+    const inputRef = ref(null);
+    const loadingRef = ref(false);
     function getHeaderRow(sheet) {
       if (!sheet || !sheet["!ref"])
         return [];
@@ -22441,7 +22439,7 @@ const __vue2_script = vueDemi.defineComponent({
       });
     }
     async function upload(rawFile) {
-      const inputRefDom = vueDemi.unref(inputRef);
+      const inputRefDom = unref(inputRef);
       if (inputRefDom) {
         inputRefDom.value = "";
       }
@@ -22455,7 +22453,7 @@ const __vue2_script = vueDemi.defineComponent({
       upload(rawFile);
     }
     function handleUpload() {
-      const inputRefDom = vueDemi.unref(inputRef);
+      const inputRefDom = unref(inputRef);
       inputRefDom == null ? void 0 : inputRefDom.click();
     }
     return { handleUpload, handleInputClick, inputRef };
@@ -22560,4 +22558,6 @@ function __vue2_injectStyles(context) {
 const ImportExcel = /* @__PURE__ */ function() {
   return __component__.exports;
 }();
-exports.ImportExcel = ImportExcel;
+export {
+  ImportExcel
+};

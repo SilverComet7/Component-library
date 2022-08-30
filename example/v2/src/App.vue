@@ -9,7 +9,7 @@
 
 <script>
 // import { ImportExcel } from '../../../packages/VueComponent/lib/v3/index.js';  // 自身打包
-import { ImportExcel } from '../../../packages/VueComponent/lib/v2/index.mjs';    // 本地打包
+import { ImportExcel } from '../../../packages/VueComponent/lib/v2/';    // 本地打包
 // import { CompatibleWithDefaultConfig } from "../../../packages/CoreMethod/dist/index.js";
 // import { DialogInstance,SketchRule } from "../../../../vue3-sketch-ruler/lib/v2/index.es";  // 案例打包
 

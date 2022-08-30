@@ -7,11 +7,11 @@ export default defineConfig({
     vue(),
   ],
   build: {
-    outDir: 'lib/v3',
+    outDir: resolve(__dirname, '../../lib/v3'),
     minify: false, // 不压缩代码,方便开发调试
     lib: {
-      entry: resolve(__dirname, 'index.ts'),
-      name: 'DialogInstance',
+      entry: resolve(__dirname, '../../index.ts'),
+      name: 'commonVueCmp',
       fileName: 'index',
       formats: ['es', 'cjs', 'umd'],
     },

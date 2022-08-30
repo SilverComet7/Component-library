@@ -5,11 +5,11 @@ import { createVuePlugin } from 'vite-plugin-vue2';
 export default defineConfig({
   plugins: [createVuePlugin()],
   build: {
-    outDir: resolve(__dirname, '../lib/v2'),
+    outDir: resolve(__dirname, '../../lib/v2'),
     minify: false, // 不压缩代码,方便开发调试
     lib: {
-      entry: resolve(__dirname, '../index.ts'),
-      name: 'DialogInstance',
+      entry: resolve(__dirname, '../../index.ts'),
+      name: 'commonVueCmp',
       fileName: 'index',
       formats: ['es', 'cjs', 'umd'],
     },
