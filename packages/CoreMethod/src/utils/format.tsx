@@ -1,7 +1,5 @@
 type FormatOption = "jsx" | "label" | "value";
-
 type NeedFormatType = string | string[] | number | any;
-
 interface Option {
   label: string;
   value: any;

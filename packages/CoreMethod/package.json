@@ -1,6 +1,6 @@
 {
-  "name": "@gmtool/method",
-  "version": "1.0.2",
+  "name": "gmtool-method",
+  "version": "1.0.3",
   "description": "gmtool internal common method",
   "main": "lib/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "lodash": "latest",
     "vite": "latest",
     "vitest": "^0.22.1",
-    "vue-demi": "latest"
+    "vue-demi": "latest",
+    "xlsx": "latest"
   }
 }

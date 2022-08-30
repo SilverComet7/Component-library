@@ -16,11 +16,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^4.17.21",
+    "gmtool-method": "workspace:*",
     "gmtool-vue-components": "workspace:*",
-    "gmtool-method": "workspace:*"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.24.3",
     "vite": "latest"
   }
 }
