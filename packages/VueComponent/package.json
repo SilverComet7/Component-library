@@ -1,8 +1,8 @@
 {
   "name": "gmtool-vue-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "index.ts",
+  "main": "lib/v3",
   "scripts": {
     "build": "npm run build3 && npm run build2",
     "build2": "npx vue-demi-switch 2 && cd v2  && vite build",

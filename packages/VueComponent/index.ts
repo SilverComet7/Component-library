@@ -1,1 +1,2 @@
-export * from "./DialoogInstance/index";
+// export * from "./DialogInstance/index";
+export * from "./importFile/index";
