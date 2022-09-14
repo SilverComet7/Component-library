@@ -1,7 +1,7 @@
 {
   "name": "gmtool-vue-components",
   "version": "1.0.1",
-  "description": "",
+  "description": "a common  vue component build , ignore vue version ",
   "main": "lib/v3",
   "scripts": {
     "build": "npm run build3 && npm run build2",
@@ -9,7 +9,7 @@
     "build3": "npx vue-demi-switch 3 && vite build --config build/v3/vite.config.ts"
   },
   "type": "module",
-  "keywords": [],
+  "keywords": ["vue2","vue3","vue-demi"],
   "author": "",
   "license": "ISC",
   "devDependencies": {

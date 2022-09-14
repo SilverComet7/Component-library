@@ -5,7 +5,8 @@
     "build": "pnpm run build:elp && pnpm run build:elu && pnpm run build:method",
     "build:elp": "pnpm run -C packages/element-plus build",
     "build:elu": "pnpm run -C packages/element-ui build",
-    "build:method": "pnpm run -C packages/CoreMethod build"
+    "build:method": "pnpm run -C packages/CoreMethod build",
+    "build:vue-cmp": "pnpm run -C packages/VueComponent build"
   },
   "workspaces": [
     "packages/*",

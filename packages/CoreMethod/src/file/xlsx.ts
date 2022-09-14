@@ -1,5 +1,11 @@
-import xlsx from "xlsx";
-import type { WorkBook, JSON2SheetOpts, WritingOptions } from 'xlsx';
+// import xlsx from "xlsx";
+import {
+  utils,
+  writeFile,
+  WorkBook,
+  JSON2SheetOpts,
+  WritingOptions,
+} from "xlsx";
 export interface JsonToSheet<T = any> {
   data: T[];
   header?: T;
@@ -7,8 +13,9 @@ export interface JsonToSheet<T = any> {
   json2sheetOpts?: JSON2SheetOpts;
   write2excelOpts?: WritingOptions;
 }
-const { utils, writeFile } = xlsx;
+// const { utils, writeFile } = xlsx;
 
+// 分工作簿导出
 export function jsonToSheetXlsx<T = any>({
   data,
   header,
@@ -30,3 +37,5 @@ export function jsonToSheetXlsx<T = any>({
   };
   writeFile(workbook, filename, write2excelOpts);
 }
+
+// 导入解析
