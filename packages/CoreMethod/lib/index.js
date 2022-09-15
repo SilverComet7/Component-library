@@ -1,244 +1,359 @@
-import { cloneDeep as Z0 } from "lodash";
-function A2(e, t = {}) {
-  var r;
-  for (const n in e)
-    Object.prototype.hasOwnProperty.call(e, n) && (Array.isArray(t) ? t.forEach((a) => {
-      var s;
-      const i = Z0(e[n]);
-      a[n] = (s = a[n]) != null ? s : i;
-    }) : t[n] = (r = t[n]) != null ? r : Z0(e[n]));
-  return t;
+import { cloneDeep } from "lodash";
+function CompatibleWithDefaultConfig(defaultConfig, listData = {}) {
+  var _a;
+  for (const key in defaultConfig) {
+    if (Object.prototype.hasOwnProperty.call(defaultConfig, key)) {
+      if (Array.isArray(listData)) {
+        listData.forEach((item) => {
+          var _a2;
+          const cloneItem = cloneDeep(defaultConfig[key]);
+          item[key] = (_a2 = item[key]) != null ? _a2 : cloneItem;
+        });
+      } else {
+        listData[key] = (_a = listData[key]) != null ? _a : cloneDeep(defaultConfig[key]);
+      }
+    }
+  }
+  return listData;
 }
-function F2(e, t, r, n = "jsx") {
-  const a = t ? e[t.property] : e;
-  if (!r)
-    return a;
-  const i = r.find(
-    (o) => o[n === "value" ? "label" : "value"] === a
+function formatOption(rowOrId, column, option, formatWay = "jsx") {
+  const rowValue = column ? rowOrId[column.property] : rowOrId;
+  if (!option)
+    return rowValue;
+  const findItem = option.find(
+    (item) => item[formatWay === "value" ? "label" : "value"] === rowValue
   );
-  if (!i)
-    throw new Error(`\u914D\u7F6E\u9519\u8BEF${a}`);
-  const { color: s, label: f, value: l } = i;
-  if (n === "jsx")
-    return s ? /* @__PURE__ */ h("h1", {
-      style: { color: s }
-    }, f) : f;
-  if (n === "label")
-    return f;
-  if (n === "value")
-    return l;
+  if (!findItem)
+    throw new Error(`\u914D\u7F6E\u9519\u8BEF${rowValue}`);
+  const { color, label, value } = findItem;
+  if (formatWay === "jsx") {
+    if (color)
+      return /* @__PURE__ */ h("h1", {
+        style: { color }
+      }, label);
+    return label;
+  }
+  if (formatWay === "label") {
+    return label;
+  }
+  if (formatWay === "value") {
+    return value;
+  }
 }
-function wf(e) {
-  return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
-var oi = { exports: {} }, x0 = { exports: {} }, li = function(t, r) {
-  return function() {
-    for (var a = new Array(arguments.length), i = 0; i < a.length; i++)
-      a[i] = arguments[i];
-    return t.apply(r, a);
+var axios$3 = { exports: {} };
+var axios$2 = { exports: {} };
+var bind$2 = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
   };
-}, Sf = li, d0 = Object.prototype.toString, p0 = function(e) {
-  return function(t) {
-    var r = d0.call(t);
-    return e[r] || (e[r] = r.slice(8, -1).toLowerCase());
+};
+var bind$1 = bind$2;
+var toString = Object.prototype.toString;
+var kindOf = function(cache) {
+  return function(thing) {
+    var str = toString.call(thing);
+    return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
   };
 }(/* @__PURE__ */ Object.create(null));
-function Qr(e) {
-  return e = e.toLowerCase(), function(r) {
-    return p0(r) === e;
+function kindOfTest(type) {
+  type = type.toLowerCase();
+  return function isKindOf(thing) {
+    return kindOf(thing) === type;
   };
 }
-function v0(e) {
-  return Array.isArray(e);
+function isArray(val) {
+  return Array.isArray(val);
 }
-function fn(e) {
-  return typeof e > "u";
+function isUndefined(val) {
+  return typeof val === "undefined";
 }
-function Af(e) {
-  return e !== null && !fn(e) && e.constructor !== null && !fn(e.constructor) && typeof e.constructor.isBuffer == "function" && e.constructor.isBuffer(e);
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor) && typeof val.constructor.isBuffer === "function" && val.constructor.isBuffer(val);
 }
-var ci = Qr("ArrayBuffer");
-function Ff(e) {
-  var t;
-  return typeof ArrayBuffer < "u" && ArrayBuffer.isView ? t = ArrayBuffer.isView(e) : t = e && e.buffer && ci(e.buffer), t;
-}
-function yf(e) {
-  return typeof e == "string";
-}
-function Cf(e) {
-  return typeof e == "number";
-}
-function hi(e) {
-  return e !== null && typeof e == "object";
-}
-function an(e) {
-  if (p0(e) !== "object")
-    return !1;
-  var t = Object.getPrototypeOf(e);
-  return t === null || t === Object.prototype;
-}
-var Of = Qr("Date"), Rf = Qr("File"), Df = Qr("Blob"), Nf = Qr("FileList");
-function m0(e) {
-  return d0.call(e) === "[object Function]";
-}
-function If(e) {
-  return hi(e) && m0(e.pipe);
-}
-function kf(e) {
-  var t = "[object FormData]";
-  return e && (typeof FormData == "function" && e instanceof FormData || d0.call(e) === t || m0(e.toString) && e.toString() === t);
-}
-var Pf = Qr("URLSearchParams");
-function Lf(e) {
-  return e.trim ? e.trim() : e.replace(/^\s+|\s+$/g, "");
-}
-function Bf() {
-  return typeof navigator < "u" && (navigator.product === "ReactNative" || navigator.product === "NativeScript" || navigator.product === "NS") ? !1 : typeof window < "u" && typeof document < "u";
-}
-function g0(e, t) {
-  if (!(e === null || typeof e > "u"))
-    if (typeof e != "object" && (e = [e]), v0(e))
-      for (var r = 0, n = e.length; r < n; r++)
-        t.call(null, e[r], r, e);
-    else
-      for (var a in e)
-        Object.prototype.hasOwnProperty.call(e, a) && t.call(null, e[a], a, e);
-}
-function o0() {
-  var e = {};
-  function t(a, i) {
-    an(e[i]) && an(a) ? e[i] = o0(e[i], a) : an(a) ? e[i] = o0({}, a) : v0(a) ? e[i] = a.slice() : e[i] = a;
+var isArrayBuffer = kindOfTest("ArrayBuffer");
+function isArrayBufferView(val) {
+  var result;
+  if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = val && val.buffer && isArrayBuffer(val.buffer);
   }
-  for (var r = 0, n = arguments.length; r < n; r++)
-    g0(arguments[r], t);
-  return e;
+  return result;
 }
-function Mf(e, t, r) {
-  return g0(t, function(a, i) {
-    r && typeof a == "function" ? e[i] = Sf(a, r) : e[i] = a;
-  }), e;
+function isString(val) {
+  return typeof val === "string";
 }
-function Uf(e) {
-  return e.charCodeAt(0) === 65279 && (e = e.slice(1)), e;
+function isNumber(val) {
+  return typeof val === "number";
 }
-function bf(e, t, r, n) {
-  e.prototype = Object.create(t.prototype, n), e.prototype.constructor = e, r && Object.assign(e.prototype, r);
+function isObject(val) {
+  return val !== null && typeof val === "object";
 }
-function Wf(e, t, r) {
-  var n, a, i, s = {};
-  t = t || {};
+function isPlainObject(val) {
+  if (kindOf(val) !== "object") {
+    return false;
+  }
+  var prototype2 = Object.getPrototypeOf(val);
+  return prototype2 === null || prototype2 === Object.prototype;
+}
+var isDate = kindOfTest("Date");
+var isFile = kindOfTest("File");
+var isBlob = kindOfTest("Blob");
+var isFileList = kindOfTest("FileList");
+function isFunction(val) {
+  return toString.call(val) === "[object Function]";
+}
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+function isFormData(thing) {
+  var pattern = "[object FormData]";
+  return thing && (typeof FormData === "function" && thing instanceof FormData || toString.call(thing) === pattern || isFunction(thing.toString) && thing.toString() === pattern);
+}
+var isURLSearchParams = kindOfTest("URLSearchParams");
+function trim(str) {
+  return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, "");
+}
+function isStandardBrowserEnv() {
+  if (typeof navigator !== "undefined" && (navigator.product === "ReactNative" || navigator.product === "NativeScript" || navigator.product === "NS")) {
+    return false;
+  }
+  return typeof window !== "undefined" && typeof document !== "undefined";
+}
+function forEach(obj, fn) {
+  if (obj === null || typeof obj === "undefined") {
+    return;
+  }
+  if (typeof obj !== "object") {
+    obj = [obj];
+  }
+  if (isArray(obj)) {
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+function merge() {
+  var result = {};
+  function assignValue(val, key) {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
+      result[key] = merge(result[key], val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
+    } else {
+      result[key] = val;
+    }
+  }
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === "function") {
+      a[key] = bind$1(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 65279) {
+    content = content.slice(1);
+  }
+  return content;
+}
+function inherits(constructor, superConstructor, props, descriptors2) {
+  constructor.prototype = Object.create(superConstructor.prototype, descriptors2);
+  constructor.prototype.constructor = constructor;
+  props && Object.assign(constructor.prototype, props);
+}
+function toFlatObject(sourceObj, destObj, filter) {
+  var props;
+  var i;
+  var prop;
+  var merged = {};
+  destObj = destObj || {};
   do {
-    for (n = Object.getOwnPropertyNames(e), a = n.length; a-- > 0; )
-      i = n[a], s[i] || (t[i] = e[i], s[i] = !0);
-    e = Object.getPrototypeOf(e);
-  } while (e && (!r || r(e, t)) && e !== Object.prototype);
-  return t;
+    props = Object.getOwnPropertyNames(sourceObj);
+    i = props.length;
+    while (i-- > 0) {
+      prop = props[i];
+      if (!merged[prop]) {
+        destObj[prop] = sourceObj[prop];
+        merged[prop] = true;
+      }
+    }
+    sourceObj = Object.getPrototypeOf(sourceObj);
+  } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
+  return destObj;
 }
-function Hf(e, t, r) {
-  e = String(e), (r === void 0 || r > e.length) && (r = e.length), r -= t.length;
-  var n = e.indexOf(t, r);
-  return n !== -1 && n === r;
+function endsWith(str, searchString, position) {
+  str = String(str);
+  if (position === void 0 || position > str.length) {
+    position = str.length;
+  }
+  position -= searchString.length;
+  var lastIndex = str.indexOf(searchString, position);
+  return lastIndex !== -1 && lastIndex === position;
 }
-function Vf(e) {
-  if (!e)
+function toArray(thing) {
+  if (!thing)
     return null;
-  var t = e.length;
-  if (fn(t))
+  var i = thing.length;
+  if (isUndefined(i))
     return null;
-  for (var r = new Array(t); t-- > 0; )
-    r[t] = e[t];
-  return r;
+  var arr = new Array(i);
+  while (i-- > 0) {
+    arr[i] = thing[i];
+  }
+  return arr;
 }
-var Gf = function(e) {
-  return function(t) {
-    return e && t instanceof e;
+var isTypedArray = function(TypedArray) {
+  return function(thing) {
+    return TypedArray && thing instanceof TypedArray;
   };
-}(typeof Uint8Array < "u" && Object.getPrototypeOf(Uint8Array)), $e = {
-  isArray: v0,
-  isArrayBuffer: ci,
-  isBuffer: Af,
-  isFormData: kf,
-  isArrayBufferView: Ff,
-  isString: yf,
-  isNumber: Cf,
-  isObject: hi,
-  isPlainObject: an,
-  isUndefined: fn,
-  isDate: Of,
-  isFile: Rf,
-  isBlob: Df,
-  isFunction: m0,
-  isStream: If,
-  isURLSearchParams: Pf,
-  isStandardBrowserEnv: Bf,
-  forEach: g0,
-  merge: o0,
-  extend: Mf,
-  trim: Lf,
-  stripBOM: Uf,
-  inherits: bf,
-  toFlatObject: Wf,
-  kindOf: p0,
-  kindOfTest: Qr,
-  endsWith: Hf,
-  toArray: Vf,
-  isTypedArray: Gf,
-  isFileList: Nf
-}, st = $e;
-function Q0(e) {
-  return encodeURIComponent(e).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
+}(typeof Uint8Array !== "undefined" && Object.getPrototypeOf(Uint8Array));
+var utils$c = {
+  isArray,
+  isArrayBuffer,
+  isBuffer,
+  isFormData,
+  isArrayBufferView,
+  isString,
+  isNumber,
+  isObject,
+  isPlainObject,
+  isUndefined,
+  isDate,
+  isFile,
+  isBlob,
+  isFunction,
+  isStream,
+  isURLSearchParams,
+  isStandardBrowserEnv,
+  forEach,
+  merge,
+  extend,
+  trim,
+  stripBOM,
+  inherits,
+  toFlatObject,
+  kindOf,
+  kindOfTest,
+  endsWith,
+  toArray,
+  isTypedArray,
+  isFileList
+};
+var utils$b = utils$c;
+function encode(val) {
+  return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
 }
-var ui = function(t, r, n) {
-  if (!r)
-    return t;
-  var a;
-  if (n)
-    a = n(r);
-  else if (st.isURLSearchParams(r))
-    a = r.toString();
-  else {
-    var i = [];
-    st.forEach(r, function(l, o) {
-      l === null || typeof l > "u" || (st.isArray(l) ? o = o + "[]" : l = [l], st.forEach(l, function(p) {
-        st.isDate(p) ? p = p.toISOString() : st.isObject(p) && (p = JSON.stringify(p)), i.push(Q0(o) + "=" + Q0(p));
-      }));
-    }), a = i.join("&");
+var buildURL$1 = function buildURL(url, params, paramsSerializer) {
+  if (!params) {
+    return url;
   }
-  if (a) {
-    var s = t.indexOf("#");
-    s !== -1 && (t = t.slice(0, s)), t += (t.indexOf("?") === -1 ? "?" : "&") + a;
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils$b.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+    utils$b.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === "undefined") {
+        return;
+      }
+      if (utils$b.isArray(val)) {
+        key = key + "[]";
+      } else {
+        val = [val];
+      }
+      utils$b.forEach(val, function parseValue(v) {
+        if (utils$b.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils$b.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + "=" + encode(v));
+      });
+    });
+    serializedParams = parts.join("&");
   }
-  return t;
-}, Xf = $e;
-function wn() {
+  if (serializedParams) {
+    var hashmarkIndex = url.indexOf("#");
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+    url += (url.indexOf("?") === -1 ? "?" : "&") + serializedParams;
+  }
+  return url;
+};
+var utils$a = utils$c;
+function InterceptorManager$1() {
   this.handlers = [];
 }
-wn.prototype.use = function(t, r, n) {
-  return this.handlers.push({
-    fulfilled: t,
-    rejected: r,
-    synchronous: n ? n.synchronous : !1,
-    runWhen: n ? n.runWhen : null
-  }), this.handlers.length - 1;
+InterceptorManager$1.prototype.use = function use(fulfilled, rejected, options) {
+  this.handlers.push({
+    fulfilled,
+    rejected,
+    synchronous: options ? options.synchronous : false,
+    runWhen: options ? options.runWhen : null
+  });
+  return this.handlers.length - 1;
 };
-wn.prototype.eject = function(t) {
-  this.handlers[t] && (this.handlers[t] = null);
+InterceptorManager$1.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
 };
-wn.prototype.forEach = function(t) {
-  Xf.forEach(this.handlers, function(n) {
-    n !== null && t(n);
+InterceptorManager$1.prototype.forEach = function forEach2(fn) {
+  utils$a.forEach(this.handlers, function forEachHandler(h2) {
+    if (h2 !== null) {
+      fn(h2);
+    }
   });
 };
-var $f = wn, jf = $e, zf = function(t, r) {
-  jf.forEach(t, function(a, i) {
-    i !== r && i.toUpperCase() === r.toUpperCase() && (t[r] = a, delete t[i]);
+var InterceptorManager_1 = InterceptorManager$1;
+var utils$9 = utils$c;
+var normalizeHeaderName$1 = function normalizeHeaderName(headers, normalizedName) {
+  utils$9.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
   });
-}, xi = $e;
-function mt(e, t, r, n, a) {
-  Error.call(this), this.message = e, this.name = "AxiosError", t && (this.code = t), r && (this.config = r), n && (this.request = n), a && (this.response = a);
+};
+var utils$8 = utils$c;
+function AxiosError$2(message, code, config, request2, response) {
+  Error.call(this);
+  this.message = message;
+  this.name = "AxiosError";
+  code && (this.code = code);
+  config && (this.config = config);
+  request2 && (this.request = request2);
+  response && (this.response = response);
 }
-xi.inherits(mt, Error, {
-  toJSON: function() {
+utils$8.inherits(AxiosError$2, Error, {
+  toJSON: function toJSON() {
     return {
       message: this.message,
       name: this.name,
@@ -254,7 +369,8 @@ xi.inherits(mt, Error, {
     };
   }
 });
-var di = mt.prototype, pi = {};
+var prototype = AxiosError$2.prototype;
+var descriptors = {};
 [
   "ERR_BAD_OPTION_VALUE",
   "ERR_BAD_OPTION",
@@ -266,114 +382,166 @@ var di = mt.prototype, pi = {};
   "ERR_BAD_RESPONSE",
   "ERR_BAD_REQUEST",
   "ERR_CANCELED"
-].forEach(function(e) {
-  pi[e] = { value: e };
+].forEach(function(code) {
+  descriptors[code] = { value: code };
 });
-Object.defineProperties(mt, pi);
-Object.defineProperty(di, "isAxiosError", { value: !0 });
-mt.from = function(e, t, r, n, a, i) {
-  var s = Object.create(di);
-  return xi.toFlatObject(e, s, function(l) {
-    return l !== Error.prototype;
-  }), mt.call(s, e.message, t, r, n, a), s.name = e.name, i && Object.assign(s, i), s;
+Object.defineProperties(AxiosError$2, descriptors);
+Object.defineProperty(prototype, "isAxiosError", { value: true });
+AxiosError$2.from = function(error, code, config, request2, response, customProps) {
+  var axiosError = Object.create(prototype);
+  utils$8.toFlatObject(error, axiosError, function filter(obj) {
+    return obj !== Error.prototype;
+  });
+  AxiosError$2.call(axiosError, error.message, code, config, request2, response);
+  axiosError.name = error.name;
+  customProps && Object.assign(axiosError, customProps);
+  return axiosError;
 };
-var Et = mt, vi = {
-  silentJSONParsing: !0,
-  forcedJSONParsing: !0,
-  clarifyTimeoutError: !1
-}, vr = $e;
-function Kf(e, t) {
-  t = t || new FormData();
-  var r = [];
-  function n(i) {
-    return i === null ? "" : vr.isDate(i) ? i.toISOString() : vr.isArrayBuffer(i) || vr.isTypedArray(i) ? typeof Blob == "function" ? new Blob([i]) : Buffer.from(i) : i;
+var AxiosError_1 = AxiosError$2;
+var transitional = {
+  silentJSONParsing: true,
+  forcedJSONParsing: true,
+  clarifyTimeoutError: false
+};
+var utils$7 = utils$c;
+function toFormData$1(obj, formData) {
+  formData = formData || new FormData();
+  var stack = [];
+  function convertValue(value) {
+    if (value === null)
+      return "";
+    if (utils$7.isDate(value)) {
+      return value.toISOString();
+    }
+    if (utils$7.isArrayBuffer(value) || utils$7.isTypedArray(value)) {
+      return typeof Blob === "function" ? new Blob([value]) : Buffer.from(value);
+    }
+    return value;
   }
-  function a(i, s) {
-    if (vr.isPlainObject(i) || vr.isArray(i)) {
-      if (r.indexOf(i) !== -1)
-        throw Error("Circular reference detected in " + s);
-      r.push(i), vr.forEach(i, function(l, o) {
-        if (!vr.isUndefined(l)) {
-          var c = s ? s + "." + o : o, p;
-          if (l && !s && typeof l == "object") {
-            if (vr.endsWith(o, "{}"))
-              l = JSON.stringify(l);
-            else if (vr.endsWith(o, "[]") && (p = vr.toArray(l))) {
-              p.forEach(function(u) {
-                !vr.isUndefined(u) && t.append(c, n(u));
-              });
-              return;
-            }
+  function build(data2, parentKey) {
+    if (utils$7.isPlainObject(data2) || utils$7.isArray(data2)) {
+      if (stack.indexOf(data2) !== -1) {
+        throw Error("Circular reference detected in " + parentKey);
+      }
+      stack.push(data2);
+      utils$7.forEach(data2, function each(value, key) {
+        if (utils$7.isUndefined(value))
+          return;
+        var fullKey = parentKey ? parentKey + "." + key : key;
+        var arr;
+        if (value && !parentKey && typeof value === "object") {
+          if (utils$7.endsWith(key, "{}")) {
+            value = JSON.stringify(value);
+          } else if (utils$7.endsWith(key, "[]") && (arr = utils$7.toArray(value))) {
+            arr.forEach(function(el) {
+              !utils$7.isUndefined(el) && formData.append(fullKey, convertValue(el));
+            });
+            return;
           }
-          a(l, c);
         }
-      }), r.pop();
-    } else
-      t.append(s, n(i));
+        build(value, fullKey);
+      });
+      stack.pop();
+    } else {
+      formData.append(parentKey, convertValue(data2));
+    }
   }
-  return a(e), t;
+  build(obj);
+  return formData;
 }
-var mi = Kf, bn, ea;
-function Yf() {
-  if (ea)
-    return bn;
-  ea = 1;
-  var e = Et;
-  return bn = function(r, n, a) {
-    var i = a.config.validateStatus;
-    !a.status || !i || i(a.status) ? r(a) : n(new e(
-      "Request failed with status code " + a.status,
-      [e.ERR_BAD_REQUEST, e.ERR_BAD_RESPONSE][Math.floor(a.status / 100) - 4],
-      a.config,
-      a.request,
-      a
-    ));
-  }, bn;
+var toFormData_1 = toFormData$1;
+var settle;
+var hasRequiredSettle;
+function requireSettle() {
+  if (hasRequiredSettle)
+    return settle;
+  hasRequiredSettle = 1;
+  var AxiosError2 = AxiosError_1;
+  settle = function settle2(resolve, reject, response) {
+    var validateStatus2 = response.config.validateStatus;
+    if (!response.status || !validateStatus2 || validateStatus2(response.status)) {
+      resolve(response);
+    } else {
+      reject(new AxiosError2(
+        "Request failed with status code " + response.status,
+        [AxiosError2.ERR_BAD_REQUEST, AxiosError2.ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4],
+        response.config,
+        response.request,
+        response
+      ));
+    }
+  };
+  return settle;
 }
-var Wn, ra;
-function qf() {
-  if (ra)
-    return Wn;
-  ra = 1;
-  var e = $e;
-  return Wn = e.isStandardBrowserEnv() ? function() {
+var cookies;
+var hasRequiredCookies;
+function requireCookies() {
+  if (hasRequiredCookies)
+    return cookies;
+  hasRequiredCookies = 1;
+  var utils2 = utils$c;
+  cookies = utils2.isStandardBrowserEnv() ? function standardBrowserEnv() {
     return {
-      write: function(n, a, i, s, f, l) {
-        var o = [];
-        o.push(n + "=" + encodeURIComponent(a)), e.isNumber(i) && o.push("expires=" + new Date(i).toGMTString()), e.isString(s) && o.push("path=" + s), e.isString(f) && o.push("domain=" + f), l === !0 && o.push("secure"), document.cookie = o.join("; ");
+      write: function write(name, value, expires, path, domain, secure) {
+        var cookie = [];
+        cookie.push(name + "=" + encodeURIComponent(value));
+        if (utils2.isNumber(expires)) {
+          cookie.push("expires=" + new Date(expires).toGMTString());
+        }
+        if (utils2.isString(path)) {
+          cookie.push("path=" + path);
+        }
+        if (utils2.isString(domain)) {
+          cookie.push("domain=" + domain);
+        }
+        if (secure === true) {
+          cookie.push("secure");
+        }
+        document.cookie = cookie.join("; ");
       },
-      read: function(n) {
-        var a = document.cookie.match(new RegExp("(^|;\\s*)(" + n + ")=([^;]*)"));
-        return a ? decodeURIComponent(a[3]) : null;
+      read: function read(name) {
+        var match = document.cookie.match(new RegExp("(^|;\\s*)(" + name + ")=([^;]*)"));
+        return match ? decodeURIComponent(match[3]) : null;
       },
-      remove: function(n) {
-        this.write(n, "", Date.now() - 864e5);
+      remove: function remove(name) {
+        this.write(name, "", Date.now() - 864e5);
       }
     };
-  }() : function() {
+  }() : function nonStandardBrowserEnv() {
     return {
-      write: function() {
+      write: function write() {
       },
-      read: function() {
+      read: function read() {
         return null;
       },
-      remove: function() {
+      remove: function remove() {
       }
     };
-  }(), Wn;
+  }();
+  return cookies;
 }
-var Jf = function(t) {
-  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(t);
-}, Zf = function(t, r) {
-  return r ? t.replace(/\/+$/, "") + "/" + r.replace(/^\/+/, "") : t;
-}, Qf = Jf, eo = Zf, gi = function(t, r) {
-  return t && !Qf(r) ? eo(t, r) : r;
-}, Hn, ta;
-function ro() {
-  if (ta)
-    return Hn;
-  ta = 1;
-  var e = $e, t = [
+var isAbsoluteURL$1 = function isAbsoluteURL(url) {
+  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
+};
+var combineURLs$1 = function combineURLs(baseURL, relativeURL) {
+  return relativeURL ? baseURL.replace(/\/+$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
+};
+var isAbsoluteURL2 = isAbsoluteURL$1;
+var combineURLs2 = combineURLs$1;
+var buildFullPath$1 = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL2(requestedURL)) {
+    return combineURLs2(baseURL, requestedURL);
+  }
+  return requestedURL;
+};
+var parseHeaders;
+var hasRequiredParseHeaders;
+function requireParseHeaders() {
+  if (hasRequiredParseHeaders)
+    return parseHeaders;
+  hasRequiredParseHeaders = 1;
+  var utils2 = utils$c;
+  var ignoreDuplicateOf = [
     "age",
     "authorization",
     "content-length",
@@ -392,190 +560,352 @@ function ro() {
     "retry-after",
     "user-agent"
   ];
-  return Hn = function(n) {
-    var a = {}, i, s, f;
-    return n && e.forEach(n.split(`
-`), function(o) {
-      if (f = o.indexOf(":"), i = e.trim(o.substr(0, f)).toLowerCase(), s = e.trim(o.substr(f + 1)), i) {
-        if (a[i] && t.indexOf(i) >= 0)
-          return;
-        i === "set-cookie" ? a[i] = (a[i] ? a[i] : []).concat([s]) : a[i] = a[i] ? a[i] + ", " + s : s;
-      }
-    }), a;
-  }, Hn;
-}
-var Vn, na;
-function to() {
-  if (na)
-    return Vn;
-  na = 1;
-  var e = $e;
-  return Vn = e.isStandardBrowserEnv() ? function() {
-    var r = /(msie|trident)/i.test(navigator.userAgent), n = document.createElement("a"), a;
-    function i(s) {
-      var f = s;
-      return r && (n.setAttribute("href", f), f = n.href), n.setAttribute("href", f), {
-        href: n.href,
-        protocol: n.protocol ? n.protocol.replace(/:$/, "") : "",
-        host: n.host,
-        search: n.search ? n.search.replace(/^\?/, "") : "",
-        hash: n.hash ? n.hash.replace(/^#/, "") : "",
-        hostname: n.hostname,
-        port: n.port,
-        pathname: n.pathname.charAt(0) === "/" ? n.pathname : "/" + n.pathname
-      };
+  parseHeaders = function parseHeaders2(headers) {
+    var parsed = {};
+    var key;
+    var val;
+    var i;
+    if (!headers) {
+      return parsed;
     }
-    return a = i(window.location.href), function(f) {
-      var l = e.isString(f) ? i(f) : f;
-      return l.protocol === a.protocol && l.host === a.host;
-    };
-  }() : function() {
-    return function() {
-      return !0;
-    };
-  }(), Vn;
-}
-var Gn, aa;
-function Sn() {
-  if (aa)
-    return Gn;
-  aa = 1;
-  var e = Et, t = $e;
-  function r(n) {
-    e.call(this, n == null ? "canceled" : n, e.ERR_CANCELED), this.name = "CanceledError";
-  }
-  return t.inherits(r, e, {
-    __CANCEL__: !0
-  }), Gn = r, Gn;
-}
-var Xn, ia;
-function no() {
-  return ia || (ia = 1, Xn = function(t) {
-    var r = /^([-+\w]{1,25})(:?\/\/|:)/.exec(t);
-    return r && r[1] || "";
-  }), Xn;
-}
-var $n, sa;
-function fa() {
-  if (sa)
-    return $n;
-  sa = 1;
-  var e = $e, t = Yf(), r = qf(), n = ui, a = gi, i = ro(), s = to(), f = vi, l = Et, o = Sn(), c = no();
-  return $n = function(u) {
-    return new Promise(function(T, x) {
-      var _ = u.data, O = u.headers, R = u.responseType, y;
-      function M() {
-        u.cancelToken && u.cancelToken.unsubscribe(y), u.signal && u.signal.removeEventListener("abort", y);
-      }
-      e.isFormData(_) && e.isStandardBrowserEnv() && delete O["Content-Type"];
-      var b = new XMLHttpRequest();
-      if (u.auth) {
-        var re = u.auth.username || "", D = u.auth.password ? unescape(encodeURIComponent(u.auth.password)) : "";
-        O.Authorization = "Basic " + btoa(re + ":" + D);
-      }
-      var H = a(u.baseURL, u.url);
-      b.open(u.method.toUpperCase(), n(H, u.params, u.paramsSerializer), !0), b.timeout = u.timeout;
-      function L() {
-        if (!!b) {
-          var j = "getAllResponseHeaders" in b ? i(b.getAllResponseHeaders()) : null, Q = !R || R === "text" || R === "json" ? b.responseText : b.response, he = {
-            data: Q,
-            status: b.status,
-            statusText: b.statusText,
-            headers: j,
-            config: u,
-            request: b
-          };
-          t(function(Oe) {
-            T(Oe), M();
-          }, function(Oe) {
-            x(Oe), M();
-          }, he), b = null;
+    utils2.forEach(headers.split("\n"), function parser(line) {
+      i = line.indexOf(":");
+      key = utils2.trim(line.substr(0, i)).toLowerCase();
+      val = utils2.trim(line.substr(i + 1));
+      if (key) {
+        if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+          return;
+        }
+        if (key === "set-cookie") {
+          parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+        } else {
+          parsed[key] = parsed[key] ? parsed[key] + ", " + val : val;
         }
       }
-      if ("onloadend" in b ? b.onloadend = L : b.onreadystatechange = function() {
-        !b || b.readyState !== 4 || b.status === 0 && !(b.responseURL && b.responseURL.indexOf("file:") === 0) || setTimeout(L);
-      }, b.onabort = function() {
-        !b || (x(new l("Request aborted", l.ECONNABORTED, u, b)), b = null);
-      }, b.onerror = function() {
-        x(new l("Network Error", l.ERR_NETWORK, u, b, b)), b = null;
-      }, b.ontimeout = function() {
-        var Q = u.timeout ? "timeout of " + u.timeout + "ms exceeded" : "timeout exceeded", he = u.transitional || f;
-        u.timeoutErrorMessage && (Q = u.timeoutErrorMessage), x(new l(
-          Q,
-          he.clarifyTimeoutError ? l.ETIMEDOUT : l.ECONNABORTED,
-          u,
-          b
-        )), b = null;
-      }, e.isStandardBrowserEnv()) {
-        var G = (u.withCredentials || s(H)) && u.xsrfCookieName ? r.read(u.xsrfCookieName) : void 0;
-        G && (O[u.xsrfHeaderName] = G);
+    });
+    return parsed;
+  };
+  return parseHeaders;
+}
+var isURLSameOrigin;
+var hasRequiredIsURLSameOrigin;
+function requireIsURLSameOrigin() {
+  if (hasRequiredIsURLSameOrigin)
+    return isURLSameOrigin;
+  hasRequiredIsURLSameOrigin = 1;
+  var utils2 = utils$c;
+  isURLSameOrigin = utils2.isStandardBrowserEnv() ? function standardBrowserEnv() {
+    var msie = /(msie|trident)/i.test(navigator.userAgent);
+    var urlParsingNode = document.createElement("a");
+    var originURL;
+    function resolveURL(url) {
+      var href = url;
+      if (msie) {
+        urlParsingNode.setAttribute("href", href);
+        href = urlParsingNode.href;
       }
-      "setRequestHeader" in b && e.forEach(O, function(Q, he) {
-        typeof _ > "u" && he.toLowerCase() === "content-type" ? delete O[he] : b.setRequestHeader(he, Q);
-      }), e.isUndefined(u.withCredentials) || (b.withCredentials = !!u.withCredentials), R && R !== "json" && (b.responseType = u.responseType), typeof u.onDownloadProgress == "function" && b.addEventListener("progress", u.onDownloadProgress), typeof u.onUploadProgress == "function" && b.upload && b.upload.addEventListener("progress", u.onUploadProgress), (u.cancelToken || u.signal) && (y = function(j) {
-        !b || (x(!j || j && j.type ? new o() : j), b.abort(), b = null);
-      }, u.cancelToken && u.cancelToken.subscribe(y), u.signal && (u.signal.aborted ? y() : u.signal.addEventListener("abort", y))), _ || (_ = null);
-      var z = c(H);
-      if (z && ["http", "https", "file"].indexOf(z) === -1) {
-        x(new l("Unsupported protocol " + z + ":", l.ERR_BAD_REQUEST, u));
+      urlParsingNode.setAttribute("href", href);
+      return {
+        href: urlParsingNode.href,
+        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, "") : "",
+        host: urlParsingNode.host,
+        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, "") : "",
+        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, "") : "",
+        hostname: urlParsingNode.hostname,
+        port: urlParsingNode.port,
+        pathname: urlParsingNode.pathname.charAt(0) === "/" ? urlParsingNode.pathname : "/" + urlParsingNode.pathname
+      };
+    }
+    originURL = resolveURL(window.location.href);
+    return function isURLSameOrigin2(requestURL) {
+      var parsed = utils2.isString(requestURL) ? resolveURL(requestURL) : requestURL;
+      return parsed.protocol === originURL.protocol && parsed.host === originURL.host;
+    };
+  }() : function nonStandardBrowserEnv() {
+    return function isURLSameOrigin2() {
+      return true;
+    };
+  }();
+  return isURLSameOrigin;
+}
+var CanceledError_1;
+var hasRequiredCanceledError;
+function requireCanceledError() {
+  if (hasRequiredCanceledError)
+    return CanceledError_1;
+  hasRequiredCanceledError = 1;
+  var AxiosError2 = AxiosError_1;
+  var utils2 = utils$c;
+  function CanceledError2(message) {
+    AxiosError2.call(this, message == null ? "canceled" : message, AxiosError2.ERR_CANCELED);
+    this.name = "CanceledError";
+  }
+  utils2.inherits(CanceledError2, AxiosError2, {
+    __CANCEL__: true
+  });
+  CanceledError_1 = CanceledError2;
+  return CanceledError_1;
+}
+var parseProtocol;
+var hasRequiredParseProtocol;
+function requireParseProtocol() {
+  if (hasRequiredParseProtocol)
+    return parseProtocol;
+  hasRequiredParseProtocol = 1;
+  parseProtocol = function parseProtocol2(url) {
+    var match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
+    return match && match[1] || "";
+  };
+  return parseProtocol;
+}
+var xhr;
+var hasRequiredXhr;
+function requireXhr() {
+  if (hasRequiredXhr)
+    return xhr;
+  hasRequiredXhr = 1;
+  var utils2 = utils$c;
+  var settle2 = requireSettle();
+  var cookies2 = requireCookies();
+  var buildURL3 = buildURL$1;
+  var buildFullPath3 = buildFullPath$1;
+  var parseHeaders2 = requireParseHeaders();
+  var isURLSameOrigin2 = requireIsURLSameOrigin();
+  var transitionalDefaults2 = transitional;
+  var AxiosError2 = AxiosError_1;
+  var CanceledError2 = requireCanceledError();
+  var parseProtocol2 = requireParseProtocol();
+  xhr = function xhrAdapter(config) {
+    return new Promise(function dispatchXhrRequest(resolve, reject) {
+      var requestData = config.data;
+      var requestHeaders = config.headers;
+      var responseType = config.responseType;
+      var onCanceled;
+      function done() {
+        if (config.cancelToken) {
+          config.cancelToken.unsubscribe(onCanceled);
+        }
+        if (config.signal) {
+          config.signal.removeEventListener("abort", onCanceled);
+        }
+      }
+      if (utils2.isFormData(requestData) && utils2.isStandardBrowserEnv()) {
+        delete requestHeaders["Content-Type"];
+      }
+      var request2 = new XMLHttpRequest();
+      if (config.auth) {
+        var username = config.auth.username || "";
+        var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : "";
+        requestHeaders.Authorization = "Basic " + btoa(username + ":" + password);
+      }
+      var fullPath = buildFullPath3(config.baseURL, config.url);
+      request2.open(config.method.toUpperCase(), buildURL3(fullPath, config.params, config.paramsSerializer), true);
+      request2.timeout = config.timeout;
+      function onloadend() {
+        if (!request2) {
+          return;
+        }
+        var responseHeaders = "getAllResponseHeaders" in request2 ? parseHeaders2(request2.getAllResponseHeaders()) : null;
+        var responseData = !responseType || responseType === "text" || responseType === "json" ? request2.responseText : request2.response;
+        var response = {
+          data: responseData,
+          status: request2.status,
+          statusText: request2.statusText,
+          headers: responseHeaders,
+          config,
+          request: request2
+        };
+        settle2(function _resolve(value) {
+          resolve(value);
+          done();
+        }, function _reject(err) {
+          reject(err);
+          done();
+        }, response);
+        request2 = null;
+      }
+      if ("onloadend" in request2) {
+        request2.onloadend = onloadend;
+      } else {
+        request2.onreadystatechange = function handleLoad() {
+          if (!request2 || request2.readyState !== 4) {
+            return;
+          }
+          if (request2.status === 0 && !(request2.responseURL && request2.responseURL.indexOf("file:") === 0)) {
+            return;
+          }
+          setTimeout(onloadend);
+        };
+      }
+      request2.onabort = function handleAbort() {
+        if (!request2) {
+          return;
+        }
+        reject(new AxiosError2("Request aborted", AxiosError2.ECONNABORTED, config, request2));
+        request2 = null;
+      };
+      request2.onerror = function handleError() {
+        reject(new AxiosError2("Network Error", AxiosError2.ERR_NETWORK, config, request2, request2));
+        request2 = null;
+      };
+      request2.ontimeout = function handleTimeout() {
+        var timeoutErrorMessage = config.timeout ? "timeout of " + config.timeout + "ms exceeded" : "timeout exceeded";
+        var transitional3 = config.transitional || transitionalDefaults2;
+        if (config.timeoutErrorMessage) {
+          timeoutErrorMessage = config.timeoutErrorMessage;
+        }
+        reject(new AxiosError2(
+          timeoutErrorMessage,
+          transitional3.clarifyTimeoutError ? AxiosError2.ETIMEDOUT : AxiosError2.ECONNABORTED,
+          config,
+          request2
+        ));
+        request2 = null;
+      };
+      if (utils2.isStandardBrowserEnv()) {
+        var xsrfValue = (config.withCredentials || isURLSameOrigin2(fullPath)) && config.xsrfCookieName ? cookies2.read(config.xsrfCookieName) : void 0;
+        if (xsrfValue) {
+          requestHeaders[config.xsrfHeaderName] = xsrfValue;
+        }
+      }
+      if ("setRequestHeader" in request2) {
+        utils2.forEach(requestHeaders, function setRequestHeader(val, key) {
+          if (typeof requestData === "undefined" && key.toLowerCase() === "content-type") {
+            delete requestHeaders[key];
+          } else {
+            request2.setRequestHeader(key, val);
+          }
+        });
+      }
+      if (!utils2.isUndefined(config.withCredentials)) {
+        request2.withCredentials = !!config.withCredentials;
+      }
+      if (responseType && responseType !== "json") {
+        request2.responseType = config.responseType;
+      }
+      if (typeof config.onDownloadProgress === "function") {
+        request2.addEventListener("progress", config.onDownloadProgress);
+      }
+      if (typeof config.onUploadProgress === "function" && request2.upload) {
+        request2.upload.addEventListener("progress", config.onUploadProgress);
+      }
+      if (config.cancelToken || config.signal) {
+        onCanceled = function(cancel) {
+          if (!request2) {
+            return;
+          }
+          reject(!cancel || cancel && cancel.type ? new CanceledError2() : cancel);
+          request2.abort();
+          request2 = null;
+        };
+        config.cancelToken && config.cancelToken.subscribe(onCanceled);
+        if (config.signal) {
+          config.signal.aborted ? onCanceled() : config.signal.addEventListener("abort", onCanceled);
+        }
+      }
+      if (!requestData) {
+        requestData = null;
+      }
+      var protocol = parseProtocol2(fullPath);
+      if (protocol && ["http", "https", "file"].indexOf(protocol) === -1) {
+        reject(new AxiosError2("Unsupported protocol " + protocol + ":", AxiosError2.ERR_BAD_REQUEST, config));
         return;
       }
-      b.send(_);
+      request2.send(requestData);
     });
-  }, $n;
+  };
+  return xhr;
 }
-var jn, oa;
-function ao() {
-  return oa || (oa = 1, jn = null), jn;
+var _null;
+var hasRequired_null;
+function require_null() {
+  if (hasRequired_null)
+    return _null;
+  hasRequired_null = 1;
+  _null = null;
+  return _null;
 }
-var Le = $e, la = zf, ca = Et, io = vi, so = mi, fo = {
+var utils$6 = utils$c;
+var normalizeHeaderName2 = normalizeHeaderName$1;
+var AxiosError$1 = AxiosError_1;
+var transitionalDefaults = transitional;
+var toFormData = toFormData_1;
+var DEFAULT_CONTENT_TYPE = {
   "Content-Type": "application/x-www-form-urlencoded"
 };
-function ha(e, t) {
-  !Le.isUndefined(e) && Le.isUndefined(e["Content-Type"]) && (e["Content-Type"] = t);
+function setContentTypeIfUnset(headers, value) {
+  if (!utils$6.isUndefined(headers) && utils$6.isUndefined(headers["Content-Type"])) {
+    headers["Content-Type"] = value;
+  }
 }
-function oo() {
-  var e;
-  return (typeof XMLHttpRequest < "u" || typeof process < "u" && Object.prototype.toString.call(process) === "[object process]") && (e = fa()), e;
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== "undefined") {
+    adapter = requireXhr();
+  } else if (typeof process !== "undefined" && Object.prototype.toString.call(process) === "[object process]") {
+    adapter = requireXhr();
+  }
+  return adapter;
 }
-function lo(e, t, r) {
-  if (Le.isString(e))
+function stringifySafely(rawValue, parser, encoder) {
+  if (utils$6.isString(rawValue)) {
     try {
-      return (t || JSON.parse)(e), Le.trim(e);
-    } catch (n) {
-      if (n.name !== "SyntaxError")
-        throw n;
-    }
-  return (r || JSON.stringify)(e);
-}
-var An = {
-  transitional: io,
-  adapter: oo(),
-  transformRequest: [function(t, r) {
-    if (la(r, "Accept"), la(r, "Content-Type"), Le.isFormData(t) || Le.isArrayBuffer(t) || Le.isBuffer(t) || Le.isStream(t) || Le.isFile(t) || Le.isBlob(t))
-      return t;
-    if (Le.isArrayBufferView(t))
-      return t.buffer;
-    if (Le.isURLSearchParams(t))
-      return ha(r, "application/x-www-form-urlencoded;charset=utf-8"), t.toString();
-    var n = Le.isObject(t), a = r && r["Content-Type"], i;
-    if ((i = Le.isFileList(t)) || n && a === "multipart/form-data") {
-      var s = this.env && this.env.FormData;
-      return so(i ? { "files[]": t } : t, s && new s());
-    } else if (n || a === "application/json")
-      return ha(r, "application/json"), lo(t);
-    return t;
-  }],
-  transformResponse: [function(t) {
-    var r = this.transitional || An.transitional, n = r && r.silentJSONParsing, a = r && r.forcedJSONParsing, i = !n && this.responseType === "json";
-    if (i || a && Le.isString(t) && t.length)
-      try {
-        return JSON.parse(t);
-      } catch (s) {
-        if (i)
-          throw s.name === "SyntaxError" ? ca.from(s, ca.ERR_BAD_RESPONSE, this, null, this.response) : s;
+      (parser || JSON.parse)(rawValue);
+      return utils$6.trim(rawValue);
+    } catch (e) {
+      if (e.name !== "SyntaxError") {
+        throw e;
       }
-    return t;
+    }
+  }
+  return (encoder || JSON.stringify)(rawValue);
+}
+var defaults$3 = {
+  transitional: transitionalDefaults,
+  adapter: getDefaultAdapter(),
+  transformRequest: [function transformRequest(data2, headers) {
+    normalizeHeaderName2(headers, "Accept");
+    normalizeHeaderName2(headers, "Content-Type");
+    if (utils$6.isFormData(data2) || utils$6.isArrayBuffer(data2) || utils$6.isBuffer(data2) || utils$6.isStream(data2) || utils$6.isFile(data2) || utils$6.isBlob(data2)) {
+      return data2;
+    }
+    if (utils$6.isArrayBufferView(data2)) {
+      return data2.buffer;
+    }
+    if (utils$6.isURLSearchParams(data2)) {
+      setContentTypeIfUnset(headers, "application/x-www-form-urlencoded;charset=utf-8");
+      return data2.toString();
+    }
+    var isObjectPayload = utils$6.isObject(data2);
+    var contentType = headers && headers["Content-Type"];
+    var isFileList2;
+    if ((isFileList2 = utils$6.isFileList(data2)) || isObjectPayload && contentType === "multipart/form-data") {
+      var _FormData = this.env && this.env.FormData;
+      return toFormData(isFileList2 ? { "files[]": data2 } : data2, _FormData && new _FormData());
+    } else if (isObjectPayload || contentType === "application/json") {
+      setContentTypeIfUnset(headers, "application/json");
+      return stringifySafely(data2);
+    }
+    return data2;
+  }],
+  transformResponse: [function transformResponse(data2) {
+    var transitional3 = this.transitional || defaults$3.transitional;
+    var silentJSONParsing = transitional3 && transitional3.silentJSONParsing;
+    var forcedJSONParsing = transitional3 && transitional3.forcedJSONParsing;
+    var strictJSONParsing = !silentJSONParsing && this.responseType === "json";
+    if (strictJSONParsing || forcedJSONParsing && utils$6.isString(data2) && data2.length) {
+      try {
+        return JSON.parse(data2);
+      } catch (e) {
+        if (strictJSONParsing) {
+          if (e.name === "SyntaxError") {
+            throw AxiosError$1.from(e, AxiosError$1.ERR_BAD_RESPONSE, this, null, this.response);
+          }
+          throw e;
+        }
+      }
+    }
+    return data2;
   }],
   timeout: 0,
   xsrfCookieName: "XSRF-TOKEN",
@@ -583,580 +913,806 @@ var An = {
   maxContentLength: -1,
   maxBodyLength: -1,
   env: {
-    FormData: ao()
+    FormData: require_null()
   },
-  validateStatus: function(t) {
-    return t >= 200 && t < 300;
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
   },
   headers: {
     common: {
-      Accept: "application/json, text/plain, */*"
+      "Accept": "application/json, text/plain, */*"
     }
   }
 };
-Le.forEach(["delete", "get", "head"], function(t) {
-  An.headers[t] = {};
+utils$6.forEach(["delete", "get", "head"], function forEachMethodNoData(method) {
+  defaults$3.headers[method] = {};
 });
-Le.forEach(["post", "put", "patch"], function(t) {
-  An.headers[t] = Le.merge(fo);
+utils$6.forEach(["post", "put", "patch"], function forEachMethodWithData(method) {
+  defaults$3.headers[method] = utils$6.merge(DEFAULT_CONTENT_TYPE);
 });
-var _0 = An, co = $e, ho = _0, uo = function(t, r, n) {
-  var a = this || ho;
-  return co.forEach(n, function(s) {
-    t = s.call(a, t, r);
-  }), t;
-}, zn, ua;
-function _i() {
-  return ua || (ua = 1, zn = function(t) {
-    return !!(t && t.__CANCEL__);
-  }), zn;
+var defaults_1 = defaults$3;
+var utils$5 = utils$c;
+var defaults$2 = defaults_1;
+var transformData$1 = function transformData(data2, headers, fns) {
+  var context = this || defaults$2;
+  utils$5.forEach(fns, function transform(fn) {
+    data2 = fn.call(context, data2, headers);
+  });
+  return data2;
+};
+var isCancel$1;
+var hasRequiredIsCancel;
+function requireIsCancel() {
+  if (hasRequiredIsCancel)
+    return isCancel$1;
+  hasRequiredIsCancel = 1;
+  isCancel$1 = function isCancel2(value) {
+    return !!(value && value.__CANCEL__);
+  };
+  return isCancel$1;
 }
-var xa = $e, Kn = uo, xo = _i(), po = _0, vo = Sn();
-function Yn(e) {
-  if (e.cancelToken && e.cancelToken.throwIfRequested(), e.signal && e.signal.aborted)
-    throw new vo();
+var utils$4 = utils$c;
+var transformData2 = transformData$1;
+var isCancel = requireIsCancel();
+var defaults$1 = defaults_1;
+var CanceledError = requireCanceledError();
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+  if (config.signal && config.signal.aborted) {
+    throw new CanceledError();
+  }
 }
-var mo = function(t) {
-  Yn(t), t.headers = t.headers || {}, t.data = Kn.call(
-    t,
-    t.data,
-    t.headers,
-    t.transformRequest
-  ), t.headers = xa.merge(
-    t.headers.common || {},
-    t.headers[t.method] || {},
-    t.headers
-  ), xa.forEach(
+var dispatchRequest$1 = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+  config.headers = config.headers || {};
+  config.data = transformData2.call(
+    config,
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+  config.headers = utils$4.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers
+  );
+  utils$4.forEach(
     ["delete", "get", "head", "post", "put", "patch", "common"],
-    function(a) {
-      delete t.headers[a];
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
     }
   );
-  var r = t.adapter || po.adapter;
-  return r(t).then(function(a) {
-    return Yn(t), a.data = Kn.call(
-      t,
-      a.data,
-      a.headers,
-      t.transformResponse
-    ), a;
-  }, function(a) {
-    return xo(a) || (Yn(t), a && a.response && (a.response.data = Kn.call(
-      t,
-      a.response.data,
-      a.response.headers,
-      t.transformResponse
-    ))), Promise.reject(a);
+  var adapter = config.adapter || defaults$1.adapter;
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+    response.data = transformData2.call(
+      config,
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+      if (reason && reason.response) {
+        reason.response.data = transformData2.call(
+          config,
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+    return Promise.reject(reason);
   });
-}, ar = $e, Ei = function(t, r) {
-  r = r || {};
-  var n = {};
-  function a(c, p) {
-    return ar.isPlainObject(c) && ar.isPlainObject(p) ? ar.merge(c, p) : ar.isPlainObject(p) ? ar.merge({}, p) : ar.isArray(p) ? p.slice() : p;
+};
+var utils$3 = utils$c;
+var mergeConfig$2 = function mergeConfig(config1, config2) {
+  config2 = config2 || {};
+  var config = {};
+  function getMergedValue(target, source) {
+    if (utils$3.isPlainObject(target) && utils$3.isPlainObject(source)) {
+      return utils$3.merge(target, source);
+    } else if (utils$3.isPlainObject(source)) {
+      return utils$3.merge({}, source);
+    } else if (utils$3.isArray(source)) {
+      return source.slice();
+    }
+    return source;
   }
-  function i(c) {
-    if (ar.isUndefined(r[c])) {
-      if (!ar.isUndefined(t[c]))
-        return a(void 0, t[c]);
-    } else
-      return a(t[c], r[c]);
+  function mergeDeepProperties(prop) {
+    if (!utils$3.isUndefined(config2[prop])) {
+      return getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils$3.isUndefined(config1[prop])) {
+      return getMergedValue(void 0, config1[prop]);
+    }
   }
-  function s(c) {
-    if (!ar.isUndefined(r[c]))
-      return a(void 0, r[c]);
+  function valueFromConfig2(prop) {
+    if (!utils$3.isUndefined(config2[prop])) {
+      return getMergedValue(void 0, config2[prop]);
+    }
   }
-  function f(c) {
-    if (ar.isUndefined(r[c])) {
-      if (!ar.isUndefined(t[c]))
-        return a(void 0, t[c]);
-    } else
-      return a(void 0, r[c]);
+  function defaultToConfig2(prop) {
+    if (!utils$3.isUndefined(config2[prop])) {
+      return getMergedValue(void 0, config2[prop]);
+    } else if (!utils$3.isUndefined(config1[prop])) {
+      return getMergedValue(void 0, config1[prop]);
+    }
   }
-  function l(c) {
-    if (c in r)
-      return a(t[c], r[c]);
-    if (c in t)
-      return a(void 0, t[c]);
+  function mergeDirectKeys(prop) {
+    if (prop in config2) {
+      return getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      return getMergedValue(void 0, config1[prop]);
+    }
   }
-  var o = {
-    url: s,
-    method: s,
-    data: s,
-    baseURL: f,
-    transformRequest: f,
-    transformResponse: f,
-    paramsSerializer: f,
-    timeout: f,
-    timeoutMessage: f,
-    withCredentials: f,
-    adapter: f,
-    responseType: f,
-    xsrfCookieName: f,
-    xsrfHeaderName: f,
-    onUploadProgress: f,
-    onDownloadProgress: f,
-    decompress: f,
-    maxContentLength: f,
-    maxBodyLength: f,
-    beforeRedirect: f,
-    transport: f,
-    httpAgent: f,
-    httpsAgent: f,
-    cancelToken: f,
-    socketPath: f,
-    responseEncoding: f,
-    validateStatus: l
+  var mergeMap = {
+    "url": valueFromConfig2,
+    "method": valueFromConfig2,
+    "data": valueFromConfig2,
+    "baseURL": defaultToConfig2,
+    "transformRequest": defaultToConfig2,
+    "transformResponse": defaultToConfig2,
+    "paramsSerializer": defaultToConfig2,
+    "timeout": defaultToConfig2,
+    "timeoutMessage": defaultToConfig2,
+    "withCredentials": defaultToConfig2,
+    "adapter": defaultToConfig2,
+    "responseType": defaultToConfig2,
+    "xsrfCookieName": defaultToConfig2,
+    "xsrfHeaderName": defaultToConfig2,
+    "onUploadProgress": defaultToConfig2,
+    "onDownloadProgress": defaultToConfig2,
+    "decompress": defaultToConfig2,
+    "maxContentLength": defaultToConfig2,
+    "maxBodyLength": defaultToConfig2,
+    "beforeRedirect": defaultToConfig2,
+    "transport": defaultToConfig2,
+    "httpAgent": defaultToConfig2,
+    "httpsAgent": defaultToConfig2,
+    "cancelToken": defaultToConfig2,
+    "socketPath": defaultToConfig2,
+    "responseEncoding": defaultToConfig2,
+    "validateStatus": mergeDirectKeys
   };
-  return ar.forEach(Object.keys(t).concat(Object.keys(r)), function(p) {
-    var u = o[p] || i, v = u(p);
-    ar.isUndefined(v) && u !== l || (n[p] = v);
-  }), n;
-}, qn, da;
-function Ti() {
-  return da || (da = 1, qn = {
-    version: "0.27.2"
-  }), qn;
+  utils$3.forEach(Object.keys(config1).concat(Object.keys(config2)), function computeConfigValue(prop) {
+    var merge2 = mergeMap[prop] || mergeDeepProperties;
+    var configValue = merge2(prop);
+    utils$3.isUndefined(configValue) && merge2 !== mergeDirectKeys || (config[prop] = configValue);
+  });
+  return config;
+};
+var data;
+var hasRequiredData;
+function requireData() {
+  if (hasRequiredData)
+    return data;
+  hasRequiredData = 1;
+  data = {
+    "version": "0.27.2"
+  };
+  return data;
 }
-var go = Ti().version, Mr = Et, E0 = {};
-["object", "boolean", "number", "function", "string", "symbol"].forEach(function(e, t) {
-  E0[e] = function(n) {
-    return typeof n === e || "a" + (t < 1 ? "n " : " ") + e;
+var VERSION = requireData().version;
+var AxiosError = AxiosError_1;
+var validators$1 = {};
+["object", "boolean", "number", "function", "string", "symbol"].forEach(function(type, i) {
+  validators$1[type] = function validator2(thing) {
+    return typeof thing === type || "a" + (i < 1 ? "n " : " ") + type;
   };
 });
-var pa = {};
-E0.transitional = function(t, r, n) {
-  function a(i, s) {
-    return "[Axios v" + go + "] Transitional option '" + i + "'" + s + (n ? ". " + n : "");
+var deprecatedWarnings = {};
+validators$1.transitional = function transitional2(validator2, version, message) {
+  function formatMessage(opt, desc) {
+    return "[Axios v" + VERSION + "] Transitional option '" + opt + "'" + desc + (message ? ". " + message : "");
   }
-  return function(i, s, f) {
-    if (t === !1)
-      throw new Mr(
-        a(s, " has been removed" + (r ? " in " + r : "")),
-        Mr.ERR_DEPRECATED
+  return function(value, opt, opts) {
+    if (validator2 === false) {
+      throw new AxiosError(
+        formatMessage(opt, " has been removed" + (version ? " in " + version : "")),
+        AxiosError.ERR_DEPRECATED
       );
-    return r && !pa[s] && (pa[s] = !0, console.warn(
-      a(
-        s,
-        " has been deprecated since v" + r + " and will be removed in the near future"
-      )
-    )), t ? t(i, s, f) : !0;
+    }
+    if (version && !deprecatedWarnings[opt]) {
+      deprecatedWarnings[opt] = true;
+      console.warn(
+        formatMessage(
+          opt,
+          " has been deprecated since v" + version + " and will be removed in the near future"
+        )
+      );
+    }
+    return validator2 ? validator2(value, opt, opts) : true;
   };
 };
-function _o(e, t, r) {
-  if (typeof e != "object")
-    throw new Mr("options must be an object", Mr.ERR_BAD_OPTION_VALUE);
-  for (var n = Object.keys(e), a = n.length; a-- > 0; ) {
-    var i = n[a], s = t[i];
-    if (s) {
-      var f = e[i], l = f === void 0 || s(f, i, e);
-      if (l !== !0)
-        throw new Mr("option " + i + " must be " + l, Mr.ERR_BAD_OPTION_VALUE);
+function assertOptions(options, schema, allowUnknown) {
+  if (typeof options !== "object") {
+    throw new AxiosError("options must be an object", AxiosError.ERR_BAD_OPTION_VALUE);
+  }
+  var keys2 = Object.keys(options);
+  var i = keys2.length;
+  while (i-- > 0) {
+    var opt = keys2[i];
+    var validator2 = schema[opt];
+    if (validator2) {
+      var value = options[opt];
+      var result = value === void 0 || validator2(value, opt, options);
+      if (result !== true) {
+        throw new AxiosError("option " + opt + " must be " + result, AxiosError.ERR_BAD_OPTION_VALUE);
+      }
       continue;
     }
-    if (r !== !0)
-      throw new Mr("Unknown option " + i, Mr.ERR_BAD_OPTION);
+    if (allowUnknown !== true) {
+      throw new AxiosError("Unknown option " + opt, AxiosError.ERR_BAD_OPTION);
+    }
   }
 }
-var Eo = {
-  assertOptions: _o,
-  validators: E0
-}, wi = $e, To = ui, va = $f, ma = mo, Fn = Ei, wo = gi, Si = Eo, ft = Si.validators;
-function gt(e) {
-  this.defaults = e, this.interceptors = {
-    request: new va(),
-    response: new va()
+var validator$1 = {
+  assertOptions,
+  validators: validators$1
+};
+var utils$2 = utils$c;
+var buildURL2 = buildURL$1;
+var InterceptorManager = InterceptorManager_1;
+var dispatchRequest2 = dispatchRequest$1;
+var mergeConfig$1 = mergeConfig$2;
+var buildFullPath2 = buildFullPath$1;
+var validator = validator$1;
+var validators = validator.validators;
+function Axios$1(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
   };
 }
-gt.prototype.request = function(t, r) {
-  typeof t == "string" ? (r = r || {}, r.url = t) : r = t || {}, r = Fn(this.defaults, r), r.method ? r.method = r.method.toLowerCase() : this.defaults.method ? r.method = this.defaults.method.toLowerCase() : r.method = "get";
-  var n = r.transitional;
-  n !== void 0 && Si.assertOptions(n, {
-    silentJSONParsing: ft.transitional(ft.boolean),
-    forcedJSONParsing: ft.transitional(ft.boolean),
-    clarifyTimeoutError: ft.transitional(ft.boolean)
-  }, !1);
-  var a = [], i = !0;
-  this.interceptors.request.forEach(function(v) {
-    typeof v.runWhen == "function" && v.runWhen(r) === !1 || (i = i && v.synchronous, a.unshift(v.fulfilled, v.rejected));
-  });
-  var s = [];
-  this.interceptors.response.forEach(function(v) {
-    s.push(v.fulfilled, v.rejected);
-  });
-  var f;
-  if (!i) {
-    var l = [ma, void 0];
-    for (Array.prototype.unshift.apply(l, a), l = l.concat(s), f = Promise.resolve(r); l.length; )
-      f = f.then(l.shift(), l.shift());
-    return f;
+Axios$1.prototype.request = function request(configOrUrl, config) {
+  if (typeof configOrUrl === "string") {
+    config = config || {};
+    config.url = configOrUrl;
+  } else {
+    config = configOrUrl || {};
   }
-  for (var o = r; a.length; ) {
-    var c = a.shift(), p = a.shift();
+  config = mergeConfig$1(this.defaults, config);
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = "get";
+  }
+  var transitional3 = config.transitional;
+  if (transitional3 !== void 0) {
+    validator.assertOptions(transitional3, {
+      silentJSONParsing: validators.transitional(validators.boolean),
+      forcedJSONParsing: validators.transitional(validators.boolean),
+      clarifyTimeoutError: validators.transitional(validators.boolean)
+    }, false);
+  }
+  var requestInterceptorChain = [];
+  var synchronousRequestInterceptors = true;
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    if (typeof interceptor.runWhen === "function" && interceptor.runWhen(config) === false) {
+      return;
+    }
+    synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
+    requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+  var responseInterceptorChain = [];
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+  var promise;
+  if (!synchronousRequestInterceptors) {
+    var chain = [dispatchRequest2, void 0];
+    Array.prototype.unshift.apply(chain, requestInterceptorChain);
+    chain = chain.concat(responseInterceptorChain);
+    promise = Promise.resolve(config);
+    while (chain.length) {
+      promise = promise.then(chain.shift(), chain.shift());
+    }
+    return promise;
+  }
+  var newConfig = config;
+  while (requestInterceptorChain.length) {
+    var onFulfilled = requestInterceptorChain.shift();
+    var onRejected = requestInterceptorChain.shift();
     try {
-      o = c(o);
-    } catch (u) {
-      p(u);
+      newConfig = onFulfilled(newConfig);
+    } catch (error) {
+      onRejected(error);
       break;
     }
   }
   try {
-    f = ma(o);
-  } catch (u) {
-    return Promise.reject(u);
+    promise = dispatchRequest2(newConfig);
+  } catch (error) {
+    return Promise.reject(error);
   }
-  for (; s.length; )
-    f = f.then(s.shift(), s.shift());
-  return f;
+  while (responseInterceptorChain.length) {
+    promise = promise.then(responseInterceptorChain.shift(), responseInterceptorChain.shift());
+  }
+  return promise;
 };
-gt.prototype.getUri = function(t) {
-  t = Fn(this.defaults, t);
-  var r = wo(t.baseURL, t.url);
-  return To(r, t.params, t.paramsSerializer);
+Axios$1.prototype.getUri = function getUri(config) {
+  config = mergeConfig$1(this.defaults, config);
+  var fullPath = buildFullPath2(config.baseURL, config.url);
+  return buildURL2(fullPath, config.params, config.paramsSerializer);
 };
-wi.forEach(["delete", "get", "head", "options"], function(t) {
-  gt.prototype[t] = function(r, n) {
-    return this.request(Fn(n || {}, {
-      method: t,
-      url: r,
-      data: (n || {}).data
+utils$2.forEach(["delete", "get", "head", "options"], function forEachMethodNoData2(method) {
+  Axios$1.prototype[method] = function(url, config) {
+    return this.request(mergeConfig$1(config || {}, {
+      method,
+      url,
+      data: (config || {}).data
     }));
   };
 });
-wi.forEach(["post", "put", "patch"], function(t) {
-  function r(n) {
-    return function(i, s, f) {
-      return this.request(Fn(f || {}, {
-        method: t,
-        headers: n ? {
+utils$2.forEach(["post", "put", "patch"], function forEachMethodWithData2(method) {
+  function generateHTTPMethod(isForm) {
+    return function httpMethod(url, data2, config) {
+      return this.request(mergeConfig$1(config || {}, {
+        method,
+        headers: isForm ? {
           "Content-Type": "multipart/form-data"
         } : {},
-        url: i,
-        data: s
+        url,
+        data: data2
       }));
     };
   }
-  gt.prototype[t] = r(), gt.prototype[t + "Form"] = r(!0);
+  Axios$1.prototype[method] = generateHTTPMethod();
+  Axios$1.prototype[method + "Form"] = generateHTTPMethod(true);
 });
-var So = gt, Jn, ga;
-function Ao() {
-  if (ga)
-    return Jn;
-  ga = 1;
-  var e = Sn();
-  function t(r) {
-    if (typeof r != "function")
+var Axios_1 = Axios$1;
+var CancelToken_1;
+var hasRequiredCancelToken;
+function requireCancelToken() {
+  if (hasRequiredCancelToken)
+    return CancelToken_1;
+  hasRequiredCancelToken = 1;
+  var CanceledError2 = requireCanceledError();
+  function CancelToken(executor) {
+    if (typeof executor !== "function") {
       throw new TypeError("executor must be a function.");
-    var n;
-    this.promise = new Promise(function(s) {
-      n = s;
+    }
+    var resolvePromise;
+    this.promise = new Promise(function promiseExecutor(resolve) {
+      resolvePromise = resolve;
     });
-    var a = this;
-    this.promise.then(function(i) {
-      if (!!a._listeners) {
-        var s, f = a._listeners.length;
-        for (s = 0; s < f; s++)
-          a._listeners[s](i);
-        a._listeners = null;
+    var token = this;
+    this.promise.then(function(cancel) {
+      if (!token._listeners)
+        return;
+      var i;
+      var l = token._listeners.length;
+      for (i = 0; i < l; i++) {
+        token._listeners[i](cancel);
       }
-    }), this.promise.then = function(i) {
-      var s, f = new Promise(function(l) {
-        a.subscribe(l), s = l;
-      }).then(i);
-      return f.cancel = function() {
-        a.unsubscribe(s);
-      }, f;
-    }, r(function(s) {
-      a.reason || (a.reason = new e(s), n(a.reason));
+      token._listeners = null;
+    });
+    this.promise.then = function(onfulfilled) {
+      var _resolve;
+      var promise = new Promise(function(resolve) {
+        token.subscribe(resolve);
+        _resolve = resolve;
+      }).then(onfulfilled);
+      promise.cancel = function reject() {
+        token.unsubscribe(_resolve);
+      };
+      return promise;
+    };
+    executor(function cancel(message) {
+      if (token.reason) {
+        return;
+      }
+      token.reason = new CanceledError2(message);
+      resolvePromise(token.reason);
     });
   }
-  return t.prototype.throwIfRequested = function() {
-    if (this.reason)
-      throw this.reason;
-  }, t.prototype.subscribe = function(n) {
+  CancelToken.prototype.throwIfRequested = function throwIfRequested() {
     if (this.reason) {
-      n(this.reason);
+      throw this.reason;
+    }
+  };
+  CancelToken.prototype.subscribe = function subscribe(listener) {
+    if (this.reason) {
+      listener(this.reason);
       return;
     }
-    this._listeners ? this._listeners.push(n) : this._listeners = [n];
-  }, t.prototype.unsubscribe = function(n) {
-    if (!!this._listeners) {
-      var a = this._listeners.indexOf(n);
-      a !== -1 && this._listeners.splice(a, 1);
+    if (this._listeners) {
+      this._listeners.push(listener);
+    } else {
+      this._listeners = [listener];
     }
-  }, t.source = function() {
-    var n, a = new t(function(s) {
-      n = s;
+  };
+  CancelToken.prototype.unsubscribe = function unsubscribe(listener) {
+    if (!this._listeners) {
+      return;
+    }
+    var index = this._listeners.indexOf(listener);
+    if (index !== -1) {
+      this._listeners.splice(index, 1);
+    }
+  };
+  CancelToken.source = function source() {
+    var cancel;
+    var token = new CancelToken(function executor(c) {
+      cancel = c;
     });
     return {
-      token: a,
-      cancel: n
+      token,
+      cancel
     };
-  }, Jn = t, Jn;
+  };
+  CancelToken_1 = CancelToken;
+  return CancelToken_1;
 }
-var Zn, _a;
-function Fo() {
-  return _a || (_a = 1, Zn = function(t) {
-    return function(n) {
-      return t.apply(null, n);
+var spread;
+var hasRequiredSpread;
+function requireSpread() {
+  if (hasRequiredSpread)
+    return spread;
+  hasRequiredSpread = 1;
+  spread = function spread2(callback) {
+    return function wrap(arr) {
+      return callback.apply(null, arr);
     };
-  }), Zn;
+  };
+  return spread;
 }
-var Qn, Ea;
-function yo() {
-  if (Ea)
-    return Qn;
-  Ea = 1;
-  var e = $e;
-  return Qn = function(r) {
-    return e.isObject(r) && r.isAxiosError === !0;
-  }, Qn;
+var isAxiosError;
+var hasRequiredIsAxiosError;
+function requireIsAxiosError() {
+  if (hasRequiredIsAxiosError)
+    return isAxiosError;
+  hasRequiredIsAxiosError = 1;
+  var utils2 = utils$c;
+  isAxiosError = function isAxiosError2(payload) {
+    return utils2.isObject(payload) && payload.isAxiosError === true;
+  };
+  return isAxiosError;
 }
-var Ta = $e, Co = li, sn = So, Oo = Ei, Ro = _0;
-function Ai(e) {
-  var t = new sn(e), r = Co(sn.prototype.request, t);
-  return Ta.extend(r, sn.prototype, t), Ta.extend(r, t), r.create = function(a) {
-    return Ai(Oo(e, a));
-  }, r;
+var utils$1 = utils$c;
+var bind2 = bind$2;
+var Axios = Axios_1;
+var mergeConfig2 = mergeConfig$2;
+var defaults = defaults_1;
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind2(Axios.prototype.request, context);
+  utils$1.extend(instance, Axios.prototype, context);
+  utils$1.extend(instance, context);
+  instance.create = function create(instanceConfig) {
+    return createInstance(mergeConfig2(defaultConfig, instanceConfig));
+  };
+  return instance;
 }
-var er = Ai(Ro);
-er.Axios = sn;
-er.CanceledError = Sn();
-er.CancelToken = Ao();
-er.isCancel = _i();
-er.VERSION = Ti().version;
-er.toFormData = mi;
-er.AxiosError = Et;
-er.Cancel = er.CanceledError;
-er.all = function(t) {
-  return Promise.all(t);
+var axios$1 = createInstance(defaults);
+axios$1.Axios = Axios;
+axios$1.CanceledError = requireCanceledError();
+axios$1.CancelToken = requireCancelToken();
+axios$1.isCancel = requireIsCancel();
+axios$1.VERSION = requireData().version;
+axios$1.toFormData = toFormData_1;
+axios$1.AxiosError = AxiosError_1;
+axios$1.Cancel = axios$1.CanceledError;
+axios$1.all = function all(promises) {
+  return Promise.all(promises);
 };
-er.spread = Fo();
-er.isAxiosError = yo();
-x0.exports = er;
-x0.exports.default = er;
-(function(e) {
-  e.exports = x0.exports;
-})(oi);
-const Do = /* @__PURE__ */ wf(oi.exports);
-class No {
-  constructor(t, r) {
-    this.routePath = "", this.axiosInstance = {}, this.routePath = t, this.axiosInstance = r;
+axios$1.spread = requireSpread();
+axios$1.isAxiosError = requireIsAxiosError();
+axios$2.exports = axios$1;
+axios$2.exports.default = axios$1;
+(function(module) {
+  module.exports = axios$2.exports;
+})(axios$3);
+const axios = /* @__PURE__ */ getDefaultExportFromCjs(axios$3.exports);
+class BaseCRUD {
+  constructor(routePath, axiosInstance) {
+    this.routePath = "";
+    this.axiosInstance = {};
+    this.routePath = routePath;
+    this.axiosInstance = axiosInstance;
   }
   getAxiosInstance() {
-    return this.axiosInstance || (this.axiosInstance = Do.create({
-      baseURL: "https://some-domain.com/api/",
-      timeout: 3e3
-    })), this.axiosInstance;
+    if (!this.axiosInstance) {
+      this.axiosInstance = axios.create({
+        baseURL: "https://some-domain.com/api/",
+        timeout: 3e3
+      });
+    }
+    return this.axiosInstance;
   }
-  getList(t) {
+  getList(filterCondition) {
     return this.getAxiosInstance().get(`/${this.routePath}`, {
-      params: t
+      params: filterCondition
     });
   }
-  post(t) {
+  post(sendData) {
     return this.getAxiosInstance().post(`/${this.routePath}`, {
-      data: t
+      data: sendData
     });
   }
-  delete(t) {
-    return this.getAxiosInstance().delete(`/${this.routePath}/${t}`);
+  delete(_id) {
+    return this.getAxiosInstance().delete(`/${this.routePath}/${_id}`);
   }
-  put(t, r) {
-    return this.getAxiosInstance().put(`/${this.routePath}/${t}`, {
-      data: r
+  put(_id, sendData) {
+    return this.getAxiosInstance().put(`/${this.routePath}/${_id}`, {
+      data: sendData
     });
   }
-  get(t) {
-    return this.getAxiosInstance().get(`/${this.routePath}/${t}`);
+  get(_id) {
+    return this.getAxiosInstance().get(`/${this.routePath}/${_id}`);
   }
 }
-function y2(e, t, r) {
-  const n = new No(
-    e,
-    t
-  ), a = async (o) => await n.getList(o);
+function useBaseCRUD(routePath, axiosInstance, filterCondition) {
+  const activityTemplateGroupInstance = new BaseCRUD(
+    routePath,
+    axiosInstance
+  );
+  const getList = async (filterCondition2) => {
+    return await activityTemplateGroupInstance.getList(filterCondition2);
+  };
+  const getMethod = async (row) => {
+    const [resData] = await activityTemplateGroupInstance.get(row._id);
+    return resData;
+  };
+  const postMethod = async (sendData) => {
+    await activityTemplateGroupInstance.post(sendData);
+    await getList();
+  };
+  const deleteMethod = async (row) => {
+    await activityTemplateGroupInstance.delete(row._id);
+    await getList();
+  };
+  const putMethod = async (sendData) => {
+    await activityTemplateGroupInstance.put(sendData._id, sendData);
+    await getList();
+  };
   return {
-    getList: a,
-    getMethod: async (o) => {
-      const [c] = await n.get(o._id);
-      return c;
-    },
-    postMethod: async (o) => {
-      await n.post(o), await a();
-    },
-    deleteMethod: async (o) => {
-      await n.delete(o._id), await a();
-    },
-    putMethod: async (o) => {
-      await n.put(o._id, o), await a();
-    }
+    getList,
+    getMethod,
+    postMethod,
+    deleteMethod,
+    putMethod
   };
 }
 /*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
-var on = {};
-on.version = "0.18.5";
-var Fi = 1252, Io = [874, 932, 936, 949, 950, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1e4], yi = function(e) {
-  Io.indexOf(e) != -1 && (Fi = e);
+var XLSX = {};
+XLSX.version = "0.18.5";
+var current_ansi = 1252;
+var VALID_ANSI = [874, 932, 936, 949, 950, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1e4];
+var set_ansi = function(cp) {
+  if (VALID_ANSI.indexOf(cp) == -1)
+    return;
+  current_ansi = cp;
 };
-function ko() {
-  yi(1252);
+function reset_ansi() {
+  set_ansi(1252);
 }
-var Bt = function(e) {
-  yi(e);
+var set_cp = function(cp) {
+  set_ansi(cp);
 };
-function Po() {
-  Bt(1200), ko();
+function reset_cp() {
+  set_cp(1200);
+  reset_ansi();
 }
-function Lo(e) {
-  for (var t = [], r = 0; r < e.length >> 1; ++r)
-    t[r] = String.fromCharCode(e.charCodeAt(2 * r + 1) + (e.charCodeAt(2 * r) << 8));
-  return t.join("");
+function utf16beread(data2) {
+  var o = [];
+  for (var i = 0; i < data2.length >> 1; ++i)
+    o[i] = String.fromCharCode(data2.charCodeAt(2 * i + 1) + (data2.charCodeAt(2 * i) << 8));
+  return o.join("");
 }
-var qt = function(t) {
-  return String.fromCharCode(t);
-}, wa = function(t) {
-  return String.fromCharCode(t);
-}, zr, Ur = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-function Mt(e) {
-  for (var t = "", r = 0, n = 0, a = 0, i = 0, s = 0, f = 0, l = 0, o = 0; o < e.length; )
-    r = e.charCodeAt(o++), i = r >> 2, n = e.charCodeAt(o++), s = (r & 3) << 4 | n >> 4, a = e.charCodeAt(o++), f = (n & 15) << 2 | a >> 6, l = a & 63, isNaN(n) ? f = l = 64 : isNaN(a) && (l = 64), t += Ur.charAt(i) + Ur.charAt(s) + Ur.charAt(f) + Ur.charAt(l);
-  return t;
+var _getchar = function _gc1(x) {
+  return String.fromCharCode(x);
+};
+var _getansi = function _ga1(x) {
+  return String.fromCharCode(x);
+};
+var $cptable;
+var Base64_map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+function Base64_encode(input) {
+  var o = "";
+  var c1 = 0, c2 = 0, c3 = 0, e1 = 0, e2 = 0, e3 = 0, e4 = 0;
+  for (var i = 0; i < input.length; ) {
+    c1 = input.charCodeAt(i++);
+    e1 = c1 >> 2;
+    c2 = input.charCodeAt(i++);
+    e2 = (c1 & 3) << 4 | c2 >> 4;
+    c3 = input.charCodeAt(i++);
+    e3 = (c2 & 15) << 2 | c3 >> 6;
+    e4 = c3 & 63;
+    if (isNaN(c2)) {
+      e3 = e4 = 64;
+    } else if (isNaN(c3)) {
+      e4 = 64;
+    }
+    o += Base64_map.charAt(e1) + Base64_map.charAt(e2) + Base64_map.charAt(e3) + Base64_map.charAt(e4);
+  }
+  return o;
 }
-function kr(e) {
-  var t = "", r = 0, n = 0, a = 0, i = 0, s = 0, f = 0, l = 0;
-  e = e.replace(/[^\w\+\/\=]/g, "");
-  for (var o = 0; o < e.length; )
-    i = Ur.indexOf(e.charAt(o++)), s = Ur.indexOf(e.charAt(o++)), r = i << 2 | s >> 4, t += String.fromCharCode(r), f = Ur.indexOf(e.charAt(o++)), n = (s & 15) << 4 | f >> 2, f !== 64 && (t += String.fromCharCode(n)), l = Ur.indexOf(e.charAt(o++)), a = (f & 3) << 6 | l, l !== 64 && (t += String.fromCharCode(a));
-  return t;
+function Base64_decode(input) {
+  var o = "";
+  var c1 = 0, c2 = 0, c3 = 0, e1 = 0, e2 = 0, e3 = 0, e4 = 0;
+  input = input.replace(/[^\w\+\/\=]/g, "");
+  for (var i = 0; i < input.length; ) {
+    e1 = Base64_map.indexOf(input.charAt(i++));
+    e2 = Base64_map.indexOf(input.charAt(i++));
+    c1 = e1 << 2 | e2 >> 4;
+    o += String.fromCharCode(c1);
+    e3 = Base64_map.indexOf(input.charAt(i++));
+    c2 = (e2 & 15) << 4 | e3 >> 2;
+    if (e3 !== 64) {
+      o += String.fromCharCode(c2);
+    }
+    e4 = Base64_map.indexOf(input.charAt(i++));
+    c3 = (e3 & 3) << 6 | e4;
+    if (e4 !== 64) {
+      o += String.fromCharCode(c3);
+    }
+  }
+  return o;
 }
-var de = /* @__PURE__ */ function() {
-  return typeof Buffer < "u" && typeof process < "u" && typeof process.versions < "u" && !!process.versions.node;
-}(), Lr = /* @__PURE__ */ function() {
-  if (typeof Buffer < "u") {
-    var e = !Buffer.from;
-    if (!e)
+var has_buf = /* @__PURE__ */ function() {
+  return typeof Buffer !== "undefined" && typeof process !== "undefined" && typeof process.versions !== "undefined" && !!process.versions.node;
+}();
+var Buffer_from = /* @__PURE__ */ function() {
+  if (typeof Buffer !== "undefined") {
+    var nbfs = !Buffer.from;
+    if (!nbfs)
       try {
         Buffer.from("foo", "utf8");
-      } catch {
-        e = !0;
+      } catch (e) {
+        nbfs = true;
       }
-    return e ? function(t, r) {
-      return r ? new Buffer(t, r) : new Buffer(t);
+    return nbfs ? function(buf, enc) {
+      return enc ? new Buffer(buf, enc) : new Buffer(buf);
     } : Buffer.from.bind(Buffer);
   }
   return function() {
   };
 }();
-function qr(e) {
-  return de ? Buffer.alloc ? Buffer.alloc(e) : new Buffer(e) : typeof Uint8Array < "u" ? new Uint8Array(e) : new Array(e);
+function new_raw_buf(len) {
+  if (has_buf)
+    return Buffer.alloc ? Buffer.alloc(len) : new Buffer(len);
+  return typeof Uint8Array != "undefined" ? new Uint8Array(len) : new Array(len);
 }
-function Sa(e) {
-  return de ? Buffer.allocUnsafe ? Buffer.allocUnsafe(e) : new Buffer(e) : typeof Uint8Array < "u" ? new Uint8Array(e) : new Array(e);
+function new_unsafe_buf(len) {
+  if (has_buf)
+    return Buffer.allocUnsafe ? Buffer.allocUnsafe(len) : new Buffer(len);
+  return typeof Uint8Array != "undefined" ? new Uint8Array(len) : new Array(len);
 }
-var _r = function(t) {
-  return de ? Lr(t, "binary") : t.split("").map(function(r) {
-    return r.charCodeAt(0) & 255;
+var s2a = function s2a2(s) {
+  if (has_buf)
+    return Buffer_from(s, "binary");
+  return s.split("").map(function(x) {
+    return x.charCodeAt(0) & 255;
   });
 };
-function yn(e) {
-  if (typeof ArrayBuffer > "u")
-    return _r(e);
-  for (var t = new ArrayBuffer(e.length), r = new Uint8Array(t), n = 0; n != e.length; ++n)
-    r[n] = e.charCodeAt(n) & 255;
-  return t;
+function s2ab(s) {
+  if (typeof ArrayBuffer === "undefined")
+    return s2a(s);
+  var buf = new ArrayBuffer(s.length), view = new Uint8Array(buf);
+  for (var i = 0; i != s.length; ++i)
+    view[i] = s.charCodeAt(i) & 255;
+  return buf;
 }
-function Vt(e) {
-  if (Array.isArray(e))
-    return e.map(function(n) {
-      return String.fromCharCode(n);
+function a2s(data2) {
+  if (Array.isArray(data2))
+    return data2.map(function(c) {
+      return String.fromCharCode(c);
     }).join("");
-  for (var t = [], r = 0; r < e.length; ++r)
-    t[r] = String.fromCharCode(e[r]);
-  return t.join("");
+  var o = [];
+  for (var i = 0; i < data2.length; ++i)
+    o[i] = String.fromCharCode(data2[i]);
+  return o.join("");
 }
-function Bo(e) {
-  if (typeof Uint8Array > "u")
+function a2u(data2) {
+  if (typeof Uint8Array === "undefined")
     throw new Error("Unsupported");
-  return new Uint8Array(e);
+  return new Uint8Array(data2);
 }
-var He = de ? function(e) {
-  return Buffer.concat(e.map(function(t) {
-    return Buffer.isBuffer(t) ? t : Lr(t);
+var bconcat = has_buf ? function(bufs) {
+  return Buffer.concat(bufs.map(function(buf) {
+    return Buffer.isBuffer(buf) ? buf : Buffer_from(buf);
   }));
-} : function(e) {
-  if (typeof Uint8Array < "u") {
-    var t = 0, r = 0;
-    for (t = 0; t < e.length; ++t)
-      r += e[t].length;
-    var n = new Uint8Array(r), a = 0;
-    for (t = 0, r = 0; t < e.length; r += a, ++t)
-      if (a = e[t].length, e[t] instanceof Uint8Array)
-        n.set(e[t], r);
-      else {
-        if (typeof e[t] == "string")
-          throw "wtf";
-        n.set(new Uint8Array(e[t]), r);
-      }
-    return n;
+} : function(bufs) {
+  if (typeof Uint8Array !== "undefined") {
+    var i = 0, maxlen = 0;
+    for (i = 0; i < bufs.length; ++i)
+      maxlen += bufs[i].length;
+    var o = new Uint8Array(maxlen);
+    var len = 0;
+    for (i = 0, maxlen = 0; i < bufs.length; maxlen += len, ++i) {
+      len = bufs[i].length;
+      if (bufs[i] instanceof Uint8Array)
+        o.set(bufs[i], maxlen);
+      else if (typeof bufs[i] == "string") {
+        throw "wtf";
+      } else
+        o.set(new Uint8Array(bufs[i]), maxlen);
+    }
+    return o;
   }
-  return [].concat.apply([], e.map(function(i) {
-    return Array.isArray(i) ? i : [].slice.call(i);
+  return [].concat.apply([], bufs.map(function(buf) {
+    return Array.isArray(buf) ? buf : [].slice.call(buf);
   }));
 };
-function Mo(e) {
-  for (var t = [], r = 0, n = e.length + 250, a = qr(e.length + 255), i = 0; i < e.length; ++i) {
-    var s = e.charCodeAt(i);
-    if (s < 128)
-      a[r++] = s;
-    else if (s < 2048)
-      a[r++] = 192 | s >> 6 & 31, a[r++] = 128 | s & 63;
-    else if (s >= 55296 && s < 57344) {
-      s = (s & 1023) + 64;
-      var f = e.charCodeAt(++i) & 1023;
-      a[r++] = 240 | s >> 8 & 7, a[r++] = 128 | s >> 2 & 63, a[r++] = 128 | f >> 6 & 15 | (s & 3) << 4, a[r++] = 128 | f & 63;
-    } else
-      a[r++] = 224 | s >> 12 & 15, a[r++] = 128 | s >> 6 & 63, a[r++] = 128 | s & 63;
-    r > n && (t.push(a.slice(0, r)), r = 0, a = qr(65535), n = 65530);
+function utf8decode(content) {
+  var out = [], widx = 0, L = content.length + 250;
+  var o = new_raw_buf(content.length + 255);
+  for (var ridx = 0; ridx < content.length; ++ridx) {
+    var c = content.charCodeAt(ridx);
+    if (c < 128)
+      o[widx++] = c;
+    else if (c < 2048) {
+      o[widx++] = 192 | c >> 6 & 31;
+      o[widx++] = 128 | c & 63;
+    } else if (c >= 55296 && c < 57344) {
+      c = (c & 1023) + 64;
+      var d = content.charCodeAt(++ridx) & 1023;
+      o[widx++] = 240 | c >> 8 & 7;
+      o[widx++] = 128 | c >> 2 & 63;
+      o[widx++] = 128 | d >> 6 & 15 | (c & 3) << 4;
+      o[widx++] = 128 | d & 63;
+    } else {
+      o[widx++] = 224 | c >> 12 & 15;
+      o[widx++] = 128 | c >> 6 & 63;
+      o[widx++] = 128 | c & 63;
+    }
+    if (widx > L) {
+      out.push(o.slice(0, widx));
+      widx = 0;
+      o = new_raw_buf(65535);
+      L = 65530;
+    }
   }
-  return t.push(a.slice(0, r)), He(t);
+  out.push(o.slice(0, widx));
+  return bconcat(out);
 }
-var Dt = /\u0000/g, Jt = /[\u0001-\u0006]/g;
-function xt(e) {
-  for (var t = "", r = e.length - 1; r >= 0; )
-    t += e.charAt(r--);
-  return t;
+var chr0 = /\u0000/g, chr1 = /[\u0001-\u0006]/g;
+function _strrev(x) {
+  var o = "", i = x.length - 1;
+  while (i >= 0)
+    o += x.charAt(i--);
+  return o;
 }
-function Er(e, t) {
-  var r = "" + e;
-  return r.length >= t ? r : ye("0", t - r.length) + r;
+function pad0(v, d) {
+  var t = "" + v;
+  return t.length >= d ? t : fill("0", d - t.length) + t;
 }
-function T0(e, t) {
-  var r = "" + e;
-  return r.length >= t ? r : ye(" ", t - r.length) + r;
+function pad_(v, d) {
+  var t = "" + v;
+  return t.length >= d ? t : fill(" ", d - t.length) + t;
 }
-function ln(e, t) {
-  var r = "" + e;
-  return r.length >= t ? r : r + ye(" ", t - r.length);
+function rpad_(v, d) {
+  var t = "" + v;
+  return t.length >= d ? t : t + fill(" ", d - t.length);
 }
-function Uo(e, t) {
-  var r = "" + Math.round(e);
-  return r.length >= t ? r : ye("0", t - r.length) + r;
+function pad0r1(v, d) {
+  var t = "" + Math.round(v);
+  return t.length >= d ? t : fill("0", d - t.length) + t;
 }
-function bo(e, t) {
-  var r = "" + e;
-  return r.length >= t ? r : ye("0", t - r.length) + r;
+function pad0r2(v, d) {
+  var t = "" + v;
+  return t.length >= d ? t : fill("0", d - t.length) + t;
 }
-var Aa = /* @__PURE__ */ Math.pow(2, 32);
-function ot(e, t) {
-  if (e > Aa || e < -Aa)
-    return Uo(e, t);
-  var r = Math.round(e);
-  return bo(r, t);
+var p2_32 = /* @__PURE__ */ Math.pow(2, 32);
+function pad0r(v, d) {
+  if (v > p2_32 || v < -p2_32)
+    return pad0r1(v, d);
+  var i = Math.round(v);
+  return pad0r2(i, d);
 }
-function cn(e, t) {
-  return t = t || 0, e.length >= 7 + t && (e.charCodeAt(t) | 32) === 103 && (e.charCodeAt(t + 1) | 32) === 101 && (e.charCodeAt(t + 2) | 32) === 110 && (e.charCodeAt(t + 3) | 32) === 101 && (e.charCodeAt(t + 4) | 32) === 114 && (e.charCodeAt(t + 5) | 32) === 97 && (e.charCodeAt(t + 6) | 32) === 108;
+function SSF_isgeneral(s, i) {
+  i = i || 0;
+  return s.length >= 7 + i && (s.charCodeAt(i) | 32) === 103 && (s.charCodeAt(i + 1) | 32) === 101 && (s.charCodeAt(i + 2) | 32) === 110 && (s.charCodeAt(i + 3) | 32) === 101 && (s.charCodeAt(i + 4) | 32) === 114 && (s.charCodeAt(i + 5) | 32) === 97 && (s.charCodeAt(i + 6) | 32) === 108;
 }
-var Fa = [
+var days = [
   ["Sun", "Sunday"],
   ["Mon", "Monday"],
   ["Tue", "Tuesday"],
@@ -1164,7 +1720,8 @@ var Fa = [
   ["Thu", "Thursday"],
   ["Fri", "Friday"],
   ["Sat", "Saturday"]
-], e0 = [
+];
+var months = [
   ["J", "Jan", "January"],
   ["F", "Feb", "February"],
   ["M", "Mar", "March"],
@@ -1178,10 +1735,41 @@ var Fa = [
   ["N", "Nov", "November"],
   ["D", "Dec", "December"]
 ];
-function Wo(e) {
-  return e || (e = {}), e[0] = "General", e[1] = "0", e[2] = "0.00", e[3] = "#,##0", e[4] = "#,##0.00", e[9] = "0%", e[10] = "0.00%", e[11] = "0.00E+00", e[12] = "# ?/?", e[13] = "# ??/??", e[14] = "m/d/yy", e[15] = "d-mmm-yy", e[16] = "d-mmm", e[17] = "mmm-yy", e[18] = "h:mm AM/PM", e[19] = "h:mm:ss AM/PM", e[20] = "h:mm", e[21] = "h:mm:ss", e[22] = "m/d/yy h:mm", e[37] = "#,##0 ;(#,##0)", e[38] = "#,##0 ;[Red](#,##0)", e[39] = "#,##0.00;(#,##0.00)", e[40] = "#,##0.00;[Red](#,##0.00)", e[45] = "mm:ss", e[46] = "[h]:mm:ss", e[47] = "mmss.0", e[48] = "##0.0E+0", e[49] = "@", e[56] = '"\u4E0A\u5348/\u4E0B\u5348 "hh"\u6642"mm"\u5206"ss"\u79D2 "', e;
+function SSF_init_table(t) {
+  if (!t)
+    t = {};
+  t[0] = "General";
+  t[1] = "0";
+  t[2] = "0.00";
+  t[3] = "#,##0";
+  t[4] = "#,##0.00";
+  t[9] = "0%";
+  t[10] = "0.00%";
+  t[11] = "0.00E+00";
+  t[12] = "# ?/?";
+  t[13] = "# ??/??";
+  t[14] = "m/d/yy";
+  t[15] = "d-mmm-yy";
+  t[16] = "d-mmm";
+  t[17] = "mmm-yy";
+  t[18] = "h:mm AM/PM";
+  t[19] = "h:mm:ss AM/PM";
+  t[20] = "h:mm";
+  t[21] = "h:mm:ss";
+  t[22] = "m/d/yy h:mm";
+  t[37] = "#,##0 ;(#,##0)";
+  t[38] = "#,##0 ;[Red](#,##0)";
+  t[39] = "#,##0.00;(#,##0.00)";
+  t[40] = "#,##0.00;[Red](#,##0.00)";
+  t[45] = "mm:ss";
+  t[46] = "[h]:mm:ss";
+  t[47] = "mmss.0";
+  t[48] = "##0.0E+0";
+  t[49] = "@";
+  t[56] = '"\u4E0A\u5348/\u4E0B\u5348 "hh"\u6642"mm"\u5206"ss"\u79D2 "';
+  return t;
 }
-var Ce = {
+var table_fmt = {
   0: "General",
   1: "0",
   2: "0.00",
@@ -1211,7 +1799,8 @@ var Ce = {
   48: "##0.0E+0",
   49: "@",
   56: '"\u4E0A\u5348/\u4E0B\u5348 "hh"\u6642"mm"\u5206"ss"\u79D2 "'
-}, ya = {
+};
+var SSF_default_map = {
   5: 37,
   6: 38,
   7: 39,
@@ -1254,7 +1843,8 @@ var Ce = {
   80: 46,
   81: 47,
   82: 0
-}, Ho = {
+};
+var SSF_default_str = {
   5: '"$"#,##0_);\\("$"#,##0\\)',
   63: '"$"#,##0_);\\("$"#,##0\\)',
   6: '"$"#,##0_);[Red]\\("$"#,##0\\)',
@@ -1268,472 +1858,701 @@ var Ce = {
   43: '_(* #,##0.00_);_(* \\(#,##0.00\\);_(* "-"??_);_(@_)',
   44: '_("$"* #,##0.00_);_("$"* \\(#,##0.00\\);_("$"* "-"??_);_(@_)'
 };
-function hn(e, t, r) {
-  for (var n = e < 0 ? -1 : 1, a = e * n, i = 0, s = 1, f = 0, l = 1, o = 0, c = 0, p = Math.floor(a); o < t && (p = Math.floor(a), f = p * s + i, c = p * o + l, !(a - p < 5e-8)); )
-    a = 1 / (a - p), i = s, s = f, l = o, o = c;
-  if (c > t && (o > t ? (c = l, f = i) : (c = o, f = s)), !r)
-    return [0, n * f, c];
-  var u = Math.floor(n * f / c);
-  return [u, n * f - u * c, c];
-}
-function Zt(e, t, r) {
-  if (e > 2958465 || e < 0)
-    return null;
-  var n = e | 0, a = Math.floor(86400 * (e - n)), i = 0, s = [], f = { D: n, T: a, u: 86400 * (e - n) - a, y: 0, m: 0, d: 0, H: 0, M: 0, S: 0, q: 0 };
-  if (Math.abs(f.u) < 1e-6 && (f.u = 0), t && t.date1904 && (n += 1462), f.u > 0.9999 && (f.u = 0, ++a == 86400 && (f.T = a = 0, ++n, ++f.D)), n === 60)
-    s = r ? [1317, 10, 29] : [1900, 2, 29], i = 3;
-  else if (n === 0)
-    s = r ? [1317, 8, 29] : [1900, 1, 0], i = 6;
-  else {
-    n > 60 && --n;
-    var l = new Date(1900, 0, 1);
-    l.setDate(l.getDate() + n - 1), s = [l.getFullYear(), l.getMonth() + 1, l.getDate()], i = l.getDay(), n < 60 && (i = (i + 6) % 7), r && (i = Ko(l, s));
+function SSF_frac(x, D, mixed) {
+  var sgn = x < 0 ? -1 : 1;
+  var B = x * sgn;
+  var P_2 = 0, P_1 = 1, P = 0;
+  var Q_2 = 1, Q_1 = 0, Q = 0;
+  var A = Math.floor(B);
+  while (Q_1 < D) {
+    A = Math.floor(B);
+    P = A * P_1 + P_2;
+    Q = A * Q_1 + Q_2;
+    if (B - A < 5e-8)
+      break;
+    B = 1 / (B - A);
+    P_2 = P_1;
+    P_1 = P;
+    Q_2 = Q_1;
+    Q_1 = Q;
   }
-  return f.y = s[0], f.m = s[1], f.d = s[2], f.S = a % 60, a = Math.floor(a / 60), f.M = a % 60, a = Math.floor(a / 60), f.H = a, f.q = i, f;
+  if (Q > D) {
+    if (Q_1 > D) {
+      Q = Q_2;
+      P = P_2;
+    } else {
+      Q = Q_1;
+      P = P_1;
+    }
+  }
+  if (!mixed)
+    return [0, sgn * P, Q];
+  var q = Math.floor(sgn * P / Q);
+  return [q, sgn * P - q * Q, Q];
 }
-var Ci = /* @__PURE__ */ new Date(1899, 11, 31, 0, 0, 0), Vo = /* @__PURE__ */ Ci.getTime(), Go = /* @__PURE__ */ new Date(1900, 2, 1, 0, 0, 0);
-function Oi(e, t) {
-  var r = /* @__PURE__ */ e.getTime();
-  return t ? r -= 1461 * 24 * 60 * 60 * 1e3 : e >= Go && (r += 24 * 60 * 60 * 1e3), (r - (Vo + (/* @__PURE__ */ e.getTimezoneOffset() - /* @__PURE__ */ Ci.getTimezoneOffset()) * 6e4)) / (24 * 60 * 60 * 1e3);
+function SSF_parse_date_code(v, opts, b2) {
+  if (v > 2958465 || v < 0)
+    return null;
+  var date = v | 0, time = Math.floor(86400 * (v - date)), dow = 0;
+  var dout = [];
+  var out = { D: date, T: time, u: 86400 * (v - date) - time, y: 0, m: 0, d: 0, H: 0, M: 0, S: 0, q: 0 };
+  if (Math.abs(out.u) < 1e-6)
+    out.u = 0;
+  if (opts && opts.date1904)
+    date += 1462;
+  if (out.u > 0.9999) {
+    out.u = 0;
+    if (++time == 86400) {
+      out.T = time = 0;
+      ++date;
+      ++out.D;
+    }
+  }
+  if (date === 60) {
+    dout = b2 ? [1317, 10, 29] : [1900, 2, 29];
+    dow = 3;
+  } else if (date === 0) {
+    dout = b2 ? [1317, 8, 29] : [1900, 1, 0];
+    dow = 6;
+  } else {
+    if (date > 60)
+      --date;
+    var d = new Date(1900, 0, 1);
+    d.setDate(d.getDate() + date - 1);
+    dout = [d.getFullYear(), d.getMonth() + 1, d.getDate()];
+    dow = d.getDay();
+    if (date < 60)
+      dow = (dow + 6) % 7;
+    if (b2)
+      dow = SSF_fix_hijri(d, dout);
+  }
+  out.y = dout[0];
+  out.m = dout[1];
+  out.d = dout[2];
+  out.S = time % 60;
+  time = Math.floor(time / 60);
+  out.M = time % 60;
+  time = Math.floor(time / 60);
+  out.H = time;
+  out.q = dow;
+  return out;
 }
-function w0(e) {
-  return e.indexOf(".") == -1 ? e : e.replace(/(?:\.0*|(\.\d*[1-9])0+)$/, "$1");
+var SSFbasedate = /* @__PURE__ */ new Date(1899, 11, 31, 0, 0, 0);
+var SSFdnthresh = /* @__PURE__ */ SSFbasedate.getTime();
+var SSFbase1904 = /* @__PURE__ */ new Date(1900, 2, 1, 0, 0, 0);
+function datenum_local(v, date1904) {
+  var epoch = /* @__PURE__ */ v.getTime();
+  if (date1904)
+    epoch -= 1461 * 24 * 60 * 60 * 1e3;
+  else if (v >= SSFbase1904)
+    epoch += 24 * 60 * 60 * 1e3;
+  return (epoch - (SSFdnthresh + (/* @__PURE__ */ v.getTimezoneOffset() - /* @__PURE__ */ SSFbasedate.getTimezoneOffset()) * 6e4)) / (24 * 60 * 60 * 1e3);
 }
-function Xo(e) {
-  return e.indexOf("E") == -1 ? e : e.replace(/(?:\.0*|(\.\d*[1-9])0+)[Ee]/, "$1E").replace(/(E[+-])(\d)$/, "$10$2");
+function SSF_strip_decimal(o) {
+  return o.indexOf(".") == -1 ? o : o.replace(/(?:\.0*|(\.\d*[1-9])0+)$/, "$1");
 }
-function $o(e) {
-  var t = e < 0 ? 12 : 11, r = w0(e.toFixed(12));
-  return r.length <= t || (r = e.toPrecision(10), r.length <= t) ? r : e.toExponential(5);
+function SSF_normalize_exp(o) {
+  if (o.indexOf("E") == -1)
+    return o;
+  return o.replace(/(?:\.0*|(\.\d*[1-9])0+)[Ee]/, "$1E").replace(/(E[+-])(\d)$/, "$10$2");
 }
-function jo(e) {
-  var t = w0(e.toFixed(11));
-  return t.length > (e < 0 ? 12 : 11) || t === "0" || t === "-0" ? e.toPrecision(6) : t;
+function SSF_small_exp(v) {
+  var w = v < 0 ? 12 : 11;
+  var o = SSF_strip_decimal(v.toFixed(12));
+  if (o.length <= w)
+    return o;
+  o = v.toPrecision(10);
+  if (o.length <= w)
+    return o;
+  return v.toExponential(5);
 }
-function zo(e) {
-  var t = Math.floor(Math.log(Math.abs(e)) * Math.LOG10E), r;
-  return t >= -4 && t <= -1 ? r = e.toPrecision(10 + t) : Math.abs(t) <= 9 ? r = $o(e) : t === 10 ? r = e.toFixed(10).substr(0, 12) : r = jo(e), w0(Xo(r.toUpperCase()));
+function SSF_large_exp(v) {
+  var o = SSF_strip_decimal(v.toFixed(11));
+  return o.length > (v < 0 ? 12 : 11) || o === "0" || o === "-0" ? v.toPrecision(6) : o;
 }
-function l0(e, t) {
-  switch (typeof e) {
+function SSF_general_num(v) {
+  var V = Math.floor(Math.log(Math.abs(v)) * Math.LOG10E), o;
+  if (V >= -4 && V <= -1)
+    o = v.toPrecision(10 + V);
+  else if (Math.abs(V) <= 9)
+    o = SSF_small_exp(v);
+  else if (V === 10)
+    o = v.toFixed(10).substr(0, 12);
+  else
+    o = SSF_large_exp(v);
+  return SSF_strip_decimal(SSF_normalize_exp(o.toUpperCase()));
+}
+function SSF_general(v, opts) {
+  switch (typeof v) {
     case "string":
-      return e;
+      return v;
     case "boolean":
-      return e ? "TRUE" : "FALSE";
+      return v ? "TRUE" : "FALSE";
     case "number":
-      return (e | 0) === e ? e.toString(10) : zo(e);
+      return (v | 0) === v ? v.toString(10) : SSF_general_num(v);
     case "undefined":
       return "";
     case "object":
-      if (e == null)
+      if (v == null)
         return "";
-      if (e instanceof Date)
-        return Wr(14, Oi(e, t && t.date1904), t);
+      if (v instanceof Date)
+        return SSF_format(14, datenum_local(v, opts && opts.date1904), opts);
   }
-  throw new Error("unsupported value in General format: " + e);
+  throw new Error("unsupported value in General format: " + v);
 }
-function Ko(e, t) {
-  t[0] -= 581;
-  var r = e.getDay();
-  return e < 60 && (r = (r + 6) % 7), r;
+function SSF_fix_hijri(date, o) {
+  o[0] -= 581;
+  var dow = date.getDay();
+  if (date < 60)
+    dow = (dow + 6) % 7;
+  return dow;
 }
-function Yo(e, t, r, n) {
-  var a = "", i = 0, s = 0, f = r.y, l, o = 0;
-  switch (e) {
+function SSF_write_date(type, fmt, val, ss0) {
+  var o = "", ss = 0, tt = 0, y = val.y, out, outl = 0;
+  switch (type) {
     case 98:
-      f = r.y + 543;
+      y = val.y + 543;
     case 121:
-      switch (t.length) {
+      switch (fmt.length) {
         case 1:
         case 2:
-          l = f % 100, o = 2;
+          out = y % 100;
+          outl = 2;
           break;
         default:
-          l = f % 1e4, o = 4;
+          out = y % 1e4;
+          outl = 4;
           break;
       }
       break;
     case 109:
-      switch (t.length) {
+      switch (fmt.length) {
         case 1:
         case 2:
-          l = r.m, o = t.length;
+          out = val.m;
+          outl = fmt.length;
           break;
         case 3:
-          return e0[r.m - 1][1];
+          return months[val.m - 1][1];
         case 5:
-          return e0[r.m - 1][0];
+          return months[val.m - 1][0];
         default:
-          return e0[r.m - 1][2];
+          return months[val.m - 1][2];
       }
       break;
     case 100:
-      switch (t.length) {
+      switch (fmt.length) {
         case 1:
         case 2:
-          l = r.d, o = t.length;
+          out = val.d;
+          outl = fmt.length;
           break;
         case 3:
-          return Fa[r.q][0];
+          return days[val.q][0];
         default:
-          return Fa[r.q][1];
+          return days[val.q][1];
       }
       break;
     case 104:
-      switch (t.length) {
+      switch (fmt.length) {
         case 1:
         case 2:
-          l = 1 + (r.H + 11) % 12, o = t.length;
+          out = 1 + (val.H + 11) % 12;
+          outl = fmt.length;
           break;
         default:
-          throw "bad hour format: " + t;
+          throw "bad hour format: " + fmt;
       }
       break;
     case 72:
-      switch (t.length) {
+      switch (fmt.length) {
         case 1:
         case 2:
-          l = r.H, o = t.length;
+          out = val.H;
+          outl = fmt.length;
           break;
         default:
-          throw "bad hour format: " + t;
+          throw "bad hour format: " + fmt;
       }
       break;
     case 77:
-      switch (t.length) {
+      switch (fmt.length) {
         case 1:
         case 2:
-          l = r.M, o = t.length;
+          out = val.M;
+          outl = fmt.length;
           break;
         default:
-          throw "bad minute format: " + t;
+          throw "bad minute format: " + fmt;
       }
       break;
     case 115:
-      if (t != "s" && t != "ss" && t != ".0" && t != ".00" && t != ".000")
-        throw "bad second format: " + t;
-      return r.u === 0 && (t == "s" || t == "ss") ? Er(r.S, t.length) : (n >= 2 ? s = n === 3 ? 1e3 : 100 : s = n === 1 ? 10 : 1, i = Math.round(s * (r.S + r.u)), i >= 60 * s && (i = 0), t === "s" ? i === 0 ? "0" : "" + i / s : (a = Er(i, 2 + n), t === "ss" ? a.substr(0, 2) : "." + a.substr(2, t.length - 1)));
+      if (fmt != "s" && fmt != "ss" && fmt != ".0" && fmt != ".00" && fmt != ".000")
+        throw "bad second format: " + fmt;
+      if (val.u === 0 && (fmt == "s" || fmt == "ss"))
+        return pad0(val.S, fmt.length);
+      if (ss0 >= 2)
+        tt = ss0 === 3 ? 1e3 : 100;
+      else
+        tt = ss0 === 1 ? 10 : 1;
+      ss = Math.round(tt * (val.S + val.u));
+      if (ss >= 60 * tt)
+        ss = 0;
+      if (fmt === "s")
+        return ss === 0 ? "0" : "" + ss / tt;
+      o = pad0(ss, 2 + ss0);
+      if (fmt === "ss")
+        return o.substr(0, 2);
+      return "." + o.substr(2, fmt.length - 1);
     case 90:
-      switch (t) {
+      switch (fmt) {
         case "[h]":
         case "[hh]":
-          l = r.D * 24 + r.H;
+          out = val.D * 24 + val.H;
           break;
         case "[m]":
         case "[mm]":
-          l = (r.D * 24 + r.H) * 60 + r.M;
+          out = (val.D * 24 + val.H) * 60 + val.M;
           break;
         case "[s]":
         case "[ss]":
-          l = ((r.D * 24 + r.H) * 60 + r.M) * 60 + Math.round(r.S + r.u);
+          out = ((val.D * 24 + val.H) * 60 + val.M) * 60 + Math.round(val.S + val.u);
           break;
         default:
-          throw "bad abstime format: " + t;
+          throw "bad abstime format: " + fmt;
       }
-      o = t.length === 3 ? 1 : 2;
+      outl = fmt.length === 3 ? 1 : 2;
       break;
     case 101:
-      l = f, o = 1;
+      out = y;
+      outl = 1;
       break;
   }
-  var c = o > 0 ? Er(l, o) : "";
-  return c;
+  var outstr = outl > 0 ? pad0(out, outl) : "";
+  return outstr;
 }
-function br(e) {
-  var t = 3;
-  if (e.length <= t)
-    return e;
-  for (var r = e.length % t, n = e.substr(0, r); r != e.length; r += t)
-    n += (n.length > 0 ? "," : "") + e.substr(r, t);
-  return n;
+function commaify(s) {
+  var w = 3;
+  if (s.length <= w)
+    return s;
+  var j = s.length % w, o = s.substr(0, j);
+  for (; j != s.length; j += w)
+    o += (o.length > 0 ? "," : "") + s.substr(j, w);
+  return o;
 }
-var Ri = /%/g;
-function qo(e, t, r) {
-  var n = t.replace(Ri, ""), a = t.length - n.length;
-  return Dr(e, n, r * Math.pow(10, 2 * a)) + ye("%", a);
+var pct1 = /%/g;
+function write_num_pct(type, fmt, val) {
+  var sfmt = fmt.replace(pct1, ""), mul = fmt.length - sfmt.length;
+  return write_num(type, sfmt, val * Math.pow(10, 2 * mul)) + fill("%", mul);
 }
-function Jo(e, t, r) {
-  for (var n = t.length - 1; t.charCodeAt(n - 1) === 44; )
-    --n;
-  return Dr(e, t.substr(0, n), r / Math.pow(10, 3 * (t.length - n)));
+function write_num_cm(type, fmt, val) {
+  var idx = fmt.length - 1;
+  while (fmt.charCodeAt(idx - 1) === 44)
+    --idx;
+  return write_num(type, fmt.substr(0, idx), val / Math.pow(10, 3 * (fmt.length - idx)));
 }
-function Di(e, t) {
-  var r, n = e.indexOf("E") - e.indexOf(".") - 1;
-  if (e.match(/^#+0.0E\+0$/)) {
-    if (t == 0)
+function write_num_exp(fmt, val) {
+  var o;
+  var idx = fmt.indexOf("E") - fmt.indexOf(".") - 1;
+  if (fmt.match(/^#+0.0E\+0$/)) {
+    if (val == 0)
       return "0.0E+0";
-    if (t < 0)
-      return "-" + Di(e, -t);
-    var a = e.indexOf(".");
-    a === -1 && (a = e.indexOf("E"));
-    var i = Math.floor(Math.log(t) * Math.LOG10E) % a;
-    if (i < 0 && (i += a), r = (t / Math.pow(10, i)).toPrecision(n + 1 + (a + i) % a), r.indexOf("e") === -1) {
-      var s = Math.floor(Math.log(t) * Math.LOG10E);
-      for (r.indexOf(".") === -1 ? r = r.charAt(0) + "." + r.substr(1) + "E+" + (s - r.length + i) : r += "E+" + (s - i); r.substr(0, 2) === "0."; )
-        r = r.charAt(0) + r.substr(2, a) + "." + r.substr(2 + a), r = r.replace(/^0+([1-9])/, "$1").replace(/^0+\./, "0.");
-      r = r.replace(/\+-/, "-");
+    else if (val < 0)
+      return "-" + write_num_exp(fmt, -val);
+    var period = fmt.indexOf(".");
+    if (period === -1)
+      period = fmt.indexOf("E");
+    var ee = Math.floor(Math.log(val) * Math.LOG10E) % period;
+    if (ee < 0)
+      ee += period;
+    o = (val / Math.pow(10, ee)).toPrecision(idx + 1 + (period + ee) % period);
+    if (o.indexOf("e") === -1) {
+      var fakee = Math.floor(Math.log(val) * Math.LOG10E);
+      if (o.indexOf(".") === -1)
+        o = o.charAt(0) + "." + o.substr(1) + "E+" + (fakee - o.length + ee);
+      else
+        o += "E+" + (fakee - ee);
+      while (o.substr(0, 2) === "0.") {
+        o = o.charAt(0) + o.substr(2, period) + "." + o.substr(2 + period);
+        o = o.replace(/^0+([1-9])/, "$1").replace(/^0+\./, "0.");
+      }
+      o = o.replace(/\+-/, "-");
     }
-    r = r.replace(/^([+-]?)(\d*)\.(\d*)[Ee]/, function(f, l, o, c) {
-      return l + o + c.substr(0, (a + i) % a) + "." + c.substr(i) + "E";
+    o = o.replace(/^([+-]?)(\d*)\.(\d*)[Ee]/, function($$, $1, $2, $3) {
+      return $1 + $2 + $3.substr(0, (period + ee) % period) + "." + $3.substr(ee) + "E";
     });
   } else
-    r = t.toExponential(n);
-  return e.match(/E\+00$/) && r.match(/e[+-]\d$/) && (r = r.substr(0, r.length - 1) + "0" + r.charAt(r.length - 1)), e.match(/E\-/) && r.match(/e\+/) && (r = r.replace(/e\+/, "e")), r.replace("e", "E");
+    o = val.toExponential(idx);
+  if (fmt.match(/E\+00$/) && o.match(/e[+-]\d$/))
+    o = o.substr(0, o.length - 1) + "0" + o.charAt(o.length - 1);
+  if (fmt.match(/E\-/) && o.match(/e\+/))
+    o = o.replace(/e\+/, "e");
+  return o.replace("e", "E");
 }
-var Ni = /# (\?+)( ?)\/( ?)(\d+)/;
-function Zo(e, t, r) {
-  var n = parseInt(e[4], 10), a = Math.round(t * n), i = Math.floor(a / n), s = a - i * n, f = n;
-  return r + (i === 0 ? "" : "" + i) + " " + (s === 0 ? ye(" ", e[1].length + 1 + e[4].length) : T0(s, e[1].length) + e[2] + "/" + e[3] + Er(f, e[4].length));
+var frac1 = /# (\?+)( ?)\/( ?)(\d+)/;
+function write_num_f1(r, aval, sign) {
+  var den = parseInt(r[4], 10), rr = Math.round(aval * den), base = Math.floor(rr / den);
+  var myn = rr - base * den, myd = den;
+  return sign + (base === 0 ? "" : "" + base) + " " + (myn === 0 ? fill(" ", r[1].length + 1 + r[4].length) : pad_(myn, r[1].length) + r[2] + "/" + r[3] + pad0(myd, r[4].length));
 }
-function Qo(e, t, r) {
-  return r + (t === 0 ? "" : "" + t) + ye(" ", e[1].length + 2 + e[4].length);
+function write_num_f2(r, aval, sign) {
+  return sign + (aval === 0 ? "" : "" + aval) + fill(" ", r[1].length + 2 + r[4].length);
 }
-var Ii = /^#*0*\.([0#]+)/, ki = /\).*[0#]/, Pi = /\(###\) ###\\?-####/;
-function qe(e) {
-  for (var t = "", r, n = 0; n != e.length; ++n)
-    switch (r = e.charCodeAt(n)) {
+var dec1 = /^#*0*\.([0#]+)/;
+var closeparen = /\).*[0#]/;
+var phone = /\(###\) ###\\?-####/;
+function hashq(str) {
+  var o = "", cc;
+  for (var i = 0; i != str.length; ++i)
+    switch (cc = str.charCodeAt(i)) {
       case 35:
         break;
       case 63:
-        t += " ";
+        o += " ";
         break;
       case 48:
-        t += "0";
+        o += "0";
         break;
       default:
-        t += String.fromCharCode(r);
+        o += String.fromCharCode(cc);
     }
-  return t;
+  return o;
 }
-function Ca(e, t) {
-  var r = Math.pow(10, t);
-  return "" + Math.round(e * r) / r;
+function rnd(val, d) {
+  var dd = Math.pow(10, d);
+  return "" + Math.round(val * dd) / dd;
 }
-function Oa(e, t) {
-  var r = e - Math.floor(e), n = Math.pow(10, t);
-  return t < ("" + Math.round(r * n)).length ? 0 : Math.round(r * n);
+function dec(val, d) {
+  var _frac = val - Math.floor(val), dd = Math.pow(10, d);
+  if (d < ("" + Math.round(_frac * dd)).length)
+    return 0;
+  return Math.round(_frac * dd);
 }
-function el(e, t) {
-  return t < ("" + Math.round((e - Math.floor(e)) * Math.pow(10, t))).length ? 1 : 0;
-}
-function rl(e) {
-  return e < 2147483647 && e > -2147483648 ? "" + (e >= 0 ? e | 0 : e - 1 | 0) : "" + Math.floor(e);
-}
-function ur(e, t, r) {
-  if (e.charCodeAt(0) === 40 && !t.match(ki)) {
-    var n = t.replace(/\( */, "").replace(/ \)/, "").replace(/\)/, "");
-    return r >= 0 ? ur("n", n, r) : "(" + ur("n", n, -r) + ")";
+function carry(val, d) {
+  if (d < ("" + Math.round((val - Math.floor(val)) * Math.pow(10, d))).length) {
+    return 1;
   }
-  if (t.charCodeAt(t.length - 1) === 44)
-    return Jo(e, t, r);
-  if (t.indexOf("%") !== -1)
-    return qo(e, t, r);
-  if (t.indexOf("E") !== -1)
-    return Di(t, r);
-  if (t.charCodeAt(0) === 36)
-    return "$" + ur(e, t.substr(t.charAt(1) == " " ? 2 : 1), r);
-  var a, i, s, f, l = Math.abs(r), o = r < 0 ? "-" : "";
-  if (t.match(/^00+$/))
-    return o + ot(l, t.length);
-  if (t.match(/^[#?]+$/))
-    return a = ot(r, 0), a === "0" && (a = ""), a.length > t.length ? a : qe(t.substr(0, t.length - a.length)) + a;
-  if (i = t.match(Ni))
-    return Zo(i, l, o);
-  if (t.match(/^#+0+$/))
-    return o + ot(l, t.length - t.indexOf("0"));
-  if (i = t.match(Ii))
-    return a = Ca(r, i[1].length).replace(/^([^\.]+)$/, "$1." + qe(i[1])).replace(/\.$/, "." + qe(i[1])).replace(/\.(\d*)$/, function(T, x) {
-      return "." + x + ye("0", qe(i[1]).length - x.length);
-    }), t.indexOf("0.") !== -1 ? a : a.replace(/^0\./, ".");
-  if (t = t.replace(/^#+([0.])/, "$1"), i = t.match(/^(0*)\.(#*)$/))
-    return o + Ca(l, i[2].length).replace(/\.(\d*[1-9])0*$/, ".$1").replace(/^(-?\d*)$/, "$1.").replace(/^0\./, i[1].length ? "0." : ".");
-  if (i = t.match(/^#{1,3},##0(\.?)$/))
-    return o + br(ot(l, 0));
-  if (i = t.match(/^#,##0\.([#0]*0)$/))
-    return r < 0 ? "-" + ur(e, t, -r) : br("" + (Math.floor(r) + el(r, i[1].length))) + "." + Er(Oa(r, i[1].length), i[1].length);
-  if (i = t.match(/^#,#*,#0/))
-    return ur(e, t.replace(/^#,#*,/, ""), r);
-  if (i = t.match(/^([0#]+)(\\?-([0#]+))+$/))
-    return a = xt(ur(e, t.replace(/[\\-]/g, ""), r)), s = 0, xt(xt(t.replace(/\\/g, "")).replace(/[0#]/g, function(T) {
-      return s < a.length ? a.charAt(s++) : T === "0" ? "0" : "";
+  return 0;
+}
+function flr(val) {
+  if (val < 2147483647 && val > -2147483648)
+    return "" + (val >= 0 ? val | 0 : val - 1 | 0);
+  return "" + Math.floor(val);
+}
+function write_num_flt(type, fmt, val) {
+  if (type.charCodeAt(0) === 40 && !fmt.match(closeparen)) {
+    var ffmt = fmt.replace(/\( */, "").replace(/ \)/, "").replace(/\)/, "");
+    if (val >= 0)
+      return write_num_flt("n", ffmt, val);
+    return "(" + write_num_flt("n", ffmt, -val) + ")";
+  }
+  if (fmt.charCodeAt(fmt.length - 1) === 44)
+    return write_num_cm(type, fmt, val);
+  if (fmt.indexOf("%") !== -1)
+    return write_num_pct(type, fmt, val);
+  if (fmt.indexOf("E") !== -1)
+    return write_num_exp(fmt, val);
+  if (fmt.charCodeAt(0) === 36)
+    return "$" + write_num_flt(type, fmt.substr(fmt.charAt(1) == " " ? 2 : 1), val);
+  var o;
+  var r, ri, ff, aval = Math.abs(val), sign = val < 0 ? "-" : "";
+  if (fmt.match(/^00+$/))
+    return sign + pad0r(aval, fmt.length);
+  if (fmt.match(/^[#?]+$/)) {
+    o = pad0r(val, 0);
+    if (o === "0")
+      o = "";
+    return o.length > fmt.length ? o : hashq(fmt.substr(0, fmt.length - o.length)) + o;
+  }
+  if (r = fmt.match(frac1))
+    return write_num_f1(r, aval, sign);
+  if (fmt.match(/^#+0+$/))
+    return sign + pad0r(aval, fmt.length - fmt.indexOf("0"));
+  if (r = fmt.match(dec1)) {
+    o = rnd(val, r[1].length).replace(/^([^\.]+)$/, "$1." + hashq(r[1])).replace(/\.$/, "." + hashq(r[1])).replace(/\.(\d*)$/, function($$, $1) {
+      return "." + $1 + fill("0", hashq(r[1]).length - $1.length);
+    });
+    return fmt.indexOf("0.") !== -1 ? o : o.replace(/^0\./, ".");
+  }
+  fmt = fmt.replace(/^#+([0.])/, "$1");
+  if (r = fmt.match(/^(0*)\.(#*)$/)) {
+    return sign + rnd(aval, r[2].length).replace(/\.(\d*[1-9])0*$/, ".$1").replace(/^(-?\d*)$/, "$1.").replace(/^0\./, r[1].length ? "0." : ".");
+  }
+  if (r = fmt.match(/^#{1,3},##0(\.?)$/))
+    return sign + commaify(pad0r(aval, 0));
+  if (r = fmt.match(/^#,##0\.([#0]*0)$/)) {
+    return val < 0 ? "-" + write_num_flt(type, fmt, -val) : commaify("" + (Math.floor(val) + carry(val, r[1].length))) + "." + pad0(dec(val, r[1].length), r[1].length);
+  }
+  if (r = fmt.match(/^#,#*,#0/))
+    return write_num_flt(type, fmt.replace(/^#,#*,/, ""), val);
+  if (r = fmt.match(/^([0#]+)(\\?-([0#]+))+$/)) {
+    o = _strrev(write_num_flt(type, fmt.replace(/[\\-]/g, ""), val));
+    ri = 0;
+    return _strrev(_strrev(fmt.replace(/\\/g, "")).replace(/[0#]/g, function(x2) {
+      return ri < o.length ? o.charAt(ri++) : x2 === "0" ? "0" : "";
     }));
-  if (t.match(Pi))
-    return a = ur(e, "##########", r), "(" + a.substr(0, 3) + ") " + a.substr(3, 3) + "-" + a.substr(6);
-  var c = "";
-  if (i = t.match(/^([#0?]+)( ?)\/( ?)([#0?]+)/))
-    return s = Math.min(i[4].length, 7), f = hn(l, Math.pow(10, s) - 1, !1), a = "" + o, c = Dr("n", i[1], f[1]), c.charAt(c.length - 1) == " " && (c = c.substr(0, c.length - 1) + "0"), a += c + i[2] + "/" + i[3], c = ln(f[2], s), c.length < i[4].length && (c = qe(i[4].substr(i[4].length - c.length)) + c), a += c, a;
-  if (i = t.match(/^# ([#0?]+)( ?)\/( ?)([#0?]+)/))
-    return s = Math.min(Math.max(i[1].length, i[4].length), 7), f = hn(l, Math.pow(10, s) - 1, !0), o + (f[0] || (f[1] ? "" : "0")) + " " + (f[1] ? T0(f[1], s) + i[2] + "/" + i[3] + ln(f[2], s) : ye(" ", 2 * s + 1 + i[2].length + i[3].length));
-  if (i = t.match(/^[#0?]+$/))
-    return a = ot(r, 0), t.length <= a.length ? a : qe(t.substr(0, t.length - a.length)) + a;
-  if (i = t.match(/^([#0?]+)\.([#0]+)$/)) {
-    a = "" + r.toFixed(Math.min(i[2].length, 10)).replace(/([^0])0+$/, "$1"), s = a.indexOf(".");
-    var p = t.indexOf(".") - s, u = t.length - a.length - p;
-    return qe(t.substr(0, p) + a + t.substr(t.length - u));
   }
-  if (i = t.match(/^00,000\.([#0]*0)$/))
-    return s = Oa(r, i[1].length), r < 0 ? "-" + ur(e, t, -r) : br(rl(r)).replace(/^\d,\d{3}$/, "0$&").replace(/^\d*$/, function(T) {
-      return "00," + (T.length < 3 ? Er(0, 3 - T.length) : "") + T;
-    }) + "." + Er(s, i[1].length);
-  switch (t) {
+  if (fmt.match(phone)) {
+    o = write_num_flt(type, "##########", val);
+    return "(" + o.substr(0, 3) + ") " + o.substr(3, 3) + "-" + o.substr(6);
+  }
+  var oa = "";
+  if (r = fmt.match(/^([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+    ri = Math.min(r[4].length, 7);
+    ff = SSF_frac(aval, Math.pow(10, ri) - 1, false);
+    o = "" + sign;
+    oa = write_num("n", r[1], ff[1]);
+    if (oa.charAt(oa.length - 1) == " ")
+      oa = oa.substr(0, oa.length - 1) + "0";
+    o += oa + r[2] + "/" + r[3];
+    oa = rpad_(ff[2], ri);
+    if (oa.length < r[4].length)
+      oa = hashq(r[4].substr(r[4].length - oa.length)) + oa;
+    o += oa;
+    return o;
+  }
+  if (r = fmt.match(/^# ([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+    ri = Math.min(Math.max(r[1].length, r[4].length), 7);
+    ff = SSF_frac(aval, Math.pow(10, ri) - 1, true);
+    return sign + (ff[0] || (ff[1] ? "" : "0")) + " " + (ff[1] ? pad_(ff[1], ri) + r[2] + "/" + r[3] + rpad_(ff[2], ri) : fill(" ", 2 * ri + 1 + r[2].length + r[3].length));
+  }
+  if (r = fmt.match(/^[#0?]+$/)) {
+    o = pad0r(val, 0);
+    if (fmt.length <= o.length)
+      return o;
+    return hashq(fmt.substr(0, fmt.length - o.length)) + o;
+  }
+  if (r = fmt.match(/^([#0?]+)\.([#0]+)$/)) {
+    o = "" + val.toFixed(Math.min(r[2].length, 10)).replace(/([^0])0+$/, "$1");
+    ri = o.indexOf(".");
+    var lres = fmt.indexOf(".") - ri, rres = fmt.length - o.length - lres;
+    return hashq(fmt.substr(0, lres) + o + fmt.substr(fmt.length - rres));
+  }
+  if (r = fmt.match(/^00,000\.([#0]*0)$/)) {
+    ri = dec(val, r[1].length);
+    return val < 0 ? "-" + write_num_flt(type, fmt, -val) : commaify(flr(val)).replace(/^\d,\d{3}$/, "0$&").replace(/^\d*$/, function($$) {
+      return "00," + ($$.length < 3 ? pad0(0, 3 - $$.length) : "") + $$;
+    }) + "." + pad0(ri, r[1].length);
+  }
+  switch (fmt) {
     case "###,##0.00":
-      return ur(e, "#,##0.00", r);
+      return write_num_flt(type, "#,##0.00", val);
     case "###,###":
     case "##,###":
     case "#,###":
-      var v = br(ot(l, 0));
-      return v !== "0" ? o + v : "";
+      var x = commaify(pad0r(aval, 0));
+      return x !== "0" ? sign + x : "";
     case "###,###.00":
-      return ur(e, "###,##0.00", r).replace(/^0\./, ".");
+      return write_num_flt(type, "###,##0.00", val).replace(/^0\./, ".");
     case "#,###.00":
-      return ur(e, "#,##0.00", r).replace(/^0\./, ".");
+      return write_num_flt(type, "#,##0.00", val).replace(/^0\./, ".");
   }
-  throw new Error("unsupported format |" + t + "|");
+  throw new Error("unsupported format |" + fmt + "|");
 }
-function tl(e, t, r) {
-  for (var n = t.length - 1; t.charCodeAt(n - 1) === 44; )
-    --n;
-  return Dr(e, t.substr(0, n), r / Math.pow(10, 3 * (t.length - n)));
+function write_num_cm2(type, fmt, val) {
+  var idx = fmt.length - 1;
+  while (fmt.charCodeAt(idx - 1) === 44)
+    --idx;
+  return write_num(type, fmt.substr(0, idx), val / Math.pow(10, 3 * (fmt.length - idx)));
 }
-function nl(e, t, r) {
-  var n = t.replace(Ri, ""), a = t.length - n.length;
-  return Dr(e, n, r * Math.pow(10, 2 * a)) + ye("%", a);
+function write_num_pct2(type, fmt, val) {
+  var sfmt = fmt.replace(pct1, ""), mul = fmt.length - sfmt.length;
+  return write_num(type, sfmt, val * Math.pow(10, 2 * mul)) + fill("%", mul);
 }
-function Li(e, t) {
-  var r, n = e.indexOf("E") - e.indexOf(".") - 1;
-  if (e.match(/^#+0.0E\+0$/)) {
-    if (t == 0)
+function write_num_exp2(fmt, val) {
+  var o;
+  var idx = fmt.indexOf("E") - fmt.indexOf(".") - 1;
+  if (fmt.match(/^#+0.0E\+0$/)) {
+    if (val == 0)
       return "0.0E+0";
-    if (t < 0)
-      return "-" + Li(e, -t);
-    var a = e.indexOf(".");
-    a === -1 && (a = e.indexOf("E"));
-    var i = Math.floor(Math.log(t) * Math.LOG10E) % a;
-    if (i < 0 && (i += a), r = (t / Math.pow(10, i)).toPrecision(n + 1 + (a + i) % a), !r.match(/[Ee]/)) {
-      var s = Math.floor(Math.log(t) * Math.LOG10E);
-      r.indexOf(".") === -1 ? r = r.charAt(0) + "." + r.substr(1) + "E+" + (s - r.length + i) : r += "E+" + (s - i), r = r.replace(/\+-/, "-");
+    else if (val < 0)
+      return "-" + write_num_exp2(fmt, -val);
+    var period = fmt.indexOf(".");
+    if (period === -1)
+      period = fmt.indexOf("E");
+    var ee = Math.floor(Math.log(val) * Math.LOG10E) % period;
+    if (ee < 0)
+      ee += period;
+    o = (val / Math.pow(10, ee)).toPrecision(idx + 1 + (period + ee) % period);
+    if (!o.match(/[Ee]/)) {
+      var fakee = Math.floor(Math.log(val) * Math.LOG10E);
+      if (o.indexOf(".") === -1)
+        o = o.charAt(0) + "." + o.substr(1) + "E+" + (fakee - o.length + ee);
+      else
+        o += "E+" + (fakee - ee);
+      o = o.replace(/\+-/, "-");
     }
-    r = r.replace(/^([+-]?)(\d*)\.(\d*)[Ee]/, function(f, l, o, c) {
-      return l + o + c.substr(0, (a + i) % a) + "." + c.substr(i) + "E";
+    o = o.replace(/^([+-]?)(\d*)\.(\d*)[Ee]/, function($$, $1, $2, $3) {
+      return $1 + $2 + $3.substr(0, (period + ee) % period) + "." + $3.substr(ee) + "E";
     });
   } else
-    r = t.toExponential(n);
-  return e.match(/E\+00$/) && r.match(/e[+-]\d$/) && (r = r.substr(0, r.length - 1) + "0" + r.charAt(r.length - 1)), e.match(/E\-/) && r.match(/e\+/) && (r = r.replace(/e\+/, "e")), r.replace("e", "E");
+    o = val.toExponential(idx);
+  if (fmt.match(/E\+00$/) && o.match(/e[+-]\d$/))
+    o = o.substr(0, o.length - 1) + "0" + o.charAt(o.length - 1);
+  if (fmt.match(/E\-/) && o.match(/e\+/))
+    o = o.replace(/e\+/, "e");
+  return o.replace("e", "E");
 }
-function Sr(e, t, r) {
-  if (e.charCodeAt(0) === 40 && !t.match(ki)) {
-    var n = t.replace(/\( */, "").replace(/ \)/, "").replace(/\)/, "");
-    return r >= 0 ? Sr("n", n, r) : "(" + Sr("n", n, -r) + ")";
+function write_num_int(type, fmt, val) {
+  if (type.charCodeAt(0) === 40 && !fmt.match(closeparen)) {
+    var ffmt = fmt.replace(/\( */, "").replace(/ \)/, "").replace(/\)/, "");
+    if (val >= 0)
+      return write_num_int("n", ffmt, val);
+    return "(" + write_num_int("n", ffmt, -val) + ")";
   }
-  if (t.charCodeAt(t.length - 1) === 44)
-    return tl(e, t, r);
-  if (t.indexOf("%") !== -1)
-    return nl(e, t, r);
-  if (t.indexOf("E") !== -1)
-    return Li(t, r);
-  if (t.charCodeAt(0) === 36)
-    return "$" + Sr(e, t.substr(t.charAt(1) == " " ? 2 : 1), r);
-  var a, i, s, f, l = Math.abs(r), o = r < 0 ? "-" : "";
-  if (t.match(/^00+$/))
-    return o + Er(l, t.length);
-  if (t.match(/^[#?]+$/))
-    return a = "" + r, r === 0 && (a = ""), a.length > t.length ? a : qe(t.substr(0, t.length - a.length)) + a;
-  if (i = t.match(Ni))
-    return Qo(i, l, o);
-  if (t.match(/^#+0+$/))
-    return o + Er(l, t.length - t.indexOf("0"));
-  if (i = t.match(Ii))
-    return a = ("" + r).replace(/^([^\.]+)$/, "$1." + qe(i[1])).replace(/\.$/, "." + qe(i[1])), a = a.replace(/\.(\d*)$/, function(T, x) {
-      return "." + x + ye("0", qe(i[1]).length - x.length);
-    }), t.indexOf("0.") !== -1 ? a : a.replace(/^0\./, ".");
-  if (t = t.replace(/^#+([0.])/, "$1"), i = t.match(/^(0*)\.(#*)$/))
-    return o + ("" + l).replace(/\.(\d*[1-9])0*$/, ".$1").replace(/^(-?\d*)$/, "$1.").replace(/^0\./, i[1].length ? "0." : ".");
-  if (i = t.match(/^#{1,3},##0(\.?)$/))
-    return o + br("" + l);
-  if (i = t.match(/^#,##0\.([#0]*0)$/))
-    return r < 0 ? "-" + Sr(e, t, -r) : br("" + r) + "." + ye("0", i[1].length);
-  if (i = t.match(/^#,#*,#0/))
-    return Sr(e, t.replace(/^#,#*,/, ""), r);
-  if (i = t.match(/^([0#]+)(\\?-([0#]+))+$/))
-    return a = xt(Sr(e, t.replace(/[\\-]/g, ""), r)), s = 0, xt(xt(t.replace(/\\/g, "")).replace(/[0#]/g, function(T) {
-      return s < a.length ? a.charAt(s++) : T === "0" ? "0" : "";
+  if (fmt.charCodeAt(fmt.length - 1) === 44)
+    return write_num_cm2(type, fmt, val);
+  if (fmt.indexOf("%") !== -1)
+    return write_num_pct2(type, fmt, val);
+  if (fmt.indexOf("E") !== -1)
+    return write_num_exp2(fmt, val);
+  if (fmt.charCodeAt(0) === 36)
+    return "$" + write_num_int(type, fmt.substr(fmt.charAt(1) == " " ? 2 : 1), val);
+  var o;
+  var r, ri, ff, aval = Math.abs(val), sign = val < 0 ? "-" : "";
+  if (fmt.match(/^00+$/))
+    return sign + pad0(aval, fmt.length);
+  if (fmt.match(/^[#?]+$/)) {
+    o = "" + val;
+    if (val === 0)
+      o = "";
+    return o.length > fmt.length ? o : hashq(fmt.substr(0, fmt.length - o.length)) + o;
+  }
+  if (r = fmt.match(frac1))
+    return write_num_f2(r, aval, sign);
+  if (fmt.match(/^#+0+$/))
+    return sign + pad0(aval, fmt.length - fmt.indexOf("0"));
+  if (r = fmt.match(dec1)) {
+    o = ("" + val).replace(/^([^\.]+)$/, "$1." + hashq(r[1])).replace(/\.$/, "." + hashq(r[1]));
+    o = o.replace(/\.(\d*)$/, function($$, $1) {
+      return "." + $1 + fill("0", hashq(r[1]).length - $1.length);
+    });
+    return fmt.indexOf("0.") !== -1 ? o : o.replace(/^0\./, ".");
+  }
+  fmt = fmt.replace(/^#+([0.])/, "$1");
+  if (r = fmt.match(/^(0*)\.(#*)$/)) {
+    return sign + ("" + aval).replace(/\.(\d*[1-9])0*$/, ".$1").replace(/^(-?\d*)$/, "$1.").replace(/^0\./, r[1].length ? "0." : ".");
+  }
+  if (r = fmt.match(/^#{1,3},##0(\.?)$/))
+    return sign + commaify("" + aval);
+  if (r = fmt.match(/^#,##0\.([#0]*0)$/)) {
+    return val < 0 ? "-" + write_num_int(type, fmt, -val) : commaify("" + val) + "." + fill("0", r[1].length);
+  }
+  if (r = fmt.match(/^#,#*,#0/))
+    return write_num_int(type, fmt.replace(/^#,#*,/, ""), val);
+  if (r = fmt.match(/^([0#]+)(\\?-([0#]+))+$/)) {
+    o = _strrev(write_num_int(type, fmt.replace(/[\\-]/g, ""), val));
+    ri = 0;
+    return _strrev(_strrev(fmt.replace(/\\/g, "")).replace(/[0#]/g, function(x2) {
+      return ri < o.length ? o.charAt(ri++) : x2 === "0" ? "0" : "";
     }));
-  if (t.match(Pi))
-    return a = Sr(e, "##########", r), "(" + a.substr(0, 3) + ") " + a.substr(3, 3) + "-" + a.substr(6);
-  var c = "";
-  if (i = t.match(/^([#0?]+)( ?)\/( ?)([#0?]+)/))
-    return s = Math.min(i[4].length, 7), f = hn(l, Math.pow(10, s) - 1, !1), a = "" + o, c = Dr("n", i[1], f[1]), c.charAt(c.length - 1) == " " && (c = c.substr(0, c.length - 1) + "0"), a += c + i[2] + "/" + i[3], c = ln(f[2], s), c.length < i[4].length && (c = qe(i[4].substr(i[4].length - c.length)) + c), a += c, a;
-  if (i = t.match(/^# ([#0?]+)( ?)\/( ?)([#0?]+)/))
-    return s = Math.min(Math.max(i[1].length, i[4].length), 7), f = hn(l, Math.pow(10, s) - 1, !0), o + (f[0] || (f[1] ? "" : "0")) + " " + (f[1] ? T0(f[1], s) + i[2] + "/" + i[3] + ln(f[2], s) : ye(" ", 2 * s + 1 + i[2].length + i[3].length));
-  if (i = t.match(/^[#0?]+$/))
-    return a = "" + r, t.length <= a.length ? a : qe(t.substr(0, t.length - a.length)) + a;
-  if (i = t.match(/^([#0]+)\.([#0]+)$/)) {
-    a = "" + r.toFixed(Math.min(i[2].length, 10)).replace(/([^0])0+$/, "$1"), s = a.indexOf(".");
-    var p = t.indexOf(".") - s, u = t.length - a.length - p;
-    return qe(t.substr(0, p) + a + t.substr(t.length - u));
   }
-  if (i = t.match(/^00,000\.([#0]*0)$/))
-    return r < 0 ? "-" + Sr(e, t, -r) : br("" + r).replace(/^\d,\d{3}$/, "0$&").replace(/^\d*$/, function(T) {
-      return "00," + (T.length < 3 ? Er(0, 3 - T.length) : "") + T;
-    }) + "." + Er(0, i[1].length);
-  switch (t) {
+  if (fmt.match(phone)) {
+    o = write_num_int(type, "##########", val);
+    return "(" + o.substr(0, 3) + ") " + o.substr(3, 3) + "-" + o.substr(6);
+  }
+  var oa = "";
+  if (r = fmt.match(/^([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+    ri = Math.min(r[4].length, 7);
+    ff = SSF_frac(aval, Math.pow(10, ri) - 1, false);
+    o = "" + sign;
+    oa = write_num("n", r[1], ff[1]);
+    if (oa.charAt(oa.length - 1) == " ")
+      oa = oa.substr(0, oa.length - 1) + "0";
+    o += oa + r[2] + "/" + r[3];
+    oa = rpad_(ff[2], ri);
+    if (oa.length < r[4].length)
+      oa = hashq(r[4].substr(r[4].length - oa.length)) + oa;
+    o += oa;
+    return o;
+  }
+  if (r = fmt.match(/^# ([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+    ri = Math.min(Math.max(r[1].length, r[4].length), 7);
+    ff = SSF_frac(aval, Math.pow(10, ri) - 1, true);
+    return sign + (ff[0] || (ff[1] ? "" : "0")) + " " + (ff[1] ? pad_(ff[1], ri) + r[2] + "/" + r[3] + rpad_(ff[2], ri) : fill(" ", 2 * ri + 1 + r[2].length + r[3].length));
+  }
+  if (r = fmt.match(/^[#0?]+$/)) {
+    o = "" + val;
+    if (fmt.length <= o.length)
+      return o;
+    return hashq(fmt.substr(0, fmt.length - o.length)) + o;
+  }
+  if (r = fmt.match(/^([#0]+)\.([#0]+)$/)) {
+    o = "" + val.toFixed(Math.min(r[2].length, 10)).replace(/([^0])0+$/, "$1");
+    ri = o.indexOf(".");
+    var lres = fmt.indexOf(".") - ri, rres = fmt.length - o.length - lres;
+    return hashq(fmt.substr(0, lres) + o + fmt.substr(fmt.length - rres));
+  }
+  if (r = fmt.match(/^00,000\.([#0]*0)$/)) {
+    return val < 0 ? "-" + write_num_int(type, fmt, -val) : commaify("" + val).replace(/^\d,\d{3}$/, "0$&").replace(/^\d*$/, function($$) {
+      return "00," + ($$.length < 3 ? pad0(0, 3 - $$.length) : "") + $$;
+    }) + "." + pad0(0, r[1].length);
+  }
+  switch (fmt) {
     case "###,###":
     case "##,###":
     case "#,###":
-      var v = br("" + l);
-      return v !== "0" ? o + v : "";
+      var x = commaify("" + aval);
+      return x !== "0" ? sign + x : "";
     default:
-      if (t.match(/\.[0#?]*$/))
-        return Sr(e, t.slice(0, t.lastIndexOf(".")), r) + qe(t.slice(t.lastIndexOf(".")));
+      if (fmt.match(/\.[0#?]*$/))
+        return write_num_int(type, fmt.slice(0, fmt.lastIndexOf(".")), val) + hashq(fmt.slice(fmt.lastIndexOf(".")));
   }
-  throw new Error("unsupported format |" + t + "|");
+  throw new Error("unsupported format |" + fmt + "|");
 }
-function Dr(e, t, r) {
-  return (r | 0) === r ? Sr(e, t, r) : ur(e, t, r);
+function write_num(type, fmt, val) {
+  return (val | 0) === val ? write_num_int(type, fmt, val) : write_num_flt(type, fmt, val);
 }
-function al(e) {
-  for (var t = [], r = !1, n = 0, a = 0; n < e.length; ++n)
-    switch (e.charCodeAt(n)) {
+function SSF_split_fmt(fmt) {
+  var out = [];
+  var in_str = false;
+  for (var i = 0, j = 0; i < fmt.length; ++i)
+    switch (fmt.charCodeAt(i)) {
       case 34:
-        r = !r;
+        in_str = !in_str;
         break;
       case 95:
       case 42:
       case 92:
-        ++n;
+        ++i;
         break;
       case 59:
-        t[t.length] = e.substr(a, n - a), a = n + 1;
+        out[out.length] = fmt.substr(j, i - j);
+        j = i + 1;
     }
-  if (t[t.length] = e.substr(a), r === !0)
-    throw new Error("Format |" + e + "| unterminated string ");
-  return t;
+  out[out.length] = fmt.substr(j);
+  if (in_str === true)
+    throw new Error("Format |" + fmt + "| unterminated string ");
+  return out;
 }
-var Bi = /\[[HhMmSs\u0E0A\u0E19\u0E17]*\]/;
-function Mi(e) {
-  for (var t = 0, r = "", n = ""; t < e.length; )
-    switch (r = e.charAt(t)) {
+var SSF_abstime = /\[[HhMmSs\u0E0A\u0E19\u0E17]*\]/;
+function fmt_is_date(fmt) {
+  var i = 0, c = "", o = "";
+  while (i < fmt.length) {
+    switch (c = fmt.charAt(i)) {
       case "G":
-        cn(e, t) && (t += 6), t++;
+        if (SSF_isgeneral(fmt, i))
+          i += 6;
+        i++;
         break;
       case '"':
-        for (; e.charCodeAt(++t) !== 34 && t < e.length; )
-          ;
-        ++t;
+        for (; fmt.charCodeAt(++i) !== 34 && i < fmt.length; ) {
+        }
+        ++i;
         break;
       case "\\":
-        t += 2;
+        i += 2;
         break;
       case "_":
-        t += 2;
+        i += 2;
         break;
       case "@":
-        ++t;
+        ++i;
         break;
       case "B":
       case "b":
-        if (e.charAt(t + 1) === "1" || e.charAt(t + 1) === "2")
-          return !0;
+        if (fmt.charAt(i + 1) === "1" || fmt.charAt(i + 1) === "2")
+          return true;
       case "M":
       case "D":
       case "Y":
@@ -1747,36 +2566,43 @@ function Mi(e) {
       case "s":
       case "e":
       case "g":
-        return !0;
+        return true;
       case "A":
       case "a":
       case "\u4E0A":
-        if (e.substr(t, 3).toUpperCase() === "A/P" || e.substr(t, 5).toUpperCase() === "AM/PM" || e.substr(t, 5).toUpperCase() === "\u4E0A\u5348/\u4E0B\u5348")
-          return !0;
-        ++t;
+        if (fmt.substr(i, 3).toUpperCase() === "A/P")
+          return true;
+        if (fmt.substr(i, 5).toUpperCase() === "AM/PM")
+          return true;
+        if (fmt.substr(i, 5).toUpperCase() === "\u4E0A\u5348/\u4E0B\u5348")
+          return true;
+        ++i;
         break;
       case "[":
-        for (n = r; e.charAt(t++) !== "]" && t < e.length; )
-          n += e.charAt(t);
-        if (n.match(Bi))
-          return !0;
+        o = c;
+        while (fmt.charAt(i++) !== "]" && i < fmt.length)
+          o += fmt.charAt(i);
+        if (o.match(SSF_abstime))
+          return true;
         break;
       case ".":
       case "0":
       case "#":
-        for (; t < e.length && ("0#?.,E+-%".indexOf(r = e.charAt(++t)) > -1 || r == "\\" && e.charAt(t + 1) == "-" && "0#".indexOf(e.charAt(t + 2)) > -1); )
-          ;
+        while (i < fmt.length && ("0#?.,E+-%".indexOf(c = fmt.charAt(++i)) > -1 || c == "\\" && fmt.charAt(i + 1) == "-" && "0#".indexOf(fmt.charAt(i + 2)) > -1)) {
+        }
         break;
       case "?":
-        for (; e.charAt(++t) === r; )
-          ;
+        while (fmt.charAt(++i) === c) {
+        }
         break;
       case "*":
-        ++t, (e.charAt(t) == " " || e.charAt(t) == "*") && ++t;
+        ++i;
+        if (fmt.charAt(i) == " " || fmt.charAt(i) == "*")
+          ++i;
         break;
       case "(":
       case ")":
-        ++t;
+        ++i;
         break;
       case "1":
       case "2":
@@ -1787,47 +2613,60 @@ function Mi(e) {
       case "7":
       case "8":
       case "9":
-        for (; t < e.length && "0123456789".indexOf(e.charAt(++t)) > -1; )
-          ;
+        while (i < fmt.length && "0123456789".indexOf(fmt.charAt(++i)) > -1) {
+        }
         break;
       case " ":
-        ++t;
+        ++i;
         break;
       default:
-        ++t;
+        ++i;
         break;
     }
-  return !1;
+  }
+  return false;
 }
-function il(e, t, r, n) {
-  for (var a = [], i = "", s = 0, f = "", l = "t", o, c, p, u = "H"; s < e.length; )
-    switch (f = e.charAt(s)) {
+function eval_fmt(fmt, v, opts, flen) {
+  var out = [], o = "", i = 0, c = "", lst = "t", dt, j, cc;
+  var hr = "H";
+  while (i < fmt.length) {
+    switch (c = fmt.charAt(i)) {
       case "G":
-        if (!cn(e, s))
-          throw new Error("unrecognized character " + f + " in " + e);
-        a[a.length] = { t: "G", v: "General" }, s += 7;
+        if (!SSF_isgeneral(fmt, i))
+          throw new Error("unrecognized character " + c + " in " + fmt);
+        out[out.length] = { t: "G", v: "General" };
+        i += 7;
         break;
       case '"':
-        for (i = ""; (p = e.charCodeAt(++s)) !== 34 && s < e.length; )
-          i += String.fromCharCode(p);
-        a[a.length] = { t: "t", v: i }, ++s;
+        for (o = ""; (cc = fmt.charCodeAt(++i)) !== 34 && i < fmt.length; )
+          o += String.fromCharCode(cc);
+        out[out.length] = { t: "t", v: o };
+        ++i;
         break;
       case "\\":
-        var v = e.charAt(++s), T = v === "(" || v === ")" ? v : "t";
-        a[a.length] = { t: T, v }, ++s;
+        var w = fmt.charAt(++i), t = w === "(" || w === ")" ? w : "t";
+        out[out.length] = { t, v: w };
+        ++i;
         break;
       case "_":
-        a[a.length] = { t: "t", v: " " }, s += 2;
+        out[out.length] = { t: "t", v: " " };
+        i += 2;
         break;
       case "@":
-        a[a.length] = { t: "T", v: t }, ++s;
+        out[out.length] = { t: "T", v };
+        ++i;
         break;
       case "B":
       case "b":
-        if (e.charAt(s + 1) === "1" || e.charAt(s + 1) === "2") {
-          if (o == null && (o = Zt(t, r, e.charAt(s + 1) === "2"), o == null))
-            return "";
-          a[a.length] = { t: "X", v: e.substr(s, 2) }, l = f, s += 2;
+        if (fmt.charAt(i + 1) === "1" || fmt.charAt(i + 1) === "2") {
+          if (dt == null) {
+            dt = SSF_parse_date_code(v, opts, fmt.charAt(i + 1) === "2");
+            if (dt == null)
+              return "";
+          }
+          out[out.length] = { t: "X", v: fmt.substr(i, 2) };
+          lst = c;
+          i += 2;
           break;
         }
       case "M":
@@ -1836,7 +2675,7 @@ function il(e, t, r, n) {
       case "H":
       case "S":
       case "E":
-        f = f.toLowerCase();
+        c = c.toLowerCase();
       case "m":
       case "d":
       case "y":
@@ -1844,56 +2683,107 @@ function il(e, t, r, n) {
       case "s":
       case "e":
       case "g":
-        if (t < 0 || o == null && (o = Zt(t, r), o == null))
+        if (v < 0)
           return "";
-        for (i = f; ++s < e.length && e.charAt(s).toLowerCase() === f; )
-          i += f;
-        f === "m" && l.toLowerCase() === "h" && (f = "M"), f === "h" && (f = u), a[a.length] = { t: f, v: i }, l = f;
+        if (dt == null) {
+          dt = SSF_parse_date_code(v, opts);
+          if (dt == null)
+            return "";
+        }
+        o = c;
+        while (++i < fmt.length && fmt.charAt(i).toLowerCase() === c)
+          o += c;
+        if (c === "m" && lst.toLowerCase() === "h")
+          c = "M";
+        if (c === "h")
+          c = hr;
+        out[out.length] = { t: c, v: o };
+        lst = c;
         break;
       case "A":
       case "a":
       case "\u4E0A":
-        var x = { t: f, v: f };
-        if (o == null && (o = Zt(t, r)), e.substr(s, 3).toUpperCase() === "A/P" ? (o != null && (x.v = o.H >= 12 ? "P" : "A"), x.t = "T", u = "h", s += 3) : e.substr(s, 5).toUpperCase() === "AM/PM" ? (o != null && (x.v = o.H >= 12 ? "PM" : "AM"), x.t = "T", s += 5, u = "h") : e.substr(s, 5).toUpperCase() === "\u4E0A\u5348/\u4E0B\u5348" ? (o != null && (x.v = o.H >= 12 ? "\u4E0B\u5348" : "\u4E0A\u5348"), x.t = "T", s += 5, u = "h") : (x.t = "t", ++s), o == null && x.t === "T")
+        var q = { t: c, v: c };
+        if (dt == null)
+          dt = SSF_parse_date_code(v, opts);
+        if (fmt.substr(i, 3).toUpperCase() === "A/P") {
+          if (dt != null)
+            q.v = dt.H >= 12 ? "P" : "A";
+          q.t = "T";
+          hr = "h";
+          i += 3;
+        } else if (fmt.substr(i, 5).toUpperCase() === "AM/PM") {
+          if (dt != null)
+            q.v = dt.H >= 12 ? "PM" : "AM";
+          q.t = "T";
+          i += 5;
+          hr = "h";
+        } else if (fmt.substr(i, 5).toUpperCase() === "\u4E0A\u5348/\u4E0B\u5348") {
+          if (dt != null)
+            q.v = dt.H >= 12 ? "\u4E0B\u5348" : "\u4E0A\u5348";
+          q.t = "T";
+          i += 5;
+          hr = "h";
+        } else {
+          q.t = "t";
+          ++i;
+        }
+        if (dt == null && q.t === "T")
           return "";
-        a[a.length] = x, l = f;
+        out[out.length] = q;
+        lst = c;
         break;
       case "[":
-        for (i = f; e.charAt(s++) !== "]" && s < e.length; )
-          i += e.charAt(s);
-        if (i.slice(-1) !== "]")
-          throw 'unterminated "[" block: |' + i + "|";
-        if (i.match(Bi)) {
-          if (o == null && (o = Zt(t, r), o == null))
-            return "";
-          a[a.length] = { t: "Z", v: i.toLowerCase() }, l = i.charAt(1);
-        } else
-          i.indexOf("$") > -1 && (i = (i.match(/\$([^-\[\]]*)/) || [])[1] || "$", Mi(e) || (a[a.length] = { t: "t", v: i }));
+        o = c;
+        while (fmt.charAt(i++) !== "]" && i < fmt.length)
+          o += fmt.charAt(i);
+        if (o.slice(-1) !== "]")
+          throw 'unterminated "[" block: |' + o + "|";
+        if (o.match(SSF_abstime)) {
+          if (dt == null) {
+            dt = SSF_parse_date_code(v, opts);
+            if (dt == null)
+              return "";
+          }
+          out[out.length] = { t: "Z", v: o.toLowerCase() };
+          lst = o.charAt(1);
+        } else if (o.indexOf("$") > -1) {
+          o = (o.match(/\$([^-\[\]]*)/) || [])[1] || "$";
+          if (!fmt_is_date(fmt))
+            out[out.length] = { t: "t", v: o };
+        }
         break;
       case ".":
-        if (o != null) {
-          for (i = f; ++s < e.length && (f = e.charAt(s)) === "0"; )
-            i += f;
-          a[a.length] = { t: "s", v: i };
+        if (dt != null) {
+          o = c;
+          while (++i < fmt.length && (c = fmt.charAt(i)) === "0")
+            o += c;
+          out[out.length] = { t: "s", v: o };
           break;
         }
       case "0":
       case "#":
-        for (i = f; ++s < e.length && "0#?.,E+-%".indexOf(f = e.charAt(s)) > -1; )
-          i += f;
-        a[a.length] = { t: "n", v: i };
+        o = c;
+        while (++i < fmt.length && "0#?.,E+-%".indexOf(c = fmt.charAt(i)) > -1)
+          o += c;
+        out[out.length] = { t: "n", v: o };
         break;
       case "?":
-        for (i = f; e.charAt(++s) === f; )
-          i += f;
-        a[a.length] = { t: f, v: i }, l = f;
+        o = c;
+        while (fmt.charAt(++i) === c)
+          o += c;
+        out[out.length] = { t: c, v: o };
+        lst = c;
         break;
       case "*":
-        ++s, (e.charAt(s) == " " || e.charAt(s) == "*") && ++s;
+        ++i;
+        if (fmt.charAt(i) == " " || fmt.charAt(i) == "*")
+          ++i;
         break;
       case "(":
       case ")":
-        a[a.length] = { t: n === 1 ? "t" : f, v: f }, ++s;
+        out[out.length] = { t: flen === 1 ? "t" : c, v: c };
+        ++i;
         break;
       case "1":
       case "2":
@@ -1904,65 +2794,105 @@ function il(e, t, r, n) {
       case "7":
       case "8":
       case "9":
-        for (i = f; s < e.length && "0123456789".indexOf(e.charAt(++s)) > -1; )
-          i += e.charAt(s);
-        a[a.length] = { t: "D", v: i };
+        o = c;
+        while (i < fmt.length && "0123456789".indexOf(fmt.charAt(++i)) > -1)
+          o += fmt.charAt(i);
+        out[out.length] = { t: "D", v: o };
         break;
       case " ":
-        a[a.length] = { t: f, v: f }, ++s;
+        out[out.length] = { t: c, v: c };
+        ++i;
         break;
       case "$":
-        a[a.length] = { t: "t", v: "$" }, ++s;
+        out[out.length] = { t: "t", v: "$" };
+        ++i;
         break;
       default:
-        if (",$-+/():!^&'~{}<>=\u20ACacfijklopqrtuvwxzP".indexOf(f) === -1)
-          throw new Error("unrecognized character " + f + " in " + e);
-        a[a.length] = { t: "t", v: f }, ++s;
+        if (",$-+/():!^&'~{}<>=\u20ACacfijklopqrtuvwxzP".indexOf(c) === -1)
+          throw new Error("unrecognized character " + c + " in " + fmt);
+        out[out.length] = { t: "t", v: c };
+        ++i;
         break;
     }
-  var _ = 0, O = 0, R;
-  for (s = a.length - 1, l = "t"; s >= 0; --s)
-    switch (a[s].t) {
+  }
+  var bt = 0, ss0 = 0, ssm;
+  for (i = out.length - 1, lst = "t"; i >= 0; --i) {
+    switch (out[i].t) {
       case "h":
       case "H":
-        a[s].t = u, l = "h", _ < 1 && (_ = 1);
+        out[i].t = hr;
+        lst = "h";
+        if (bt < 1)
+          bt = 1;
         break;
       case "s":
-        (R = a[s].v.match(/\.0+$/)) && (O = Math.max(O, R[0].length - 1)), _ < 3 && (_ = 3);
+        if (ssm = out[i].v.match(/\.0+$/))
+          ss0 = Math.max(ss0, ssm[0].length - 1);
+        if (bt < 3)
+          bt = 3;
       case "d":
       case "y":
       case "M":
       case "e":
-        l = a[s].t;
+        lst = out[i].t;
         break;
       case "m":
-        l === "s" && (a[s].t = "M", _ < 2 && (_ = 2));
+        if (lst === "s") {
+          out[i].t = "M";
+          if (bt < 2)
+            bt = 2;
+        }
         break;
       case "X":
         break;
       case "Z":
-        _ < 1 && a[s].v.match(/[Hh]/) && (_ = 1), _ < 2 && a[s].v.match(/[Mm]/) && (_ = 2), _ < 3 && a[s].v.match(/[Ss]/) && (_ = 3);
+        if (bt < 1 && out[i].v.match(/[Hh]/))
+          bt = 1;
+        if (bt < 2 && out[i].v.match(/[Mm]/))
+          bt = 2;
+        if (bt < 3 && out[i].v.match(/[Ss]/))
+          bt = 3;
     }
-  switch (_) {
+  }
+  switch (bt) {
     case 0:
       break;
     case 1:
-      o.u >= 0.5 && (o.u = 0, ++o.S), o.S >= 60 && (o.S = 0, ++o.M), o.M >= 60 && (o.M = 0, ++o.H);
+      if (dt.u >= 0.5) {
+        dt.u = 0;
+        ++dt.S;
+      }
+      if (dt.S >= 60) {
+        dt.S = 0;
+        ++dt.M;
+      }
+      if (dt.M >= 60) {
+        dt.M = 0;
+        ++dt.H;
+      }
       break;
     case 2:
-      o.u >= 0.5 && (o.u = 0, ++o.S), o.S >= 60 && (o.S = 0, ++o.M);
+      if (dt.u >= 0.5) {
+        dt.u = 0;
+        ++dt.S;
+      }
+      if (dt.S >= 60) {
+        dt.S = 0;
+        ++dt.M;
+      }
       break;
   }
-  var y = "", M;
-  for (s = 0; s < a.length; ++s)
-    switch (a[s].t) {
+  var nstr = "", jj;
+  for (i = 0; i < out.length; ++i) {
+    switch (out[i].t) {
       case "t":
       case "T":
       case " ":
       case "D":
         break;
       case "X":
-        a[s].v = "", a[s].t = ";";
+        out[i].v = "";
+        out[i].t = ";";
         break;
       case "d":
       case "m":
@@ -1974,1380 +2904,2301 @@ function il(e, t, r, n) {
       case "e":
       case "b":
       case "Z":
-        a[s].v = Yo(a[s].t.charCodeAt(0), a[s].v, o, O), a[s].t = "t";
+        out[i].v = SSF_write_date(out[i].t.charCodeAt(0), out[i].v, dt, ss0);
+        out[i].t = "t";
         break;
       case "n":
       case "?":
-        for (M = s + 1; a[M] != null && ((f = a[M].t) === "?" || f === "D" || (f === " " || f === "t") && a[M + 1] != null && (a[M + 1].t === "?" || a[M + 1].t === "t" && a[M + 1].v === "/") || a[s].t === "(" && (f === " " || f === "n" || f === ")") || f === "t" && (a[M].v === "/" || a[M].v === " " && a[M + 1] != null && a[M + 1].t == "?")); )
-          a[s].v += a[M].v, a[M] = { v: "", t: ";" }, ++M;
-        y += a[s].v, s = M - 1;
+        jj = i + 1;
+        while (out[jj] != null && ((c = out[jj].t) === "?" || c === "D" || (c === " " || c === "t") && out[jj + 1] != null && (out[jj + 1].t === "?" || out[jj + 1].t === "t" && out[jj + 1].v === "/") || out[i].t === "(" && (c === " " || c === "n" || c === ")") || c === "t" && (out[jj].v === "/" || out[jj].v === " " && out[jj + 1] != null && out[jj + 1].t == "?"))) {
+          out[i].v += out[jj].v;
+          out[jj] = { v: "", t: ";" };
+          ++jj;
+        }
+        nstr += out[i].v;
+        i = jj - 1;
         break;
       case "G":
-        a[s].t = "t", a[s].v = l0(t, r);
+        out[i].t = "t";
+        out[i].v = SSF_general(v, opts);
         break;
-    }
-  var b = "", re, D;
-  if (y.length > 0) {
-    y.charCodeAt(0) == 40 ? (re = t < 0 && y.charCodeAt(0) === 45 ? -t : t, D = Dr("n", y, re)) : (re = t < 0 && n > 1 ? -t : t, D = Dr("n", y, re), re < 0 && a[0] && a[0].t == "t" && (D = D.substr(1), a[0].v = "-" + a[0].v)), M = D.length - 1;
-    var H = a.length;
-    for (s = 0; s < a.length; ++s)
-      if (a[s] != null && a[s].t != "t" && a[s].v.indexOf(".") > -1) {
-        H = s;
-        break;
-      }
-    var L = a.length;
-    if (H === a.length && D.indexOf("E") === -1) {
-      for (s = a.length - 1; s >= 0; --s)
-        a[s] == null || "n?".indexOf(a[s].t) === -1 || (M >= a[s].v.length - 1 ? (M -= a[s].v.length, a[s].v = D.substr(M + 1, a[s].v.length)) : M < 0 ? a[s].v = "" : (a[s].v = D.substr(0, M + 1), M = -1), a[s].t = "t", L = s);
-      M >= 0 && L < a.length && (a[L].v = D.substr(0, M + 1) + a[L].v);
-    } else if (H !== a.length && D.indexOf("E") === -1) {
-      for (M = D.indexOf(".") - 1, s = H; s >= 0; --s)
-        if (!(a[s] == null || "n?".indexOf(a[s].t) === -1)) {
-          for (c = a[s].v.indexOf(".") > -1 && s === H ? a[s].v.indexOf(".") - 1 : a[s].v.length - 1, b = a[s].v.substr(c + 1); c >= 0; --c)
-            M >= 0 && (a[s].v.charAt(c) === "0" || a[s].v.charAt(c) === "#") && (b = D.charAt(M--) + b);
-          a[s].v = b, a[s].t = "t", L = s;
-        }
-      for (M >= 0 && L < a.length && (a[L].v = D.substr(0, M + 1) + a[L].v), M = D.indexOf(".") + 1, s = H; s < a.length; ++s)
-        if (!(a[s] == null || "n?(".indexOf(a[s].t) === -1 && s !== H)) {
-          for (c = a[s].v.indexOf(".") > -1 && s === H ? a[s].v.indexOf(".") + 1 : 0, b = a[s].v.substr(0, c); c < a[s].v.length; ++c)
-            M < D.length && (b += D.charAt(M++));
-          a[s].v = b, a[s].t = "t", L = s;
-        }
     }
   }
-  for (s = 0; s < a.length; ++s)
-    a[s] != null && "n?".indexOf(a[s].t) > -1 && (re = n > 1 && t < 0 && s > 0 && a[s - 1].v === "-" ? -t : t, a[s].v = Dr(a[s].t, a[s].v, re), a[s].t = "t");
-  var G = "";
-  for (s = 0; s !== a.length; ++s)
-    a[s] != null && (G += a[s].v);
-  return G;
+  var vv = "", myv, ostr;
+  if (nstr.length > 0) {
+    if (nstr.charCodeAt(0) == 40) {
+      myv = v < 0 && nstr.charCodeAt(0) === 45 ? -v : v;
+      ostr = write_num("n", nstr, myv);
+    } else {
+      myv = v < 0 && flen > 1 ? -v : v;
+      ostr = write_num("n", nstr, myv);
+      if (myv < 0 && out[0] && out[0].t == "t") {
+        ostr = ostr.substr(1);
+        out[0].v = "-" + out[0].v;
+      }
+    }
+    jj = ostr.length - 1;
+    var decpt = out.length;
+    for (i = 0; i < out.length; ++i)
+      if (out[i] != null && out[i].t != "t" && out[i].v.indexOf(".") > -1) {
+        decpt = i;
+        break;
+      }
+    var lasti = out.length;
+    if (decpt === out.length && ostr.indexOf("E") === -1) {
+      for (i = out.length - 1; i >= 0; --i) {
+        if (out[i] == null || "n?".indexOf(out[i].t) === -1)
+          continue;
+        if (jj >= out[i].v.length - 1) {
+          jj -= out[i].v.length;
+          out[i].v = ostr.substr(jj + 1, out[i].v.length);
+        } else if (jj < 0)
+          out[i].v = "";
+        else {
+          out[i].v = ostr.substr(0, jj + 1);
+          jj = -1;
+        }
+        out[i].t = "t";
+        lasti = i;
+      }
+      if (jj >= 0 && lasti < out.length)
+        out[lasti].v = ostr.substr(0, jj + 1) + out[lasti].v;
+    } else if (decpt !== out.length && ostr.indexOf("E") === -1) {
+      jj = ostr.indexOf(".") - 1;
+      for (i = decpt; i >= 0; --i) {
+        if (out[i] == null || "n?".indexOf(out[i].t) === -1)
+          continue;
+        j = out[i].v.indexOf(".") > -1 && i === decpt ? out[i].v.indexOf(".") - 1 : out[i].v.length - 1;
+        vv = out[i].v.substr(j + 1);
+        for (; j >= 0; --j) {
+          if (jj >= 0 && (out[i].v.charAt(j) === "0" || out[i].v.charAt(j) === "#"))
+            vv = ostr.charAt(jj--) + vv;
+        }
+        out[i].v = vv;
+        out[i].t = "t";
+        lasti = i;
+      }
+      if (jj >= 0 && lasti < out.length)
+        out[lasti].v = ostr.substr(0, jj + 1) + out[lasti].v;
+      jj = ostr.indexOf(".") + 1;
+      for (i = decpt; i < out.length; ++i) {
+        if (out[i] == null || "n?(".indexOf(out[i].t) === -1 && i !== decpt)
+          continue;
+        j = out[i].v.indexOf(".") > -1 && i === decpt ? out[i].v.indexOf(".") + 1 : 0;
+        vv = out[i].v.substr(0, j);
+        for (; j < out[i].v.length; ++j) {
+          if (jj < ostr.length)
+            vv += ostr.charAt(jj++);
+        }
+        out[i].v = vv;
+        out[i].t = "t";
+        lasti = i;
+      }
+    }
+  }
+  for (i = 0; i < out.length; ++i)
+    if (out[i] != null && "n?".indexOf(out[i].t) > -1) {
+      myv = flen > 1 && v < 0 && i > 0 && out[i - 1].v === "-" ? -v : v;
+      out[i].v = write_num(out[i].t, out[i].v, myv);
+      out[i].t = "t";
+    }
+  var retval = "";
+  for (i = 0; i !== out.length; ++i)
+    if (out[i] != null)
+      retval += out[i].v;
+  return retval;
 }
-var Ra = /\[(=|>[=]?|<[>=]?)(-?\d+(?:\.\d*)?)\]/;
-function Da(e, t) {
-  if (t == null)
-    return !1;
-  var r = parseFloat(t[2]);
-  switch (t[1]) {
+var cfregex2 = /\[(=|>[=]?|<[>=]?)(-?\d+(?:\.\d*)?)\]/;
+function chkcond(v, rr) {
+  if (rr == null)
+    return false;
+  var thresh = parseFloat(rr[2]);
+  switch (rr[1]) {
     case "=":
-      if (e == r)
-        return !0;
+      if (v == thresh)
+        return true;
       break;
     case ">":
-      if (e > r)
-        return !0;
+      if (v > thresh)
+        return true;
       break;
     case "<":
-      if (e < r)
-        return !0;
+      if (v < thresh)
+        return true;
       break;
     case "<>":
-      if (e != r)
-        return !0;
+      if (v != thresh)
+        return true;
       break;
     case ">=":
-      if (e >= r)
-        return !0;
+      if (v >= thresh)
+        return true;
       break;
     case "<=":
-      if (e <= r)
-        return !0;
+      if (v <= thresh)
+        return true;
       break;
   }
-  return !1;
+  return false;
 }
-function sl(e, t) {
-  var r = al(e), n = r.length, a = r[n - 1].indexOf("@");
-  if (n < 4 && a > -1 && --n, r.length > 4)
-    throw new Error("cannot find right format for |" + r.join("|") + "|");
-  if (typeof t != "number")
-    return [4, r.length === 4 || a > -1 ? r[r.length - 1] : "@"];
-  switch (r.length) {
+function choose_fmt(f, v) {
+  var fmt = SSF_split_fmt(f);
+  var l = fmt.length, lat = fmt[l - 1].indexOf("@");
+  if (l < 4 && lat > -1)
+    --l;
+  if (fmt.length > 4)
+    throw new Error("cannot find right format for |" + fmt.join("|") + "|");
+  if (typeof v !== "number")
+    return [4, fmt.length === 4 || lat > -1 ? fmt[fmt.length - 1] : "@"];
+  switch (fmt.length) {
     case 1:
-      r = a > -1 ? ["General", "General", "General", r[0]] : [r[0], r[0], r[0], "@"];
+      fmt = lat > -1 ? ["General", "General", "General", fmt[0]] : [fmt[0], fmt[0], fmt[0], "@"];
       break;
     case 2:
-      r = a > -1 ? [r[0], r[0], r[0], r[1]] : [r[0], r[1], r[0], "@"];
+      fmt = lat > -1 ? [fmt[0], fmt[0], fmt[0], fmt[1]] : [fmt[0], fmt[1], fmt[0], "@"];
       break;
     case 3:
-      r = a > -1 ? [r[0], r[1], r[0], r[2]] : [r[0], r[1], r[2], "@"];
+      fmt = lat > -1 ? [fmt[0], fmt[1], fmt[0], fmt[2]] : [fmt[0], fmt[1], fmt[2], "@"];
       break;
   }
-  var i = t > 0 ? r[0] : t < 0 ? r[1] : r[2];
-  if (r[0].indexOf("[") === -1 && r[1].indexOf("[") === -1)
-    return [n, i];
-  if (r[0].match(/\[[=<>]/) != null || r[1].match(/\[[=<>]/) != null) {
-    var s = r[0].match(Ra), f = r[1].match(Ra);
-    return Da(t, s) ? [n, r[0]] : Da(t, f) ? [n, r[1]] : [n, r[s != null && f != null ? 2 : 1]];
+  var ff = v > 0 ? fmt[0] : v < 0 ? fmt[1] : fmt[2];
+  if (fmt[0].indexOf("[") === -1 && fmt[1].indexOf("[") === -1)
+    return [l, ff];
+  if (fmt[0].match(/\[[=<>]/) != null || fmt[1].match(/\[[=<>]/) != null) {
+    var m1 = fmt[0].match(cfregex2);
+    var m2 = fmt[1].match(cfregex2);
+    return chkcond(v, m1) ? [l, fmt[0]] : chkcond(v, m2) ? [l, fmt[1]] : [l, fmt[m1 != null && m2 != null ? 2 : 1]];
   }
-  return [n, i];
+  return [l, ff];
 }
-function Wr(e, t, r) {
-  r == null && (r = {});
-  var n = "";
-  switch (typeof e) {
+function SSF_format(fmt, v, o) {
+  if (o == null)
+    o = {};
+  var sfmt = "";
+  switch (typeof fmt) {
     case "string":
-      e == "m/d/yy" && r.dateNF ? n = r.dateNF : n = e;
+      if (fmt == "m/d/yy" && o.dateNF)
+        sfmt = o.dateNF;
+      else
+        sfmt = fmt;
       break;
     case "number":
-      e == 14 && r.dateNF ? n = r.dateNF : n = (r.table != null ? r.table : Ce)[e], n == null && (n = r.table && r.table[ya[e]] || Ce[ya[e]]), n == null && (n = Ho[e] || "General");
+      if (fmt == 14 && o.dateNF)
+        sfmt = o.dateNF;
+      else
+        sfmt = (o.table != null ? o.table : table_fmt)[fmt];
+      if (sfmt == null)
+        sfmt = o.table && o.table[SSF_default_map[fmt]] || table_fmt[SSF_default_map[fmt]];
+      if (sfmt == null)
+        sfmt = SSF_default_str[fmt] || "General";
       break;
   }
-  if (cn(n, 0))
-    return l0(t, r);
-  t instanceof Date && (t = Oi(t, r.date1904));
-  var a = sl(n, t);
-  if (cn(a[1]))
-    return l0(t, r);
-  if (t === !0)
-    t = "TRUE";
-  else if (t === !1)
-    t = "FALSE";
-  else if (t === "" || t == null)
+  if (SSF_isgeneral(sfmt, 0))
+    return SSF_general(v, o);
+  if (v instanceof Date)
+    v = datenum_local(v, o.date1904);
+  var f = choose_fmt(sfmt, v);
+  if (SSF_isgeneral(f[1]))
+    return SSF_general(v, o);
+  if (v === true)
+    v = "TRUE";
+  else if (v === false)
+    v = "FALSE";
+  else if (v === "" || v == null)
     return "";
-  return il(a[1], t, r, a[0]);
+  return eval_fmt(f[1], v, o, f[0]);
 }
-function Ui(e, t) {
-  if (typeof t != "number") {
-    t = +t || -1;
-    for (var r = 0; r < 392; ++r) {
-      if (Ce[r] == null) {
-        t < 0 && (t = r);
+function SSF_load(fmt, idx) {
+  if (typeof idx != "number") {
+    idx = +idx || -1;
+    for (var i = 0; i < 392; ++i) {
+      if (table_fmt[i] == void 0) {
+        if (idx < 0)
+          idx = i;
         continue;
       }
-      if (Ce[r] == e) {
-        t = r;
+      if (table_fmt[i] == fmt) {
+        idx = i;
         break;
       }
     }
-    t < 0 && (t = 391);
+    if (idx < 0)
+      idx = 391;
   }
-  return Ce[t] = e, t;
+  table_fmt[idx] = fmt;
+  return idx;
 }
-function Cn(e) {
-  for (var t = 0; t != 392; ++t)
-    e[t] !== void 0 && Ui(e[t], t);
+function SSF_load_table(tbl) {
+  for (var i = 0; i != 392; ++i)
+    if (tbl[i] !== void 0)
+      SSF_load(tbl[i], i);
 }
-function On() {
-  Ce = Wo();
+function make_ssf() {
+  table_fmt = SSF_init_table();
 }
-var bi = /[dD]+|[mM]+|[yYeE]+|[Hh]+|[Ss]+/g;
-function fl(e) {
-  var t = typeof e == "number" ? Ce[e] : e;
-  return t = t.replace(bi, "(\\d+)"), new RegExp("^" + t + "$");
+var dateNFregex = /[dD]+|[mM]+|[yYeE]+|[Hh]+|[Ss]+/g;
+function dateNF_regex(dateNF) {
+  var fmt = typeof dateNF == "number" ? table_fmt[dateNF] : dateNF;
+  fmt = fmt.replace(dateNFregex, "(\\d+)");
+  return new RegExp("^" + fmt + "$");
 }
-function ol(e, t, r) {
-  var n = -1, a = -1, i = -1, s = -1, f = -1, l = -1;
-  (t.match(bi) || []).forEach(function(p, u) {
-    var v = parseInt(r[u + 1], 10);
-    switch (p.toLowerCase().charAt(0)) {
+function dateNF_fix(str, dateNF, match) {
+  var Y = -1, m = -1, d = -1, H = -1, M = -1, S = -1;
+  (dateNF.match(dateNFregex) || []).forEach(function(n, i) {
+    var v = parseInt(match[i + 1], 10);
+    switch (n.toLowerCase().charAt(0)) {
       case "y":
-        n = v;
+        Y = v;
         break;
       case "d":
-        i = v;
+        d = v;
         break;
       case "h":
-        s = v;
+        H = v;
         break;
       case "s":
-        l = v;
+        S = v;
         break;
       case "m":
-        s >= 0 ? f = v : a = v;
+        if (H >= 0)
+          M = v;
+        else
+          m = v;
         break;
     }
-  }), l >= 0 && f == -1 && a >= 0 && (f = a, a = -1);
-  var o = ("" + (n >= 0 ? n : new Date().getFullYear())).slice(-4) + "-" + ("00" + (a >= 1 ? a : 1)).slice(-2) + "-" + ("00" + (i >= 1 ? i : 1)).slice(-2);
-  o.length == 7 && (o = "0" + o), o.length == 8 && (o = "20" + o);
-  var c = ("00" + (s >= 0 ? s : 0)).slice(-2) + ":" + ("00" + (f >= 0 ? f : 0)).slice(-2) + ":" + ("00" + (l >= 0 ? l : 0)).slice(-2);
-  return s == -1 && f == -1 && l == -1 ? o : n == -1 && a == -1 && i == -1 ? c : o + "T" + c;
+  });
+  if (S >= 0 && M == -1 && m >= 0) {
+    M = m;
+    m = -1;
+  }
+  var datestr = ("" + (Y >= 0 ? Y : new Date().getFullYear())).slice(-4) + "-" + ("00" + (m >= 1 ? m : 1)).slice(-2) + "-" + ("00" + (d >= 1 ? d : 1)).slice(-2);
+  if (datestr.length == 7)
+    datestr = "0" + datestr;
+  if (datestr.length == 8)
+    datestr = "20" + datestr;
+  var timestr = ("00" + (H >= 0 ? H : 0)).slice(-2) + ":" + ("00" + (M >= 0 ? M : 0)).slice(-2) + ":" + ("00" + (S >= 0 ? S : 0)).slice(-2);
+  if (H == -1 && M == -1 && S == -1)
+    return datestr;
+  if (Y == -1 && m == -1 && d == -1)
+    return timestr;
+  return datestr + "T" + timestr;
 }
-var ll = /* @__PURE__ */ function() {
-  var e = {};
-  e.version = "1.2.0";
-  function t() {
-    for (var D = 0, H = new Array(256), L = 0; L != 256; ++L)
-      D = L, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, D = D & 1 ? -306674912 ^ D >>> 1 : D >>> 1, H[L] = D;
-    return typeof Int32Array < "u" ? new Int32Array(H) : H;
-  }
-  var r = t();
-  function n(D) {
-    var H = 0, L = 0, G = 0, z = typeof Int32Array < "u" ? new Int32Array(4096) : new Array(4096);
-    for (G = 0; G != 256; ++G)
-      z[G] = D[G];
-    for (G = 0; G != 256; ++G)
-      for (L = D[G], H = 256 + G; H < 4096; H += 256)
-        L = z[H] = L >>> 8 ^ D[L & 255];
-    var j = [];
-    for (G = 1; G != 16; ++G)
-      j[G - 1] = typeof Int32Array < "u" ? z.subarray(G * 256, G * 256 + 256) : z.slice(G * 256, G * 256 + 256);
-    return j;
-  }
-  var a = n(r), i = a[0], s = a[1], f = a[2], l = a[3], o = a[4], c = a[5], p = a[6], u = a[7], v = a[8], T = a[9], x = a[10], _ = a[11], O = a[12], R = a[13], y = a[14];
-  function M(D, H) {
-    for (var L = H ^ -1, G = 0, z = D.length; G < z; )
-      L = L >>> 8 ^ r[(L ^ D.charCodeAt(G++)) & 255];
-    return ~L;
-  }
-  function b(D, H) {
-    for (var L = H ^ -1, G = D.length - 15, z = 0; z < G; )
-      L = y[D[z++] ^ L & 255] ^ R[D[z++] ^ L >> 8 & 255] ^ O[D[z++] ^ L >> 16 & 255] ^ _[D[z++] ^ L >>> 24] ^ x[D[z++]] ^ T[D[z++]] ^ v[D[z++]] ^ u[D[z++]] ^ p[D[z++]] ^ c[D[z++]] ^ o[D[z++]] ^ l[D[z++]] ^ f[D[z++]] ^ s[D[z++]] ^ i[D[z++]] ^ r[D[z++]];
-    for (G += 15; z < G; )
-      L = L >>> 8 ^ r[(L ^ D[z++]) & 255];
-    return ~L;
-  }
-  function re(D, H) {
-    for (var L = H ^ -1, G = 0, z = D.length, j = 0, Q = 0; G < z; )
-      j = D.charCodeAt(G++), j < 128 ? L = L >>> 8 ^ r[(L ^ j) & 255] : j < 2048 ? (L = L >>> 8 ^ r[(L ^ (192 | j >> 6 & 31)) & 255], L = L >>> 8 ^ r[(L ^ (128 | j & 63)) & 255]) : j >= 55296 && j < 57344 ? (j = (j & 1023) + 64, Q = D.charCodeAt(G++) & 1023, L = L >>> 8 ^ r[(L ^ (240 | j >> 8 & 7)) & 255], L = L >>> 8 ^ r[(L ^ (128 | j >> 2 & 63)) & 255], L = L >>> 8 ^ r[(L ^ (128 | Q >> 6 & 15 | (j & 3) << 4)) & 255], L = L >>> 8 ^ r[(L ^ (128 | Q & 63)) & 255]) : (L = L >>> 8 ^ r[(L ^ (224 | j >> 12 & 15)) & 255], L = L >>> 8 ^ r[(L ^ (128 | j >> 6 & 63)) & 255], L = L >>> 8 ^ r[(L ^ (128 | j & 63)) & 255]);
-    return ~L;
-  }
-  return e.table = r, e.bstr = M, e.buf = b, e.str = re, e;
-}(), Ee = /* @__PURE__ */ function() {
-  var t = {};
-  t.version = "1.2.1";
-  function r(d, E) {
-    for (var m = d.split("/"), g = E.split("/"), w = 0, S = 0, I = Math.min(m.length, g.length); w < I; ++w) {
-      if (S = m[w].length - g[w].length)
-        return S;
-      if (m[w] != g[w])
-        return m[w] < g[w] ? -1 : 1;
+var CRC32 = /* @__PURE__ */ function() {
+  var CRC322 = {};
+  CRC322.version = "1.2.0";
+  function signed_crc_table() {
+    var c = 0, table = new Array(256);
+    for (var n = 0; n != 256; ++n) {
+      c = n;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      c = c & 1 ? -306674912 ^ c >>> 1 : c >>> 1;
+      table[n] = c;
     }
-    return m.length - g.length;
+    return typeof Int32Array !== "undefined" ? new Int32Array(table) : table;
   }
-  function n(d) {
-    if (d.charAt(d.length - 1) == "/")
-      return d.slice(0, -1).indexOf("/") === -1 ? d : n(d.slice(0, -1));
-    var E = d.lastIndexOf("/");
-    return E === -1 ? d : d.slice(0, E + 1);
+  var T0 = signed_crc_table();
+  function slice_by_16_tables(T) {
+    var c = 0, v = 0, n = 0, table = typeof Int32Array !== "undefined" ? new Int32Array(4096) : new Array(4096);
+    for (n = 0; n != 256; ++n)
+      table[n] = T[n];
+    for (n = 0; n != 256; ++n) {
+      v = T[n];
+      for (c = 256 + n; c < 4096; c += 256)
+        v = table[c] = v >>> 8 ^ T[v & 255];
+    }
+    var out = [];
+    for (n = 1; n != 16; ++n)
+      out[n - 1] = typeof Int32Array !== "undefined" ? table.subarray(n * 256, n * 256 + 256) : table.slice(n * 256, n * 256 + 256);
+    return out;
   }
-  function a(d) {
-    if (d.charAt(d.length - 1) == "/")
-      return a(d.slice(0, -1));
-    var E = d.lastIndexOf("/");
-    return E === -1 ? d : d.slice(E + 1);
+  var TT = slice_by_16_tables(T0);
+  var T1 = TT[0], T2 = TT[1], T3 = TT[2], T4 = TT[3], T5 = TT[4];
+  var T6 = TT[5], T7 = TT[6], T8 = TT[7], T9 = TT[8], Ta = TT[9];
+  var Tb = TT[10], Tc = TT[11], Td = TT[12], Te = TT[13], Tf = TT[14];
+  function crc32_bstr(bstr, seed) {
+    var C = seed ^ -1;
+    for (var i = 0, L = bstr.length; i < L; )
+      C = C >>> 8 ^ T0[(C ^ bstr.charCodeAt(i++)) & 255];
+    return ~C;
   }
-  function i(d, E) {
-    typeof E == "string" && (E = new Date(E));
-    var m = E.getHours();
-    m = m << 6 | E.getMinutes(), m = m << 5 | E.getSeconds() >>> 1, d.write_shift(2, m);
-    var g = E.getFullYear() - 1980;
-    g = g << 4 | E.getMonth() + 1, g = g << 5 | E.getDate(), d.write_shift(2, g);
+  function crc32_buf(B, seed) {
+    var C = seed ^ -1, L = B.length - 15, i = 0;
+    for (; i < L; )
+      C = Tf[B[i++] ^ C & 255] ^ Te[B[i++] ^ C >> 8 & 255] ^ Td[B[i++] ^ C >> 16 & 255] ^ Tc[B[i++] ^ C >>> 24] ^ Tb[B[i++]] ^ Ta[B[i++]] ^ T9[B[i++]] ^ T8[B[i++]] ^ T7[B[i++]] ^ T6[B[i++]] ^ T5[B[i++]] ^ T4[B[i++]] ^ T3[B[i++]] ^ T2[B[i++]] ^ T1[B[i++]] ^ T0[B[i++]];
+    L += 15;
+    while (i < L)
+      C = C >>> 8 ^ T0[(C ^ B[i++]) & 255];
+    return ~C;
   }
-  function s(d) {
-    var E = d.read_shift(2) & 65535, m = d.read_shift(2) & 65535, g = new Date(), w = m & 31;
-    m >>>= 5;
-    var S = m & 15;
-    m >>>= 4, g.setMilliseconds(0), g.setFullYear(m + 1980), g.setMonth(S - 1), g.setDate(w);
-    var I = E & 31;
-    E >>>= 5;
-    var W = E & 63;
-    return E >>>= 6, g.setHours(E), g.setMinutes(W), g.setSeconds(I << 1), g;
+  function crc32_str(str, seed) {
+    var C = seed ^ -1;
+    for (var i = 0, L = str.length, c = 0, d = 0; i < L; ) {
+      c = str.charCodeAt(i++);
+      if (c < 128) {
+        C = C >>> 8 ^ T0[(C ^ c) & 255];
+      } else if (c < 2048) {
+        C = C >>> 8 ^ T0[(C ^ (192 | c >> 6 & 31)) & 255];
+        C = C >>> 8 ^ T0[(C ^ (128 | c & 63)) & 255];
+      } else if (c >= 55296 && c < 57344) {
+        c = (c & 1023) + 64;
+        d = str.charCodeAt(i++) & 1023;
+        C = C >>> 8 ^ T0[(C ^ (240 | c >> 8 & 7)) & 255];
+        C = C >>> 8 ^ T0[(C ^ (128 | c >> 2 & 63)) & 255];
+        C = C >>> 8 ^ T0[(C ^ (128 | d >> 6 & 15 | (c & 3) << 4)) & 255];
+        C = C >>> 8 ^ T0[(C ^ (128 | d & 63)) & 255];
+      } else {
+        C = C >>> 8 ^ T0[(C ^ (224 | c >> 12 & 15)) & 255];
+        C = C >>> 8 ^ T0[(C ^ (128 | c >> 6 & 63)) & 255];
+        C = C >>> 8 ^ T0[(C ^ (128 | c & 63)) & 255];
+      }
+    }
+    return ~C;
   }
-  function f(d) {
-    sr(d, 0);
-    for (var E = {}, m = 0; d.l <= d.length - 4; ) {
-      var g = d.read_shift(2), w = d.read_shift(2), S = d.l + w, I = {};
-      switch (g) {
+  CRC322.table = T0;
+  CRC322.bstr = crc32_bstr;
+  CRC322.buf = crc32_buf;
+  CRC322.str = crc32_str;
+  return CRC322;
+}();
+var CFB = /* @__PURE__ */ function _CFB() {
+  var exports = {};
+  exports.version = "1.2.1";
+  function namecmp(l, r) {
+    var L = l.split("/"), R = r.split("/");
+    for (var i2 = 0, c = 0, Z = Math.min(L.length, R.length); i2 < Z; ++i2) {
+      if (c = L[i2].length - R[i2].length)
+        return c;
+      if (L[i2] != R[i2])
+        return L[i2] < R[i2] ? -1 : 1;
+    }
+    return L.length - R.length;
+  }
+  function dirname(p) {
+    if (p.charAt(p.length - 1) == "/")
+      return p.slice(0, -1).indexOf("/") === -1 ? p : dirname(p.slice(0, -1));
+    var c = p.lastIndexOf("/");
+    return c === -1 ? p : p.slice(0, c + 1);
+  }
+  function filename(p) {
+    if (p.charAt(p.length - 1) == "/")
+      return filename(p.slice(0, -1));
+    var c = p.lastIndexOf("/");
+    return c === -1 ? p : p.slice(c + 1);
+  }
+  function write_dos_date(buf, date) {
+    if (typeof date === "string")
+      date = new Date(date);
+    var hms = date.getHours();
+    hms = hms << 6 | date.getMinutes();
+    hms = hms << 5 | date.getSeconds() >>> 1;
+    buf.write_shift(2, hms);
+    var ymd = date.getFullYear() - 1980;
+    ymd = ymd << 4 | date.getMonth() + 1;
+    ymd = ymd << 5 | date.getDate();
+    buf.write_shift(2, ymd);
+  }
+  function parse_dos_date(buf) {
+    var hms = buf.read_shift(2) & 65535;
+    var ymd = buf.read_shift(2) & 65535;
+    var val = new Date();
+    var d = ymd & 31;
+    ymd >>>= 5;
+    var m = ymd & 15;
+    ymd >>>= 4;
+    val.setMilliseconds(0);
+    val.setFullYear(ymd + 1980);
+    val.setMonth(m - 1);
+    val.setDate(d);
+    var S = hms & 31;
+    hms >>>= 5;
+    var M = hms & 63;
+    hms >>>= 6;
+    val.setHours(hms);
+    val.setMinutes(M);
+    val.setSeconds(S << 1);
+    return val;
+  }
+  function parse_extra_field(blob) {
+    prep_blob(blob, 0);
+    var o = {};
+    var flags = 0;
+    while (blob.l <= blob.length - 4) {
+      var type = blob.read_shift(2);
+      var sz = blob.read_shift(2), tgt = blob.l + sz;
+      var p = {};
+      switch (type) {
         case 21589:
-          m = d.read_shift(1), m & 1 && (I.mtime = d.read_shift(4)), w > 5 && (m & 2 && (I.atime = d.read_shift(4)), m & 4 && (I.ctime = d.read_shift(4))), I.mtime && (I.mt = new Date(I.mtime * 1e3));
+          {
+            flags = blob.read_shift(1);
+            if (flags & 1)
+              p.mtime = blob.read_shift(4);
+            if (sz > 5) {
+              if (flags & 2)
+                p.atime = blob.read_shift(4);
+              if (flags & 4)
+                p.ctime = blob.read_shift(4);
+            }
+            if (p.mtime)
+              p.mt = new Date(p.mtime * 1e3);
+          }
           break;
       }
-      d.l = S, E[g] = I;
+      blob.l = tgt;
+      o[type] = p;
     }
-    return E;
+    return o;
   }
-  var l;
-  function o() {
-    return l || (l = {});
+  var fs;
+  function get_fs() {
+    return fs || (fs = {});
   }
-  function c(d, E) {
-    if (d[0] == 80 && d[1] == 75)
-      return J0(d, E);
-    if ((d[0] | 32) == 109 && (d[1] | 32) == 105)
-      return vf(d, E);
-    if (d.length < 512)
-      throw new Error("CFB file size " + d.length + " < 512");
-    var m = 3, g = 512, w = 0, S = 0, I = 0, W = 0, N = 0, k = [], P = d.slice(0, 512);
-    sr(P, 0);
-    var K = p(P);
-    switch (m = K[0], m) {
+  function parse(file, options) {
+    if (file[0] == 80 && file[1] == 75)
+      return parse_zip(file, options);
+    if ((file[0] | 32) == 109 && (file[1] | 32) == 105)
+      return parse_mad(file, options);
+    if (file.length < 512)
+      throw new Error("CFB file size " + file.length + " < 512");
+    var mver = 3;
+    var ssz = 512;
+    var nmfs = 0;
+    var difat_sec_cnt = 0;
+    var dir_start = 0;
+    var minifat_start = 0;
+    var difat_start = 0;
+    var fat_addrs = [];
+    var blob = file.slice(0, 512);
+    prep_blob(blob, 0);
+    var mv = check_get_mver(blob);
+    mver = mv[0];
+    switch (mver) {
       case 3:
-        g = 512;
+        ssz = 512;
         break;
       case 4:
-        g = 4096;
+        ssz = 4096;
         break;
       case 0:
-        if (K[1] == 0)
-          return J0(d, E);
+        if (mv[1] == 0)
+          return parse_zip(file, options);
       default:
-        throw new Error("Major Version: Expected 3 or 4 saw " + m);
+        throw new Error("Major Version: Expected 3 or 4 saw " + mver);
     }
-    g !== 512 && (P = d.slice(0, g), sr(P, 28));
-    var Z = d.slice(0, g);
-    u(P, m);
-    var ne = P.read_shift(4, "i");
-    if (m === 3 && ne !== 0)
-      throw new Error("# Directory Sectors: Expected 0 saw " + ne);
-    P.l += 4, I = P.read_shift(4, "i"), P.l += 4, P.chk("00100000", "Mini Stream Cutoff Size: "), W = P.read_shift(4, "i"), w = P.read_shift(4, "i"), N = P.read_shift(4, "i"), S = P.read_shift(4, "i");
-    for (var Y = -1, te = 0; te < 109 && (Y = P.read_shift(4, "i"), !(Y < 0)); ++te)
-      k[te] = Y;
-    var le = v(d, g);
-    _(N, S, le, g, k);
-    var Se = R(le, I, k, g);
-    Se[I].name = "!Directory", w > 0 && W !== Q && (Se[W].name = "!MiniFAT"), Se[k[0]].name = "!FAT", Se.fat_addrs = k, Se.ssz = g;
-    var Ae = {}, je = [], Ft = [], yt = [];
-    y(I, Se, le, je, w, Ae, Ft, W), T(Ft, yt, je), je.shift();
-    var Ct = {
-      FileIndex: Ft,
-      FullPaths: yt
+    if (ssz !== 512) {
+      blob = file.slice(0, ssz);
+      prep_blob(blob, 28);
+    }
+    var header = file.slice(0, ssz);
+    check_shifts(blob, mver);
+    var dir_cnt = blob.read_shift(4, "i");
+    if (mver === 3 && dir_cnt !== 0)
+      throw new Error("# Directory Sectors: Expected 0 saw " + dir_cnt);
+    blob.l += 4;
+    dir_start = blob.read_shift(4, "i");
+    blob.l += 4;
+    blob.chk("00100000", "Mini Stream Cutoff Size: ");
+    minifat_start = blob.read_shift(4, "i");
+    nmfs = blob.read_shift(4, "i");
+    difat_start = blob.read_shift(4, "i");
+    difat_sec_cnt = blob.read_shift(4, "i");
+    for (var q2 = -1, j = 0; j < 109; ++j) {
+      q2 = blob.read_shift(4, "i");
+      if (q2 < 0)
+        break;
+      fat_addrs[j] = q2;
+    }
+    var sectors = sectorify(file, ssz);
+    sleuth_fat(difat_start, difat_sec_cnt, sectors, ssz, fat_addrs);
+    var sector_list = make_sector_list(sectors, dir_start, fat_addrs, ssz);
+    sector_list[dir_start].name = "!Directory";
+    if (nmfs > 0 && minifat_start !== ENDOFCHAIN)
+      sector_list[minifat_start].name = "!MiniFAT";
+    sector_list[fat_addrs[0]].name = "!FAT";
+    sector_list.fat_addrs = fat_addrs;
+    sector_list.ssz = ssz;
+    var files = {}, Paths = [], FileIndex = [], FullPaths = [];
+    read_directory(dir_start, sector_list, sectors, Paths, nmfs, files, FileIndex, minifat_start);
+    build_full_paths(FileIndex, FullPaths, Paths);
+    Paths.shift();
+    var o = {
+      FileIndex,
+      FullPaths
     };
-    return E && E.raw && (Ct.raw = { header: Z, sectors: le }), Ct;
+    if (options && options.raw)
+      o.raw = { header, sectors };
+    return o;
   }
-  function p(d) {
-    if (d[d.l] == 80 && d[d.l + 1] == 75)
+  function check_get_mver(blob) {
+    if (blob[blob.l] == 80 && blob[blob.l + 1] == 75)
       return [0, 0];
-    d.chk(he, "Header Signature: "), d.l += 16;
-    var E = d.read_shift(2, "u");
-    return [d.read_shift(2, "u"), E];
+    blob.chk(HEADER_SIGNATURE, "Header Signature: ");
+    blob.l += 16;
+    var mver = blob.read_shift(2, "u");
+    return [blob.read_shift(2, "u"), mver];
   }
-  function u(d, E) {
-    var m = 9;
-    switch (d.l += 2, m = d.read_shift(2)) {
+  function check_shifts(blob, mver) {
+    var shift = 9;
+    blob.l += 2;
+    switch (shift = blob.read_shift(2)) {
       case 9:
-        if (E != 3)
-          throw new Error("Sector Shift: Expected 9 saw " + m);
+        if (mver != 3)
+          throw new Error("Sector Shift: Expected 9 saw " + shift);
         break;
       case 12:
-        if (E != 4)
-          throw new Error("Sector Shift: Expected 12 saw " + m);
+        if (mver != 4)
+          throw new Error("Sector Shift: Expected 12 saw " + shift);
         break;
       default:
-        throw new Error("Sector Shift: Expected 9 or 12 saw " + m);
+        throw new Error("Sector Shift: Expected 9 or 12 saw " + shift);
     }
-    d.chk("0600", "Mini Sector Shift: "), d.chk("000000000000", "Reserved: ");
+    blob.chk("0600", "Mini Sector Shift: ");
+    blob.chk("000000000000", "Reserved: ");
   }
-  function v(d, E) {
-    for (var m = Math.ceil(d.length / E) - 1, g = [], w = 1; w < m; ++w)
-      g[w - 1] = d.slice(w * E, (w + 1) * E);
-    return g[m - 1] = d.slice(m * E), g;
+  function sectorify(file, ssz) {
+    var nsectors = Math.ceil(file.length / ssz) - 1;
+    var sectors = [];
+    for (var i2 = 1; i2 < nsectors; ++i2)
+      sectors[i2 - 1] = file.slice(i2 * ssz, (i2 + 1) * ssz);
+    sectors[nsectors - 1] = file.slice(nsectors * ssz);
+    return sectors;
   }
-  function T(d, E, m) {
-    for (var g = 0, w = 0, S = 0, I = 0, W = 0, N = m.length, k = [], P = []; g < N; ++g)
-      k[g] = P[g] = g, E[g] = m[g];
-    for (; W < P.length; ++W)
-      g = P[W], w = d[g].L, S = d[g].R, I = d[g].C, k[g] === g && (w !== -1 && k[w] !== w && (k[g] = k[w]), S !== -1 && k[S] !== S && (k[g] = k[S])), I !== -1 && (k[I] = g), w !== -1 && g != k[g] && (k[w] = k[g], P.lastIndexOf(w) < W && P.push(w)), S !== -1 && g != k[g] && (k[S] = k[g], P.lastIndexOf(S) < W && P.push(S));
-    for (g = 1; g < N; ++g)
-      k[g] === g && (S !== -1 && k[S] !== S ? k[g] = k[S] : w !== -1 && k[w] !== w && (k[g] = k[w]));
-    for (g = 1; g < N; ++g)
-      if (d[g].type !== 0) {
-        if (W = g, W != k[W])
-          do
-            W = k[W], E[g] = E[W] + "/" + E[g];
-          while (W !== 0 && k[W] !== -1 && W != k[W]);
-        k[g] = -1;
+  function build_full_paths(FI, FP, Paths) {
+    var i2 = 0, L = 0, R = 0, C = 0, j = 0, pl = Paths.length;
+    var dad = [], q2 = [];
+    for (; i2 < pl; ++i2) {
+      dad[i2] = q2[i2] = i2;
+      FP[i2] = Paths[i2];
+    }
+    for (; j < q2.length; ++j) {
+      i2 = q2[j];
+      L = FI[i2].L;
+      R = FI[i2].R;
+      C = FI[i2].C;
+      if (dad[i2] === i2) {
+        if (L !== -1 && dad[L] !== L)
+          dad[i2] = dad[L];
+        if (R !== -1 && dad[R] !== R)
+          dad[i2] = dad[R];
       }
-    for (E[0] += "/", g = 1; g < N; ++g)
-      d[g].type !== 2 && (E[g] += "/");
+      if (C !== -1)
+        dad[C] = i2;
+      if (L !== -1 && i2 != dad[i2]) {
+        dad[L] = dad[i2];
+        if (q2.lastIndexOf(L) < j)
+          q2.push(L);
+      }
+      if (R !== -1 && i2 != dad[i2]) {
+        dad[R] = dad[i2];
+        if (q2.lastIndexOf(R) < j)
+          q2.push(R);
+      }
+    }
+    for (i2 = 1; i2 < pl; ++i2)
+      if (dad[i2] === i2) {
+        if (R !== -1 && dad[R] !== R)
+          dad[i2] = dad[R];
+        else if (L !== -1 && dad[L] !== L)
+          dad[i2] = dad[L];
+      }
+    for (i2 = 1; i2 < pl; ++i2) {
+      if (FI[i2].type === 0)
+        continue;
+      j = i2;
+      if (j != dad[j])
+        do {
+          j = dad[j];
+          FP[i2] = FP[j] + "/" + FP[i2];
+        } while (j !== 0 && -1 !== dad[j] && j != dad[j]);
+      dad[i2] = -1;
+    }
+    FP[0] += "/";
+    for (i2 = 1; i2 < pl; ++i2) {
+      if (FI[i2].type !== 2)
+        FP[i2] += "/";
+    }
   }
-  function x(d, E, m) {
-    for (var g = d.start, w = d.size, S = [], I = g; m && w > 0 && I >= 0; )
-      S.push(E.slice(I * j, I * j + j)), w -= j, I = Kr(m, I * 4);
-    return S.length === 0 ? U(0) : He(S).slice(0, d.size);
+  function get_mfat_entry(entry, payload, mini) {
+    var start = entry.start, size = entry.size;
+    var o = [];
+    var idx = start;
+    while (mini && size > 0 && idx >= 0) {
+      o.push(payload.slice(idx * MSSZ, idx * MSSZ + MSSZ));
+      size -= MSSZ;
+      idx = __readInt32LE(mini, idx * 4);
+    }
+    if (o.length === 0)
+      return new_buf(0);
+    return bconcat(o).slice(0, entry.size);
   }
-  function _(d, E, m, g, w) {
-    var S = Q;
-    if (d === Q) {
-      if (E !== 0)
+  function sleuth_fat(idx, cnt, sectors, ssz, fat_addrs) {
+    var q2 = ENDOFCHAIN;
+    if (idx === ENDOFCHAIN) {
+      if (cnt !== 0)
         throw new Error("DIFAT chain shorter than expected");
-    } else if (d !== -1) {
-      var I = m[d], W = (g >>> 2) - 1;
-      if (!I)
+    } else if (idx !== -1) {
+      var sector = sectors[idx], m = (ssz >>> 2) - 1;
+      if (!sector)
         return;
-      for (var N = 0; N < W && (S = Kr(I, N * 4)) !== Q; ++N)
-        w.push(S);
-      _(Kr(I, g - 4), E - 1, m, g, w);
-    }
-  }
-  function O(d, E, m, g, w) {
-    var S = [], I = [];
-    w || (w = []);
-    var W = g - 1, N = 0, k = 0;
-    for (N = E; N >= 0; ) {
-      w[N] = !0, S[S.length] = N, I.push(d[N]);
-      var P = m[Math.floor(N * 4 / g)];
-      if (k = N * 4 & W, g < 4 + k)
-        throw new Error("FAT boundary crossed: " + N + " 4 " + g);
-      if (!d[P])
-        break;
-      N = Kr(d[P], k);
-    }
-    return { nodes: S, data: Ua([I]) };
-  }
-  function R(d, E, m, g) {
-    var w = d.length, S = [], I = [], W = [], N = [], k = g - 1, P = 0, K = 0, Z = 0, ne = 0;
-    for (P = 0; P < w; ++P)
-      if (W = [], Z = P + E, Z >= w && (Z -= w), !I[Z]) {
-        N = [];
-        var Y = [];
-        for (K = Z; K >= 0; ) {
-          Y[K] = !0, I[K] = !0, W[W.length] = K, N.push(d[K]);
-          var te = m[Math.floor(K * 4 / g)];
-          if (ne = K * 4 & k, g < 4 + ne)
-            throw new Error("FAT boundary crossed: " + K + " 4 " + g);
-          if (!d[te] || (K = Kr(d[te], ne), Y[K]))
-            break;
-        }
-        S[Z] = { nodes: W, data: Ua([N]) };
+      for (var i2 = 0; i2 < m; ++i2) {
+        if ((q2 = __readInt32LE(sector, i2 * 4)) === ENDOFCHAIN)
+          break;
+        fat_addrs.push(q2);
       }
-    return S;
+      sleuth_fat(__readInt32LE(sector, ssz - 4), cnt - 1, sectors, ssz, fat_addrs);
+    }
   }
-  function y(d, E, m, g, w, S, I, W) {
-    for (var N = 0, k = g.length ? 2 : 0, P = E[d].data, K = 0, Z = 0, ne; K < P.length; K += 128) {
-      var Y = P.slice(K, K + 128);
-      sr(Y, 64), Z = Y.read_shift(2), ne = C0(Y, 0, Z - k), g.push(ne);
-      var te = {
-        name: ne,
-        type: Y.read_shift(1),
-        color: Y.read_shift(1),
-        L: Y.read_shift(4, "i"),
-        R: Y.read_shift(4, "i"),
-        C: Y.read_shift(4, "i"),
-        clsid: Y.read_shift(16),
-        state: Y.read_shift(4, "i"),
+  function get_sector_list(sectors, start, fat_addrs, ssz, chkd) {
+    var buf = [], buf_chain = [];
+    if (!chkd)
+      chkd = [];
+    var modulus = ssz - 1, j = 0, jj = 0;
+    for (j = start; j >= 0; ) {
+      chkd[j] = true;
+      buf[buf.length] = j;
+      buf_chain.push(sectors[j]);
+      var addr = fat_addrs[Math.floor(j * 4 / ssz)];
+      jj = j * 4 & modulus;
+      if (ssz < 4 + jj)
+        throw new Error("FAT boundary crossed: " + j + " 4 " + ssz);
+      if (!sectors[addr])
+        break;
+      j = __readInt32LE(sectors[addr], jj);
+    }
+    return { nodes: buf, data: __toBuffer([buf_chain]) };
+  }
+  function make_sector_list(sectors, dir_start, fat_addrs, ssz) {
+    var sl = sectors.length, sector_list = [];
+    var chkd = [], buf = [], buf_chain = [];
+    var modulus = ssz - 1, i2 = 0, j = 0, k = 0, jj = 0;
+    for (i2 = 0; i2 < sl; ++i2) {
+      buf = [];
+      k = i2 + dir_start;
+      if (k >= sl)
+        k -= sl;
+      if (chkd[k])
+        continue;
+      buf_chain = [];
+      var seen = [];
+      for (j = k; j >= 0; ) {
+        seen[j] = true;
+        chkd[j] = true;
+        buf[buf.length] = j;
+        buf_chain.push(sectors[j]);
+        var addr = fat_addrs[Math.floor(j * 4 / ssz)];
+        jj = j * 4 & modulus;
+        if (ssz < 4 + jj)
+          throw new Error("FAT boundary crossed: " + j + " 4 " + ssz);
+        if (!sectors[addr])
+          break;
+        j = __readInt32LE(sectors[addr], jj);
+        if (seen[j])
+          break;
+      }
+      sector_list[k] = { nodes: buf, data: __toBuffer([buf_chain]) };
+    }
+    return sector_list;
+  }
+  function read_directory(dir_start, sector_list, sectors, Paths, nmfs, files, FileIndex, mini) {
+    var minifat_store = 0, pl = Paths.length ? 2 : 0;
+    var sector = sector_list[dir_start].data;
+    var i2 = 0, namelen = 0, name;
+    for (; i2 < sector.length; i2 += 128) {
+      var blob = sector.slice(i2, i2 + 128);
+      prep_blob(blob, 64);
+      namelen = blob.read_shift(2);
+      name = __utf16le(blob, 0, namelen - pl);
+      Paths.push(name);
+      var o = {
+        name,
+        type: blob.read_shift(1),
+        color: blob.read_shift(1),
+        L: blob.read_shift(4, "i"),
+        R: blob.read_shift(4, "i"),
+        C: blob.read_shift(4, "i"),
+        clsid: blob.read_shift(16),
+        state: blob.read_shift(4, "i"),
         start: 0,
         size: 0
-      }, le = Y.read_shift(2) + Y.read_shift(2) + Y.read_shift(2) + Y.read_shift(2);
-      le !== 0 && (te.ct = M(Y, Y.l - 8));
-      var Se = Y.read_shift(2) + Y.read_shift(2) + Y.read_shift(2) + Y.read_shift(2);
-      Se !== 0 && (te.mt = M(Y, Y.l - 8)), te.start = Y.read_shift(4, "i"), te.size = Y.read_shift(4, "i"), te.size < 0 && te.start < 0 && (te.size = te.type = 0, te.start = Q, te.name = ""), te.type === 5 ? (N = te.start, w > 0 && N !== Q && (E[N].name = "!StreamData")) : te.size >= 4096 ? (te.storage = "fat", E[te.start] === void 0 && (E[te.start] = O(m, te.start, E.fat_addrs, E.ssz)), E[te.start].name = te.name, te.content = E[te.start].data.slice(0, te.size)) : (te.storage = "minifat", te.size < 0 ? te.size = 0 : N !== Q && te.start !== Q && E[N] && (te.content = x(te, E[N].data, (E[W] || {}).data))), te.content && sr(te.content, 0), S[ne] = te, I.push(te);
+      };
+      var ctime = blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2);
+      if (ctime !== 0)
+        o.ct = read_date(blob, blob.l - 8);
+      var mtime = blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2);
+      if (mtime !== 0)
+        o.mt = read_date(blob, blob.l - 8);
+      o.start = blob.read_shift(4, "i");
+      o.size = blob.read_shift(4, "i");
+      if (o.size < 0 && o.start < 0) {
+        o.size = o.type = 0;
+        o.start = ENDOFCHAIN;
+        o.name = "";
+      }
+      if (o.type === 5) {
+        minifat_store = o.start;
+        if (nmfs > 0 && minifat_store !== ENDOFCHAIN)
+          sector_list[minifat_store].name = "!StreamData";
+      } else if (o.size >= 4096) {
+        o.storage = "fat";
+        if (sector_list[o.start] === void 0)
+          sector_list[o.start] = get_sector_list(sectors, o.start, sector_list.fat_addrs, sector_list.ssz);
+        sector_list[o.start].name = o.name;
+        o.content = sector_list[o.start].data.slice(0, o.size);
+      } else {
+        o.storage = "minifat";
+        if (o.size < 0)
+          o.size = 0;
+        else if (minifat_store !== ENDOFCHAIN && o.start !== ENDOFCHAIN && sector_list[minifat_store]) {
+          o.content = get_mfat_entry(o, sector_list[minifat_store].data, (sector_list[mini] || {}).data);
+        }
+      }
+      if (o.content)
+        prep_blob(o.content, 0);
+      files[name] = o;
+      FileIndex.push(o);
     }
   }
-  function M(d, E) {
-    return new Date((or(d, E + 4) / 1e7 * Math.pow(2, 32) + or(d, E) / 1e7 - 11644473600) * 1e3);
+  function read_date(blob, offset) {
+    return new Date((__readUInt32LE(blob, offset + 4) / 1e7 * Math.pow(2, 32) + __readUInt32LE(blob, offset) / 1e7 - 11644473600) * 1e3);
   }
-  function b(d, E) {
-    return o(), c(l.readFileSync(d), E);
+  function read_file(filename2, options) {
+    get_fs();
+    return parse(fs.readFileSync(filename2), options);
   }
-  function re(d, E) {
-    var m = E && E.type;
-    switch (m || de && Buffer.isBuffer(d) && (m = "buffer"), m || "base64") {
+  function read(blob, options) {
+    var type = options && options.type;
+    if (!type) {
+      if (has_buf && Buffer.isBuffer(blob))
+        type = "buffer";
+    }
+    switch (type || "base64") {
       case "file":
-        return b(d, E);
+        return read_file(blob, options);
       case "base64":
-        return c(_r(kr(d)), E);
+        return parse(s2a(Base64_decode(blob)), options);
       case "binary":
-        return c(_r(d), E);
+        return parse(s2a(blob), options);
     }
-    return c(d, E);
+    return parse(blob, options);
   }
-  function D(d, E) {
-    var m = E || {}, g = m.root || "Root Entry";
-    if (d.FullPaths || (d.FullPaths = []), d.FileIndex || (d.FileIndex = []), d.FullPaths.length !== d.FileIndex.length)
+  function init_cfb(cfb, opts) {
+    var o = opts || {}, root = o.root || "Root Entry";
+    if (!cfb.FullPaths)
+      cfb.FullPaths = [];
+    if (!cfb.FileIndex)
+      cfb.FileIndex = [];
+    if (cfb.FullPaths.length !== cfb.FileIndex.length)
       throw new Error("inconsistent CFB structure");
-    d.FullPaths.length === 0 && (d.FullPaths[0] = g + "/", d.FileIndex[0] = { name: g, type: 5 }), m.CLSID && (d.FileIndex[0].clsid = m.CLSID), H(d);
-  }
-  function H(d) {
-    var E = "Sh33tJ5";
-    if (!Ee.find(d, "/" + E)) {
-      var m = U(4);
-      m[0] = 55, m[1] = m[3] = 50, m[2] = 54, d.FileIndex.push({ name: E, type: 2, content: m, size: 4, L: 69, R: 69, C: 69 }), d.FullPaths.push(d.FullPaths[0] + E), L(d);
+    if (cfb.FullPaths.length === 0) {
+      cfb.FullPaths[0] = root + "/";
+      cfb.FileIndex[0] = { name: root, type: 5 };
     }
+    if (o.CLSID)
+      cfb.FileIndex[0].clsid = o.CLSID;
+    seed_cfb(cfb);
   }
-  function L(d, E) {
-    D(d);
-    for (var m = !1, g = !1, w = d.FullPaths.length - 1; w >= 0; --w) {
-      var S = d.FileIndex[w];
-      switch (S.type) {
+  function seed_cfb(cfb) {
+    var nm = "Sh33tJ5";
+    if (CFB.find(cfb, "/" + nm))
+      return;
+    var p = new_buf(4);
+    p[0] = 55;
+    p[1] = p[3] = 50;
+    p[2] = 54;
+    cfb.FileIndex.push({ name: nm, type: 2, content: p, size: 4, L: 69, R: 69, C: 69 });
+    cfb.FullPaths.push(cfb.FullPaths[0] + nm);
+    rebuild_cfb(cfb);
+  }
+  function rebuild_cfb(cfb, f) {
+    init_cfb(cfb);
+    var gc = false, s = false;
+    for (var i2 = cfb.FullPaths.length - 1; i2 >= 0; --i2) {
+      var _file = cfb.FileIndex[i2];
+      switch (_file.type) {
         case 0:
-          g ? m = !0 : (d.FileIndex.pop(), d.FullPaths.pop());
+          if (s)
+            gc = true;
+          else {
+            cfb.FileIndex.pop();
+            cfb.FullPaths.pop();
+          }
           break;
         case 1:
         case 2:
         case 5:
-          g = !0, isNaN(S.R * S.L * S.C) && (m = !0), S.R > -1 && S.L > -1 && S.R == S.L && (m = !0);
+          s = true;
+          if (isNaN(_file.R * _file.L * _file.C))
+            gc = true;
+          if (_file.R > -1 && _file.L > -1 && _file.R == _file.L)
+            gc = true;
           break;
         default:
-          m = !0;
+          gc = true;
           break;
       }
     }
-    if (!(!m && !E)) {
-      var I = new Date(1987, 1, 19), W = 0, N = Object.create ? /* @__PURE__ */ Object.create(null) : {}, k = [];
-      for (w = 0; w < d.FullPaths.length; ++w)
-        N[d.FullPaths[w]] = !0, d.FileIndex[w].type !== 0 && k.push([d.FullPaths[w], d.FileIndex[w]]);
-      for (w = 0; w < k.length; ++w) {
-        var P = n(k[w][0]);
-        g = N[P], g || (k.push([P, {
-          name: a(P).replace("/", ""),
+    if (!gc && !f)
+      return;
+    var now = new Date(1987, 1, 19), j = 0;
+    var fullPaths = Object.create ? /* @__PURE__ */ Object.create(null) : {};
+    var data2 = [];
+    for (i2 = 0; i2 < cfb.FullPaths.length; ++i2) {
+      fullPaths[cfb.FullPaths[i2]] = true;
+      if (cfb.FileIndex[i2].type === 0)
+        continue;
+      data2.push([cfb.FullPaths[i2], cfb.FileIndex[i2]]);
+    }
+    for (i2 = 0; i2 < data2.length; ++i2) {
+      var dad = dirname(data2[i2][0]);
+      s = fullPaths[dad];
+      if (!s) {
+        data2.push([dad, {
+          name: filename(dad).replace("/", ""),
           type: 1,
-          clsid: Oe,
-          ct: I,
-          mt: I,
+          clsid: HEADER_CLSID,
+          ct: now,
+          mt: now,
           content: null
-        }]), N[P] = !0);
+        }]);
+        fullPaths[dad] = true;
       }
-      for (k.sort(function(ne, Y) {
-        return r(ne[0], Y[0]);
-      }), d.FullPaths = [], d.FileIndex = [], w = 0; w < k.length; ++w)
-        d.FullPaths[w] = k[w][0], d.FileIndex[w] = k[w][1];
-      for (w = 0; w < k.length; ++w) {
-        var K = d.FileIndex[w], Z = d.FullPaths[w];
-        if (K.name = a(Z).replace("/", ""), K.L = K.R = K.C = -(K.color = 1), K.size = K.content ? K.content.length : 0, K.start = 0, K.clsid = K.clsid || Oe, w === 0)
-          K.C = k.length > 1 ? 1 : -1, K.size = 0, K.type = 5;
-        else if (Z.slice(-1) == "/") {
-          for (W = w + 1; W < k.length && n(d.FullPaths[W]) != Z; ++W)
-            ;
-          for (K.C = W >= k.length ? -1 : W, W = w + 1; W < k.length && n(d.FullPaths[W]) != n(Z); ++W)
-            ;
-          K.R = W >= k.length ? -1 : W, K.type = 1;
-        } else
-          n(d.FullPaths[w + 1] || "") == n(Z) && (K.R = w + 1), K.type = 2;
+    }
+    data2.sort(function(x, y) {
+      return namecmp(x[0], y[0]);
+    });
+    cfb.FullPaths = [];
+    cfb.FileIndex = [];
+    for (i2 = 0; i2 < data2.length; ++i2) {
+      cfb.FullPaths[i2] = data2[i2][0];
+      cfb.FileIndex[i2] = data2[i2][1];
+    }
+    for (i2 = 0; i2 < data2.length; ++i2) {
+      var elt = cfb.FileIndex[i2];
+      var nm = cfb.FullPaths[i2];
+      elt.name = filename(nm).replace("/", "");
+      elt.L = elt.R = elt.C = -(elt.color = 1);
+      elt.size = elt.content ? elt.content.length : 0;
+      elt.start = 0;
+      elt.clsid = elt.clsid || HEADER_CLSID;
+      if (i2 === 0) {
+        elt.C = data2.length > 1 ? 1 : -1;
+        elt.size = 0;
+        elt.type = 5;
+      } else if (nm.slice(-1) == "/") {
+        for (j = i2 + 1; j < data2.length; ++j)
+          if (dirname(cfb.FullPaths[j]) == nm)
+            break;
+        elt.C = j >= data2.length ? -1 : j;
+        for (j = i2 + 1; j < data2.length; ++j)
+          if (dirname(cfb.FullPaths[j]) == dirname(nm))
+            break;
+        elt.R = j >= data2.length ? -1 : j;
+        elt.type = 1;
+      } else {
+        if (dirname(cfb.FullPaths[i2 + 1] || "") == dirname(nm))
+          elt.R = i2 + 1;
+        elt.type = 2;
       }
     }
   }
-  function G(d, E) {
-    var m = E || {};
-    if (m.fileType == "mad")
-      return mf(d, m);
-    switch (L(d), m.fileType) {
+  function _write(cfb, options) {
+    var _opts = options || {};
+    if (_opts.fileType == "mad")
+      return write_mad(cfb, _opts);
+    rebuild_cfb(cfb);
+    switch (_opts.fileType) {
       case "zip":
-        return cf(d, m);
+        return write_zip2(cfb, _opts);
     }
-    var g = function(ne) {
-      for (var Y = 0, te = 0, le = 0; le < ne.FileIndex.length; ++le) {
-        var Se = ne.FileIndex[le];
-        if (!!Se.content) {
-          var Ae = Se.content.length;
-          Ae > 0 && (Ae < 4096 ? Y += Ae + 63 >> 6 : te += Ae + 511 >> 9);
+    var L = function(cfb2) {
+      var mini_size = 0, fat_size = 0;
+      for (var i3 = 0; i3 < cfb2.FileIndex.length; ++i3) {
+        var file2 = cfb2.FileIndex[i3];
+        if (!file2.content)
+          continue;
+        var flen2 = file2.content.length;
+        if (flen2 > 0) {
+          if (flen2 < 4096)
+            mini_size += flen2 + 63 >> 6;
+          else
+            fat_size += flen2 + 511 >> 9;
         }
       }
-      for (var je = ne.FullPaths.length + 3 >> 2, Ft = Y + 7 >> 3, yt = Y + 127 >> 7, Ct = Ft + te + je + yt, jr = Ct + 127 >> 7, Un = jr <= 109 ? 0 : Math.ceil((jr - 109) / 127); Ct + jr + Un + 127 >> 7 > jr; )
-        Un = ++jr <= 109 ? 0 : Math.ceil((jr - 109) / 127);
-      var Or = [1, Un, jr, yt, je, te, Y, 0];
-      return ne.FileIndex[0].size = Y << 6, Or[7] = (ne.FileIndex[0].start = Or[0] + Or[1] + Or[2] + Or[3] + Or[4] + Or[5]) + (Or[6] + 7 >> 3), Or;
-    }(d), w = U(g[7] << 9), S = 0, I = 0;
+      var dir_cnt = cfb2.FullPaths.length + 3 >> 2;
+      var mini_cnt = mini_size + 7 >> 3;
+      var mfat_cnt = mini_size + 127 >> 7;
+      var fat_base = mini_cnt + fat_size + dir_cnt + mfat_cnt;
+      var fat_cnt = fat_base + 127 >> 7;
+      var difat_cnt = fat_cnt <= 109 ? 0 : Math.ceil((fat_cnt - 109) / 127);
+      while (fat_base + fat_cnt + difat_cnt + 127 >> 7 > fat_cnt)
+        difat_cnt = ++fat_cnt <= 109 ? 0 : Math.ceil((fat_cnt - 109) / 127);
+      var L2 = [1, difat_cnt, fat_cnt, mfat_cnt, dir_cnt, fat_size, mini_size, 0];
+      cfb2.FileIndex[0].size = mini_size << 6;
+      L2[7] = (cfb2.FileIndex[0].start = L2[0] + L2[1] + L2[2] + L2[3] + L2[4] + L2[5]) + (L2[6] + 7 >> 3);
+      return L2;
+    }(cfb);
+    var o = new_buf(L[7] << 9);
+    var i2 = 0, T = 0;
     {
-      for (S = 0; S < 8; ++S)
-        w.write_shift(1, oe[S]);
-      for (S = 0; S < 8; ++S)
-        w.write_shift(2, 0);
-      for (w.write_shift(2, 62), w.write_shift(2, 3), w.write_shift(2, 65534), w.write_shift(2, 9), w.write_shift(2, 6), S = 0; S < 3; ++S)
-        w.write_shift(2, 0);
-      for (w.write_shift(4, 0), w.write_shift(4, g[2]), w.write_shift(4, g[0] + g[1] + g[2] + g[3] - 1), w.write_shift(4, 0), w.write_shift(4, 1 << 12), w.write_shift(4, g[3] ? g[0] + g[1] + g[2] - 1 : Q), w.write_shift(4, g[3]), w.write_shift(-4, g[1] ? g[0] - 1 : Q), w.write_shift(4, g[1]), S = 0; S < 109; ++S)
-        w.write_shift(-4, S < g[2] ? g[1] + S : -1);
+      for (i2 = 0; i2 < 8; ++i2)
+        o.write_shift(1, HEADER_SIG[i2]);
+      for (i2 = 0; i2 < 8; ++i2)
+        o.write_shift(2, 0);
+      o.write_shift(2, 62);
+      o.write_shift(2, 3);
+      o.write_shift(2, 65534);
+      o.write_shift(2, 9);
+      o.write_shift(2, 6);
+      for (i2 = 0; i2 < 3; ++i2)
+        o.write_shift(2, 0);
+      o.write_shift(4, 0);
+      o.write_shift(4, L[2]);
+      o.write_shift(4, L[0] + L[1] + L[2] + L[3] - 1);
+      o.write_shift(4, 0);
+      o.write_shift(4, 1 << 12);
+      o.write_shift(4, L[3] ? L[0] + L[1] + L[2] - 1 : ENDOFCHAIN);
+      o.write_shift(4, L[3]);
+      o.write_shift(-4, L[1] ? L[0] - 1 : ENDOFCHAIN);
+      o.write_shift(4, L[1]);
+      for (i2 = 0; i2 < 109; ++i2)
+        o.write_shift(-4, i2 < L[2] ? L[1] + i2 : -1);
     }
-    if (g[1])
-      for (I = 0; I < g[1]; ++I) {
-        for (; S < 236 + I * 127; ++S)
-          w.write_shift(-4, S < g[2] ? g[1] + S : -1);
-        w.write_shift(-4, I === g[1] - 1 ? Q : I + 1);
+    if (L[1]) {
+      for (T = 0; T < L[1]; ++T) {
+        for (; i2 < 236 + T * 127; ++i2)
+          o.write_shift(-4, i2 < L[2] ? L[1] + i2 : -1);
+        o.write_shift(-4, T === L[1] - 1 ? ENDOFCHAIN : T + 1);
       }
-    var W = function(ne) {
-      for (I += ne; S < I - 1; ++S)
-        w.write_shift(-4, S + 1);
-      ne && (++S, w.write_shift(-4, Q));
+    }
+    var chainit = function(w) {
+      for (T += w; i2 < T - 1; ++i2)
+        o.write_shift(-4, i2 + 1);
+      if (w) {
+        ++i2;
+        o.write_shift(-4, ENDOFCHAIN);
+      }
     };
-    for (I = S = 0, I += g[1]; S < I; ++S)
-      w.write_shift(-4, Re.DIFSECT);
-    for (I += g[2]; S < I; ++S)
-      w.write_shift(-4, Re.FATSECT);
-    W(g[3]), W(g[4]);
-    for (var N = 0, k = 0, P = d.FileIndex[0]; N < d.FileIndex.length; ++N)
-      P = d.FileIndex[N], P.content && (k = P.content.length, !(k < 4096) && (P.start = I, W(k + 511 >> 9)));
-    for (W(g[6] + 7 >> 3); w.l & 511; )
-      w.write_shift(-4, Re.ENDOFCHAIN);
-    for (I = S = 0, N = 0; N < d.FileIndex.length; ++N)
-      P = d.FileIndex[N], P.content && (k = P.content.length, !(!k || k >= 4096) && (P.start = I, W(k + 63 >> 6)));
-    for (; w.l & 511; )
-      w.write_shift(-4, Re.ENDOFCHAIN);
-    for (S = 0; S < g[4] << 2; ++S) {
-      var K = d.FullPaths[S];
-      if (!K || K.length === 0) {
-        for (N = 0; N < 17; ++N)
-          w.write_shift(4, 0);
-        for (N = 0; N < 3; ++N)
-          w.write_shift(4, -1);
-        for (N = 0; N < 12; ++N)
-          w.write_shift(4, 0);
+    T = i2 = 0;
+    for (T += L[1]; i2 < T; ++i2)
+      o.write_shift(-4, consts.DIFSECT);
+    for (T += L[2]; i2 < T; ++i2)
+      o.write_shift(-4, consts.FATSECT);
+    chainit(L[3]);
+    chainit(L[4]);
+    var j = 0, flen = 0;
+    var file = cfb.FileIndex[0];
+    for (; j < cfb.FileIndex.length; ++j) {
+      file = cfb.FileIndex[j];
+      if (!file.content)
+        continue;
+      flen = file.content.length;
+      if (flen < 4096)
+        continue;
+      file.start = T;
+      chainit(flen + 511 >> 9);
+    }
+    chainit(L[6] + 7 >> 3);
+    while (o.l & 511)
+      o.write_shift(-4, consts.ENDOFCHAIN);
+    T = i2 = 0;
+    for (j = 0; j < cfb.FileIndex.length; ++j) {
+      file = cfb.FileIndex[j];
+      if (!file.content)
+        continue;
+      flen = file.content.length;
+      if (!flen || flen >= 4096)
+        continue;
+      file.start = T;
+      chainit(flen + 63 >> 6);
+    }
+    while (o.l & 511)
+      o.write_shift(-4, consts.ENDOFCHAIN);
+    for (i2 = 0; i2 < L[4] << 2; ++i2) {
+      var nm = cfb.FullPaths[i2];
+      if (!nm || nm.length === 0) {
+        for (j = 0; j < 17; ++j)
+          o.write_shift(4, 0);
+        for (j = 0; j < 3; ++j)
+          o.write_shift(4, -1);
+        for (j = 0; j < 12; ++j)
+          o.write_shift(4, 0);
         continue;
       }
-      P = d.FileIndex[S], S === 0 && (P.start = P.size ? P.start - 1 : Q);
-      var Z = S === 0 && m.root || P.name;
-      if (k = 2 * (Z.length + 1), w.write_shift(64, Z, "utf16le"), w.write_shift(2, k), w.write_shift(1, P.type), w.write_shift(1, P.color), w.write_shift(-4, P.L), w.write_shift(-4, P.R), w.write_shift(-4, P.C), P.clsid)
-        w.write_shift(16, P.clsid, "hex");
+      file = cfb.FileIndex[i2];
+      if (i2 === 0)
+        file.start = file.size ? file.start - 1 : ENDOFCHAIN;
+      var _nm = i2 === 0 && _opts.root || file.name;
+      flen = 2 * (_nm.length + 1);
+      o.write_shift(64, _nm, "utf16le");
+      o.write_shift(2, flen);
+      o.write_shift(1, file.type);
+      o.write_shift(1, file.color);
+      o.write_shift(-4, file.L);
+      o.write_shift(-4, file.R);
+      o.write_shift(-4, file.C);
+      if (!file.clsid)
+        for (j = 0; j < 4; ++j)
+          o.write_shift(4, 0);
       else
-        for (N = 0; N < 4; ++N)
-          w.write_shift(4, 0);
-      w.write_shift(4, P.state || 0), w.write_shift(4, 0), w.write_shift(4, 0), w.write_shift(4, 0), w.write_shift(4, 0), w.write_shift(4, P.start), w.write_shift(4, P.size), w.write_shift(4, 0);
+        o.write_shift(16, file.clsid, "hex");
+      o.write_shift(4, file.state || 0);
+      o.write_shift(4, 0);
+      o.write_shift(4, 0);
+      o.write_shift(4, 0);
+      o.write_shift(4, 0);
+      o.write_shift(4, file.start);
+      o.write_shift(4, file.size);
+      o.write_shift(4, 0);
     }
-    for (S = 1; S < d.FileIndex.length; ++S)
-      if (P = d.FileIndex[S], P.size >= 4096)
-        if (w.l = P.start + 1 << 9, de && Buffer.isBuffer(P.content))
-          P.content.copy(w, w.l, 0, P.size), w.l += P.size + 511 & -512;
-        else {
-          for (N = 0; N < P.size; ++N)
-            w.write_shift(1, P.content[N]);
-          for (; N & 511; ++N)
-            w.write_shift(1, 0);
+    for (i2 = 1; i2 < cfb.FileIndex.length; ++i2) {
+      file = cfb.FileIndex[i2];
+      if (file.size >= 4096) {
+        o.l = file.start + 1 << 9;
+        if (has_buf && Buffer.isBuffer(file.content)) {
+          file.content.copy(o, o.l, 0, file.size);
+          o.l += file.size + 511 & -512;
+        } else {
+          for (j = 0; j < file.size; ++j)
+            o.write_shift(1, file.content[j]);
+          for (; j & 511; ++j)
+            o.write_shift(1, 0);
         }
-    for (S = 1; S < d.FileIndex.length; ++S)
-      if (P = d.FileIndex[S], P.size > 0 && P.size < 4096)
-        if (de && Buffer.isBuffer(P.content))
-          P.content.copy(w, w.l, 0, P.size), w.l += P.size + 63 & -64;
-        else {
-          for (N = 0; N < P.size; ++N)
-            w.write_shift(1, P.content[N]);
-          for (; N & 63; ++N)
-            w.write_shift(1, 0);
+      }
+    }
+    for (i2 = 1; i2 < cfb.FileIndex.length; ++i2) {
+      file = cfb.FileIndex[i2];
+      if (file.size > 0 && file.size < 4096) {
+        if (has_buf && Buffer.isBuffer(file.content)) {
+          file.content.copy(o, o.l, 0, file.size);
+          o.l += file.size + 63 & -64;
+        } else {
+          for (j = 0; j < file.size; ++j)
+            o.write_shift(1, file.content[j]);
+          for (; j & 63; ++j)
+            o.write_shift(1, 0);
         }
-    if (de)
-      w.l = w.length;
-    else
-      for (; w.l < w.length; )
-        w.write_shift(1, 0);
-    return w;
+      }
+    }
+    if (has_buf) {
+      o.l = o.length;
+    } else {
+      while (o.l < o.length)
+        o.write_shift(1, 0);
+    }
+    return o;
   }
-  function z(d, E) {
-    var m = d.FullPaths.map(function(N) {
-      return N.toUpperCase();
-    }), g = m.map(function(N) {
-      var k = N.split("/");
-      return k[k.length - (N.slice(-1) == "/" ? 2 : 1)];
-    }), w = !1;
-    E.charCodeAt(0) === 47 ? (w = !0, E = m[0].slice(0, -1) + E) : w = E.indexOf("/") !== -1;
-    var S = E.toUpperCase(), I = w === !0 ? m.indexOf(S) : g.indexOf(S);
-    if (I !== -1)
-      return d.FileIndex[I];
-    var W = !S.match(Jt);
-    for (S = S.replace(Dt, ""), W && (S = S.replace(Jt, "!")), I = 0; I < m.length; ++I)
-      if ((W ? m[I].replace(Jt, "!") : m[I]).replace(Dt, "") == S || (W ? g[I].replace(Jt, "!") : g[I]).replace(Dt, "") == S)
-        return d.FileIndex[I];
+  function find(cfb, path) {
+    var UCFullPaths = cfb.FullPaths.map(function(x) {
+      return x.toUpperCase();
+    });
+    var UCPaths = UCFullPaths.map(function(x) {
+      var y = x.split("/");
+      return y[y.length - (x.slice(-1) == "/" ? 2 : 1)];
+    });
+    var k = false;
+    if (path.charCodeAt(0) === 47) {
+      k = true;
+      path = UCFullPaths[0].slice(0, -1) + path;
+    } else
+      k = path.indexOf("/") !== -1;
+    var UCPath = path.toUpperCase();
+    var w = k === true ? UCFullPaths.indexOf(UCPath) : UCPaths.indexOf(UCPath);
+    if (w !== -1)
+      return cfb.FileIndex[w];
+    var m = !UCPath.match(chr1);
+    UCPath = UCPath.replace(chr0, "");
+    if (m)
+      UCPath = UCPath.replace(chr1, "!");
+    for (w = 0; w < UCFullPaths.length; ++w) {
+      if ((m ? UCFullPaths[w].replace(chr1, "!") : UCFullPaths[w]).replace(chr0, "") == UCPath)
+        return cfb.FileIndex[w];
+      if ((m ? UCPaths[w].replace(chr1, "!") : UCPaths[w]).replace(chr0, "") == UCPath)
+        return cfb.FileIndex[w];
+    }
     return null;
   }
-  var j = 64, Q = -2, he = "d0cf11e0a1b11ae1", oe = [208, 207, 17, 224, 161, 177, 26, 225], Oe = "00000000000000000000000000000000", Re = {
+  var MSSZ = 64;
+  var ENDOFCHAIN = -2;
+  var HEADER_SIGNATURE = "d0cf11e0a1b11ae1";
+  var HEADER_SIG = [208, 207, 17, 224, 161, 177, 26, 225];
+  var HEADER_CLSID = "00000000000000000000000000000000";
+  var consts = {
     MAXREGSECT: -6,
     DIFSECT: -4,
     FATSECT: -3,
-    ENDOFCHAIN: Q,
+    ENDOFCHAIN,
     FREESECT: -1,
-    HEADER_SIGNATURE: he,
+    HEADER_SIGNATURE,
     HEADER_MINOR_VERSION: "3e00",
     MAXREGSID: -6,
     NOSTREAM: -1,
-    HEADER_CLSID: Oe,
+    HEADER_CLSID,
     EntryTypes: ["unknown", "storage", "stream", "lockbytes", "property", "root"]
   };
-  function pr(d, E, m) {
-    o();
-    var g = G(d, m);
-    l.writeFileSync(E, g);
+  function write_file(cfb, filename2, options) {
+    get_fs();
+    var o = _write(cfb, options);
+    fs.writeFileSync(filename2, o);
   }
-  function Pe(d) {
-    for (var E = new Array(d.length), m = 0; m < d.length; ++m)
-      E[m] = String.fromCharCode(d[m]);
-    return E.join("");
+  function a2s2(o) {
+    var out = new Array(o.length);
+    for (var i2 = 0; i2 < o.length; ++i2)
+      out[i2] = String.fromCharCode(o[i2]);
+    return out.join("");
   }
-  function cr(d, E) {
-    var m = G(d, E);
-    switch (E && E.type || "buffer") {
+  function write(cfb, options) {
+    var o = _write(cfb, options);
+    switch (options && options.type || "buffer") {
       case "file":
-        return o(), l.writeFileSync(E.filename, m), m;
+        get_fs();
+        fs.writeFileSync(options.filename, o);
+        return o;
       case "binary":
-        return typeof m == "string" ? m : Pe(m);
+        return typeof o == "string" ? o : a2s2(o);
       case "base64":
-        return Mt(typeof m == "string" ? m : Pe(m));
+        return Base64_encode(typeof o == "string" ? o : a2s2(o));
       case "buffer":
-        if (de)
-          return Buffer.isBuffer(m) ? m : Lr(m);
+        if (has_buf)
+          return Buffer.isBuffer(o) ? o : Buffer_from(o);
       case "array":
-        return typeof m == "string" ? _r(m) : m;
+        return typeof o == "string" ? s2a(o) : o;
     }
-    return m;
+    return o;
   }
-  var nr;
-  function A(d) {
+  var _zlib;
+  function use_zlib(zlib) {
     try {
-      var E = d.InflateRaw, m = new E();
-      if (m._processChunk(new Uint8Array([3, 0]), m._finishFlushFlag), m.bytesRead)
-        nr = d;
+      var InflateRaw = zlib.InflateRaw;
+      var InflRaw = new InflateRaw();
+      InflRaw._processChunk(new Uint8Array([3, 0]), InflRaw._finishFlushFlag);
+      if (InflRaw.bytesRead)
+        _zlib = zlib;
       else
         throw new Error("zlib does not expose bytesRead");
-    } catch (g) {
-      console.error("cannot use native zlib: " + (g.message || g));
+    } catch (e) {
+      console.error("cannot use native zlib: " + (e.message || e));
     }
   }
-  function B(d, E) {
-    if (!nr)
-      return Y0(d, E);
-    var m = nr.InflateRaw, g = new m(), w = g._processChunk(d.slice(d.l), g._finishFlushFlag);
-    return d.l += g.bytesRead, w;
+  function _inflateRawSync(payload, usz) {
+    if (!_zlib)
+      return _inflate(payload, usz);
+    var InflateRaw = _zlib.InflateRaw;
+    var InflRaw = new InflateRaw();
+    var out = InflRaw._processChunk(payload.slice(payload.l), InflRaw._finishFlushFlag);
+    payload.l += InflRaw.bytesRead;
+    return out;
   }
-  function C(d) {
-    return nr ? nr.deflateRawSync(d) : G0(d);
+  function _deflateRawSync(payload) {
+    return _zlib ? _zlib.deflateRawSync(payload) : _deflate(payload);
   }
-  var F = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15], X = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258], se = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
-  function fe(d) {
-    var E = (d << 1 | d << 11) & 139536 | (d << 5 | d << 15) & 558144;
-    return (E >> 16 | E >> 8 | E) & 255;
+  var CLEN_ORDER = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+  var LEN_LN = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258];
+  var DST_LN = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
+  function bit_swap_8(n) {
+    var t = (n << 1 | n << 11) & 139536 | (n << 5 | n << 15) & 558144;
+    return (t >> 16 | t >> 8 | t) & 255;
   }
-  for (var ie = typeof Uint8Array < "u", ee = ie ? new Uint8Array(1 << 8) : [], Te = 0; Te < 1 << 8; ++Te)
-    ee[Te] = fe(Te);
-  function ue(d, E) {
-    var m = ee[d & 255];
-    return E <= 8 ? m >>> 8 - E : (m = m << 8 | ee[d >> 8 & 255], E <= 16 ? m >>> 16 - E : (m = m << 8 | ee[d >> 16 & 255], m >>> 24 - E));
+  var use_typed_arrays = typeof Uint8Array !== "undefined";
+  var bitswap8 = use_typed_arrays ? new Uint8Array(1 << 8) : [];
+  for (var q = 0; q < 1 << 8; ++q)
+    bitswap8[q] = bit_swap_8(q);
+  function bit_swap_n(n, b) {
+    var rev = bitswap8[n & 255];
+    if (b <= 8)
+      return rev >>> 8 - b;
+    rev = rev << 8 | bitswap8[n >> 8 & 255];
+    if (b <= 16)
+      return rev >>> 16 - b;
+    rev = rev << 8 | bitswap8[n >> 16 & 255];
+    return rev >>> 24 - b;
   }
-  function Ye(d, E) {
-    var m = E & 7, g = E >>> 3;
-    return (d[g] | (m <= 6 ? 0 : d[g + 1] << 8)) >>> m & 3;
+  function read_bits_2(buf, bl) {
+    var w = bl & 7, h2 = bl >>> 3;
+    return (buf[h2] | (w <= 6 ? 0 : buf[h2 + 1] << 8)) >>> w & 3;
   }
-  function pe(d, E) {
-    var m = E & 7, g = E >>> 3;
-    return (d[g] | (m <= 5 ? 0 : d[g + 1] << 8)) >>> m & 7;
+  function read_bits_3(buf, bl) {
+    var w = bl & 7, h2 = bl >>> 3;
+    return (buf[h2] | (w <= 5 ? 0 : buf[h2 + 1] << 8)) >>> w & 7;
   }
-  function yr(d, E) {
-    var m = E & 7, g = E >>> 3;
-    return (d[g] | (m <= 4 ? 0 : d[g + 1] << 8)) >>> m & 15;
+  function read_bits_4(buf, bl) {
+    var w = bl & 7, h2 = bl >>> 3;
+    return (buf[h2] | (w <= 4 ? 0 : buf[h2 + 1] << 8)) >>> w & 15;
   }
-  function Fe(d, E) {
-    var m = E & 7, g = E >>> 3;
-    return (d[g] | (m <= 3 ? 0 : d[g + 1] << 8)) >>> m & 31;
+  function read_bits_5(buf, bl) {
+    var w = bl & 7, h2 = bl >>> 3;
+    return (buf[h2] | (w <= 3 ? 0 : buf[h2 + 1] << 8)) >>> w & 31;
   }
-  function ae(d, E) {
-    var m = E & 7, g = E >>> 3;
-    return (d[g] | (m <= 1 ? 0 : d[g + 1] << 8)) >>> m & 127;
+  function read_bits_7(buf, bl) {
+    var w = bl & 7, h2 = bl >>> 3;
+    return (buf[h2] | (w <= 1 ? 0 : buf[h2 + 1] << 8)) >>> w & 127;
   }
-  function hr(d, E, m) {
-    var g = E & 7, w = E >>> 3, S = (1 << m) - 1, I = d[w] >>> g;
-    return m < 8 - g || (I |= d[w + 1] << 8 - g, m < 16 - g) || (I |= d[w + 2] << 16 - g, m < 24 - g) || (I |= d[w + 3] << 24 - g), I & S;
+  function read_bits_n(buf, bl, n) {
+    var w = bl & 7, h2 = bl >>> 3, f = (1 << n) - 1;
+    var v = buf[h2] >>> w;
+    if (n < 8 - w)
+      return v & f;
+    v |= buf[h2 + 1] << 8 - w;
+    if (n < 16 - w)
+      return v & f;
+    v |= buf[h2 + 2] << 16 - w;
+    if (n < 24 - w)
+      return v & f;
+    v |= buf[h2 + 3] << 24 - w;
+    return v & f;
   }
-  function Cr(d, E, m) {
-    var g = E & 7, w = E >>> 3;
-    return g <= 5 ? d[w] |= (m & 7) << g : (d[w] |= m << g & 255, d[w + 1] = (m & 7) >> 8 - g), E + 3;
-  }
-  function Xr(d, E, m) {
-    var g = E & 7, w = E >>> 3;
-    return m = (m & 1) << g, d[w] |= m, E + 1;
-  }
-  function it(d, E, m) {
-    var g = E & 7, w = E >>> 3;
-    return m <<= g, d[w] |= m & 255, m >>>= 8, d[w + 1] = m, E + 8;
-  }
-  function V0(d, E, m) {
-    var g = E & 7, w = E >>> 3;
-    return m <<= g, d[w] |= m & 255, m >>>= 8, d[w + 1] = m & 255, d[w + 2] = m >>> 8, E + 16;
-  }
-  function Pn(d, E) {
-    var m = d.length, g = 2 * m > E ? 2 * m : E + 5, w = 0;
-    if (m >= E)
-      return d;
-    if (de) {
-      var S = Sa(g);
-      if (d.copy)
-        d.copy(S);
-      else
-        for (; w < d.length; ++w)
-          S[w] = d[w];
-      return S;
-    } else if (ie) {
-      var I = new Uint8Array(g);
-      if (I.set)
-        I.set(d);
-      else
-        for (; w < m; ++w)
-          I[w] = d[w];
-      return I;
+  function write_bits_3(buf, bl, v) {
+    var w = bl & 7, h2 = bl >>> 3;
+    if (w <= 5)
+      buf[h2] |= (v & 7) << w;
+    else {
+      buf[h2] |= v << w & 255;
+      buf[h2 + 1] = (v & 7) >> 8 - w;
     }
-    return d.length = g, d;
+    return bl + 3;
   }
-  function wr(d) {
-    for (var E = new Array(d), m = 0; m < d; ++m)
-      E[m] = 0;
-    return E;
+  function write_bits_1(buf, bl, v) {
+    var w = bl & 7, h2 = bl >>> 3;
+    v = (v & 1) << w;
+    buf[h2] |= v;
+    return bl + 1;
   }
-  function Kt(d, E, m) {
-    var g = 1, w = 0, S = 0, I = 0, W = 0, N = d.length, k = ie ? new Uint16Array(32) : wr(32);
-    for (S = 0; S < 32; ++S)
-      k[S] = 0;
-    for (S = N; S < m; ++S)
-      d[S] = 0;
-    N = d.length;
-    var P = ie ? new Uint16Array(N) : wr(N);
-    for (S = 0; S < N; ++S)
-      k[w = d[S]]++, g < w && (g = w), P[S] = 0;
-    for (k[0] = 0, S = 1; S <= g; ++S)
-      k[S + 16] = W = W + k[S - 1] << 1;
-    for (S = 0; S < N; ++S)
-      W = d[S], W != 0 && (P[S] = k[W + 16]++);
-    var K = 0;
-    for (S = 0; S < N; ++S)
-      if (K = d[S], K != 0)
-        for (W = ue(P[S], g) >> g - K, I = (1 << g + 4 - K) - 1; I >= 0; --I)
-          E[W | I << K] = K & 15 | S << 4;
-    return g;
+  function write_bits_8(buf, bl, v) {
+    var w = bl & 7, h2 = bl >>> 3;
+    v <<= w;
+    buf[h2] |= v & 255;
+    v >>>= 8;
+    buf[h2 + 1] = v;
+    return bl + 8;
   }
-  var Ln = ie ? new Uint16Array(512) : wr(512), Bn = ie ? new Uint16Array(32) : wr(32);
-  if (!ie) {
-    for (var $r = 0; $r < 512; ++$r)
-      Ln[$r] = 0;
-    for ($r = 0; $r < 32; ++$r)
-      Bn[$r] = 0;
+  function write_bits_16(buf, bl, v) {
+    var w = bl & 7, h2 = bl >>> 3;
+    v <<= w;
+    buf[h2] |= v & 255;
+    v >>>= 8;
+    buf[h2 + 1] = v & 255;
+    buf[h2 + 2] = v >>> 8;
+    return bl + 16;
+  }
+  function realloc(b, sz) {
+    var L = b.length, M = 2 * L > sz ? 2 * L : sz + 5, i2 = 0;
+    if (L >= sz)
+      return b;
+    if (has_buf) {
+      var o = new_unsafe_buf(M);
+      if (b.copy)
+        b.copy(o);
+      else
+        for (; i2 < b.length; ++i2)
+          o[i2] = b[i2];
+      return o;
+    } else if (use_typed_arrays) {
+      var a = new Uint8Array(M);
+      if (a.set)
+        a.set(b);
+      else
+        for (; i2 < L; ++i2)
+          a[i2] = b[i2];
+      return a;
+    }
+    b.length = M;
+    return b;
+  }
+  function zero_fill_array(n) {
+    var o = new Array(n);
+    for (var i2 = 0; i2 < n; ++i2)
+      o[i2] = 0;
+    return o;
+  }
+  function build_tree(clens, cmap, MAX) {
+    var maxlen = 1, w = 0, i2 = 0, j = 0, ccode = 0, L = clens.length;
+    var bl_count = use_typed_arrays ? new Uint16Array(32) : zero_fill_array(32);
+    for (i2 = 0; i2 < 32; ++i2)
+      bl_count[i2] = 0;
+    for (i2 = L; i2 < MAX; ++i2)
+      clens[i2] = 0;
+    L = clens.length;
+    var ctree = use_typed_arrays ? new Uint16Array(L) : zero_fill_array(L);
+    for (i2 = 0; i2 < L; ++i2) {
+      bl_count[w = clens[i2]]++;
+      if (maxlen < w)
+        maxlen = w;
+      ctree[i2] = 0;
+    }
+    bl_count[0] = 0;
+    for (i2 = 1; i2 <= maxlen; ++i2)
+      bl_count[i2 + 16] = ccode = ccode + bl_count[i2 - 1] << 1;
+    for (i2 = 0; i2 < L; ++i2) {
+      ccode = clens[i2];
+      if (ccode != 0)
+        ctree[i2] = bl_count[ccode + 16]++;
+    }
+    var cleni = 0;
+    for (i2 = 0; i2 < L; ++i2) {
+      cleni = clens[i2];
+      if (cleni != 0) {
+        ccode = bit_swap_n(ctree[i2], maxlen) >> maxlen - cleni;
+        for (j = (1 << maxlen + 4 - cleni) - 1; j >= 0; --j)
+          cmap[ccode | j << cleni] = cleni & 15 | i2 << 4;
+      }
+    }
+    return maxlen;
+  }
+  var fix_lmap = use_typed_arrays ? new Uint16Array(512) : zero_fill_array(512);
+  var fix_dmap = use_typed_arrays ? new Uint16Array(32) : zero_fill_array(32);
+  if (!use_typed_arrays) {
+    for (var i = 0; i < 512; ++i)
+      fix_lmap[i] = 0;
+    for (i = 0; i < 32; ++i)
+      fix_dmap[i] = 0;
   }
   (function() {
-    for (var d = [], E = 0; E < 32; E++)
-      d.push(5);
-    Kt(d, Bn, 32);
-    var m = [];
-    for (E = 0; E <= 143; E++)
-      m.push(8);
-    for (; E <= 255; E++)
-      m.push(9);
-    for (; E <= 279; E++)
-      m.push(7);
-    for (; E <= 287; E++)
-      m.push(8);
-    Kt(m, Ln, 288);
+    var dlens = [];
+    var i2 = 0;
+    for (; i2 < 32; i2++)
+      dlens.push(5);
+    build_tree(dlens, fix_dmap, 32);
+    var clens = [];
+    i2 = 0;
+    for (; i2 <= 143; i2++)
+      clens.push(8);
+    for (; i2 <= 255; i2++)
+      clens.push(9);
+    for (; i2 <= 279; i2++)
+      clens.push(7);
+    for (; i2 <= 287; i2++)
+      clens.push(8);
+    build_tree(clens, fix_lmap, 288);
   })();
-  var sf = /* @__PURE__ */ function() {
-    for (var E = ie ? new Uint8Array(32768) : [], m = 0, g = 0; m < se.length - 1; ++m)
-      for (; g < se[m + 1]; ++g)
-        E[g] = m;
-    for (; g < 32768; ++g)
-      E[g] = 29;
-    var w = ie ? new Uint8Array(259) : [];
-    for (m = 0, g = 0; m < X.length - 1; ++m)
-      for (; g < X[m + 1]; ++g)
-        w[g] = m;
-    function S(W, N) {
-      for (var k = 0; k < W.length; ) {
-        var P = Math.min(65535, W.length - k), K = k + P == W.length;
-        for (N.write_shift(1, +K), N.write_shift(2, P), N.write_shift(2, ~P & 65535); P-- > 0; )
-          N[N.l++] = W[k++];
-      }
-      return N.l;
+  var _deflateRaw = /* @__PURE__ */ function _deflateRawIIFE() {
+    var DST_LN_RE = use_typed_arrays ? new Uint8Array(32768) : [];
+    var j = 0, k = 0;
+    for (; j < DST_LN.length - 1; ++j) {
+      for (; k < DST_LN[j + 1]; ++k)
+        DST_LN_RE[k] = j;
     }
-    function I(W, N) {
-      for (var k = 0, P = 0, K = ie ? new Uint16Array(32768) : []; P < W.length; ) {
-        var Z = Math.min(65535, W.length - P);
-        if (Z < 10) {
-          for (k = Cr(N, k, +(P + Z == W.length)), k & 7 && (k += 8 - (k & 7)), N.l = k / 8 | 0, N.write_shift(2, Z), N.write_shift(2, ~Z & 65535); Z-- > 0; )
-            N[N.l++] = W[P++];
-          k = N.l * 8;
+    for (; k < 32768; ++k)
+      DST_LN_RE[k] = 29;
+    var LEN_LN_RE = use_typed_arrays ? new Uint8Array(259) : [];
+    for (j = 0, k = 0; j < LEN_LN.length - 1; ++j) {
+      for (; k < LEN_LN[j + 1]; ++k)
+        LEN_LN_RE[k] = j;
+    }
+    function write_stored(data2, out) {
+      var boff = 0;
+      while (boff < data2.length) {
+        var L = Math.min(65535, data2.length - boff);
+        var h2 = boff + L == data2.length;
+        out.write_shift(1, +h2);
+        out.write_shift(2, L);
+        out.write_shift(2, ~L & 65535);
+        while (L-- > 0)
+          out[out.l++] = data2[boff++];
+      }
+      return out.l;
+    }
+    function write_huff_fixed(data2, out) {
+      var bl = 0;
+      var boff = 0;
+      var addrs = use_typed_arrays ? new Uint16Array(32768) : [];
+      while (boff < data2.length) {
+        var L = Math.min(65535, data2.length - boff);
+        if (L < 10) {
+          bl = write_bits_3(out, bl, +!!(boff + L == data2.length));
+          if (bl & 7)
+            bl += 8 - (bl & 7);
+          out.l = bl / 8 | 0;
+          out.write_shift(2, L);
+          out.write_shift(2, ~L & 65535);
+          while (L-- > 0)
+            out[out.l++] = data2[boff++];
+          bl = out.l * 8;
           continue;
         }
-        k = Cr(N, k, +(P + Z == W.length) + 2);
-        for (var ne = 0; Z-- > 0; ) {
-          var Y = W[P];
-          ne = (ne << 5 ^ Y) & 32767;
-          var te = -1, le = 0;
-          if ((te = K[ne]) && (te |= P & -32768, te > P && (te -= 32768), te < P))
-            for (; W[te + le] == W[P + le] && le < 250; )
-              ++le;
-          if (le > 2) {
-            Y = w[le], Y <= 22 ? k = it(N, k, ee[Y + 1] >> 1) - 1 : (it(N, k, 3), k += 5, it(N, k, ee[Y - 23] >> 5), k += 3);
-            var Se = Y < 8 ? 0 : Y - 4 >> 2;
-            Se > 0 && (V0(N, k, le - X[Y]), k += Se), Y = E[P - te], k = it(N, k, ee[Y] >> 3), k -= 3;
-            var Ae = Y < 4 ? 0 : Y - 2 >> 1;
-            Ae > 0 && (V0(N, k, P - te - se[Y]), k += Ae);
-            for (var je = 0; je < le; ++je)
-              K[ne] = P & 32767, ne = (ne << 5 ^ W[P]) & 32767, ++P;
-            Z -= le - 1;
-          } else
-            Y <= 143 ? Y = Y + 48 : k = Xr(N, k, 1), k = it(N, k, ee[Y]), K[ne] = P & 32767, ++P;
+        bl = write_bits_3(out, bl, +!!(boff + L == data2.length) + 2);
+        var hash = 0;
+        while (L-- > 0) {
+          var d = data2[boff];
+          hash = (hash << 5 ^ d) & 32767;
+          var match = -1, mlen = 0;
+          if (match = addrs[hash]) {
+            match |= boff & ~32767;
+            if (match > boff)
+              match -= 32768;
+            if (match < boff)
+              while (data2[match + mlen] == data2[boff + mlen] && mlen < 250)
+                ++mlen;
+          }
+          if (mlen > 2) {
+            d = LEN_LN_RE[mlen];
+            if (d <= 22)
+              bl = write_bits_8(out, bl, bitswap8[d + 1] >> 1) - 1;
+            else {
+              write_bits_8(out, bl, 3);
+              bl += 5;
+              write_bits_8(out, bl, bitswap8[d - 23] >> 5);
+              bl += 3;
+            }
+            var len_eb = d < 8 ? 0 : d - 4 >> 2;
+            if (len_eb > 0) {
+              write_bits_16(out, bl, mlen - LEN_LN[d]);
+              bl += len_eb;
+            }
+            d = DST_LN_RE[boff - match];
+            bl = write_bits_8(out, bl, bitswap8[d] >> 3);
+            bl -= 3;
+            var dst_eb = d < 4 ? 0 : d - 2 >> 1;
+            if (dst_eb > 0) {
+              write_bits_16(out, bl, boff - match - DST_LN[d]);
+              bl += dst_eb;
+            }
+            for (var q2 = 0; q2 < mlen; ++q2) {
+              addrs[hash] = boff & 32767;
+              hash = (hash << 5 ^ data2[boff]) & 32767;
+              ++boff;
+            }
+            L -= mlen - 1;
+          } else {
+            if (d <= 143)
+              d = d + 48;
+            else
+              bl = write_bits_1(out, bl, 1);
+            bl = write_bits_8(out, bl, bitswap8[d]);
+            addrs[hash] = boff & 32767;
+            ++boff;
+          }
         }
-        k = it(N, k, 0) - 1;
+        bl = write_bits_8(out, bl, 0) - 1;
       }
-      return N.l = (k + 7) / 8 | 0, N.l;
+      out.l = (bl + 7) / 8 | 0;
+      return out.l;
     }
-    return function(N, k) {
-      return N.length < 8 ? S(N, k) : I(N, k);
+    return function _deflateRaw2(data2, out) {
+      if (data2.length < 8)
+        return write_stored(data2, out);
+      return write_huff_fixed(data2, out);
     };
   }();
-  function G0(d) {
-    var E = U(50 + Math.floor(d.length * 1.1)), m = sf(d, E);
-    return E.slice(0, m);
+  function _deflate(data2) {
+    var buf = new_buf(50 + Math.floor(data2.length * 1.1));
+    var off = _deflateRaw(data2, buf);
+    return buf.slice(0, off);
   }
-  var X0 = ie ? new Uint16Array(32768) : wr(32768), $0 = ie ? new Uint16Array(32768) : wr(32768), j0 = ie ? new Uint16Array(128) : wr(128), z0 = 1, K0 = 1;
-  function ff(d, E) {
-    var m = Fe(d, E) + 257;
-    E += 5;
-    var g = Fe(d, E) + 1;
-    E += 5;
-    var w = yr(d, E) + 4;
-    E += 4;
-    for (var S = 0, I = ie ? new Uint8Array(19) : wr(19), W = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], N = 1, k = ie ? new Uint8Array(8) : wr(8), P = ie ? new Uint8Array(8) : wr(8), K = I.length, Z = 0; Z < w; ++Z)
-      I[F[Z]] = S = pe(d, E), N < S && (N = S), k[S]++, E += 3;
-    var ne = 0;
-    for (k[0] = 0, Z = 1; Z <= N; ++Z)
-      P[Z] = ne = ne + k[Z - 1] << 1;
-    for (Z = 0; Z < K; ++Z)
-      (ne = I[Z]) != 0 && (W[Z] = P[ne]++);
-    var Y = 0;
-    for (Z = 0; Z < K; ++Z)
-      if (Y = I[Z], Y != 0) {
-        ne = ee[W[Z]] >> 8 - Y;
-        for (var te = (1 << 7 - Y) - 1; te >= 0; --te)
-          j0[ne | te << Y] = Y & 7 | Z << 3;
+  var dyn_lmap = use_typed_arrays ? new Uint16Array(32768) : zero_fill_array(32768);
+  var dyn_dmap = use_typed_arrays ? new Uint16Array(32768) : zero_fill_array(32768);
+  var dyn_cmap = use_typed_arrays ? new Uint16Array(128) : zero_fill_array(128);
+  var dyn_len_1 = 1, dyn_len_2 = 1;
+  function dyn(data2, boff) {
+    var _HLIT = read_bits_5(data2, boff) + 257;
+    boff += 5;
+    var _HDIST = read_bits_5(data2, boff) + 1;
+    boff += 5;
+    var _HCLEN = read_bits_4(data2, boff) + 4;
+    boff += 4;
+    var w = 0;
+    var clens = use_typed_arrays ? new Uint8Array(19) : zero_fill_array(19);
+    var ctree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var maxlen = 1;
+    var bl_count = use_typed_arrays ? new Uint8Array(8) : zero_fill_array(8);
+    var next_code = use_typed_arrays ? new Uint8Array(8) : zero_fill_array(8);
+    var L = clens.length;
+    for (var i2 = 0; i2 < _HCLEN; ++i2) {
+      clens[CLEN_ORDER[i2]] = w = read_bits_3(data2, boff);
+      if (maxlen < w)
+        maxlen = w;
+      bl_count[w]++;
+      boff += 3;
+    }
+    var ccode = 0;
+    bl_count[0] = 0;
+    for (i2 = 1; i2 <= maxlen; ++i2)
+      next_code[i2] = ccode = ccode + bl_count[i2 - 1] << 1;
+    for (i2 = 0; i2 < L; ++i2)
+      if ((ccode = clens[i2]) != 0)
+        ctree[i2] = next_code[ccode]++;
+    var cleni = 0;
+    for (i2 = 0; i2 < L; ++i2) {
+      cleni = clens[i2];
+      if (cleni != 0) {
+        ccode = bitswap8[ctree[i2]] >> 8 - cleni;
+        for (var j = (1 << 7 - cleni) - 1; j >= 0; --j)
+          dyn_cmap[ccode | j << cleni] = cleni & 7 | i2 << 3;
       }
-    var le = [];
-    for (N = 1; le.length < m + g; )
-      switch (ne = j0[ae(d, E)], E += ne & 7, ne >>>= 3) {
+    }
+    var hcodes = [];
+    maxlen = 1;
+    for (; hcodes.length < _HLIT + _HDIST; ) {
+      ccode = dyn_cmap[read_bits_7(data2, boff)];
+      boff += ccode & 7;
+      switch (ccode >>>= 3) {
         case 16:
-          for (S = 3 + Ye(d, E), E += 2, ne = le[le.length - 1]; S-- > 0; )
-            le.push(ne);
+          w = 3 + read_bits_2(data2, boff);
+          boff += 2;
+          ccode = hcodes[hcodes.length - 1];
+          while (w-- > 0)
+            hcodes.push(ccode);
           break;
         case 17:
-          for (S = 3 + pe(d, E), E += 3; S-- > 0; )
-            le.push(0);
+          w = 3 + read_bits_3(data2, boff);
+          boff += 3;
+          while (w-- > 0)
+            hcodes.push(0);
           break;
         case 18:
-          for (S = 11 + ae(d, E), E += 7; S-- > 0; )
-            le.push(0);
+          w = 11 + read_bits_7(data2, boff);
+          boff += 7;
+          while (w-- > 0)
+            hcodes.push(0);
           break;
         default:
-          le.push(ne), N < ne && (N = ne);
+          hcodes.push(ccode);
+          if (maxlen < ccode)
+            maxlen = ccode;
           break;
       }
-    var Se = le.slice(0, m), Ae = le.slice(m);
-    for (Z = m; Z < 286; ++Z)
-      Se[Z] = 0;
-    for (Z = g; Z < 30; ++Z)
-      Ae[Z] = 0;
-    return z0 = Kt(Se, X0, 286), K0 = Kt(Ae, $0, 30), E;
+    }
+    var h1 = hcodes.slice(0, _HLIT), h2 = hcodes.slice(_HLIT);
+    for (i2 = _HLIT; i2 < 286; ++i2)
+      h1[i2] = 0;
+    for (i2 = _HDIST; i2 < 30; ++i2)
+      h2[i2] = 0;
+    dyn_len_1 = build_tree(h1, dyn_lmap, 286);
+    dyn_len_2 = build_tree(h2, dyn_dmap, 30);
+    return boff;
   }
-  function of(d, E) {
-    if (d[0] == 3 && !(d[1] & 3))
-      return [qr(E), 2];
-    for (var m = 0, g = 0, w = Sa(E || 1 << 18), S = 0, I = w.length >>> 0, W = 0, N = 0; (g & 1) == 0; ) {
-      if (g = pe(d, m), m += 3, g >>> 1 == 0) {
-        m & 7 && (m += 8 - (m & 7));
-        var k = d[m >>> 3] | d[(m >>> 3) + 1] << 8;
-        if (m += 32, k > 0)
-          for (!E && I < S + k && (w = Pn(w, S + k), I = w.length); k-- > 0; )
-            w[S++] = d[m >>> 3], m += 8;
+  function inflate(data2, usz) {
+    if (data2[0] == 3 && !(data2[1] & 3)) {
+      return [new_raw_buf(usz), 2];
+    }
+    var boff = 0;
+    var header = 0;
+    var outbuf = new_unsafe_buf(usz ? usz : 1 << 18);
+    var woff = 0;
+    var OL = outbuf.length >>> 0;
+    var max_len_1 = 0, max_len_2 = 0;
+    while ((header & 1) == 0) {
+      header = read_bits_3(data2, boff);
+      boff += 3;
+      if (header >>> 1 == 0) {
+        if (boff & 7)
+          boff += 8 - (boff & 7);
+        var sz = data2[boff >>> 3] | data2[(boff >>> 3) + 1] << 8;
+        boff += 32;
+        if (sz > 0) {
+          if (!usz && OL < woff + sz) {
+            outbuf = realloc(outbuf, woff + sz);
+            OL = outbuf.length;
+          }
+          while (sz-- > 0) {
+            outbuf[woff++] = data2[boff >>> 3];
+            boff += 8;
+          }
+        }
         continue;
-      } else
-        g >> 1 == 1 ? (W = 9, N = 5) : (m = ff(d, m), W = z0, N = K0);
+      } else if (header >> 1 == 1) {
+        max_len_1 = 9;
+        max_len_2 = 5;
+      } else {
+        boff = dyn(data2, boff);
+        max_len_1 = dyn_len_1;
+        max_len_2 = dyn_len_2;
+      }
       for (; ; ) {
-        !E && I < S + 32767 && (w = Pn(w, S + 32767), I = w.length);
-        var P = hr(d, m, W), K = g >>> 1 == 1 ? Ln[P] : X0[P];
-        if (m += K & 15, K >>>= 4, (K >>> 8 & 255) === 0)
-          w[S++] = K;
+        if (!usz && OL < woff + 32767) {
+          outbuf = realloc(outbuf, woff + 32767);
+          OL = outbuf.length;
+        }
+        var bits = read_bits_n(data2, boff, max_len_1);
+        var code = header >>> 1 == 1 ? fix_lmap[bits] : dyn_lmap[bits];
+        boff += code & 15;
+        code >>>= 4;
+        if ((code >>> 8 & 255) === 0)
+          outbuf[woff++] = code;
+        else if (code == 256)
+          break;
         else {
-          if (K == 256)
-            break;
-          K -= 257;
-          var Z = K < 8 ? 0 : K - 4 >> 2;
-          Z > 5 && (Z = 0);
-          var ne = S + X[K];
-          Z > 0 && (ne += hr(d, m, Z), m += Z), P = hr(d, m, N), K = g >>> 1 == 1 ? Bn[P] : $0[P], m += K & 15, K >>>= 4;
-          var Y = K < 4 ? 0 : K - 2 >> 1, te = se[K];
-          for (Y > 0 && (te += hr(d, m, Y), m += Y), !E && I < ne && (w = Pn(w, ne + 100), I = w.length); S < ne; )
-            w[S] = w[S - te], ++S;
+          code -= 257;
+          var len_eb = code < 8 ? 0 : code - 4 >> 2;
+          if (len_eb > 5)
+            len_eb = 0;
+          var tgt = woff + LEN_LN[code];
+          if (len_eb > 0) {
+            tgt += read_bits_n(data2, boff, len_eb);
+            boff += len_eb;
+          }
+          bits = read_bits_n(data2, boff, max_len_2);
+          code = header >>> 1 == 1 ? fix_dmap[bits] : dyn_dmap[bits];
+          boff += code & 15;
+          code >>>= 4;
+          var dst_eb = code < 4 ? 0 : code - 2 >> 1;
+          var dst = DST_LN[code];
+          if (dst_eb > 0) {
+            dst += read_bits_n(data2, boff, dst_eb);
+            boff += dst_eb;
+          }
+          if (!usz && OL < tgt) {
+            outbuf = realloc(outbuf, tgt + 100);
+            OL = outbuf.length;
+          }
+          while (woff < tgt) {
+            outbuf[woff] = outbuf[woff - dst];
+            ++woff;
+          }
         }
       }
     }
-    return E ? [w, m + 7 >>> 3] : [w.slice(0, S), m + 7 >>> 3];
+    if (usz)
+      return [outbuf, boff + 7 >>> 3];
+    return [outbuf.slice(0, woff), boff + 7 >>> 3];
   }
-  function Y0(d, E) {
-    var m = d.slice(d.l || 0), g = of(m, E);
-    return d.l += g[1], g[0];
+  function _inflate(payload, usz) {
+    var data2 = payload.slice(payload.l || 0);
+    var out = inflate(data2, usz);
+    payload.l += out[1];
+    return out[0];
   }
-  function q0(d, E) {
-    if (d)
-      typeof console < "u" && console.error(E);
-    else
-      throw new Error(E);
+  function warn_or_throw(wrn, msg) {
+    if (wrn) {
+      if (typeof console !== "undefined")
+        console.error(msg);
+    } else
+      throw new Error(msg);
   }
-  function J0(d, E) {
-    var m = d;
-    sr(m, 0);
-    var g = [], w = [], S = {
-      FileIndex: g,
-      FullPaths: w
+  function parse_zip(file, options) {
+    var blob = file;
+    prep_blob(blob, 0);
+    var FileIndex = [], FullPaths = [];
+    var o = {
+      FileIndex,
+      FullPaths
     };
-    D(S, { root: E.root });
-    for (var I = m.length - 4; (m[I] != 80 || m[I + 1] != 75 || m[I + 2] != 5 || m[I + 3] != 6) && I >= 0; )
-      --I;
-    m.l = I + 4, m.l += 4;
-    var W = m.read_shift(2);
-    m.l += 6;
-    var N = m.read_shift(4);
-    for (m.l = N, I = 0; I < W; ++I) {
-      m.l += 20;
-      var k = m.read_shift(4), P = m.read_shift(4), K = m.read_shift(2), Z = m.read_shift(2), ne = m.read_shift(2);
-      m.l += 8;
-      var Y = m.read_shift(4), te = f(m.slice(m.l + K, m.l + K + Z));
-      m.l += K + Z + ne;
-      var le = m.l;
-      m.l = Y + 4, lf(m, k, P, S, te), m.l = le;
+    init_cfb(o, { root: options.root });
+    var i2 = blob.length - 4;
+    while ((blob[i2] != 80 || blob[i2 + 1] != 75 || blob[i2 + 2] != 5 || blob[i2 + 3] != 6) && i2 >= 0)
+      --i2;
+    blob.l = i2 + 4;
+    blob.l += 4;
+    var fcnt = blob.read_shift(2);
+    blob.l += 6;
+    var start_cd = blob.read_shift(4);
+    blob.l = start_cd;
+    for (i2 = 0; i2 < fcnt; ++i2) {
+      blob.l += 20;
+      var csz = blob.read_shift(4);
+      var usz = blob.read_shift(4);
+      var namelen = blob.read_shift(2);
+      var efsz = blob.read_shift(2);
+      var fcsz = blob.read_shift(2);
+      blob.l += 8;
+      var offset = blob.read_shift(4);
+      var EF = parse_extra_field(blob.slice(blob.l + namelen, blob.l + namelen + efsz));
+      blob.l += namelen + efsz + fcsz;
+      var L = blob.l;
+      blob.l = offset + 4;
+      parse_local_file(blob, csz, usz, o, EF);
+      blob.l = L;
     }
-    return S;
+    return o;
   }
-  function lf(d, E, m, g, w) {
-    d.l += 2;
-    var S = d.read_shift(2), I = d.read_shift(2), W = s(d);
-    if (S & 8257)
+  function parse_local_file(blob, csz, usz, o, EF) {
+    blob.l += 2;
+    var flags = blob.read_shift(2);
+    var meth = blob.read_shift(2);
+    var date = parse_dos_date(blob);
+    if (flags & 8257)
       throw new Error("Unsupported ZIP encryption");
-    for (var N = d.read_shift(4), k = d.read_shift(4), P = d.read_shift(4), K = d.read_shift(2), Z = d.read_shift(2), ne = "", Y = 0; Y < K; ++Y)
-      ne += String.fromCharCode(d[d.l++]);
-    if (Z) {
-      var te = f(d.slice(d.l, d.l + Z));
-      (te[21589] || {}).mt && (W = te[21589].mt), ((w || {})[21589] || {}).mt && (W = w[21589].mt);
+    var crc32 = blob.read_shift(4);
+    var _csz = blob.read_shift(4);
+    var _usz = blob.read_shift(4);
+    var namelen = blob.read_shift(2);
+    var efsz = blob.read_shift(2);
+    var name = "";
+    for (var i2 = 0; i2 < namelen; ++i2)
+      name += String.fromCharCode(blob[blob.l++]);
+    if (efsz) {
+      var ef = parse_extra_field(blob.slice(blob.l, blob.l + efsz));
+      if ((ef[21589] || {}).mt)
+        date = ef[21589].mt;
+      if (((EF || {})[21589] || {}).mt)
+        date = EF[21589].mt;
     }
-    d.l += Z;
-    var le = d.slice(d.l, d.l + k);
-    switch (I) {
+    blob.l += efsz;
+    var data2 = blob.slice(blob.l, blob.l + _csz);
+    switch (meth) {
       case 8:
-        le = B(d, P);
+        data2 = _inflateRawSync(blob, _usz);
         break;
       case 0:
         break;
       default:
-        throw new Error("Unsupported ZIP Compression method " + I);
+        throw new Error("Unsupported ZIP Compression method " + meth);
     }
-    var Se = !1;
-    S & 8 && (N = d.read_shift(4), N == 134695760 && (N = d.read_shift(4), Se = !0), k = d.read_shift(4), P = d.read_shift(4)), k != E && q0(Se, "Bad compressed size: " + E + " != " + k), P != m && q0(Se, "Bad uncompressed size: " + m + " != " + P), Mn(g, ne, le, { unsafe: !0, mt: W });
-  }
-  function cf(d, E) {
-    var m = E || {}, g = [], w = [], S = U(1), I = m.compression ? 8 : 0, W = 0, N = 0, k = 0, P = 0, K = 0, Z = d.FullPaths[0], ne = Z, Y = d.FileIndex[0], te = [], le = 0;
-    for (N = 1; N < d.FullPaths.length; ++N)
-      if (ne = d.FullPaths[N].slice(Z.length), Y = d.FileIndex[N], !(!Y.size || !Y.content || ne == "Sh33tJ5")) {
-        var Se = P, Ae = U(ne.length);
-        for (k = 0; k < ne.length; ++k)
-          Ae.write_shift(1, ne.charCodeAt(k) & 127);
-        Ae = Ae.slice(0, Ae.l), te[K] = ll.buf(Y.content, 0);
-        var je = Y.content;
-        I == 8 && (je = C(je)), S = U(30), S.write_shift(4, 67324752), S.write_shift(2, 20), S.write_shift(2, W), S.write_shift(2, I), Y.mt ? i(S, Y.mt) : S.write_shift(4, 0), S.write_shift(-4, te[K]), S.write_shift(4, je.length), S.write_shift(4, Y.content.length), S.write_shift(2, Ae.length), S.write_shift(2, 0), P += S.length, g.push(S), P += Ae.length, g.push(Ae), P += je.length, g.push(je), S = U(46), S.write_shift(4, 33639248), S.write_shift(2, 0), S.write_shift(2, 20), S.write_shift(2, W), S.write_shift(2, I), S.write_shift(4, 0), S.write_shift(-4, te[K]), S.write_shift(4, je.length), S.write_shift(4, Y.content.length), S.write_shift(2, Ae.length), S.write_shift(2, 0), S.write_shift(2, 0), S.write_shift(2, 0), S.write_shift(2, 0), S.write_shift(4, 0), S.write_shift(4, Se), le += S.l, w.push(S), le += Ae.length, w.push(Ae), ++K;
+    var wrn = false;
+    if (flags & 8) {
+      crc32 = blob.read_shift(4);
+      if (crc32 == 134695760) {
+        crc32 = blob.read_shift(4);
+        wrn = true;
       }
-    return S = U(22), S.write_shift(4, 101010256), S.write_shift(2, 0), S.write_shift(2, 0), S.write_shift(2, K), S.write_shift(2, K), S.write_shift(4, le), S.write_shift(4, P), S.write_shift(2, 0), He([He(g), He(w), S]);
+      _csz = blob.read_shift(4);
+      _usz = blob.read_shift(4);
+    }
+    if (_csz != csz)
+      warn_or_throw(wrn, "Bad compressed size: " + csz + " != " + _csz);
+    if (_usz != usz)
+      warn_or_throw(wrn, "Bad uncompressed size: " + usz + " != " + _usz);
+    cfb_add(o, name, data2, { unsafe: true, mt: date });
   }
-  var Yt = {
-    htm: "text/html",
-    xml: "text/xml",
-    gif: "image/gif",
-    jpg: "image/jpeg",
-    png: "image/png",
-    mso: "application/x-mso",
-    thmx: "application/vnd.ms-officetheme",
-    sh33tj5: "application/octet-stream"
+  function write_zip2(cfb, options) {
+    var _opts = options || {};
+    var out = [], cdirs = [];
+    var o = new_buf(1);
+    var method = _opts.compression ? 8 : 0, flags = 0;
+    var i2 = 0, j = 0;
+    var start_cd = 0, fcnt = 0;
+    var root = cfb.FullPaths[0], fp = root, fi = cfb.FileIndex[0];
+    var crcs = [];
+    var sz_cd = 0;
+    for (i2 = 1; i2 < cfb.FullPaths.length; ++i2) {
+      fp = cfb.FullPaths[i2].slice(root.length);
+      fi = cfb.FileIndex[i2];
+      if (!fi.size || !fi.content || fp == "Sh33tJ5")
+        continue;
+      var start = start_cd;
+      var namebuf = new_buf(fp.length);
+      for (j = 0; j < fp.length; ++j)
+        namebuf.write_shift(1, fp.charCodeAt(j) & 127);
+      namebuf = namebuf.slice(0, namebuf.l);
+      crcs[fcnt] = CRC32.buf(fi.content, 0);
+      var outbuf = fi.content;
+      if (method == 8)
+        outbuf = _deflateRawSync(outbuf);
+      o = new_buf(30);
+      o.write_shift(4, 67324752);
+      o.write_shift(2, 20);
+      o.write_shift(2, flags);
+      o.write_shift(2, method);
+      if (fi.mt)
+        write_dos_date(o, fi.mt);
+      else
+        o.write_shift(4, 0);
+      o.write_shift(-4, crcs[fcnt]);
+      o.write_shift(4, outbuf.length);
+      o.write_shift(4, fi.content.length);
+      o.write_shift(2, namebuf.length);
+      o.write_shift(2, 0);
+      start_cd += o.length;
+      out.push(o);
+      start_cd += namebuf.length;
+      out.push(namebuf);
+      start_cd += outbuf.length;
+      out.push(outbuf);
+      o = new_buf(46);
+      o.write_shift(4, 33639248);
+      o.write_shift(2, 0);
+      o.write_shift(2, 20);
+      o.write_shift(2, flags);
+      o.write_shift(2, method);
+      o.write_shift(4, 0);
+      o.write_shift(-4, crcs[fcnt]);
+      o.write_shift(4, outbuf.length);
+      o.write_shift(4, fi.content.length);
+      o.write_shift(2, namebuf.length);
+      o.write_shift(2, 0);
+      o.write_shift(2, 0);
+      o.write_shift(2, 0);
+      o.write_shift(2, 0);
+      o.write_shift(4, 0);
+      o.write_shift(4, start);
+      sz_cd += o.l;
+      cdirs.push(o);
+      sz_cd += namebuf.length;
+      cdirs.push(namebuf);
+      ++fcnt;
+    }
+    o = new_buf(22);
+    o.write_shift(4, 101010256);
+    o.write_shift(2, 0);
+    o.write_shift(2, 0);
+    o.write_shift(2, fcnt);
+    o.write_shift(2, fcnt);
+    o.write_shift(4, sz_cd);
+    o.write_shift(4, start_cd);
+    o.write_shift(2, 0);
+    return bconcat([bconcat(out), bconcat(cdirs), o]);
+  }
+  var ContentTypeMap = {
+    "htm": "text/html",
+    "xml": "text/xml",
+    "gif": "image/gif",
+    "jpg": "image/jpeg",
+    "png": "image/png",
+    "mso": "application/x-mso",
+    "thmx": "application/vnd.ms-officetheme",
+    "sh33tj5": "application/octet-stream"
   };
-  function hf(d, E) {
-    if (d.ctype)
-      return d.ctype;
-    var m = d.name || "", g = m.match(/\.([^\.]+)$/);
-    return g && Yt[g[1]] || E && (g = (m = E).match(/[\.\\]([^\.\\])+$/), g && Yt[g[1]]) ? Yt[g[1]] : "application/octet-stream";
+  function get_content_type(fi, fp) {
+    if (fi.ctype)
+      return fi.ctype;
+    var ext = fi.name || "", m = ext.match(/\.([^\.]+)$/);
+    if (m && ContentTypeMap[m[1]])
+      return ContentTypeMap[m[1]];
+    if (fp) {
+      m = (ext = fp).match(/[\.\\]([^\.\\])+$/);
+      if (m && ContentTypeMap[m[1]])
+        return ContentTypeMap[m[1]];
+    }
+    return "application/octet-stream";
   }
-  function uf(d) {
-    for (var E = Mt(d), m = [], g = 0; g < E.length; g += 76)
-      m.push(E.slice(g, g + 76));
-    return m.join(`\r
-`) + `\r
-`;
+  function write_base64_76(bstr) {
+    var data2 = Base64_encode(bstr);
+    var o = [];
+    for (var i2 = 0; i2 < data2.length; i2 += 76)
+      o.push(data2.slice(i2, i2 + 76));
+    return o.join("\r\n") + "\r\n";
   }
-  function xf(d) {
-    var E = d.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7E-\xFF=]/g, function(k) {
-      var P = k.charCodeAt(0).toString(16).toUpperCase();
-      return "=" + (P.length == 1 ? "0" + P : P);
+  function write_quoted_printable(text) {
+    var encoded = text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7E-\xFF=]/g, function(c) {
+      var w = c.charCodeAt(0).toString(16).toUpperCase();
+      return "=" + (w.length == 1 ? "0" + w : w);
     });
-    E = E.replace(/ $/mg, "=20").replace(/\t$/mg, "=09"), E.charAt(0) == `
-` && (E = "=0D" + E.slice(1)), E = E.replace(/\r(?!\n)/mg, "=0D").replace(/\n\n/mg, `
-=0A`).replace(/([^\r\n])\n/mg, "$1=0A");
-    for (var m = [], g = E.split(`\r
-`), w = 0; w < g.length; ++w) {
-      var S = g[w];
-      if (S.length == 0) {
-        m.push("");
+    encoded = encoded.replace(/ $/mg, "=20").replace(/\t$/mg, "=09");
+    if (encoded.charAt(0) == "\n")
+      encoded = "=0D" + encoded.slice(1);
+    encoded = encoded.replace(/\r(?!\n)/mg, "=0D").replace(/\n\n/mg, "\n=0A").replace(/([^\r\n])\n/mg, "$1=0A");
+    var o = [], split = encoded.split("\r\n");
+    for (var si = 0; si < split.length; ++si) {
+      var str = split[si];
+      if (str.length == 0) {
+        o.push("");
         continue;
       }
-      for (var I = 0; I < S.length; ) {
-        var W = 76, N = S.slice(I, I + W);
-        N.charAt(W - 1) == "=" ? W-- : N.charAt(W - 2) == "=" ? W -= 2 : N.charAt(W - 3) == "=" && (W -= 3), N = S.slice(I, I + W), I += W, I < S.length && (N += "="), m.push(N);
+      for (var i2 = 0; i2 < str.length; ) {
+        var end = 76;
+        var tmp = str.slice(i2, i2 + end);
+        if (tmp.charAt(end - 1) == "=")
+          end--;
+        else if (tmp.charAt(end - 2) == "=")
+          end -= 2;
+        else if (tmp.charAt(end - 3) == "=")
+          end -= 3;
+        tmp = str.slice(i2, i2 + end);
+        i2 += end;
+        if (i2 < str.length)
+          tmp += "=";
+        o.push(tmp);
       }
     }
-    return m.join(`\r
-`);
+    return o.join("\r\n");
   }
-  function df(d) {
-    for (var E = [], m = 0; m < d.length; ++m) {
-      for (var g = d[m]; m <= d.length && g.charAt(g.length - 1) == "="; )
-        g = g.slice(0, g.length - 1) + d[++m];
-      E.push(g);
+  function parse_quoted_printable(data2) {
+    var o = [];
+    for (var di = 0; di < data2.length; ++di) {
+      var line = data2[di];
+      while (di <= data2.length && line.charAt(line.length - 1) == "=")
+        line = line.slice(0, line.length - 1) + data2[++di];
+      o.push(line);
     }
-    for (var w = 0; w < E.length; ++w)
-      E[w] = E[w].replace(/[=][0-9A-Fa-f]{2}/g, function(S) {
-        return String.fromCharCode(parseInt(S.slice(1), 16));
+    for (var oi = 0; oi < o.length; ++oi)
+      o[oi] = o[oi].replace(/[=][0-9A-Fa-f]{2}/g, function($$) {
+        return String.fromCharCode(parseInt($$.slice(1), 16));
       });
-    return _r(E.join(`\r
-`));
+    return s2a(o.join("\r\n"));
   }
-  function pf(d, E, m) {
-    for (var g = "", w = "", S = "", I, W = 0; W < 10; ++W) {
-      var N = E[W];
-      if (!N || N.match(/^\s*$/))
+  function parse_mime(cfb, data2, root) {
+    var fname = "", cte = "", ctype = "", fdata;
+    var di = 0;
+    for (; di < 10; ++di) {
+      var line = data2[di];
+      if (!line || line.match(/^\s*$/))
         break;
-      var k = N.match(/^(.*?):\s*([^\s].*)$/);
-      if (k)
-        switch (k[1].toLowerCase()) {
+      var m = line.match(/^(.*?):\s*([^\s].*)$/);
+      if (m)
+        switch (m[1].toLowerCase()) {
           case "content-location":
-            g = k[2].trim();
+            fname = m[2].trim();
             break;
           case "content-type":
-            S = k[2].trim();
+            ctype = m[2].trim();
             break;
           case "content-transfer-encoding":
-            w = k[2].trim();
+            cte = m[2].trim();
             break;
         }
     }
-    switch (++W, w.toLowerCase()) {
+    ++di;
+    switch (cte.toLowerCase()) {
       case "base64":
-        I = _r(kr(E.slice(W).join("")));
+        fdata = s2a(Base64_decode(data2.slice(di).join("")));
         break;
       case "quoted-printable":
-        I = df(E.slice(W));
+        fdata = parse_quoted_printable(data2.slice(di));
         break;
       default:
-        throw new Error("Unsupported Content-Transfer-Encoding " + w);
+        throw new Error("Unsupported Content-Transfer-Encoding " + cte);
     }
-    var P = Mn(d, g.slice(m.length), I, { unsafe: !0 });
-    S && (P.ctype = S);
+    var file = cfb_add(cfb, fname.slice(root.length), fdata, { unsafe: true });
+    if (ctype)
+      file.ctype = ctype;
   }
-  function vf(d, E) {
-    if (Pe(d.slice(0, 13)).toLowerCase() != "mime-version:")
+  function parse_mad(file, options) {
+    if (a2s2(file.slice(0, 13)).toLowerCase() != "mime-version:")
       throw new Error("Unsupported MAD header");
-    var m = E && E.root || "", g = (de && Buffer.isBuffer(d) ? d.toString("binary") : Pe(d)).split(`\r
-`), w = 0, S = "";
-    for (w = 0; w < g.length; ++w)
-      if (S = g[w], !!/^Content-Location:/i.test(S) && (S = S.slice(S.indexOf("file")), m || (m = S.slice(0, S.lastIndexOf("/") + 1)), S.slice(0, m.length) != m))
-        for (; m.length > 0 && (m = m.slice(0, m.length - 1), m = m.slice(0, m.lastIndexOf("/") + 1), S.slice(0, m.length) != m); )
-          ;
-    var I = (g[1] || "").match(/boundary="(.*?)"/);
-    if (!I)
-      throw new Error("MAD cannot find boundary");
-    var W = "--" + (I[1] || ""), N = [], k = [], P = {
-      FileIndex: N,
-      FullPaths: k
-    };
-    D(P);
-    var K, Z = 0;
-    for (w = 0; w < g.length; ++w) {
-      var ne = g[w];
-      ne !== W && ne !== W + "--" || (Z++ && pf(P, g.slice(K, w), m), K = w);
+    var root = options && options.root || "";
+    var data2 = (has_buf && Buffer.isBuffer(file) ? file.toString("binary") : a2s2(file)).split("\r\n");
+    var di = 0, row = "";
+    for (di = 0; di < data2.length; ++di) {
+      row = data2[di];
+      if (!/^Content-Location:/i.test(row))
+        continue;
+      row = row.slice(row.indexOf("file"));
+      if (!root)
+        root = row.slice(0, row.lastIndexOf("/") + 1);
+      if (row.slice(0, root.length) == root)
+        continue;
+      while (root.length > 0) {
+        root = root.slice(0, root.length - 1);
+        root = root.slice(0, root.lastIndexOf("/") + 1);
+        if (row.slice(0, root.length) == root)
+          break;
+      }
     }
-    return P;
+    var mboundary = (data2[1] || "").match(/boundary="(.*?)"/);
+    if (!mboundary)
+      throw new Error("MAD cannot find boundary");
+    var boundary = "--" + (mboundary[1] || "");
+    var FileIndex = [], FullPaths = [];
+    var o = {
+      FileIndex,
+      FullPaths
+    };
+    init_cfb(o);
+    var start_di, fcnt = 0;
+    for (di = 0; di < data2.length; ++di) {
+      var line = data2[di];
+      if (line !== boundary && line !== boundary + "--")
+        continue;
+      if (fcnt++)
+        parse_mime(o, data2.slice(start_di, di), root);
+      start_di = di;
+    }
+    return o;
   }
-  function mf(d, E) {
-    var m = E || {}, g = m.boundary || "SheetJS";
-    g = "------=" + g;
-    for (var w = [
+  function write_mad(cfb, options) {
+    var opts = options || {};
+    var boundary = opts.boundary || "SheetJS";
+    boundary = "------=" + boundary;
+    var out = [
       "MIME-Version: 1.0",
-      'Content-Type: multipart/related; boundary="' + g.slice(2) + '"',
+      'Content-Type: multipart/related; boundary="' + boundary.slice(2) + '"',
       "",
       "",
       ""
-    ], S = d.FullPaths[0], I = S, W = d.FileIndex[0], N = 1; N < d.FullPaths.length; ++N)
-      if (I = d.FullPaths[N].slice(S.length), W = d.FileIndex[N], !(!W.size || !W.content || I == "Sh33tJ5")) {
-        I = I.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7E-\xFF]/g, function(le) {
-          return "_x" + le.charCodeAt(0).toString(16) + "_";
-        }).replace(/[\u0080-\uFFFF]/g, function(le) {
-          return "_u" + le.charCodeAt(0).toString(16) + "_";
-        });
-        for (var k = W.content, P = de && Buffer.isBuffer(k) ? k.toString("binary") : Pe(k), K = 0, Z = Math.min(1024, P.length), ne = 0, Y = 0; Y <= Z; ++Y)
-          (ne = P.charCodeAt(Y)) >= 32 && ne < 128 && ++K;
-        var te = K >= Z * 4 / 5;
-        w.push(g), w.push("Content-Location: " + (m.root || "file:///C:/SheetJS/") + I), w.push("Content-Transfer-Encoding: " + (te ? "quoted-printable" : "base64")), w.push("Content-Type: " + hf(W, I)), w.push(""), w.push(te ? xf(P) : uf(P));
+    ];
+    var root = cfb.FullPaths[0], fp = root, fi = cfb.FileIndex[0];
+    for (var i2 = 1; i2 < cfb.FullPaths.length; ++i2) {
+      fp = cfb.FullPaths[i2].slice(root.length);
+      fi = cfb.FileIndex[i2];
+      if (!fi.size || !fi.content || fp == "Sh33tJ5")
+        continue;
+      fp = fp.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7E-\xFF]/g, function(c) {
+        return "_x" + c.charCodeAt(0).toString(16) + "_";
+      }).replace(/[\u0080-\uFFFF]/g, function(u) {
+        return "_u" + u.charCodeAt(0).toString(16) + "_";
+      });
+      var ca = fi.content;
+      var cstr = has_buf && Buffer.isBuffer(ca) ? ca.toString("binary") : a2s2(ca);
+      var dispcnt = 0, L = Math.min(1024, cstr.length), cc = 0;
+      for (var csl = 0; csl <= L; ++csl)
+        if ((cc = cstr.charCodeAt(csl)) >= 32 && cc < 128)
+          ++dispcnt;
+      var qp = dispcnt >= L * 4 / 5;
+      out.push(boundary);
+      out.push("Content-Location: " + (opts.root || "file:///C:/SheetJS/") + fp);
+      out.push("Content-Transfer-Encoding: " + (qp ? "quoted-printable" : "base64"));
+      out.push("Content-Type: " + get_content_type(fi, fp));
+      out.push("");
+      out.push(qp ? write_quoted_printable(cstr) : write_base64_76(cstr));
+    }
+    out.push(boundary + "--\r\n");
+    return out.join("\r\n");
+  }
+  function cfb_new(opts) {
+    var o = {};
+    init_cfb(o, opts);
+    return o;
+  }
+  function cfb_add(cfb, name, content, opts) {
+    var unsafe = opts && opts.unsafe;
+    if (!unsafe)
+      init_cfb(cfb);
+    var file = !unsafe && CFB.find(cfb, name);
+    if (!file) {
+      var fpath = cfb.FullPaths[0];
+      if (name.slice(0, fpath.length) == fpath)
+        fpath = name;
+      else {
+        if (fpath.slice(-1) != "/")
+          fpath += "/";
+        fpath = (fpath + name).replace("//", "/");
       }
-    return w.push(g + `--\r
-`), w.join(`\r
-`);
-  }
-  function gf(d) {
-    var E = {};
-    return D(E, d), E;
-  }
-  function Mn(d, E, m, g) {
-    var w = g && g.unsafe;
-    w || D(d);
-    var S = !w && Ee.find(d, E);
-    if (!S) {
-      var I = d.FullPaths[0];
-      E.slice(0, I.length) == I ? I = E : (I.slice(-1) != "/" && (I += "/"), I = (I + E).replace("//", "/")), S = { name: a(E), type: 2 }, d.FileIndex.push(S), d.FullPaths.push(I), w || Ee.utils.cfb_gc(d);
+      file = { name: filename(name), type: 2 };
+      cfb.FileIndex.push(file);
+      cfb.FullPaths.push(fpath);
+      if (!unsafe)
+        CFB.utils.cfb_gc(cfb);
     }
-    return S.content = m, S.size = m ? m.length : 0, g && (g.CLSID && (S.clsid = g.CLSID), g.mt && (S.mt = g.mt), g.ct && (S.ct = g.ct)), S;
-  }
-  function _f(d, E) {
-    D(d);
-    var m = Ee.find(d, E);
-    if (m) {
-      for (var g = 0; g < d.FileIndex.length; ++g)
-        if (d.FileIndex[g] == m)
-          return d.FileIndex.splice(g, 1), d.FullPaths.splice(g, 1), !0;
+    file.content = content;
+    file.size = content ? content.length : 0;
+    if (opts) {
+      if (opts.CLSID)
+        file.clsid = opts.CLSID;
+      if (opts.mt)
+        file.mt = opts.mt;
+      if (opts.ct)
+        file.ct = opts.ct;
     }
-    return !1;
+    return file;
   }
-  function Ef(d, E, m) {
-    D(d);
-    var g = Ee.find(d, E);
-    if (g) {
-      for (var w = 0; w < d.FileIndex.length; ++w)
-        if (d.FileIndex[w] == g)
-          return d.FileIndex[w].name = a(m), d.FullPaths[w] = m, !0;
+  function cfb_del(cfb, name) {
+    init_cfb(cfb);
+    var file = CFB.find(cfb, name);
+    if (file) {
+      for (var j = 0; j < cfb.FileIndex.length; ++j)
+        if (cfb.FileIndex[j] == file) {
+          cfb.FileIndex.splice(j, 1);
+          cfb.FullPaths.splice(j, 1);
+          return true;
+        }
     }
-    return !1;
+    return false;
   }
-  function Tf(d) {
-    L(d, !0);
+  function cfb_mov(cfb, old_name, new_name) {
+    init_cfb(cfb);
+    var file = CFB.find(cfb, old_name);
+    if (file) {
+      for (var j = 0; j < cfb.FileIndex.length; ++j)
+        if (cfb.FileIndex[j] == file) {
+          cfb.FileIndex[j].name = filename(new_name);
+          cfb.FullPaths[j] = new_name;
+          return true;
+        }
+    }
+    return false;
   }
-  return t.find = z, t.read = re, t.parse = c, t.write = cr, t.writeFile = pr, t.utils = {
-    cfb_new: gf,
-    cfb_add: Mn,
-    cfb_del: _f,
-    cfb_mov: Ef,
-    cfb_gc: Tf,
-    ReadShift: It,
-    CheckField: ns,
-    prep_blob: sr,
-    bconcat: He,
-    use_zlib: A,
-    _deflateRaw: G0,
-    _inflateRaw: Y0,
-    consts: Re
-  }, t;
+  function cfb_gc(cfb) {
+    rebuild_cfb(cfb, true);
+  }
+  exports.find = find;
+  exports.read = read;
+  exports.parse = parse;
+  exports.write = write;
+  exports.writeFile = write_file;
+  exports.utils = {
+    cfb_new,
+    cfb_add,
+    cfb_del,
+    cfb_mov,
+    cfb_gc,
+    ReadShift,
+    CheckField,
+    prep_blob,
+    bconcat,
+    use_zlib,
+    _deflateRaw: _deflate,
+    _inflateRaw: _inflate,
+    consts
+  };
+  return exports;
 }();
-function cl(e) {
-  return typeof e == "string" ? yn(e) : Array.isArray(e) ? Bo(e) : e;
+function blobify(data2) {
+  if (typeof data2 === "string")
+    return s2ab(data2);
+  if (Array.isArray(data2))
+    return a2u(data2);
+  return data2;
 }
-function Gt(e, t, r) {
-  if (typeof Deno < "u") {
-    if (r && typeof t == "string")
-      switch (r) {
+function write_dl(fname, payload, enc) {
+  if (typeof Deno !== "undefined") {
+    if (enc && typeof payload == "string")
+      switch (enc) {
         case "utf8":
-          t = new TextEncoder(r).encode(t);
+          payload = new TextEncoder(enc).encode(payload);
           break;
         case "binary":
-          t = yn(t);
+          payload = s2ab(payload);
           break;
         default:
-          throw new Error("Unsupported encoding " + r);
+          throw new Error("Unsupported encoding " + enc);
       }
-    return Deno.writeFileSync(e, t);
+    return Deno.writeFileSync(fname, payload);
   }
-  var n = r == "utf8" ? Rr(t) : t;
-  if (typeof IE_SaveFile < "u")
-    return IE_SaveFile(n, e);
-  if (typeof Blob < "u") {
-    var a = new Blob([cl(n)], { type: "application/octet-stream" });
-    if (typeof navigator < "u" && navigator.msSaveBlob)
-      return navigator.msSaveBlob(a, e);
-    if (typeof saveAs < "u")
-      return saveAs(a, e);
-    if (typeof URL < "u" && typeof document < "u" && document.createElement && URL.createObjectURL) {
-      var i = URL.createObjectURL(a);
-      if (typeof chrome == "object" && typeof (chrome.downloads || {}).download == "function")
-        return URL.revokeObjectURL && typeof setTimeout < "u" && setTimeout(function() {
-          URL.revokeObjectURL(i);
-        }, 6e4), chrome.downloads.download({ url: i, filename: e, saveAs: !0 });
-      var s = document.createElement("a");
-      if (s.download != null)
-        return s.download = e, s.href = i, document.body.appendChild(s), s.click(), document.body.removeChild(s), URL.revokeObjectURL && typeof setTimeout < "u" && setTimeout(function() {
-          URL.revokeObjectURL(i);
-        }, 6e4), i;
-    }
-  }
-  if (typeof $ < "u" && typeof File < "u" && typeof Folder < "u")
-    try {
-      var f = File(e);
-      return f.open("w"), f.encoding = "binary", Array.isArray(t) && (t = Vt(t)), f.write(t), f.close(), t;
-    } catch (l) {
-      if (!l.message || !l.message.match(/onstruct/))
-        throw l;
-    }
-  throw new Error("cannot save file " + e);
-}
-function Xe(e) {
-  for (var t = Object.keys(e), r = [], n = 0; n < t.length; ++n)
-    Object.prototype.hasOwnProperty.call(e, t[n]) && r.push(t[n]);
-  return r;
-}
-function Na(e, t) {
-  for (var r = [], n = Xe(e), a = 0; a !== n.length; ++a)
-    r[e[n[a]][t]] == null && (r[e[n[a]][t]] = n[a]);
-  return r;
-}
-function S0(e) {
-  for (var t = [], r = Xe(e), n = 0; n !== r.length; ++n)
-    t[e[r[n]]] = r[n];
-  return t;
-}
-function Rn(e) {
-  for (var t = [], r = Xe(e), n = 0; n !== r.length; ++n)
-    t[e[r[n]]] = parseInt(r[n], 10);
-  return t;
-}
-function hl(e) {
-  for (var t = [], r = Xe(e), n = 0; n !== r.length; ++n)
-    t[e[r[n]]] == null && (t[e[r[n]]] = []), t[e[r[n]]].push(r[n]);
-  return t;
-}
-var un = /* @__PURE__ */ new Date(1899, 11, 30, 0, 0, 0);
-function rr(e, t) {
-  var r = /* @__PURE__ */ e.getTime();
-  t && (r -= 1462 * 24 * 60 * 60 * 1e3);
-  var n = /* @__PURE__ */ un.getTime() + (/* @__PURE__ */ e.getTimezoneOffset() - /* @__PURE__ */ un.getTimezoneOffset()) * 6e4;
-  return (r - n) / (24 * 60 * 60 * 1e3);
-}
-var Wi = /* @__PURE__ */ new Date(), ul = /* @__PURE__ */ un.getTime() + (/* @__PURE__ */ Wi.getTimezoneOffset() - /* @__PURE__ */ un.getTimezoneOffset()) * 6e4, Ia = /* @__PURE__ */ Wi.getTimezoneOffset();
-function Hi(e) {
-  var t = new Date();
-  return t.setTime(e * 24 * 60 * 60 * 1e3 + ul), t.getTimezoneOffset() !== Ia && t.setTime(t.getTime() + (t.getTimezoneOffset() - Ia) * 6e4), t;
-}
-var ka = /* @__PURE__ */ new Date("2017-02-19T19:06:09.000Z"), Vi = /* @__PURE__ */ isNaN(/* @__PURE__ */ ka.getFullYear()) ? /* @__PURE__ */ new Date("2/19/17") : ka, xl = /* @__PURE__ */ Vi.getFullYear() == 2017;
-function Ze(e, t) {
-  var r = new Date(e);
-  if (xl)
-    return t > 0 ? r.setTime(r.getTime() + r.getTimezoneOffset() * 60 * 1e3) : t < 0 && r.setTime(r.getTime() - r.getTimezoneOffset() * 60 * 1e3), r;
-  if (e instanceof Date)
-    return e;
-  if (Vi.getFullYear() == 1917 && !isNaN(r.getFullYear())) {
-    var n = r.getFullYear();
-    return e.indexOf("" + n) > -1 || r.setFullYear(r.getFullYear() + 100), r;
-  }
-  var a = e.match(/\d+/g) || ["2017", "2", "19", "0", "0", "0"], i = new Date(+a[0], +a[1] - 1, +a[2], +a[3] || 0, +a[4] || 0, +a[5] || 0);
-  return e.indexOf("Z") > -1 && (i = new Date(i.getTime() - i.getTimezoneOffset() * 60 * 1e3)), i;
-}
-function Dn(e, t) {
-  if (de && Buffer.isBuffer(e)) {
-    if (t) {
-      if (e[0] == 255 && e[1] == 254)
-        return Rr(e.slice(2).toString("utf16le"));
-      if (e[1] == 254 && e[2] == 255)
-        return Rr(Lo(e.slice(2).toString("binary")));
-    }
-    return e.toString("binary");
-  }
-  if (typeof TextDecoder < "u")
-    try {
-      if (t) {
-        if (e[0] == 255 && e[1] == 254)
-          return Rr(new TextDecoder("utf-16le").decode(e.slice(2)));
-        if (e[0] == 254 && e[1] == 255)
-          return Rr(new TextDecoder("utf-16be").decode(e.slice(2)));
+  var data2 = enc == "utf8" ? utf8write(payload) : payload;
+  if (typeof IE_SaveFile !== "undefined")
+    return IE_SaveFile(data2, fname);
+  if (typeof Blob !== "undefined") {
+    var blob = new Blob([blobify(data2)], { type: "application/octet-stream" });
+    if (typeof navigator !== "undefined" && navigator.msSaveBlob)
+      return navigator.msSaveBlob(blob, fname);
+    if (typeof saveAs !== "undefined")
+      return saveAs(blob, fname);
+    if (typeof URL !== "undefined" && typeof document !== "undefined" && document.createElement && URL.createObjectURL) {
+      var url = URL.createObjectURL(blob);
+      if (typeof chrome === "object" && typeof (chrome.downloads || {}).download == "function") {
+        if (URL.revokeObjectURL && typeof setTimeout !== "undefined")
+          setTimeout(function() {
+            URL.revokeObjectURL(url);
+          }, 6e4);
+        return chrome.downloads.download({ url, filename: fname, saveAs: true });
       }
-      var r = {
+      var a = document.createElement("a");
+      if (a.download != null) {
+        a.download = fname;
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (URL.revokeObjectURL && typeof setTimeout !== "undefined")
+          setTimeout(function() {
+            URL.revokeObjectURL(url);
+          }, 6e4);
+        return url;
+      }
+    }
+  }
+  if (typeof $ !== "undefined" && typeof File !== "undefined" && typeof Folder !== "undefined")
+    try {
+      var out = File(fname);
+      out.open("w");
+      out.encoding = "binary";
+      if (Array.isArray(payload))
+        payload = a2s(payload);
+      out.write(payload);
+      out.close();
+      return payload;
+    } catch (e) {
+      if (!e.message || !e.message.match(/onstruct/))
+        throw e;
+    }
+  throw new Error("cannot save file " + fname);
+}
+function keys(o) {
+  var ks = Object.keys(o), o2 = [];
+  for (var i = 0; i < ks.length; ++i)
+    if (Object.prototype.hasOwnProperty.call(o, ks[i]))
+      o2.push(ks[i]);
+  return o2;
+}
+function evert_key(obj, key) {
+  var o = [], K = keys(obj);
+  for (var i = 0; i !== K.length; ++i)
+    if (o[obj[K[i]][key]] == null)
+      o[obj[K[i]][key]] = K[i];
+  return o;
+}
+function evert(obj) {
+  var o = [], K = keys(obj);
+  for (var i = 0; i !== K.length; ++i)
+    o[obj[K[i]]] = K[i];
+  return o;
+}
+function evert_num(obj) {
+  var o = [], K = keys(obj);
+  for (var i = 0; i !== K.length; ++i)
+    o[obj[K[i]]] = parseInt(K[i], 10);
+  return o;
+}
+function evert_arr(obj) {
+  var o = [], K = keys(obj);
+  for (var i = 0; i !== K.length; ++i) {
+    if (o[obj[K[i]]] == null)
+      o[obj[K[i]]] = [];
+    o[obj[K[i]]].push(K[i]);
+  }
+  return o;
+}
+var basedate = /* @__PURE__ */ new Date(1899, 11, 30, 0, 0, 0);
+function datenum(v, date1904) {
+  var epoch = /* @__PURE__ */ v.getTime();
+  if (date1904)
+    epoch -= 1462 * 24 * 60 * 60 * 1e3;
+  var dnthresh2 = /* @__PURE__ */ basedate.getTime() + (/* @__PURE__ */ v.getTimezoneOffset() - /* @__PURE__ */ basedate.getTimezoneOffset()) * 6e4;
+  return (epoch - dnthresh2) / (24 * 60 * 60 * 1e3);
+}
+var refdate = /* @__PURE__ */ new Date();
+var dnthresh = /* @__PURE__ */ basedate.getTime() + (/* @__PURE__ */ refdate.getTimezoneOffset() - /* @__PURE__ */ basedate.getTimezoneOffset()) * 6e4;
+var refoffset = /* @__PURE__ */ refdate.getTimezoneOffset();
+function numdate(v) {
+  var out = new Date();
+  out.setTime(v * 24 * 60 * 60 * 1e3 + dnthresh);
+  if (out.getTimezoneOffset() !== refoffset) {
+    out.setTime(out.getTime() + (out.getTimezoneOffset() - refoffset) * 6e4);
+  }
+  return out;
+}
+var good_pd_date_1 = /* @__PURE__ */ new Date("2017-02-19T19:06:09.000Z");
+var good_pd_date = /* @__PURE__ */ isNaN(/* @__PURE__ */ good_pd_date_1.getFullYear()) ? /* @__PURE__ */ new Date("2/19/17") : good_pd_date_1;
+var good_pd = /* @__PURE__ */ good_pd_date.getFullYear() == 2017;
+function parseDate(str, fixdate) {
+  var d = new Date(str);
+  if (good_pd) {
+    if (fixdate > 0)
+      d.setTime(d.getTime() + d.getTimezoneOffset() * 60 * 1e3);
+    else if (fixdate < 0)
+      d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1e3);
+    return d;
+  }
+  if (str instanceof Date)
+    return str;
+  if (good_pd_date.getFullYear() == 1917 && !isNaN(d.getFullYear())) {
+    var s = d.getFullYear();
+    if (str.indexOf("" + s) > -1)
+      return d;
+    d.setFullYear(d.getFullYear() + 100);
+    return d;
+  }
+  var n = str.match(/\d+/g) || ["2017", "2", "19", "0", "0", "0"];
+  var out = new Date(+n[0], +n[1] - 1, +n[2], +n[3] || 0, +n[4] || 0, +n[5] || 0);
+  if (str.indexOf("Z") > -1)
+    out = new Date(out.getTime() - out.getTimezoneOffset() * 60 * 1e3);
+  return out;
+}
+function cc2str(arr, debomit) {
+  if (has_buf && Buffer.isBuffer(arr)) {
+    if (debomit) {
+      if (arr[0] == 255 && arr[1] == 254)
+        return utf8write(arr.slice(2).toString("utf16le"));
+      if (arr[1] == 254 && arr[2] == 255)
+        return utf8write(utf16beread(arr.slice(2).toString("binary")));
+    }
+    return arr.toString("binary");
+  }
+  if (typeof TextDecoder !== "undefined")
+    try {
+      if (debomit) {
+        if (arr[0] == 255 && arr[1] == 254)
+          return utf8write(new TextDecoder("utf-16le").decode(arr.slice(2)));
+        if (arr[0] == 254 && arr[1] == 255)
+          return utf8write(new TextDecoder("utf-16be").decode(arr.slice(2)));
+      }
+      var rev = {
         "\u20AC": "\x80",
         "\u201A": "\x82",
-        \u0192: "\x83",
+        "\u0192": "\x83",
         "\u201E": "\x84",
         "\u2026": "\x85",
         "\u2020": "\x86",
         "\u2021": "\x87",
         "\u02C6": "\x88",
         "\u2030": "\x89",
-        \u0160: "\x8A",
+        "\u0160": "\x8A",
         "\u2039": "\x8B",
-        \u0152: "\x8C",
-        \u017D: "\x8E",
+        "\u0152": "\x8C",
+        "\u017D": "\x8E",
         "\u2018": "\x91",
         "\u2019": "\x92",
         "\u201C": "\x93",
@@ -3357,175 +5208,248 @@ function Dn(e, t) {
         "\u2014": "\x97",
         "\u02DC": "\x98",
         "\u2122": "\x99",
-        \u0161: "\x9A",
+        "\u0161": "\x9A",
         "\u203A": "\x9B",
-        \u0153: "\x9C",
-        \u017E: "\x9E",
-        \u0178: "\x9F"
+        "\u0153": "\x9C",
+        "\u017E": "\x9E",
+        "\u0178": "\x9F"
       };
-      return Array.isArray(e) && (e = new Uint8Array(e)), new TextDecoder("latin1").decode(e).replace(/[€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]/g, function(i) {
-        return r[i] || i;
+      if (Array.isArray(arr))
+        arr = new Uint8Array(arr);
+      return new TextDecoder("latin1").decode(arr).replace(/[€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]/g, function(c) {
+        return rev[c] || c;
       });
-    } catch {
+    } catch (e) {
     }
-  for (var n = [], a = 0; a != e.length; ++a)
-    n.push(String.fromCharCode(e[a]));
-  return n.join("");
+  var o = [];
+  for (var i = 0; i != arr.length; ++i)
+    o.push(String.fromCharCode(arr[i]));
+  return o.join("");
 }
-function tr(e) {
-  if (typeof JSON < "u" && !Array.isArray(e))
-    return JSON.parse(JSON.stringify(e));
-  if (typeof e != "object" || e == null)
-    return e;
-  if (e instanceof Date)
-    return new Date(e.getTime());
-  var t = {};
-  for (var r in e)
-    Object.prototype.hasOwnProperty.call(e, r) && (t[r] = tr(e[r]));
-  return t;
+function dup(o) {
+  if (typeof JSON != "undefined" && !Array.isArray(o))
+    return JSON.parse(JSON.stringify(o));
+  if (typeof o != "object" || o == null)
+    return o;
+  if (o instanceof Date)
+    return new Date(o.getTime());
+  var out = {};
+  for (var k in o)
+    if (Object.prototype.hasOwnProperty.call(o, k))
+      out[k] = dup(o[k]);
+  return out;
 }
-function ye(e, t) {
-  for (var r = ""; r.length < t; )
-    r += e;
-  return r;
+function fill(c, l) {
+  var o = "";
+  while (o.length < l)
+    o += c;
+  return o;
 }
-function Nr(e) {
-  var t = Number(e);
-  if (!isNaN(t))
-    return isFinite(t) ? t : NaN;
-  if (!/\d/.test(e))
-    return t;
-  var r = 1, n = e.replace(/([\d]),([\d])/g, "$1$2").replace(/[$]/g, "").replace(/[%]/g, function() {
-    return r *= 100, "";
+function fuzzynum(s) {
+  var v = Number(s);
+  if (!isNaN(v))
+    return isFinite(v) ? v : NaN;
+  if (!/\d/.test(s))
+    return v;
+  var wt = 1;
+  var ss = s.replace(/([\d]),([\d])/g, "$1$2").replace(/[$]/g, "").replace(/[%]/g, function() {
+    wt *= 100;
+    return "";
   });
-  return !isNaN(t = Number(n)) || (n = n.replace(/[(](.*)[)]/, function(a, i) {
-    return r = -r, i;
-  }), !isNaN(t = Number(n))) ? t / r : t;
+  if (!isNaN(v = Number(ss)))
+    return v / wt;
+  ss = ss.replace(/[(](.*)[)]/, function($$, $1) {
+    wt = -wt;
+    return $1;
+  });
+  if (!isNaN(v = Number(ss)))
+    return v / wt;
+  return v;
 }
-var dl = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-function Ut(e) {
-  var t = new Date(e), r = new Date(NaN), n = t.getYear(), a = t.getMonth(), i = t.getDate();
-  if (isNaN(i))
-    return r;
-  var s = e.toLowerCase();
-  if (s.match(/jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/)) {
-    if (s = s.replace(/[^a-z]/g, "").replace(/([^a-z]|^)[ap]m?([^a-z]|$)/, ""), s.length > 3 && dl.indexOf(s) == -1)
-      return r;
-  } else if (s.match(/[a-z]/))
-    return r;
-  return n < 0 || n > 8099 ? r : (a > 0 || i > 1) && n != 101 ? t : e.match(/[^-0-9:,\/\\]/) ? r : t;
+var lower_months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+function fuzzydate(s) {
+  var o = new Date(s), n = new Date(NaN);
+  var y = o.getYear(), m = o.getMonth(), d = o.getDate();
+  if (isNaN(d))
+    return n;
+  var lower = s.toLowerCase();
+  if (lower.match(/jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/)) {
+    lower = lower.replace(/[^a-z]/g, "").replace(/([^a-z]|^)[ap]m?([^a-z]|$)/, "");
+    if (lower.length > 3 && lower_months.indexOf(lower) == -1)
+      return n;
+  } else if (lower.match(/[a-z]/))
+    return n;
+  if (y < 0 || y > 8099)
+    return n;
+  if ((m > 0 || d > 1) && y != 101)
+    return o;
+  if (s.match(/[^-0-9:,\/\\]/))
+    return n;
+  return o;
 }
-function ce(e, t, r) {
-  if (e.FullPaths) {
-    if (typeof r == "string") {
-      var n;
-      return de ? n = Lr(r) : n = Mo(r), Ee.utils.cfb_add(e, t, n);
+function zip_add_file(zip, path, content) {
+  if (zip.FullPaths) {
+    if (typeof content == "string") {
+      var res;
+      if (has_buf)
+        res = Buffer_from(content);
+      else
+        res = utf8decode(content);
+      return CFB.utils.cfb_add(zip, path, res);
     }
-    Ee.utils.cfb_add(e, t, r);
+    CFB.utils.cfb_add(zip, path, content);
   } else
-    e.file(t, r);
+    zip.file(path, content);
 }
-function A0() {
-  return Ee.utils.cfb_new();
+function zip_new() {
+  return CFB.utils.cfb_new();
 }
-var Ie = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r
-`, pl = {
+var XML_HEADER = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n';
+var encodings = {
   "&quot;": '"',
   "&apos;": "'",
   "&gt;": ">",
   "&lt;": "<",
   "&amp;": "&"
-}, F0 = /* @__PURE__ */ S0(pl), y0 = /[&<>'"]/g, vl = /[\u0000-\u0008\u000b-\u001f]/g;
-function ge(e) {
-  var t = e + "";
-  return t.replace(y0, function(r) {
-    return F0[r];
-  }).replace(vl, function(r) {
-    return "_x" + ("000" + r.charCodeAt(0).toString(16)).slice(-4) + "_";
+};
+var rencoding = /* @__PURE__ */ evert(encodings);
+var decregex = /[&<>'"]/g, charegex = /[\u0000-\u0008\u000b-\u001f]/g;
+function escapexml(text) {
+  var s = text + "";
+  return s.replace(decregex, function(y) {
+    return rencoding[y];
+  }).replace(charegex, function(s2) {
+    return "_x" + ("000" + s2.charCodeAt(0).toString(16)).slice(-4) + "_";
   });
 }
-function Pa(e) {
-  return ge(e).replace(/ /g, "_x0020_");
+function escapexmltag(text) {
+  return escapexml(text).replace(/ /g, "_x0020_");
 }
-var Gi = /[\u0000-\u001f]/g;
-function ml(e) {
-  var t = e + "";
-  return t.replace(y0, function(r) {
-    return F0[r];
-  }).replace(/\n/g, "<br/>").replace(Gi, function(r) {
-    return "&#x" + ("000" + r.charCodeAt(0).toString(16)).slice(-4) + ";";
+var htmlcharegex = /[\u0000-\u001f]/g;
+function escapehtml(text) {
+  var s = text + "";
+  return s.replace(decregex, function(y) {
+    return rencoding[y];
+  }).replace(/\n/g, "<br/>").replace(htmlcharegex, function(s2) {
+    return "&#x" + ("000" + s2.charCodeAt(0).toString(16)).slice(-4) + ";";
   });
 }
-function gl(e) {
-  var t = e + "";
-  return t.replace(y0, function(r) {
-    return F0[r];
-  }).replace(Gi, function(r) {
-    return "&#x" + r.charCodeAt(0).toString(16).toUpperCase() + ";";
+function escapexlml(text) {
+  var s = text + "";
+  return s.replace(decregex, function(y) {
+    return rencoding[y];
+  }).replace(htmlcharegex, function(s2) {
+    return "&#x" + s2.charCodeAt(0).toString(16).toUpperCase() + ";";
   });
 }
-function _l(e) {
-  return e.replace(/(\r\n|[\r\n])/g, "&#10;");
+function xlml_unfixstr(str) {
+  return str.replace(/(\r\n|[\r\n])/g, "&#10;");
 }
-function El(e) {
-  switch (e) {
+function parsexmlbool(value) {
+  switch (value) {
     case 1:
-    case !0:
+    case true:
     case "1":
     case "true":
     case "TRUE":
-      return !0;
+      return true;
     default:
-      return !1;
+      return false;
   }
 }
-function r0(e) {
-  for (var t = "", r = 0, n = 0, a = 0, i = 0, s = 0, f = 0; r < e.length; ) {
-    if (n = e.charCodeAt(r++), n < 128) {
-      t += String.fromCharCode(n);
+function utf8reada(orig) {
+  var out = "", i = 0, c = 0, d = 0, e = 0, f = 0, w = 0;
+  while (i < orig.length) {
+    c = orig.charCodeAt(i++);
+    if (c < 128) {
+      out += String.fromCharCode(c);
       continue;
     }
-    if (a = e.charCodeAt(r++), n > 191 && n < 224) {
-      s = (n & 31) << 6, s |= a & 63, t += String.fromCharCode(s);
+    d = orig.charCodeAt(i++);
+    if (c > 191 && c < 224) {
+      f = (c & 31) << 6;
+      f |= d & 63;
+      out += String.fromCharCode(f);
       continue;
     }
-    if (i = e.charCodeAt(r++), n < 240) {
-      t += String.fromCharCode((n & 15) << 12 | (a & 63) << 6 | i & 63);
+    e = orig.charCodeAt(i++);
+    if (c < 240) {
+      out += String.fromCharCode((c & 15) << 12 | (d & 63) << 6 | e & 63);
       continue;
     }
-    s = e.charCodeAt(r++), f = ((n & 7) << 18 | (a & 63) << 12 | (i & 63) << 6 | s & 63) - 65536, t += String.fromCharCode(55296 + (f >>> 10 & 1023)), t += String.fromCharCode(56320 + (f & 1023));
+    f = orig.charCodeAt(i++);
+    w = ((c & 7) << 18 | (d & 63) << 12 | (e & 63) << 6 | f & 63) - 65536;
+    out += String.fromCharCode(55296 + (w >>> 10 & 1023));
+    out += String.fromCharCode(56320 + (w & 1023));
   }
-  return t;
+  return out;
 }
-function La(e) {
-  var t = qr(2 * e.length), r, n, a = 1, i = 0, s = 0, f;
-  for (n = 0; n < e.length; n += a)
-    a = 1, (f = e.charCodeAt(n)) < 128 ? r = f : f < 224 ? (r = (f & 31) * 64 + (e.charCodeAt(n + 1) & 63), a = 2) : f < 240 ? (r = (f & 15) * 4096 + (e.charCodeAt(n + 1) & 63) * 64 + (e.charCodeAt(n + 2) & 63), a = 3) : (a = 4, r = (f & 7) * 262144 + (e.charCodeAt(n + 1) & 63) * 4096 + (e.charCodeAt(n + 2) & 63) * 64 + (e.charCodeAt(n + 3) & 63), r -= 65536, s = 55296 + (r >>> 10 & 1023), r = 56320 + (r & 1023)), s !== 0 && (t[i++] = s & 255, t[i++] = s >>> 8, s = 0), t[i++] = r % 256, t[i++] = r >>> 8;
-  return t.slice(0, i).toString("ucs2");
+function utf8readb(data2) {
+  var out = new_raw_buf(2 * data2.length), w, i, j = 1, k = 0, ww = 0, c;
+  for (i = 0; i < data2.length; i += j) {
+    j = 1;
+    if ((c = data2.charCodeAt(i)) < 128)
+      w = c;
+    else if (c < 224) {
+      w = (c & 31) * 64 + (data2.charCodeAt(i + 1) & 63);
+      j = 2;
+    } else if (c < 240) {
+      w = (c & 15) * 4096 + (data2.charCodeAt(i + 1) & 63) * 64 + (data2.charCodeAt(i + 2) & 63);
+      j = 3;
+    } else {
+      j = 4;
+      w = (c & 7) * 262144 + (data2.charCodeAt(i + 1) & 63) * 4096 + (data2.charCodeAt(i + 2) & 63) * 64 + (data2.charCodeAt(i + 3) & 63);
+      w -= 65536;
+      ww = 55296 + (w >>> 10 & 1023);
+      w = 56320 + (w & 1023);
+    }
+    if (ww !== 0) {
+      out[k++] = ww & 255;
+      out[k++] = ww >>> 8;
+      ww = 0;
+    }
+    out[k++] = w % 256;
+    out[k++] = w >>> 8;
+  }
+  return out.slice(0, k).toString("ucs2");
 }
-function Ba(e) {
-  return Lr(e, "binary").toString("utf8");
+function utf8readc(data2) {
+  return Buffer_from(data2, "binary").toString("utf8");
 }
-var Qt = "foo bar baz\xE2\x98\x83\xF0\x9F\x8D\xA3", Nt = de && (/* @__PURE__ */ Ba(Qt) == /* @__PURE__ */ r0(Qt) && Ba || /* @__PURE__ */ La(Qt) == /* @__PURE__ */ r0(Qt) && La) || r0, Rr = de ? function(e) {
-  return Lr(e, "utf8").toString("binary");
-} : function(e) {
-  for (var t = [], r = 0, n = 0, a = 0; r < e.length; )
-    switch (n = e.charCodeAt(r++), !0) {
-      case n < 128:
-        t.push(String.fromCharCode(n));
+var utf8corpus = "foo bar baz\xE2\x98\x83\xF0\x9F\x8D\xA3";
+var utf8read = has_buf && (/* @__PURE__ */ utf8readc(utf8corpus) == /* @__PURE__ */ utf8reada(utf8corpus) && utf8readc || /* @__PURE__ */ utf8readb(utf8corpus) == /* @__PURE__ */ utf8reada(utf8corpus) && utf8readb) || utf8reada;
+var utf8write = has_buf ? function(data2) {
+  return Buffer_from(data2, "utf8").toString("binary");
+} : function(orig) {
+  var out = [], i = 0, c = 0, d = 0;
+  while (i < orig.length) {
+    c = orig.charCodeAt(i++);
+    switch (true) {
+      case c < 128:
+        out.push(String.fromCharCode(c));
         break;
-      case n < 2048:
-        t.push(String.fromCharCode(192 + (n >> 6))), t.push(String.fromCharCode(128 + (n & 63)));
+      case c < 2048:
+        out.push(String.fromCharCode(192 + (c >> 6)));
+        out.push(String.fromCharCode(128 + (c & 63)));
         break;
-      case (n >= 55296 && n < 57344):
-        n -= 55296, a = e.charCodeAt(r++) - 56320 + (n << 10), t.push(String.fromCharCode(240 + (a >> 18 & 7))), t.push(String.fromCharCode(144 + (a >> 12 & 63))), t.push(String.fromCharCode(128 + (a >> 6 & 63))), t.push(String.fromCharCode(128 + (a & 63)));
+      case (c >= 55296 && c < 57344):
+        c -= 55296;
+        d = orig.charCodeAt(i++) - 56320 + (c << 10);
+        out.push(String.fromCharCode(240 + (d >> 18 & 7)));
+        out.push(String.fromCharCode(144 + (d >> 12 & 63)));
+        out.push(String.fromCharCode(128 + (d >> 6 & 63)));
+        out.push(String.fromCharCode(128 + (d & 63)));
         break;
       default:
-        t.push(String.fromCharCode(224 + (n >> 12))), t.push(String.fromCharCode(128 + (n >> 6 & 63))), t.push(String.fromCharCode(128 + (n & 63)));
+        out.push(String.fromCharCode(224 + (c >> 12)));
+        out.push(String.fromCharCode(128 + (c >> 6 & 63)));
+        out.push(String.fromCharCode(128 + (c & 63)));
     }
-  return t.join("");
-}, Tl = /* @__PURE__ */ function() {
-  var e = [
+  }
+  return out.join("");
+};
+var htmldecode = /* @__PURE__ */ function() {
+  var entities = [
     ["nbsp", " "],
     ["middot", "\xB7"],
     ["quot", '"'],
@@ -3533,740 +5457,1196 @@ var Qt = "foo bar baz\xE2\x98\x83\xF0\x9F\x8D\xA3", Nt = de && (/* @__PURE__ */ 
     ["gt", ">"],
     ["lt", "<"],
     ["amp", "&"]
-  ].map(function(t) {
-    return [new RegExp("&" + t[0] + ";", "ig"), t[1]];
+  ].map(function(x) {
+    return [new RegExp("&" + x[0] + ";", "ig"), x[1]];
   });
-  return function(r) {
-    for (var n = r.replace(/^[\t\n\r ]+/, "").replace(/[\t\n\r ]+$/, "").replace(/>\s+/g, ">").replace(/\s+</g, "<").replace(/[\t\n\r ]+/g, " ").replace(/<\s*[bB][rR]\s*\/?>/g, `
-`).replace(/<[^>]*>/g, ""), a = 0; a < e.length; ++a)
-      n = n.replace(e[a][0], e[a][1]);
-    return n;
+  return function htmldecode2(str) {
+    var o = str.replace(/^[\t\n\r ]+/, "").replace(/[\t\n\r ]+$/, "").replace(/>\s+/g, ">").replace(/\s+</g, "<").replace(/[\t\n\r ]+/g, " ").replace(/<\s*[bB][rR]\s*\/?>/g, "\n").replace(/<[^>]*>/g, "");
+    for (var i = 0; i < entities.length; ++i)
+      o = o.replace(entities[i][0], entities[i][1]);
+    return o;
   };
-}(), Xi = /(^\s|\s$|\n)/;
-function Ve(e, t) {
-  return "<" + e + (t.match(Xi) ? ' xml:space="preserve"' : "") + ">" + t + "</" + e + ">";
+}();
+var wtregex = /(^\s|\s$|\n)/;
+function writetag(f, g) {
+  return "<" + f + (g.match(wtregex) ? ' xml:space="preserve"' : "") + ">" + g + "</" + f + ">";
 }
-function bt(e) {
-  return Xe(e).map(function(t) {
-    return " " + t + '="' + e[t] + '"';
+function wxt_helper(h2) {
+  return keys(h2).map(function(k) {
+    return " " + k + '="' + h2[k] + '"';
   }).join("");
 }
-function q(e, t, r) {
-  return "<" + e + (r != null ? bt(r) : "") + (t != null ? (t.match(Xi) ? ' xml:space="preserve"' : "") + ">" + t + "</" + e : "/") + ">";
+function writextag(f, g, h2) {
+  return "<" + f + (h2 != null ? wxt_helper(h2) : "") + (g != null ? (g.match(wtregex) ? ' xml:space="preserve"' : "") + ">" + g + "</" + f : "/") + ">";
 }
-function c0(e, t) {
+function write_w3cdtf(d, t) {
   try {
-    return e.toISOString().replace(/\.\d*/, "");
-  } catch (r) {
+    return d.toISOString().replace(/\.\d*/, "");
+  } catch (e) {
     if (t)
-      throw r;
+      throw e;
   }
   return "";
 }
-function wl(e, t) {
-  switch (typeof e) {
+function write_vt(s, xlsx) {
+  switch (typeof s) {
     case "string":
-      var r = q("vt:lpwstr", ge(e));
-      return t && (r = r.replace(/&quot;/g, "_x0022_")), r;
+      var o = writextag("vt:lpwstr", escapexml(s));
+      if (xlsx)
+        o = o.replace(/&quot;/g, "_x0022_");
+      return o;
     case "number":
-      return q((e | 0) == e ? "vt:i4" : "vt:r8", ge(String(e)));
+      return writextag((s | 0) == s ? "vt:i4" : "vt:r8", escapexml(String(s)));
     case "boolean":
-      return q("vt:bool", e ? "true" : "false");
+      return writextag("vt:bool", s ? "true" : "false");
   }
-  if (e instanceof Date)
-    return q("vt:filetime", c0(e));
-  throw new Error("Unable to serialize " + e);
+  if (s instanceof Date)
+    return writextag("vt:filetime", write_w3cdtf(s));
+  throw new Error("Unable to serialize " + s);
 }
-var Be = {
+var XMLNS = {
   CORE_PROPS: "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
   CUST_PROPS: "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties",
   EXT_PROPS: "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
   CT: "http://schemas.openxmlformats.org/package/2006/content-types",
   RELS: "http://schemas.openxmlformats.org/package/2006/relationships",
   TCMNT: "http://schemas.microsoft.com/office/spreadsheetml/2018/threadedcomments",
-  dc: "http://purl.org/dc/elements/1.1/",
-  dcterms: "http://purl.org/dc/terms/",
-  dcmitype: "http://purl.org/dc/dcmitype/",
-  mx: "http://schemas.microsoft.com/office/mac/excel/2008/main",
-  r: "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-  sjs: "http://schemas.openxmlformats.org/package/2006/sheetjs/core-properties",
-  vt: "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
-  xsi: "http://www.w3.org/2001/XMLSchema-instance",
-  xsd: "http://www.w3.org/2001/XMLSchema"
-}, Tt = [
+  "dc": "http://purl.org/dc/elements/1.1/",
+  "dcterms": "http://purl.org/dc/terms/",
+  "dcmitype": "http://purl.org/dc/dcmitype/",
+  "mx": "http://schemas.microsoft.com/office/mac/excel/2008/main",
+  "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+  "sjs": "http://schemas.openxmlformats.org/package/2006/sheetjs/core-properties",
+  "vt": "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
+  "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+  "xsd": "http://www.w3.org/2001/XMLSchema"
+};
+var XMLNS_main = [
   "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
   "http://purl.oclc.org/ooxml/spreadsheetml/main",
   "http://schemas.microsoft.com/office/excel/2006/main",
   "http://schemas.microsoft.com/office/excel/2006/2"
-], fr = {
-  o: "urn:schemas-microsoft-com:office:office",
-  x: "urn:schemas-microsoft-com:office:excel",
-  ss: "urn:schemas-microsoft-com:office:spreadsheet",
-  dt: "uuid:C2F41010-65B3-11d1-A29F-00AA00C14882",
-  mv: "http://macVmlSchemaUri",
-  v: "urn:schemas-microsoft-com:vml",
-  html: "http://www.w3.org/TR/REC-html40"
+];
+var XLMLNS = {
+  "o": "urn:schemas-microsoft-com:office:office",
+  "x": "urn:schemas-microsoft-com:office:excel",
+  "ss": "urn:schemas-microsoft-com:office:spreadsheet",
+  "dt": "uuid:C2F41010-65B3-11d1-A29F-00AA00C14882",
+  "mv": "http://macVmlSchemaUri",
+  "v": "urn:schemas-microsoft-com:vml",
+  "html": "http://www.w3.org/TR/REC-html40"
 };
-function Sl(e, t) {
-  for (var r = 1 - 2 * (e[t + 7] >>> 7), n = ((e[t + 7] & 127) << 4) + (e[t + 6] >>> 4 & 15), a = e[t + 6] & 15, i = 5; i >= 0; --i)
-    a = a * 256 + e[t + i];
-  return n == 2047 ? a == 0 ? r * (1 / 0) : NaN : (n == 0 ? n = -1022 : (n -= 1023, a += Math.pow(2, 52)), r * Math.pow(2, n - 52) * a);
+function read_double_le(b, idx) {
+  var s = 1 - 2 * (b[idx + 7] >>> 7);
+  var e = ((b[idx + 7] & 127) << 4) + (b[idx + 6] >>> 4 & 15);
+  var m = b[idx + 6] & 15;
+  for (var i = 5; i >= 0; --i)
+    m = m * 256 + b[idx + i];
+  if (e == 2047)
+    return m == 0 ? s * Infinity : NaN;
+  if (e == 0)
+    e = -1022;
+  else {
+    e -= 1023;
+    m += Math.pow(2, 52);
+  }
+  return s * Math.pow(2, e - 52) * m;
 }
-function Al(e, t, r) {
-  var n = (t < 0 || 1 / t == -1 / 0 ? 1 : 0) << 7, a = 0, i = 0, s = n ? -t : t;
-  isFinite(s) ? s == 0 ? a = i = 0 : (a = Math.floor(Math.log(s) / Math.LN2), i = s * Math.pow(2, 52 - a), a <= -1023 && (!isFinite(i) || i < Math.pow(2, 52)) ? a = -1022 : (i -= Math.pow(2, 52), a += 1023)) : (a = 2047, i = isNaN(t) ? 26985 : 0);
-  for (var f = 0; f <= 5; ++f, i /= 256)
-    e[r + f] = i & 255;
-  e[r + 6] = (a & 15) << 4 | i & 15, e[r + 7] = a >> 4 | n;
+function write_double_le(b, v, idx) {
+  var bs = (v < 0 || 1 / v == -Infinity ? 1 : 0) << 7, e = 0, m = 0;
+  var av = bs ? -v : v;
+  if (!isFinite(av)) {
+    e = 2047;
+    m = isNaN(v) ? 26985 : 0;
+  } else if (av == 0)
+    e = m = 0;
+  else {
+    e = Math.floor(Math.log(av) / Math.LN2);
+    m = av * Math.pow(2, 52 - e);
+    if (e <= -1023 && (!isFinite(m) || m < Math.pow(2, 52))) {
+      e = -1022;
+    } else {
+      m -= Math.pow(2, 52);
+      e += 1023;
+    }
+  }
+  for (var i = 0; i <= 5; ++i, m /= 256)
+    b[idx + i] = m & 255;
+  b[idx + 6] = (e & 15) << 4 | m & 15;
+  b[idx + 7] = e >> 4 | bs;
 }
-var Ma = function(e) {
-  for (var t = [], r = 10240, n = 0; n < e[0].length; ++n)
-    if (e[0][n])
-      for (var a = 0, i = e[0][n].length; a < i; a += r)
-        t.push.apply(t, e[0][n].slice(a, a + r));
-  return t;
-}, Ua = de ? function(e) {
-  return e[0].length > 0 && Buffer.isBuffer(e[0][0]) ? Buffer.concat(e[0].map(function(t) {
-    return Buffer.isBuffer(t) ? t : Lr(t);
-  })) : Ma(e);
-} : Ma, ba = function(e, t, r) {
-  for (var n = [], a = t; a < r; a += 2)
-    n.push(String.fromCharCode(Rt(e, a)));
-  return n.join("").replace(Dt, "");
-}, C0 = de ? function(e, t, r) {
-  return Buffer.isBuffer(e) ? e.toString("utf16le", t, r).replace(Dt, "") : ba(e, t, r);
-} : ba, Wa = function(e, t, r) {
-  for (var n = [], a = t; a < t + r; ++a)
-    n.push(("0" + e[a].toString(16)).slice(-2));
-  return n.join("");
-}, $i = de ? function(e, t, r) {
-  return Buffer.isBuffer(e) ? e.toString("hex", t, t + r) : Wa(e, t, r);
-} : Wa, Ha = function(e, t, r) {
-  for (var n = [], a = t; a < r; a++)
-    n.push(String.fromCharCode(ht(e, a)));
-  return n.join("");
-}, Xt = de ? function(t, r, n) {
-  return Buffer.isBuffer(t) ? t.toString("utf8", r, n) : Ha(t, r, n);
-} : Ha, ji = function(e, t) {
-  var r = or(e, t);
-  return r > 0 ? Xt(e, t + 4, t + 4 + r - 1) : "";
-}, zi = ji, Ki = function(e, t) {
-  var r = or(e, t);
-  return r > 0 ? Xt(e, t + 4, t + 4 + r - 1) : "";
-}, Yi = Ki, qi = function(e, t) {
-  var r = 2 * or(e, t);
-  return r > 0 ? Xt(e, t + 4, t + 4 + r - 1) : "";
-}, Ji = qi, Zi = function(t, r) {
-  var n = or(t, r);
-  return n > 0 ? C0(t, r + 4, r + 4 + n) : "";
-}, Qi = Zi, es = function(e, t) {
-  var r = or(e, t);
-  return r > 0 ? Xt(e, t + 4, t + 4 + r) : "";
-}, rs = es, ts = function(e, t) {
-  return Sl(e, t);
-}, xn = ts, O0 = function(t) {
-  return Array.isArray(t) || typeof Uint8Array < "u" && t instanceof Uint8Array;
+var ___toBuffer = function(bufs) {
+  var x = [], w = 10240;
+  for (var i = 0; i < bufs[0].length; ++i)
+    if (bufs[0][i])
+      for (var j = 0, L = bufs[0][i].length; j < L; j += w)
+        x.push.apply(x, bufs[0][i].slice(j, j + w));
+  return x;
 };
-de && (zi = function(t, r) {
-  if (!Buffer.isBuffer(t))
-    return ji(t, r);
-  var n = t.readUInt32LE(r);
-  return n > 0 ? t.toString("utf8", r + 4, r + 4 + n - 1) : "";
-}, Yi = function(t, r) {
-  if (!Buffer.isBuffer(t))
-    return Ki(t, r);
-  var n = t.readUInt32LE(r);
-  return n > 0 ? t.toString("utf8", r + 4, r + 4 + n - 1) : "";
-}, Ji = function(t, r) {
-  if (!Buffer.isBuffer(t))
-    return qi(t, r);
-  var n = 2 * t.readUInt32LE(r);
-  return t.toString("utf16le", r + 4, r + 4 + n - 1);
-}, Qi = function(t, r) {
-  if (!Buffer.isBuffer(t))
-    return Zi(t, r);
-  var n = t.readUInt32LE(r);
-  return t.toString("utf16le", r + 4, r + 4 + n);
-}, rs = function(t, r) {
-  if (!Buffer.isBuffer(t))
-    return es(t, r);
-  var n = t.readUInt32LE(r);
-  return t.toString("utf8", r + 4, r + 4 + n);
-}, xn = function(t, r) {
-  return Buffer.isBuffer(t) ? t.readDoubleLE(r) : ts(t, r);
-}, O0 = function(t) {
-  return Buffer.isBuffer(t) || Array.isArray(t) || typeof Uint8Array < "u" && t instanceof Uint8Array;
-});
-var ht = function(e, t) {
-  return e[t];
-}, Rt = function(e, t) {
-  return e[t + 1] * (1 << 8) + e[t];
-}, Fl = function(e, t) {
-  var r = e[t + 1] * 256 + e[t];
-  return r < 32768 ? r : (65535 - r + 1) * -1;
-}, or = function(e, t) {
-  return e[t + 3] * (1 << 24) + (e[t + 2] << 16) + (e[t + 1] << 8) + e[t];
-}, Kr = function(e, t) {
-  return e[t + 3] << 24 | e[t + 2] << 16 | e[t + 1] << 8 | e[t];
-}, yl = function(e, t) {
-  return e[t] << 24 | e[t + 1] << 16 | e[t + 2] << 8 | e[t + 3];
+var __toBuffer = has_buf ? function(bufs) {
+  return bufs[0].length > 0 && Buffer.isBuffer(bufs[0][0]) ? Buffer.concat(bufs[0].map(function(x) {
+    return Buffer.isBuffer(x) ? x : Buffer_from(x);
+  })) : ___toBuffer(bufs);
+} : ___toBuffer;
+var ___utf16le = function(b, s, e) {
+  var ss = [];
+  for (var i = s; i < e; i += 2)
+    ss.push(String.fromCharCode(__readUInt16LE(b, i)));
+  return ss.join("").replace(chr0, "");
 };
-function It(e, t) {
-  var r = "", n, a, i = [], s, f, l, o;
+var __utf16le = has_buf ? function(b, s, e) {
+  if (!Buffer.isBuffer(b))
+    return ___utf16le(b, s, e);
+  return b.toString("utf16le", s, e).replace(chr0, "");
+} : ___utf16le;
+var ___hexlify = function(b, s, l) {
+  var ss = [];
+  for (var i = s; i < s + l; ++i)
+    ss.push(("0" + b[i].toString(16)).slice(-2));
+  return ss.join("");
+};
+var __hexlify = has_buf ? function(b, s, l) {
+  return Buffer.isBuffer(b) ? b.toString("hex", s, s + l) : ___hexlify(b, s, l);
+} : ___hexlify;
+var ___utf8 = function(b, s, e) {
+  var ss = [];
+  for (var i = s; i < e; i++)
+    ss.push(String.fromCharCode(__readUInt8(b, i)));
+  return ss.join("");
+};
+var __utf8 = has_buf ? function utf8_b(b, s, e) {
+  return Buffer.isBuffer(b) ? b.toString("utf8", s, e) : ___utf8(b, s, e);
+} : ___utf8;
+var ___lpstr = function(b, i) {
+  var len = __readUInt32LE(b, i);
+  return len > 0 ? __utf8(b, i + 4, i + 4 + len - 1) : "";
+};
+var __lpstr = ___lpstr;
+var ___cpstr = function(b, i) {
+  var len = __readUInt32LE(b, i);
+  return len > 0 ? __utf8(b, i + 4, i + 4 + len - 1) : "";
+};
+var __cpstr = ___cpstr;
+var ___lpwstr = function(b, i) {
+  var len = 2 * __readUInt32LE(b, i);
+  return len > 0 ? __utf8(b, i + 4, i + 4 + len - 1) : "";
+};
+var __lpwstr = ___lpwstr;
+var ___lpp4 = function lpp4_(b, i) {
+  var len = __readUInt32LE(b, i);
+  return len > 0 ? __utf16le(b, i + 4, i + 4 + len) : "";
+};
+var __lpp4 = ___lpp4;
+var ___8lpp4 = function(b, i) {
+  var len = __readUInt32LE(b, i);
+  return len > 0 ? __utf8(b, i + 4, i + 4 + len) : "";
+};
+var __8lpp4 = ___8lpp4;
+var ___double = function(b, idx) {
+  return read_double_le(b, idx);
+};
+var __double = ___double;
+var is_buf = function is_buf_a(a) {
+  return Array.isArray(a) || typeof Uint8Array !== "undefined" && a instanceof Uint8Array;
+};
+if (has_buf) {
+  __lpstr = function lpstr_b(b, i) {
+    if (!Buffer.isBuffer(b))
+      return ___lpstr(b, i);
+    var len = b.readUInt32LE(i);
+    return len > 0 ? b.toString("utf8", i + 4, i + 4 + len - 1) : "";
+  };
+  __cpstr = function cpstr_b(b, i) {
+    if (!Buffer.isBuffer(b))
+      return ___cpstr(b, i);
+    var len = b.readUInt32LE(i);
+    return len > 0 ? b.toString("utf8", i + 4, i + 4 + len - 1) : "";
+  };
+  __lpwstr = function lpwstr_b(b, i) {
+    if (!Buffer.isBuffer(b))
+      return ___lpwstr(b, i);
+    var len = 2 * b.readUInt32LE(i);
+    return b.toString("utf16le", i + 4, i + 4 + len - 1);
+  };
+  __lpp4 = function lpp4_b(b, i) {
+    if (!Buffer.isBuffer(b))
+      return ___lpp4(b, i);
+    var len = b.readUInt32LE(i);
+    return b.toString("utf16le", i + 4, i + 4 + len);
+  };
+  __8lpp4 = function lpp4_8b(b, i) {
+    if (!Buffer.isBuffer(b))
+      return ___8lpp4(b, i);
+    var len = b.readUInt32LE(i);
+    return b.toString("utf8", i + 4, i + 4 + len);
+  };
+  __double = function double_(b, i) {
+    if (Buffer.isBuffer(b))
+      return b.readDoubleLE(i);
+    return ___double(b, i);
+  };
+  is_buf = function is_buf_b(a) {
+    return Buffer.isBuffer(a) || Array.isArray(a) || typeof Uint8Array !== "undefined" && a instanceof Uint8Array;
+  };
+}
+var __readUInt8 = function(b, idx) {
+  return b[idx];
+};
+var __readUInt16LE = function(b, idx) {
+  return b[idx + 1] * (1 << 8) + b[idx];
+};
+var __readInt16LE = function(b, idx) {
+  var u = b[idx + 1] * (1 << 8) + b[idx];
+  return u < 32768 ? u : (65535 - u + 1) * -1;
+};
+var __readUInt32LE = function(b, idx) {
+  return b[idx + 3] * (1 << 24) + (b[idx + 2] << 16) + (b[idx + 1] << 8) + b[idx];
+};
+var __readInt32LE = function(b, idx) {
+  return b[idx + 3] << 24 | b[idx + 2] << 16 | b[idx + 1] << 8 | b[idx];
+};
+var __readInt32BE = function(b, idx) {
+  return b[idx] << 24 | b[idx + 1] << 16 | b[idx + 2] << 8 | b[idx + 3];
+};
+function ReadShift(size, t) {
+  var o = "", oI, oR, oo = [], w, vv, i, loc;
   switch (t) {
     case "dbcs":
-      if (o = this.l, de && Buffer.isBuffer(this))
-        r = this.slice(this.l, this.l + 2 * e).toString("utf16le");
+      loc = this.l;
+      if (has_buf && Buffer.isBuffer(this))
+        o = this.slice(this.l, this.l + 2 * size).toString("utf16le");
       else
-        for (l = 0; l < e; ++l)
-          r += String.fromCharCode(Rt(this, o)), o += 2;
-      e *= 2;
+        for (i = 0; i < size; ++i) {
+          o += String.fromCharCode(__readUInt16LE(this, loc));
+          loc += 2;
+        }
+      size *= 2;
       break;
     case "utf8":
-      r = Xt(this, this.l, this.l + e);
+      o = __utf8(this, this.l, this.l + size);
       break;
     case "utf16le":
-      e *= 2, r = C0(this, this.l, this.l + e);
+      size *= 2;
+      o = __utf16le(this, this.l, this.l + size);
       break;
     case "wstr":
-      return It.call(this, e, "dbcs");
+      return ReadShift.call(this, size, "dbcs");
     case "lpstr-ansi":
-      r = zi(this, this.l), e = 4 + or(this, this.l);
+      o = __lpstr(this, this.l);
+      size = 4 + __readUInt32LE(this, this.l);
       break;
     case "lpstr-cp":
-      r = Yi(this, this.l), e = 4 + or(this, this.l);
+      o = __cpstr(this, this.l);
+      size = 4 + __readUInt32LE(this, this.l);
       break;
     case "lpwstr":
-      r = Ji(this, this.l), e = 4 + 2 * or(this, this.l);
+      o = __lpwstr(this, this.l);
+      size = 4 + 2 * __readUInt32LE(this, this.l);
       break;
     case "lpp4":
-      e = 4 + or(this, this.l), r = Qi(this, this.l), e & 2 && (e += 2);
+      size = 4 + __readUInt32LE(this, this.l);
+      o = __lpp4(this, this.l);
+      if (size & 2)
+        size += 2;
       break;
     case "8lpp4":
-      e = 4 + or(this, this.l), r = rs(this, this.l), e & 3 && (e += 4 - (e & 3));
+      size = 4 + __readUInt32LE(this, this.l);
+      o = __8lpp4(this, this.l);
+      if (size & 3)
+        size += 4 - (size & 3);
       break;
     case "cstr":
-      for (e = 0, r = ""; (s = ht(this, this.l + e++)) !== 0; )
-        i.push(qt(s));
-      r = i.join("");
+      size = 0;
+      o = "";
+      while ((w = __readUInt8(this, this.l + size++)) !== 0)
+        oo.push(_getchar(w));
+      o = oo.join("");
       break;
     case "_wstr":
-      for (e = 0, r = ""; (s = Rt(this, this.l + e)) !== 0; )
-        i.push(qt(s)), e += 2;
-      e += 2, r = i.join("");
+      size = 0;
+      o = "";
+      while ((w = __readUInt16LE(this, this.l + size)) !== 0) {
+        oo.push(_getchar(w));
+        size += 2;
+      }
+      size += 2;
+      o = oo.join("");
       break;
     case "dbcs-cont":
-      for (r = "", o = this.l, l = 0; l < e; ++l) {
-        if (this.lens && this.lens.indexOf(o) !== -1)
-          return s = ht(this, o), this.l = o + 1, f = It.call(this, e - l, s ? "dbcs-cont" : "sbcs-cont"), i.join("") + f;
-        i.push(qt(Rt(this, o))), o += 2;
+      o = "";
+      loc = this.l;
+      for (i = 0; i < size; ++i) {
+        if (this.lens && this.lens.indexOf(loc) !== -1) {
+          w = __readUInt8(this, loc);
+          this.l = loc + 1;
+          vv = ReadShift.call(this, size - i, w ? "dbcs-cont" : "sbcs-cont");
+          return oo.join("") + vv;
+        }
+        oo.push(_getchar(__readUInt16LE(this, loc)));
+        loc += 2;
       }
-      r = i.join(""), e *= 2;
+      o = oo.join("");
+      size *= 2;
       break;
     case "cpstr":
     case "sbcs-cont":
-      for (r = "", o = this.l, l = 0; l != e; ++l) {
-        if (this.lens && this.lens.indexOf(o) !== -1)
-          return s = ht(this, o), this.l = o + 1, f = It.call(this, e - l, s ? "dbcs-cont" : "sbcs-cont"), i.join("") + f;
-        i.push(qt(ht(this, o))), o += 1;
+      o = "";
+      loc = this.l;
+      for (i = 0; i != size; ++i) {
+        if (this.lens && this.lens.indexOf(loc) !== -1) {
+          w = __readUInt8(this, loc);
+          this.l = loc + 1;
+          vv = ReadShift.call(this, size - i, w ? "dbcs-cont" : "sbcs-cont");
+          return oo.join("") + vv;
+        }
+        oo.push(_getchar(__readUInt8(this, loc)));
+        loc += 1;
       }
-      r = i.join("");
+      o = oo.join("");
       break;
     default:
-      switch (e) {
+      switch (size) {
         case 1:
-          return n = ht(this, this.l), this.l++, n;
+          oI = __readUInt8(this, this.l);
+          this.l++;
+          return oI;
         case 2:
-          return n = (t === "i" ? Fl : Rt)(this, this.l), this.l += 2, n;
+          oI = (t === "i" ? __readInt16LE : __readUInt16LE)(this, this.l);
+          this.l += 2;
+          return oI;
         case 4:
         case -4:
-          return t === "i" || (this[this.l + 3] & 128) === 0 ? (n = (e > 0 ? Kr : yl)(this, this.l), this.l += 4, n) : (a = or(this, this.l), this.l += 4, a);
+          if (t === "i" || (this[this.l + 3] & 128) === 0) {
+            oI = (size > 0 ? __readInt32LE : __readInt32BE)(this, this.l);
+            this.l += 4;
+            return oI;
+          } else {
+            oR = __readUInt32LE(this, this.l);
+            this.l += 4;
+          }
+          return oR;
         case 8:
         case -8:
-          if (t === "f")
-            return e == 8 ? a = xn(this, this.l) : a = xn([this[this.l + 7], this[this.l + 6], this[this.l + 5], this[this.l + 4], this[this.l + 3], this[this.l + 2], this[this.l + 1], this[this.l + 0]], 0), this.l += 8, a;
-          e = 8;
+          if (t === "f") {
+            if (size == 8)
+              oR = __double(this, this.l);
+            else
+              oR = __double([this[this.l + 7], this[this.l + 6], this[this.l + 5], this[this.l + 4], this[this.l + 3], this[this.l + 2], this[this.l + 1], this[this.l + 0]], 0);
+            this.l += 8;
+            return oR;
+          } else
+            size = 8;
         case 16:
-          r = $i(this, this.l, e);
+          o = __hexlify(this, this.l, size);
           break;
       }
   }
-  return this.l += e, r;
+  this.l += size;
+  return o;
 }
-var Cl = function(e, t, r) {
-  e[r] = t & 255, e[r + 1] = t >>> 8 & 255, e[r + 2] = t >>> 16 & 255, e[r + 3] = t >>> 24 & 255;
-}, Ol = function(e, t, r) {
-  e[r] = t & 255, e[r + 1] = t >> 8 & 255, e[r + 2] = t >> 16 & 255, e[r + 3] = t >> 24 & 255;
-}, Rl = function(e, t, r) {
-  e[r] = t & 255, e[r + 1] = t >>> 8 & 255;
+var __writeUInt32LE = function(b, val, idx) {
+  b[idx] = val & 255;
+  b[idx + 1] = val >>> 8 & 255;
+  b[idx + 2] = val >>> 16 & 255;
+  b[idx + 3] = val >>> 24 & 255;
 };
-function Dl(e, t, r) {
-  var n = 0, a = 0;
-  if (r === "dbcs") {
-    for (a = 0; a != t.length; ++a)
-      Rl(this, t.charCodeAt(a), this.l + 2 * a);
-    n = 2 * t.length;
-  } else if (r === "sbcs") {
-    for (t = t.replace(/[^\x00-\x7F]/g, "_"), a = 0; a != t.length; ++a)
-      this[this.l + a] = t.charCodeAt(a) & 255;
-    n = t.length;
-  } else if (r === "hex") {
-    for (; a < e; ++a)
-      this[this.l++] = parseInt(t.slice(2 * a, 2 * a + 2), 16) || 0;
-    return this;
-  } else if (r === "utf16le") {
-    var i = Math.min(this.l + e, this.length);
-    for (a = 0; a < Math.min(t.length, e); ++a) {
-      var s = t.charCodeAt(a);
-      this[this.l++] = s & 255, this[this.l++] = s >> 8;
+var __writeInt32LE = function(b, val, idx) {
+  b[idx] = val & 255;
+  b[idx + 1] = val >> 8 & 255;
+  b[idx + 2] = val >> 16 & 255;
+  b[idx + 3] = val >> 24 & 255;
+};
+var __writeUInt16LE = function(b, val, idx) {
+  b[idx] = val & 255;
+  b[idx + 1] = val >>> 8 & 255;
+};
+function WriteShift(t, val, f) {
+  var size = 0, i = 0;
+  if (f === "dbcs") {
+    for (i = 0; i != val.length; ++i)
+      __writeUInt16LE(this, val.charCodeAt(i), this.l + 2 * i);
+    size = 2 * val.length;
+  } else if (f === "sbcs") {
+    {
+      val = val.replace(/[^\x00-\x7F]/g, "_");
+      for (i = 0; i != val.length; ++i)
+        this[this.l + i] = val.charCodeAt(i) & 255;
     }
-    for (; this.l < i; )
+    size = val.length;
+  } else if (f === "hex") {
+    for (; i < t; ++i) {
+      this[this.l++] = parseInt(val.slice(2 * i, 2 * i + 2), 16) || 0;
+    }
+    return this;
+  } else if (f === "utf16le") {
+    var end = Math.min(this.l + t, this.length);
+    for (i = 0; i < Math.min(val.length, t); ++i) {
+      var cc = val.charCodeAt(i);
+      this[this.l++] = cc & 255;
+      this[this.l++] = cc >> 8;
+    }
+    while (this.l < end)
       this[this.l++] = 0;
     return this;
   } else
-    switch (e) {
+    switch (t) {
       case 1:
-        n = 1, this[this.l] = t & 255;
+        size = 1;
+        this[this.l] = val & 255;
         break;
       case 2:
-        n = 2, this[this.l] = t & 255, t >>>= 8, this[this.l + 1] = t & 255;
+        size = 2;
+        this[this.l] = val & 255;
+        val >>>= 8;
+        this[this.l + 1] = val & 255;
         break;
       case 3:
-        n = 3, this[this.l] = t & 255, t >>>= 8, this[this.l + 1] = t & 255, t >>>= 8, this[this.l + 2] = t & 255;
+        size = 3;
+        this[this.l] = val & 255;
+        val >>>= 8;
+        this[this.l + 1] = val & 255;
+        val >>>= 8;
+        this[this.l + 2] = val & 255;
         break;
       case 4:
-        n = 4, Cl(this, t, this.l);
+        size = 4;
+        __writeUInt32LE(this, val, this.l);
         break;
       case 8:
-        if (n = 8, r === "f") {
-          Al(this, t, this.l);
+        size = 8;
+        if (f === "f") {
+          write_double_le(this, val, this.l);
           break;
         }
       case 16:
         break;
       case -4:
-        n = 4, Ol(this, t, this.l);
+        size = 4;
+        __writeInt32LE(this, val, this.l);
         break;
     }
-  return this.l += n, this;
+  this.l += size;
+  return this;
 }
-function ns(e, t) {
-  var r = $i(this, this.l, e.length >> 1);
-  if (r !== e)
-    throw new Error(t + "Expected " + e + " saw " + r);
-  this.l += e.length >> 1;
+function CheckField(hexstr, fld) {
+  var m = __hexlify(this, this.l, hexstr.length >> 1);
+  if (m !== hexstr)
+    throw new Error(fld + "Expected " + hexstr + " saw " + m);
+  this.l += hexstr.length >> 1;
 }
-function sr(e, t) {
-  e.l = t, e.read_shift = It, e.chk = ns, e.write_shift = Dl;
+function prep_blob(blob, pos) {
+  blob.l = pos;
+  blob.read_shift = ReadShift;
+  blob.chk = CheckField;
+  blob.write_shift = WriteShift;
 }
-function Fr(e, t) {
-  e.l += t;
+function parsenoop(blob, length) {
+  blob.l += length;
 }
-function U(e) {
-  var t = qr(e);
-  return sr(t, 0), t;
+function new_buf(sz) {
+  var o = new_raw_buf(sz);
+  prep_blob(o, 0);
+  return o;
 }
-function Qe() {
-  var e = [], t = de ? 256 : 2048, r = function(o) {
-    var c = U(o);
-    return sr(c, 0), c;
-  }, n = r(t), a = function() {
-    !n || (n.length > n.l && (n = n.slice(0, n.l), n.l = n.length), n.length > 0 && e.push(n), n = null);
-  }, i = function(o) {
-    return n && o < n.length - n.l ? n : (a(), n = r(Math.max(o + 1, t)));
-  }, s = function() {
-    return a(), He(e);
-  }, f = function(o) {
-    a(), n = o, n.l == null && (n.l = n.length), i(t);
+function buf_array() {
+  var bufs = [], blksz = has_buf ? 256 : 2048;
+  var newblk = function ba_newblk(sz) {
+    var o = new_buf(sz);
+    prep_blob(o, 0);
+    return o;
   };
-  return { next: i, push: f, end: s, _bufs: e };
+  var curbuf = newblk(blksz);
+  var endbuf = function ba_endbuf() {
+    if (!curbuf)
+      return;
+    if (curbuf.length > curbuf.l) {
+      curbuf = curbuf.slice(0, curbuf.l);
+      curbuf.l = curbuf.length;
+    }
+    if (curbuf.length > 0)
+      bufs.push(curbuf);
+    curbuf = null;
+  };
+  var next = function ba_next(sz) {
+    if (curbuf && sz < curbuf.length - curbuf.l)
+      return curbuf;
+    endbuf();
+    return curbuf = newblk(Math.max(sz + 1, blksz));
+  };
+  var end = function ba_end() {
+    endbuf();
+    return bconcat(bufs);
+  };
+  var push = function ba_push(buf) {
+    endbuf();
+    curbuf = buf;
+    if (curbuf.l == null)
+      curbuf.l = curbuf.length;
+    next(blksz);
+  };
+  return { next, push, end, _bufs: bufs };
 }
-function V(e, t, r, n) {
-  var a = +t, i;
-  if (!isNaN(a)) {
-    n || (n = Sd[a].p || (r || []).length || 0), i = 1 + (a >= 128 ? 1 : 0) + 1, n >= 128 && ++i, n >= 16384 && ++i, n >= 2097152 && ++i;
-    var s = e.next(i);
-    a <= 127 ? s.write_shift(1, a) : (s.write_shift(1, (a & 127) + 128), s.write_shift(1, a >> 7));
-    for (var f = 0; f != 4; ++f)
-      if (n >= 128)
-        s.write_shift(1, (n & 127) + 128), n >>= 7;
-      else {
-        s.write_shift(1, n);
-        break;
-      }
-    n > 0 && O0(r) && e.push(r);
+function write_record(ba, type, payload, length) {
+  var t = +type, l;
+  if (isNaN(t))
+    return;
+  if (!length)
+    length = XLSBRecordEnum[t].p || (payload || []).length || 0;
+  l = 1 + (t >= 128 ? 1 : 0) + 1;
+  if (length >= 128)
+    ++l;
+  if (length >= 16384)
+    ++l;
+  if (length >= 2097152)
+    ++l;
+  var o = ba.next(l);
+  if (t <= 127)
+    o.write_shift(1, t);
+  else {
+    o.write_shift(1, (t & 127) + 128);
+    o.write_shift(1, t >> 7);
   }
-}
-function kt(e, t, r) {
-  var n = tr(e);
-  if (t.s ? (n.cRel && (n.c += t.s.c), n.rRel && (n.r += t.s.r)) : (n.cRel && (n.c += t.c), n.rRel && (n.r += t.r)), !r || r.biff < 12) {
-    for (; n.c >= 256; )
-      n.c -= 256;
-    for (; n.r >= 65536; )
-      n.r -= 65536;
+  for (var i = 0; i != 4; ++i) {
+    if (length >= 128) {
+      o.write_shift(1, (length & 127) + 128);
+      length >>= 7;
+    } else {
+      o.write_shift(1, length);
+      break;
+    }
   }
-  return n;
+  if (length > 0 && is_buf(payload))
+    ba.push(payload);
 }
-function Va(e, t, r) {
-  var n = tr(e);
-  return n.s = kt(n.s, t.s, r), n.e = kt(n.e, t.s, r), n;
-}
-function Pt(e, t) {
-  if (e.cRel && e.c < 0)
-    for (e = tr(e); e.c < 0; )
-      e.c += t > 8 ? 16384 : 256;
-  if (e.rRel && e.r < 0)
-    for (e = tr(e); e.r < 0; )
-      e.r += t > 8 ? 1048576 : t > 5 ? 65536 : 16384;
-  var r = _e(e);
-  return !e.cRel && e.cRel != null && (r = kl(r)), !e.rRel && e.rRel != null && (r = Nl(r)), r;
-}
-function t0(e, t) {
-  return e.s.r == 0 && !e.s.rRel && e.e.r == (t.biff >= 12 ? 1048575 : t.biff >= 8 ? 65536 : 16384) && !e.e.rRel ? (e.s.cRel ? "" : "$") + ze(e.s.c) + ":" + (e.e.cRel ? "" : "$") + ze(e.e.c) : e.s.c == 0 && !e.s.cRel && e.e.c == (t.biff >= 12 ? 16383 : 255) && !e.e.cRel ? (e.s.rRel ? "" : "$") + Ge(e.s.r) + ":" + (e.e.rRel ? "" : "$") + Ge(e.e.r) : Pt(e.s, t.biff) + ":" + Pt(e.e, t.biff);
-}
-function R0(e) {
-  return parseInt(Il(e), 10) - 1;
-}
-function Ge(e) {
-  return "" + (e + 1);
-}
-function Nl(e) {
-  return e.replace(/([A-Z]|^)(\d+)$/, "$1$$$2");
-}
-function Il(e) {
-  return e.replace(/\$(\d+)$/, "$1");
-}
-function D0(e) {
-  for (var t = Pl(e), r = 0, n = 0; n !== t.length; ++n)
-    r = 26 * r + t.charCodeAt(n) - 64;
-  return r - 1;
-}
-function ze(e) {
-  if (e < 0)
-    throw new Error("invalid column " + e);
-  var t = "";
-  for (++e; e; e = Math.floor((e - 1) / 26))
-    t = String.fromCharCode((e - 1) % 26 + 65) + t;
-  return t;
-}
-function kl(e) {
-  return e.replace(/^([A-Z])/, "$$$1");
-}
-function Pl(e) {
-  return e.replace(/^\$([A-Z])/, "$1");
-}
-function Ll(e) {
-  return e.replace(/(\$?[A-Z]*)(\$?\d*)/, "$1,$2").split(",");
-}
-function Me(e) {
-  for (var t = 0, r = 0, n = 0; n < e.length; ++n) {
-    var a = e.charCodeAt(n);
-    a >= 48 && a <= 57 ? t = 10 * t + (a - 48) : a >= 65 && a <= 90 && (r = 26 * r + (a - 64));
+function shift_cell_xls(cell, tgt, opts) {
+  var out = dup(cell);
+  if (tgt.s) {
+    if (out.cRel)
+      out.c += tgt.s.c;
+    if (out.rRel)
+      out.r += tgt.s.r;
+  } else {
+    if (out.cRel)
+      out.c += tgt.c;
+    if (out.rRel)
+      out.r += tgt.r;
   }
-  return { c: r - 1, r: t - 1 };
+  if (!opts || opts.biff < 12) {
+    while (out.c >= 256)
+      out.c -= 256;
+    while (out.r >= 65536)
+      out.r -= 65536;
+  }
+  return out;
 }
-function _e(e) {
-  for (var t = e.c + 1, r = ""; t; t = (t - 1) / 26 | 0)
-    r = String.fromCharCode((t - 1) % 26 + 65) + r;
-  return r + (e.r + 1);
+function shift_range_xls(cell, range, opts) {
+  var out = dup(cell);
+  out.s = shift_cell_xls(out.s, range.s, opts);
+  out.e = shift_cell_xls(out.e, range.s, opts);
+  return out;
 }
-function lr(e) {
-  var t = e.indexOf(":");
-  return t == -1 ? { s: Me(e), e: Me(e) } : { s: Me(e.slice(0, t)), e: Me(e.slice(t + 1)) };
+function encode_cell_xls(c, biff) {
+  if (c.cRel && c.c < 0) {
+    c = dup(c);
+    while (c.c < 0)
+      c.c += biff > 8 ? 16384 : 256;
+  }
+  if (c.rRel && c.r < 0) {
+    c = dup(c);
+    while (c.r < 0)
+      c.r += biff > 8 ? 1048576 : biff > 5 ? 65536 : 16384;
+  }
+  var s = encode_cell(c);
+  if (!c.cRel && c.cRel != null)
+    s = fix_col(s);
+  if (!c.rRel && c.rRel != null)
+    s = fix_row(s);
+  return s;
 }
-function Ne(e, t) {
-  return typeof t > "u" || typeof t == "number" ? Ne(e.s, e.e) : (typeof e != "string" && (e = _e(e)), typeof t != "string" && (t = _e(t)), e == t ? e : e + ":" + t);
+function encode_range_xls(r, opts) {
+  if (r.s.r == 0 && !r.s.rRel) {
+    if (r.e.r == (opts.biff >= 12 ? 1048575 : opts.biff >= 8 ? 65536 : 16384) && !r.e.rRel) {
+      return (r.s.cRel ? "" : "$") + encode_col(r.s.c) + ":" + (r.e.cRel ? "" : "$") + encode_col(r.e.c);
+    }
+  }
+  if (r.s.c == 0 && !r.s.cRel) {
+    if (r.e.c == (opts.biff >= 12 ? 16383 : 255) && !r.e.cRel) {
+      return (r.s.rRel ? "" : "$") + encode_row(r.s.r) + ":" + (r.e.rRel ? "" : "$") + encode_row(r.e.r);
+    }
+  }
+  return encode_cell_xls(r.s, opts.biff) + ":" + encode_cell_xls(r.e, opts.biff);
 }
-function we(e) {
-  var t = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } }, r = 0, n = 0, a = 0, i = e.length;
-  for (r = 0; n < i && !((a = e.charCodeAt(n) - 64) < 1 || a > 26); ++n)
-    r = 26 * r + a;
-  for (t.s.c = --r, r = 0; n < i && !((a = e.charCodeAt(n) - 48) < 0 || a > 9); ++n)
-    r = 10 * r + a;
-  if (t.s.r = --r, n === i || a != 10)
-    return t.e.c = t.s.c, t.e.r = t.s.r, t;
-  for (++n, r = 0; n != i && !((a = e.charCodeAt(n) - 64) < 1 || a > 26); ++n)
-    r = 26 * r + a;
-  for (t.e.c = --r, r = 0; n != i && !((a = e.charCodeAt(n) - 48) < 0 || a > 9); ++n)
-    r = 10 * r + a;
-  return t.e.r = --r, t;
+function decode_row(rowstr) {
+  return parseInt(unfix_row(rowstr), 10) - 1;
 }
-function Ga(e, t) {
-  var r = e.t == "d" && t instanceof Date;
-  if (e.z != null)
+function encode_row(row) {
+  return "" + (row + 1);
+}
+function fix_row(cstr) {
+  return cstr.replace(/([A-Z]|^)(\d+)$/, "$1$$$2");
+}
+function unfix_row(cstr) {
+  return cstr.replace(/\$(\d+)$/, "$1");
+}
+function decode_col(colstr) {
+  var c = unfix_col(colstr), d = 0, i = 0;
+  for (; i !== c.length; ++i)
+    d = 26 * d + c.charCodeAt(i) - 64;
+  return d - 1;
+}
+function encode_col(col) {
+  if (col < 0)
+    throw new Error("invalid column " + col);
+  var s = "";
+  for (++col; col; col = Math.floor((col - 1) / 26))
+    s = String.fromCharCode((col - 1) % 26 + 65) + s;
+  return s;
+}
+function fix_col(cstr) {
+  return cstr.replace(/^([A-Z])/, "$$$1");
+}
+function unfix_col(cstr) {
+  return cstr.replace(/^\$([A-Z])/, "$1");
+}
+function split_cell(cstr) {
+  return cstr.replace(/(\$?[A-Z]*)(\$?\d*)/, "$1,$2").split(",");
+}
+function decode_cell(cstr) {
+  var R = 0, C = 0;
+  for (var i = 0; i < cstr.length; ++i) {
+    var cc = cstr.charCodeAt(i);
+    if (cc >= 48 && cc <= 57)
+      R = 10 * R + (cc - 48);
+    else if (cc >= 65 && cc <= 90)
+      C = 26 * C + (cc - 64);
+  }
+  return { c: C - 1, r: R - 1 };
+}
+function encode_cell(cell) {
+  var col = cell.c + 1;
+  var s = "";
+  for (; col; col = (col - 1) / 26 | 0)
+    s = String.fromCharCode((col - 1) % 26 + 65) + s;
+  return s + (cell.r + 1);
+}
+function decode_range(range) {
+  var idx = range.indexOf(":");
+  if (idx == -1)
+    return { s: decode_cell(range), e: decode_cell(range) };
+  return { s: decode_cell(range.slice(0, idx)), e: decode_cell(range.slice(idx + 1)) };
+}
+function encode_range(cs, ce) {
+  if (typeof ce === "undefined" || typeof ce === "number") {
+    return encode_range(cs.s, cs.e);
+  }
+  if (typeof cs !== "string")
+    cs = encode_cell(cs);
+  if (typeof ce !== "string")
+    ce = encode_cell(ce);
+  return cs == ce ? cs : cs + ":" + ce;
+}
+function safe_decode_range(range) {
+  var o = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
+  var idx = 0, i = 0, cc = 0;
+  var len = range.length;
+  for (idx = 0; i < len; ++i) {
+    if ((cc = range.charCodeAt(i) - 64) < 1 || cc > 26)
+      break;
+    idx = 26 * idx + cc;
+  }
+  o.s.c = --idx;
+  for (idx = 0; i < len; ++i) {
+    if ((cc = range.charCodeAt(i) - 48) < 0 || cc > 9)
+      break;
+    idx = 10 * idx + cc;
+  }
+  o.s.r = --idx;
+  if (i === len || cc != 10) {
+    o.e.c = o.s.c;
+    o.e.r = o.s.r;
+    return o;
+  }
+  ++i;
+  for (idx = 0; i != len; ++i) {
+    if ((cc = range.charCodeAt(i) - 64) < 1 || cc > 26)
+      break;
+    idx = 26 * idx + cc;
+  }
+  o.e.c = --idx;
+  for (idx = 0; i != len; ++i) {
+    if ((cc = range.charCodeAt(i) - 48) < 0 || cc > 9)
+      break;
+    idx = 10 * idx + cc;
+  }
+  o.e.r = --idx;
+  return o;
+}
+function safe_format_cell(cell, v) {
+  var q = cell.t == "d" && v instanceof Date;
+  if (cell.z != null)
     try {
-      return e.w = Wr(e.z, r ? rr(t) : t);
-    } catch {
+      return cell.w = SSF_format(cell.z, q ? datenum(v) : v);
+    } catch (e) {
     }
   try {
-    return e.w = Wr((e.XF || {}).numFmtId || (r ? 14 : 0), r ? rr(t) : t);
-  } catch {
-    return "" + t;
+    return cell.w = SSF_format((cell.XF || {}).numFmtId || (q ? 14 : 0), q ? datenum(v) : v);
+  } catch (e) {
+    return "" + v;
   }
 }
-function Pr(e, t, r) {
-  return e == null || e.t == null || e.t == "z" ? "" : e.w !== void 0 ? e.w : (e.t == "d" && !e.z && r && r.dateNF && (e.z = r.dateNF), e.t == "e" ? $t[e.v] || e.v : t == null ? Ga(e, e.v) : Ga(e, t));
+function format_cell(cell, v, o) {
+  if (cell == null || cell.t == null || cell.t == "z")
+    return "";
+  if (cell.w !== void 0)
+    return cell.w;
+  if (cell.t == "d" && !cell.z && o && o.dateNF)
+    cell.z = o.dateNF;
+  if (cell.t == "e")
+    return BErr[cell.v] || cell.v;
+  if (v == void 0)
+    return safe_format_cell(cell, cell.v);
+  return safe_format_cell(cell, v);
 }
-function et(e, t) {
-  var r = t && t.sheet ? t.sheet : "Sheet1", n = {};
-  return n[r] = e, { SheetNames: [r], Sheets: n };
+function sheet_to_workbook(sheet, opts) {
+  var n = opts && opts.sheet ? opts.sheet : "Sheet1";
+  var sheets = {};
+  sheets[n] = sheet;
+  return { SheetNames: [n], Sheets: sheets };
 }
-function as(e, t, r) {
-  var n = r || {}, a = e ? Array.isArray(e) : n.dense, i = e || (a ? [] : {}), s = 0, f = 0;
-  if (i && n.origin != null) {
-    if (typeof n.origin == "number")
-      s = n.origin;
+function sheet_add_aoa(_ws, data2, opts) {
+  var o = opts || {};
+  var dense = _ws ? Array.isArray(_ws) : o.dense;
+  var ws = _ws || (dense ? [] : {});
+  var _R = 0, _C = 0;
+  if (ws && o.origin != null) {
+    if (typeof o.origin == "number")
+      _R = o.origin;
     else {
-      var l = typeof n.origin == "string" ? Me(n.origin) : n.origin;
-      s = l.r, f = l.c;
+      var _origin = typeof o.origin == "string" ? decode_cell(o.origin) : o.origin;
+      _R = _origin.r;
+      _C = _origin.c;
     }
-    i["!ref"] || (i["!ref"] = "A1:A1");
+    if (!ws["!ref"])
+      ws["!ref"] = "A1:A1";
   }
-  var o = { s: { c: 1e7, r: 1e7 }, e: { c: 0, r: 0 } };
-  if (i["!ref"]) {
-    var c = we(i["!ref"]);
-    o.s.c = c.s.c, o.s.r = c.s.r, o.e.c = Math.max(o.e.c, c.e.c), o.e.r = Math.max(o.e.r, c.e.r), s == -1 && (o.e.r = s = c.e.r + 1);
+  var range = { s: { c: 1e7, r: 1e7 }, e: { c: 0, r: 0 } };
+  if (ws["!ref"]) {
+    var _range = safe_decode_range(ws["!ref"]);
+    range.s.c = _range.s.c;
+    range.s.r = _range.s.r;
+    range.e.c = Math.max(range.e.c, _range.e.c);
+    range.e.r = Math.max(range.e.r, _range.e.r);
+    if (_R == -1)
+      range.e.r = _R = _range.e.r + 1;
   }
-  for (var p = 0; p != t.length; ++p)
-    if (!!t[p]) {
-      if (!Array.isArray(t[p]))
-        throw new Error("aoa_to_sheet expects an array of arrays");
-      for (var u = 0; u != t[p].length; ++u)
-        if (!(typeof t[p][u] > "u")) {
-          var v = { v: t[p][u] }, T = s + p, x = f + u;
-          if (o.s.r > T && (o.s.r = T), o.s.c > x && (o.s.c = x), o.e.r < T && (o.e.r = T), o.e.c < x && (o.e.c = x), t[p][u] && typeof t[p][u] == "object" && !Array.isArray(t[p][u]) && !(t[p][u] instanceof Date))
-            v = t[p][u];
-          else if (Array.isArray(v.v) && (v.f = t[p][u][1], v.v = v.v[0]), v.v === null)
-            if (v.f)
-              v.t = "n";
-            else if (n.nullError)
-              v.t = "e", v.v = 0;
-            else if (n.sheetStubs)
-              v.t = "z";
-            else
-              continue;
-          else
-            typeof v.v == "number" ? v.t = "n" : typeof v.v == "boolean" ? v.t = "b" : v.v instanceof Date ? (v.z = n.dateNF || Ce[14], n.cellDates ? (v.t = "d", v.w = Wr(v.z, rr(v.v))) : (v.t = "n", v.v = rr(v.v), v.w = Wr(v.z, v.v))) : v.t = "s";
-          if (a)
-            i[T] || (i[T] = []), i[T][x] && i[T][x].z && (v.z = i[T][x].z), i[T][x] = v;
-          else {
-            var _ = _e({ c: x, r: T });
-            i[_] && i[_].z && (v.z = i[_].z), i[_] = v;
-          }
+  for (var R = 0; R != data2.length; ++R) {
+    if (!data2[R])
+      continue;
+    if (!Array.isArray(data2[R]))
+      throw new Error("aoa_to_sheet expects an array of arrays");
+    for (var C = 0; C != data2[R].length; ++C) {
+      if (typeof data2[R][C] === "undefined")
+        continue;
+      var cell = { v: data2[R][C] };
+      var __R = _R + R, __C = _C + C;
+      if (range.s.r > __R)
+        range.s.r = __R;
+      if (range.s.c > __C)
+        range.s.c = __C;
+      if (range.e.r < __R)
+        range.e.r = __R;
+      if (range.e.c < __C)
+        range.e.c = __C;
+      if (data2[R][C] && typeof data2[R][C] === "object" && !Array.isArray(data2[R][C]) && !(data2[R][C] instanceof Date))
+        cell = data2[R][C];
+      else {
+        if (Array.isArray(cell.v)) {
+          cell.f = data2[R][C][1];
+          cell.v = cell.v[0];
         }
+        if (cell.v === null) {
+          if (cell.f)
+            cell.t = "n";
+          else if (o.nullError) {
+            cell.t = "e";
+            cell.v = 0;
+          } else if (!o.sheetStubs)
+            continue;
+          else
+            cell.t = "z";
+        } else if (typeof cell.v === "number")
+          cell.t = "n";
+        else if (typeof cell.v === "boolean")
+          cell.t = "b";
+        else if (cell.v instanceof Date) {
+          cell.z = o.dateNF || table_fmt[14];
+          if (o.cellDates) {
+            cell.t = "d";
+            cell.w = SSF_format(cell.z, datenum(cell.v));
+          } else {
+            cell.t = "n";
+            cell.v = datenum(cell.v);
+            cell.w = SSF_format(cell.z, cell.v);
+          }
+        } else
+          cell.t = "s";
+      }
+      if (dense) {
+        if (!ws[__R])
+          ws[__R] = [];
+        if (ws[__R][__C] && ws[__R][__C].z)
+          cell.z = ws[__R][__C].z;
+        ws[__R][__C] = cell;
+      } else {
+        var cell_ref = encode_cell({ c: __C, r: __R });
+        if (ws[cell_ref] && ws[cell_ref].z)
+          cell.z = ws[cell_ref].z;
+        ws[cell_ref] = cell;
+      }
     }
-  return o.s.c < 1e7 && (i["!ref"] = Ne(o)), i;
+  }
+  if (range.s.c < 1e7)
+    ws["!ref"] = encode_range(range);
+  return ws;
 }
-function wt(e, t) {
-  return as(null, e, t);
+function aoa_to_sheet(data2, opts) {
+  return sheet_add_aoa(null, data2, opts);
 }
-function Bl(e) {
-  return e.read_shift(4, "i");
+function parse_Int32LE(data2) {
+  return data2.read_shift(4, "i");
 }
-function Tr(e, t) {
-  return t || (t = U(4)), t.write_shift(4, e), t;
+function write_UInt32LE(x, o) {
+  if (!o)
+    o = new_buf(4);
+  o.write_shift(4, x);
+  return o;
 }
-function Ke(e) {
-  var t = e.read_shift(4);
-  return t === 0 ? "" : e.read_shift(t, "dbcs");
+function parse_XLWideString(data2) {
+  var cchCharacters = data2.read_shift(4);
+  return cchCharacters === 0 ? "" : data2.read_shift(cchCharacters, "dbcs");
 }
-function Ue(e, t) {
-  var r = !1;
-  return t == null && (r = !0, t = U(4 + 2 * e.length)), t.write_shift(4, e.length), e.length > 0 && t.write_shift(0, e, "dbcs"), r ? t.slice(0, t.l) : t;
+function write_XLWideString(data2, o) {
+  var _null2 = false;
+  if (o == null) {
+    _null2 = true;
+    o = new_buf(4 + 2 * data2.length);
+  }
+  o.write_shift(4, data2.length);
+  if (data2.length > 0)
+    o.write_shift(0, data2, "dbcs");
+  return _null2 ? o.slice(0, o.l) : o;
 }
-function Ml(e) {
-  return { ich: e.read_shift(2), ifnt: e.read_shift(2) };
+function parse_StrRun(data2) {
+  return { ich: data2.read_shift(2), ifnt: data2.read_shift(2) };
 }
-function Ul(e, t) {
-  return t || (t = U(4)), t.write_shift(2, e.ich || 0), t.write_shift(2, e.ifnt || 0), t;
+function write_StrRun(run, o) {
+  if (!o)
+    o = new_buf(4);
+  o.write_shift(2, run.ich || 0);
+  o.write_shift(2, run.ifnt || 0);
+  return o;
 }
-function N0(e, t) {
-  var r = e.l, n = e.read_shift(1), a = Ke(e), i = [], s = { t: a, h: a };
-  if ((n & 1) !== 0) {
-    for (var f = e.read_shift(4), l = 0; l != f; ++l)
-      i.push(Ml(e));
-    s.r = i;
+function parse_RichStr(data2, length) {
+  var start = data2.l;
+  var flags = data2.read_shift(1);
+  var str = parse_XLWideString(data2);
+  var rgsStrRun = [];
+  var z = { t: str, h: str };
+  if ((flags & 1) !== 0) {
+    var dwSizeStrRun = data2.read_shift(4);
+    for (var i = 0; i != dwSizeStrRun; ++i)
+      rgsStrRun.push(parse_StrRun(data2));
+    z.r = rgsStrRun;
   } else
-    s.r = [{ ich: 0, ifnt: 0 }];
-  return e.l = r + t, s;
+    z.r = [{ ich: 0, ifnt: 0 }];
+  data2.l = start + length;
+  return z;
 }
-function bl(e, t) {
-  var r = !1;
-  return t == null && (r = !0, t = U(15 + 4 * e.t.length)), t.write_shift(1, 0), Ue(e.t, t), r ? t.slice(0, t.l) : t;
+function write_RichStr(str, o) {
+  var _null2 = false;
+  if (o == null) {
+    _null2 = true;
+    o = new_buf(15 + 4 * str.t.length);
+  }
+  o.write_shift(1, 0);
+  write_XLWideString(str.t, o);
+  return _null2 ? o.slice(0, o.l) : o;
 }
-var Wl = N0;
-function Hl(e, t) {
-  var r = !1;
-  return t == null && (r = !0, t = U(23 + 4 * e.t.length)), t.write_shift(1, 1), Ue(e.t, t), t.write_shift(4, 1), Ul({ ich: 0, ifnt: 0 }, t), r ? t.slice(0, t.l) : t;
+var parse_BrtCommentText = parse_RichStr;
+function write_BrtCommentText(str, o) {
+  var _null2 = false;
+  if (o == null) {
+    _null2 = true;
+    o = new_buf(23 + 4 * str.t.length);
+  }
+  o.write_shift(1, 1);
+  write_XLWideString(str.t, o);
+  o.write_shift(4, 1);
+  write_StrRun({ ich: 0, ifnt: 0 }, o);
+  return _null2 ? o.slice(0, o.l) : o;
 }
-function dr(e) {
-  var t = e.read_shift(4), r = e.read_shift(2);
-  return r += e.read_shift(1) << 16, e.l++, { c: t, iStyleRef: r };
+function parse_XLSBCell(data2) {
+  var col = data2.read_shift(4);
+  var iStyleRef = data2.read_shift(2);
+  iStyleRef += data2.read_shift(1) << 16;
+  data2.l++;
+  return { c: col, iStyleRef };
 }
-function rt(e, t) {
-  return t == null && (t = U(8)), t.write_shift(-4, e.c), t.write_shift(3, e.iStyleRef || e.s), t.write_shift(1, 0), t;
+function write_XLSBCell(cell, o) {
+  if (o == null)
+    o = new_buf(8);
+  o.write_shift(-4, cell.c);
+  o.write_shift(3, cell.iStyleRef || cell.s);
+  o.write_shift(1, 0);
+  return o;
 }
-function tt(e) {
-  var t = e.read_shift(2);
-  return t += e.read_shift(1) << 16, e.l++, { c: -1, iStyleRef: t };
+function parse_XLSBShortCell(data2) {
+  var iStyleRef = data2.read_shift(2);
+  iStyleRef += data2.read_shift(1) << 16;
+  data2.l++;
+  return { c: -1, iStyleRef };
 }
-function nt(e, t) {
-  return t == null && (t = U(4)), t.write_shift(3, e.iStyleRef || e.s), t.write_shift(1, 0), t;
+function write_XLSBShortCell(cell, o) {
+  if (o == null)
+    o = new_buf(4);
+  o.write_shift(3, cell.iStyleRef || cell.s);
+  o.write_shift(1, 0);
+  return o;
 }
-var Vl = Ke, is = Ue;
-function I0(e) {
-  var t = e.read_shift(4);
-  return t === 0 || t === 4294967295 ? "" : e.read_shift(t, "dbcs");
+var parse_XLSBCodeName = parse_XLWideString;
+var write_XLSBCodeName = write_XLWideString;
+function parse_XLNullableWideString(data2) {
+  var cchCharacters = data2.read_shift(4);
+  return cchCharacters === 0 || cchCharacters === 4294967295 ? "" : data2.read_shift(cchCharacters, "dbcs");
 }
-function dn(e, t) {
-  var r = !1;
-  return t == null && (r = !0, t = U(127)), t.write_shift(4, e.length > 0 ? e.length : 4294967295), e.length > 0 && t.write_shift(0, e, "dbcs"), r ? t.slice(0, t.l) : t;
+function write_XLNullableWideString(data2, o) {
+  var _null2 = false;
+  if (o == null) {
+    _null2 = true;
+    o = new_buf(127);
+  }
+  o.write_shift(4, data2.length > 0 ? data2.length : 4294967295);
+  if (data2.length > 0)
+    o.write_shift(0, data2, "dbcs");
+  return _null2 ? o.slice(0, o.l) : o;
 }
-var Gl = Ke, h0 = I0, k0 = dn;
-function ss(e) {
-  var t = e.slice(e.l, e.l + 4), r = t[0] & 1, n = t[0] & 2;
-  e.l += 4;
-  var a = n === 0 ? xn([0, 0, 0, 0, t[0] & 252, t[1], t[2], t[3]], 0) : Kr(t, 0) >> 2;
-  return r ? a / 100 : a;
+var parse_XLNameWideString = parse_XLWideString;
+var parse_RelID = parse_XLNullableWideString;
+var write_RelID = write_XLNullableWideString;
+function parse_RkNumber(data2) {
+  var b = data2.slice(data2.l, data2.l + 4);
+  var fX100 = b[0] & 1, fInt = b[0] & 2;
+  data2.l += 4;
+  var RK = fInt === 0 ? __double([0, 0, 0, 0, b[0] & 252, b[1], b[2], b[3]], 0) : __readInt32LE(b, 0) >> 2;
+  return fX100 ? RK / 100 : RK;
 }
-function fs(e, t) {
-  t == null && (t = U(4));
-  var r = 0, n = 0, a = e * 100;
-  if (e == (e | 0) && e >= -(1 << 29) && e < 1 << 29 ? n = 1 : a == (a | 0) && a >= -(1 << 29) && a < 1 << 29 && (n = 1, r = 1), n)
-    t.write_shift(-4, ((r ? a : e) << 2) + (r + 2));
+function write_RkNumber(data2, o) {
+  if (o == null)
+    o = new_buf(4);
+  var fX100 = 0, fInt = 0, d100 = data2 * 100;
+  if (data2 == (data2 | 0) && data2 >= -(1 << 29) && data2 < 1 << 29) {
+    fInt = 1;
+  } else if (d100 == (d100 | 0) && d100 >= -(1 << 29) && d100 < 1 << 29) {
+    fInt = 1;
+    fX100 = 1;
+  }
+  if (fInt)
+    o.write_shift(-4, ((fX100 ? d100 : data2) << 2) + (fX100 + 2));
   else
-    throw new Error("unsupported RkNumber " + e);
+    throw new Error("unsupported RkNumber " + data2);
 }
-function os(e) {
-  var t = { s: {}, e: {} };
-  return t.s.r = e.read_shift(4), t.e.r = e.read_shift(4), t.s.c = e.read_shift(4), t.e.c = e.read_shift(4), t;
+function parse_RfX(data2) {
+  var cell = { s: {}, e: {} };
+  cell.s.r = data2.read_shift(4);
+  cell.e.r = data2.read_shift(4);
+  cell.s.c = data2.read_shift(4);
+  cell.e.c = data2.read_shift(4);
+  return cell;
 }
-function Xl(e, t) {
-  return t || (t = U(16)), t.write_shift(4, e.s.r), t.write_shift(4, e.e.r), t.write_shift(4, e.s.c), t.write_shift(4, e.e.c), t;
+function write_RfX(r, o) {
+  if (!o)
+    o = new_buf(16);
+  o.write_shift(4, r.s.r);
+  o.write_shift(4, r.e.r);
+  o.write_shift(4, r.s.c);
+  o.write_shift(4, r.e.c);
+  return o;
 }
-var at = os, St = Xl;
-function At(e) {
-  if (e.length - e.l < 8)
+var parse_UncheckedRfX = parse_RfX;
+var write_UncheckedRfX = write_RfX;
+function parse_Xnum(data2) {
+  if (data2.length - data2.l < 8)
     throw "XLS Xnum Buffer underflow";
-  return e.read_shift(8, "f");
+  return data2.read_shift(8, "f");
 }
-function Jr(e, t) {
-  return (t || U(8)).write_shift(8, e, "f");
+function write_Xnum(data2, o) {
+  return (o || new_buf(8)).write_shift(8, data2, "f");
 }
-function $l(e) {
-  var t = {}, r = e.read_shift(1), n = r >>> 1, a = e.read_shift(1), i = e.read_shift(2, "i"), s = e.read_shift(1), f = e.read_shift(1), l = e.read_shift(1);
-  switch (e.l++, n) {
+function parse_BrtColor(data2) {
+  var out = {};
+  var d = data2.read_shift(1);
+  var xColorType = d >>> 1;
+  var index = data2.read_shift(1);
+  var nTS = data2.read_shift(2, "i");
+  var bR = data2.read_shift(1);
+  var bG = data2.read_shift(1);
+  var bB = data2.read_shift(1);
+  data2.l++;
+  switch (xColorType) {
     case 0:
-      t.auto = 1;
+      out.auto = 1;
       break;
     case 1:
-      t.index = a;
-      var o = ec[a];
-      o && (t.rgb = ei(o));
+      out.index = index;
+      var icv = XLSIcv[index];
+      if (icv)
+        out.rgb = rgb2Hex(icv);
       break;
     case 2:
-      t.rgb = ei([s, f, l]);
+      out.rgb = rgb2Hex([bR, bG, bB]);
       break;
     case 3:
-      t.theme = a;
+      out.theme = index;
       break;
   }
-  return i != 0 && (t.tint = i > 0 ? i / 32767 : i / 32768), t;
+  if (nTS != 0)
+    out.tint = nTS > 0 ? nTS / 32767 : nTS / 32768;
+  return out;
 }
-function pn(e, t) {
-  if (t || (t = U(8)), !e || e.auto)
-    return t.write_shift(4, 0), t.write_shift(4, 0), t;
-  e.index != null ? (t.write_shift(1, 2), t.write_shift(1, e.index)) : e.theme != null ? (t.write_shift(1, 6), t.write_shift(1, e.theme)) : (t.write_shift(1, 5), t.write_shift(1, 0));
-  var r = e.tint || 0;
-  if (r > 0 ? r *= 32767 : r < 0 && (r *= 32768), t.write_shift(2, r), !e.rgb || e.theme != null)
-    t.write_shift(2, 0), t.write_shift(1, 0), t.write_shift(1, 0);
-  else {
-    var n = e.rgb || "FFFFFF";
-    typeof n == "number" && (n = ("000000" + n.toString(16)).slice(-6)), t.write_shift(1, parseInt(n.slice(0, 2), 16)), t.write_shift(1, parseInt(n.slice(2, 4), 16)), t.write_shift(1, parseInt(n.slice(4, 6), 16)), t.write_shift(1, 255);
+function write_BrtColor(color, o) {
+  if (!o)
+    o = new_buf(8);
+  if (!color || color.auto) {
+    o.write_shift(4, 0);
+    o.write_shift(4, 0);
+    return o;
   }
-  return t;
+  if (color.index != null) {
+    o.write_shift(1, 2);
+    o.write_shift(1, color.index);
+  } else if (color.theme != null) {
+    o.write_shift(1, 6);
+    o.write_shift(1, color.theme);
+  } else {
+    o.write_shift(1, 5);
+    o.write_shift(1, 0);
+  }
+  var nTS = color.tint || 0;
+  if (nTS > 0)
+    nTS *= 32767;
+  else if (nTS < 0)
+    nTS *= 32768;
+  o.write_shift(2, nTS);
+  if (!color.rgb || color.theme != null) {
+    o.write_shift(2, 0);
+    o.write_shift(1, 0);
+    o.write_shift(1, 0);
+  } else {
+    var rgb = color.rgb || "FFFFFF";
+    if (typeof rgb == "number")
+      rgb = ("000000" + rgb.toString(16)).slice(-6);
+    o.write_shift(1, parseInt(rgb.slice(0, 2), 16));
+    o.write_shift(1, parseInt(rgb.slice(2, 4), 16));
+    o.write_shift(1, parseInt(rgb.slice(4, 6), 16));
+    o.write_shift(1, 255);
+  }
+  return o;
 }
-function jl(e) {
-  var t = e.read_shift(1);
-  e.l++;
-  var r = {
-    fBold: t & 1,
-    fItalic: t & 2,
-    fUnderline: t & 4,
-    fStrikeout: t & 8,
-    fOutline: t & 16,
-    fShadow: t & 32,
-    fCondense: t & 64,
-    fExtend: t & 128
+function parse_FontFlags(data2) {
+  var d = data2.read_shift(1);
+  data2.l++;
+  var out = {
+    fBold: d & 1,
+    fItalic: d & 2,
+    fUnderline: d & 4,
+    fStrikeout: d & 8,
+    fOutline: d & 16,
+    fShadow: d & 32,
+    fCondense: d & 64,
+    fExtend: d & 128
   };
-  return r;
+  return out;
 }
-function zl(e, t) {
-  t || (t = U(2));
-  var r = (e.italic ? 2 : 0) | (e.strike ? 8 : 0) | (e.outline ? 16 : 0) | (e.shadow ? 32 : 0) | (e.condense ? 64 : 0) | (e.extend ? 128 : 0);
-  return t.write_shift(1, r), t.write_shift(1, 0), t;
+function write_FontFlags(font, o) {
+  if (!o)
+    o = new_buf(2);
+  var grbit = (font.italic ? 2 : 0) | (font.strike ? 8 : 0) | (font.outline ? 16 : 0) | (font.shadow ? 32 : 0) | (font.condense ? 64 : 0) | (font.extend ? 128 : 0);
+  o.write_shift(1, grbit);
+  o.write_shift(1, 0);
+  return o;
 }
-var ls = 2, ir = 3, en = 11, vn = 19, rn = 64, Kl = 65, Yl = 71, ql = 4108, Jl = 4126, We = 80, Xa = {
-  1: { n: "CodePage", t: ls },
-  2: { n: "Category", t: We },
-  3: { n: "PresentationFormat", t: We },
-  4: { n: "ByteCount", t: ir },
-  5: { n: "LineCount", t: ir },
-  6: { n: "ParagraphCount", t: ir },
-  7: { n: "SlideCount", t: ir },
-  8: { n: "NoteCount", t: ir },
-  9: { n: "HiddenCount", t: ir },
-  10: { n: "MultimediaClipCount", t: ir },
-  11: { n: "ScaleCrop", t: en },
-  12: { n: "HeadingPairs", t: ql },
-  13: { n: "TitlesOfParts", t: Jl },
-  14: { n: "Manager", t: We },
-  15: { n: "Company", t: We },
-  16: { n: "LinksUpToDate", t: en },
-  17: { n: "CharacterCount", t: ir },
-  19: { n: "SharedDoc", t: en },
-  22: { n: "HyperlinksChanged", t: en },
-  23: { n: "AppVersion", t: ir, p: "version" },
-  24: { n: "DigSig", t: Kl },
-  26: { n: "ContentType", t: We },
-  27: { n: "ContentStatus", t: We },
-  28: { n: "Language", t: We },
-  29: { n: "Version", t: We },
+var VT_I2 = 2;
+var VT_I4 = 3;
+var VT_BOOL = 11;
+var VT_UI4 = 19;
+var VT_FILETIME = 64;
+var VT_BLOB = 65;
+var VT_CF = 71;
+var VT_VECTOR_VARIANT = 4108;
+var VT_VECTOR_LPSTR = 4126;
+var VT_STRING = 80;
+var DocSummaryPIDDSI = {
+  1: { n: "CodePage", t: VT_I2 },
+  2: { n: "Category", t: VT_STRING },
+  3: { n: "PresentationFormat", t: VT_STRING },
+  4: { n: "ByteCount", t: VT_I4 },
+  5: { n: "LineCount", t: VT_I4 },
+  6: { n: "ParagraphCount", t: VT_I4 },
+  7: { n: "SlideCount", t: VT_I4 },
+  8: { n: "NoteCount", t: VT_I4 },
+  9: { n: "HiddenCount", t: VT_I4 },
+  10: { n: "MultimediaClipCount", t: VT_I4 },
+  11: { n: "ScaleCrop", t: VT_BOOL },
+  12: { n: "HeadingPairs", t: VT_VECTOR_VARIANT },
+  13: { n: "TitlesOfParts", t: VT_VECTOR_LPSTR },
+  14: { n: "Manager", t: VT_STRING },
+  15: { n: "Company", t: VT_STRING },
+  16: { n: "LinksUpToDate", t: VT_BOOL },
+  17: { n: "CharacterCount", t: VT_I4 },
+  19: { n: "SharedDoc", t: VT_BOOL },
+  22: { n: "HyperlinksChanged", t: VT_BOOL },
+  23: { n: "AppVersion", t: VT_I4, p: "version" },
+  24: { n: "DigSig", t: VT_BLOB },
+  26: { n: "ContentType", t: VT_STRING },
+  27: { n: "ContentStatus", t: VT_STRING },
+  28: { n: "Language", t: VT_STRING },
+  29: { n: "Version", t: VT_STRING },
   255: {},
-  2147483648: { n: "Locale", t: vn },
-  2147483651: { n: "Behavior", t: vn },
-  1919054434: {}
-}, $a = {
-  1: { n: "CodePage", t: ls },
-  2: { n: "Title", t: We },
-  3: { n: "Subject", t: We },
-  4: { n: "Author", t: We },
-  5: { n: "Keywords", t: We },
-  6: { n: "Comments", t: We },
-  7: { n: "Template", t: We },
-  8: { n: "LastAuthor", t: We },
-  9: { n: "RevNumber", t: We },
-  10: { n: "EditTime", t: rn },
-  11: { n: "LastPrinted", t: rn },
-  12: { n: "CreatedDate", t: rn },
-  13: { n: "ModifiedDate", t: rn },
-  14: { n: "PageCount", t: ir },
-  15: { n: "WordCount", t: ir },
-  16: { n: "CharCount", t: ir },
-  17: { n: "Thumbnail", t: Yl },
-  18: { n: "Application", t: We },
-  19: { n: "DocSecurity", t: ir },
-  255: {},
-  2147483648: { n: "Locale", t: vn },
-  2147483651: { n: "Behavior", t: vn },
+  2147483648: { n: "Locale", t: VT_UI4 },
+  2147483651: { n: "Behavior", t: VT_UI4 },
   1919054434: {}
 };
-function Zl(e) {
-  return e.map(function(t) {
-    return [t >> 16 & 255, t >> 8 & 255, t & 255];
+var SummaryPIDSI = {
+  1: { n: "CodePage", t: VT_I2 },
+  2: { n: "Title", t: VT_STRING },
+  3: { n: "Subject", t: VT_STRING },
+  4: { n: "Author", t: VT_STRING },
+  5: { n: "Keywords", t: VT_STRING },
+  6: { n: "Comments", t: VT_STRING },
+  7: { n: "Template", t: VT_STRING },
+  8: { n: "LastAuthor", t: VT_STRING },
+  9: { n: "RevNumber", t: VT_STRING },
+  10: { n: "EditTime", t: VT_FILETIME },
+  11: { n: "LastPrinted", t: VT_FILETIME },
+  12: { n: "CreatedDate", t: VT_FILETIME },
+  13: { n: "ModifiedDate", t: VT_FILETIME },
+  14: { n: "PageCount", t: VT_I4 },
+  15: { n: "WordCount", t: VT_I4 },
+  16: { n: "CharCount", t: VT_I4 },
+  17: { n: "Thumbnail", t: VT_CF },
+  18: { n: "Application", t: VT_STRING },
+  19: { n: "DocSecurity", t: VT_I4 },
+  255: {},
+  2147483648: { n: "Locale", t: VT_UI4 },
+  2147483651: { n: "Behavior", t: VT_UI4 },
+  1919054434: {}
+};
+function rgbify(arr) {
+  return arr.map(function(x) {
+    return [x >> 16 & 255, x >> 8 & 255, x & 255];
   });
 }
-var Ql = /* @__PURE__ */ Zl([
+var _XLSIcv = /* @__PURE__ */ rgbify([
   0,
   16777215,
   16711680,
@@ -4349,7 +6729,9 @@ var Ql = /* @__PURE__ */ Zl([
   0,
   0,
   0
-]), ec = /* @__PURE__ */ tr(Ql), $t = {
+]);
+var XLSIcv = /* @__PURE__ */ dup(_XLSIcv);
+var BErr = {
   0: "#NULL!",
   7: "#DIV/0!",
   15: "#VALUE!",
@@ -4359,7 +6741,8 @@ var Ql = /* @__PURE__ */ Zl([
   42: "#N/A",
   43: "#GETTING_DATA",
   255: "#WTF?"
-}, rc = {
+};
+var ct2type = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml": "workbooks",
   "application/vnd.ms-excel.sheet.macroEnabled.main+xml": "workbooks",
   "application/vnd.ms-excel.sheet.binary.macroEnabled.main": "workbooks",
@@ -4449,8 +6832,9 @@ var Ql = /* @__PURE__ */ Zl([
   "application/vnd.openxmlformats-package.relationships+xml": "rels",
   "application/vnd.openxmlformats-officedocument.oleObject": "TODO",
   "image/png": "TODO",
-  sheet: "js"
-}, tn = {
+  "sheet": "js"
+};
+var CT_LIST = {
   workbooks: {
     xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
     xlsm: "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
@@ -4491,7 +6875,7 @@ var Ql = /* @__PURE__ */ Zl([
     xlsb: "application/vnd.ms-excel.styles"
   }
 };
-function cs() {
+function new_ct() {
   return {
     workbooks: [],
     sheets: [],
@@ -4517,13 +6901,16 @@ function cs() {
     xmlns: ""
   };
 }
-function hs(e, t) {
-  var r = hl(rc), n = [], a;
-  n[n.length] = Ie, n[n.length] = q("Types", null, {
-    xmlns: Be.CT,
-    "xmlns:xsd": Be.xsd,
-    "xmlns:xsi": Be.xsi
-  }), n = n.concat([
+function write_ct(ct, opts) {
+  var type2ct = evert_arr(ct2type);
+  var o = [], v;
+  o[o.length] = XML_HEADER;
+  o[o.length] = writextag("Types", null, {
+    "xmlns": XMLNS.CT,
+    "xmlns:xsd": XMLNS.xsd,
+    "xmlns:xsi": XMLNS.xsi
+  });
+  o = o.concat([
     ["xml", "application/xml"],
     ["bin", "application/vnd.ms-excel.sheet.binary.macroEnabled.main"],
     ["vml", "application/vnd.openxmlformats-officedocument.vmlDrawing"],
@@ -4539,32 +6926,53 @@ function hs(e, t) {
     ["tiff", "image/tiff"],
     ["pdf", "application/pdf"],
     ["rels", "application/vnd.openxmlformats-package.relationships+xml"]
-  ].map(function(l) {
-    return q("Default", null, { Extension: l[0], ContentType: l[1] });
+  ].map(function(x) {
+    return writextag("Default", null, { "Extension": x[0], "ContentType": x[1] });
   }));
-  var i = function(l) {
-    e[l] && e[l].length > 0 && (a = e[l][0], n[n.length] = q("Override", null, {
-      PartName: (a[0] == "/" ? "" : "/") + a,
-      ContentType: tn[l][t.bookType] || tn[l].xlsx
-    }));
-  }, s = function(l) {
-    (e[l] || []).forEach(function(o) {
-      n[n.length] = q("Override", null, {
-        PartName: (o[0] == "/" ? "" : "/") + o,
-        ContentType: tn[l][t.bookType] || tn[l].xlsx
+  var f1 = function(w) {
+    if (ct[w] && ct[w].length > 0) {
+      v = ct[w][0];
+      o[o.length] = writextag("Override", null, {
+        "PartName": (v[0] == "/" ? "" : "/") + v,
+        "ContentType": CT_LIST[w][opts.bookType] || CT_LIST[w]["xlsx"]
       });
-    });
-  }, f = function(l) {
-    (e[l] || []).forEach(function(o) {
-      n[n.length] = q("Override", null, {
-        PartName: (o[0] == "/" ? "" : "/") + o,
-        ContentType: r[l][0]
+    }
+  };
+  var f2 = function(w) {
+    (ct[w] || []).forEach(function(v2) {
+      o[o.length] = writextag("Override", null, {
+        "PartName": (v2[0] == "/" ? "" : "/") + v2,
+        "ContentType": CT_LIST[w][opts.bookType] || CT_LIST[w]["xlsx"]
       });
     });
   };
-  return i("workbooks"), s("sheets"), s("charts"), f("themes"), ["strs", "styles"].forEach(i), ["coreprops", "extprops", "custprops"].forEach(f), f("vba"), f("comments"), f("threadedcomments"), f("drawings"), s("metadata"), f("people"), n.length > 2 && (n[n.length] = "</Types>", n[1] = n[1].replace("/>", ">")), n.join("");
+  var f3 = function(t) {
+    (ct[t] || []).forEach(function(v2) {
+      o[o.length] = writextag("Override", null, {
+        "PartName": (v2[0] == "/" ? "" : "/") + v2,
+        "ContentType": type2ct[t][0]
+      });
+    });
+  };
+  f1("workbooks");
+  f2("sheets");
+  f2("charts");
+  f3("themes");
+  ["strs", "styles"].forEach(f1);
+  ["coreprops", "extprops", "custprops"].forEach(f3);
+  f3("vba");
+  f3("comments");
+  f3("threadedcomments");
+  f3("drawings");
+  f2("metadata");
+  f3("people");
+  if (o.length > 2) {
+    o[o.length] = "</Types>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-var xe = {
+var RELS = {
   WB: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
   SHEET: "http://sheetjs.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
   HLINK: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
@@ -4597,68 +7005,85 @@ var xe = {
   PEOPLE: "http://schemas.microsoft.com/office/2017/10/relationships/person",
   VBA: "http://schemas.microsoft.com/office/2006/relationships/vbaProject"
 };
-function us(e) {
-  var t = e.lastIndexOf("/");
-  return e.slice(0, t + 1) + "_rels/" + e.slice(t + 1) + ".rels";
+function get_rels_path(file) {
+  var n = file.lastIndexOf("/");
+  return file.slice(0, n + 1) + "_rels/" + file.slice(n + 1) + ".rels";
 }
-function dt(e) {
-  var t = [Ie, q("Relationships", null, {
-    xmlns: Be.RELS
+function write_rels(rels) {
+  var o = [XML_HEADER, writextag("Relationships", null, {
+    "xmlns": XMLNS.RELS
   })];
-  return Xe(e["!id"]).forEach(function(r) {
-    t[t.length] = q("Relationship", null, e["!id"][r]);
-  }), t.length > 2 && (t[t.length] = "</Relationships>", t[1] = t[1].replace("/>", ">")), t.join("");
+  keys(rels["!id"]).forEach(function(rid) {
+    o[o.length] = writextag("Relationship", null, rels["!id"][rid]);
+  });
+  if (o.length > 2) {
+    o[o.length] = "</Relationships>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-function me(e, t, r, n, a, i) {
-  if (a || (a = {}), e["!id"] || (e["!id"] = {}), e["!idx"] || (e["!idx"] = 1), t < 0)
-    for (t = e["!idx"]; e["!id"]["rId" + t]; ++t)
-      ;
-  if (e["!idx"] = t + 1, a.Id = "rId" + t, a.Type = n, a.Target = r, i ? a.TargetMode = i : [xe.HLINK, xe.XPATH, xe.XMISS].indexOf(a.Type) > -1 && (a.TargetMode = "External"), e["!id"][a.Id])
-    throw new Error("Cannot rewrite rId " + t);
-  return e["!id"][a.Id] = a, e[("/" + a.Target).replace("//", "/")] = a, t;
+function add_rels(rels, rId, f, type, relobj, targetmode) {
+  if (!relobj)
+    relobj = {};
+  if (!rels["!id"])
+    rels["!id"] = {};
+  if (!rels["!idx"])
+    rels["!idx"] = 1;
+  if (rId < 0)
+    for (rId = rels["!idx"]; rels["!id"]["rId" + rId]; ++rId) {
+    }
+  rels["!idx"] = rId + 1;
+  relobj.Id = "rId" + rId;
+  relobj.Type = type;
+  relobj.Target = f;
+  if (targetmode)
+    relobj.TargetMode = targetmode;
+  else if ([RELS.HLINK, RELS.XPATH, RELS.XMISS].indexOf(relobj.Type) > -1)
+    relobj.TargetMode = "External";
+  if (rels["!id"][relobj.Id])
+    throw new Error("Cannot rewrite rId " + rId);
+  rels["!id"][relobj.Id] = relobj;
+  rels[("/" + relobj.Target).replace("//", "/")] = relobj;
+  return rId;
 }
-function tc(e) {
-  var t = [Ie];
-  t.push(`<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.2">
-`), t.push(`  <manifest:file-entry manifest:full-path="/" manifest:version="1.2" manifest:media-type="application/vnd.oasis.opendocument.spreadsheet"/>
-`);
-  for (var r = 0; r < e.length; ++r)
-    t.push('  <manifest:file-entry manifest:full-path="' + e[r][0] + '" manifest:media-type="' + e[r][1] + `"/>
-`);
-  return t.push("</manifest:manifest>"), t.join("");
+function write_manifest(manifest) {
+  var o = [XML_HEADER];
+  o.push('<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.2">\n');
+  o.push('  <manifest:file-entry manifest:full-path="/" manifest:version="1.2" manifest:media-type="application/vnd.oasis.opendocument.spreadsheet"/>\n');
+  for (var i = 0; i < manifest.length; ++i)
+    o.push('  <manifest:file-entry manifest:full-path="' + manifest[i][0] + '" manifest:media-type="' + manifest[i][1] + '"/>\n');
+  o.push("</manifest:manifest>");
+  return o.join("");
 }
-function ja(e, t, r) {
+function write_rdf_type(file, res, tag) {
   return [
-    '  <rdf:Description rdf:about="' + e + `">
-`,
-    '    <rdf:type rdf:resource="http://docs.oasis-open.org/ns/office/1.2/meta/' + (r || "odf") + "#" + t + `"/>
-`,
-    `  </rdf:Description>
-`
+    '  <rdf:Description rdf:about="' + file + '">\n',
+    '    <rdf:type rdf:resource="http://docs.oasis-open.org/ns/office/1.2/meta/' + (tag || "odf") + "#" + res + '"/>\n',
+    "  </rdf:Description>\n"
   ].join("");
 }
-function nc(e, t) {
+function write_rdf_has(base, file) {
   return [
-    '  <rdf:Description rdf:about="' + e + `">
-`,
-    '    <ns0:hasPart xmlns:ns0="http://docs.oasis-open.org/ns/office/1.2/meta/pkg#" rdf:resource="' + t + `"/>
-`,
-    `  </rdf:Description>
-`
+    '  <rdf:Description rdf:about="' + base + '">\n',
+    '    <ns0:hasPart xmlns:ns0="http://docs.oasis-open.org/ns/office/1.2/meta/pkg#" rdf:resource="' + file + '"/>\n',
+    "  </rdf:Description>\n"
   ].join("");
 }
-function ac(e) {
-  var t = [Ie];
-  t.push(`<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-`);
-  for (var r = 0; r != e.length; ++r)
-    t.push(ja(e[r][0], e[r][1])), t.push(nc("", e[r][0]));
-  return t.push(ja("", "Document", "pkg")), t.push("</rdf:RDF>"), t.join("");
+function write_rdf(rdf) {
+  var o = [XML_HEADER];
+  o.push('<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">\n');
+  for (var i = 0; i != rdf.length; ++i) {
+    o.push(write_rdf_type(rdf[i][0], rdf[i][1]));
+    o.push(write_rdf_has("", rdf[i][0]));
+  }
+  o.push(write_rdf_type("", "Document", "pkg"));
+  o.push("</rdf:RDF>");
+  return o.join("");
 }
-function xs() {
-  return '<office:document-meta xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" office:version="1.2"><office:meta><meta:generator>SheetJS ' + on.version + "</meta:generator></office:meta></office:document-meta>";
+function write_meta_ods() {
+  return '<office:document-meta xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" office:version="1.2"><office:meta><meta:generator>SheetJS ' + XLSX.version + "</meta:generator></office:meta></office:document-meta>";
 }
-var Yr = [
+var CORE_PROPS = [
   ["cp:category", "Category"],
   ["cp:contentStatus", "ContentStatus"],
   ["cp:keywords", "Keywords"],
@@ -4675,27 +7100,49 @@ var Yr = [
   ["dcterms:created", "CreatedDate", "date"],
   ["dcterms:modified", "ModifiedDate", "date"]
 ];
-function n0(e, t, r, n, a) {
-  a[e] != null || t == null || t === "" || (a[e] = t, t = ge(t), n[n.length] = r ? q(e, t, r) : Ve(e, t));
+function cp_doit(f, g, h2, o, p) {
+  if (p[f] != null || g == null || g === "")
+    return;
+  p[f] = g;
+  g = escapexml(g);
+  o[o.length] = h2 ? writextag(f, g, h2) : writetag(f, g);
 }
-function ds(e, t) {
-  var r = t || {}, n = [Ie, q("cp:coreProperties", null, {
-    "xmlns:cp": Be.CORE_PROPS,
-    "xmlns:dc": Be.dc,
-    "xmlns:dcterms": Be.dcterms,
-    "xmlns:dcmitype": Be.dcmitype,
-    "xmlns:xsi": Be.xsi
-  })], a = {};
-  if (!e && !r.Props)
-    return n.join("");
-  e && (e.CreatedDate != null && n0("dcterms:created", typeof e.CreatedDate == "string" ? e.CreatedDate : c0(e.CreatedDate, r.WTF), { "xsi:type": "dcterms:W3CDTF" }, n, a), e.ModifiedDate != null && n0("dcterms:modified", typeof e.ModifiedDate == "string" ? e.ModifiedDate : c0(e.ModifiedDate, r.WTF), { "xsi:type": "dcterms:W3CDTF" }, n, a));
-  for (var i = 0; i != Yr.length; ++i) {
-    var s = Yr[i], f = r.Props && r.Props[s[1]] != null ? r.Props[s[1]] : e ? e[s[1]] : null;
-    f === !0 ? f = "1" : f === !1 ? f = "0" : typeof f == "number" && (f = String(f)), f != null && n0(s[0], f, null, n, a);
+function write_core_props(cp, _opts) {
+  var opts = _opts || {};
+  var o = [XML_HEADER, writextag("cp:coreProperties", null, {
+    "xmlns:cp": XMLNS.CORE_PROPS,
+    "xmlns:dc": XMLNS.dc,
+    "xmlns:dcterms": XMLNS.dcterms,
+    "xmlns:dcmitype": XMLNS.dcmitype,
+    "xmlns:xsi": XMLNS.xsi
+  })], p = {};
+  if (!cp && !opts.Props)
+    return o.join("");
+  if (cp) {
+    if (cp.CreatedDate != null)
+      cp_doit("dcterms:created", typeof cp.CreatedDate === "string" ? cp.CreatedDate : write_w3cdtf(cp.CreatedDate, opts.WTF), { "xsi:type": "dcterms:W3CDTF" }, o, p);
+    if (cp.ModifiedDate != null)
+      cp_doit("dcterms:modified", typeof cp.ModifiedDate === "string" ? cp.ModifiedDate : write_w3cdtf(cp.ModifiedDate, opts.WTF), { "xsi:type": "dcterms:W3CDTF" }, o, p);
   }
-  return n.length > 2 && (n[n.length] = "</cp:coreProperties>", n[1] = n[1].replace("/>", ">")), n.join("");
+  for (var i = 0; i != CORE_PROPS.length; ++i) {
+    var f = CORE_PROPS[i];
+    var v = opts.Props && opts.Props[f[1]] != null ? opts.Props[f[1]] : cp ? cp[f[1]] : null;
+    if (v === true)
+      v = "1";
+    else if (v === false)
+      v = "0";
+    else if (typeof v == "number")
+      v = String(v);
+    if (v != null)
+      cp_doit(f[0], v, null, o, p);
+  }
+  if (o.length > 2) {
+    o[o.length] = "</cp:coreProperties>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-var pt = [
+var EXT_PROPS = [
   ["Application", "Application", "string"],
   ["AppVersion", "AppVersion", "string"],
   ["Company", "Company", "string"],
@@ -4707,7 +7154,8 @@ var pt = [
   ["ScaleCrop", "ScaleCrop", "bool"],
   ["HeadingPairs", "HeadingPairs", "raw"],
   ["TitlesOfParts", "TitlesOfParts", "raw"]
-], ps = [
+];
+var PseudoPropsPairs = [
   "Worksheets",
   "SheetNames",
   "NamedRanges",
@@ -4715,45 +7163,64 @@ var pt = [
   "Chartsheets",
   "ChartNames"
 ];
-function vs(e) {
-  var t = [], r = q;
-  return e || (e = {}), e.Application = "SheetJS", t[t.length] = Ie, t[t.length] = q("Properties", null, {
-    xmlns: Be.EXT_PROPS,
-    "xmlns:vt": Be.vt
-  }), pt.forEach(function(n) {
-    if (e[n[1]] !== void 0) {
-      var a;
-      switch (n[2]) {
-        case "string":
-          a = ge(String(e[n[1]]));
-          break;
-        case "bool":
-          a = e[n[1]] ? "true" : "false";
-          break;
-      }
-      a !== void 0 && (t[t.length] = r(n[0], a));
+function write_ext_props(cp) {
+  var o = [], W = writextag;
+  if (!cp)
+    cp = {};
+  cp.Application = "SheetJS";
+  o[o.length] = XML_HEADER;
+  o[o.length] = writextag("Properties", null, {
+    "xmlns": XMLNS.EXT_PROPS,
+    "xmlns:vt": XMLNS.vt
+  });
+  EXT_PROPS.forEach(function(f) {
+    if (cp[f[1]] === void 0)
+      return;
+    var v;
+    switch (f[2]) {
+      case "string":
+        v = escapexml(String(cp[f[1]]));
+        break;
+      case "bool":
+        v = cp[f[1]] ? "true" : "false";
+        break;
     }
-  }), t[t.length] = r("HeadingPairs", r("vt:vector", r("vt:variant", "<vt:lpstr>Worksheets</vt:lpstr>") + r("vt:variant", r("vt:i4", String(e.Worksheets))), { size: 2, baseType: "variant" })), t[t.length] = r("TitlesOfParts", r("vt:vector", e.SheetNames.map(function(n) {
-    return "<vt:lpstr>" + ge(n) + "</vt:lpstr>";
-  }).join(""), { size: e.Worksheets, baseType: "lpstr" })), t.length > 2 && (t[t.length] = "</Properties>", t[1] = t[1].replace("/>", ">")), t.join("");
+    if (v !== void 0)
+      o[o.length] = W(f[0], v);
+  });
+  o[o.length] = W("HeadingPairs", W("vt:vector", W("vt:variant", "<vt:lpstr>Worksheets</vt:lpstr>") + W("vt:variant", W("vt:i4", String(cp.Worksheets))), { size: 2, baseType: "variant" }));
+  o[o.length] = W("TitlesOfParts", W("vt:vector", cp.SheetNames.map(function(s) {
+    return "<vt:lpstr>" + escapexml(s) + "</vt:lpstr>";
+  }).join(""), { size: cp.Worksheets, baseType: "lpstr" }));
+  if (o.length > 2) {
+    o[o.length] = "</Properties>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-function ms(e) {
-  var t = [Ie, q("Properties", null, {
-    xmlns: Be.CUST_PROPS,
-    "xmlns:vt": Be.vt
+function write_cust_props(cp) {
+  var o = [XML_HEADER, writextag("Properties", null, {
+    "xmlns": XMLNS.CUST_PROPS,
+    "xmlns:vt": XMLNS.vt
   })];
-  if (!e)
-    return t.join("");
-  var r = 1;
-  return Xe(e).forEach(function(a) {
-    ++r, t[t.length] = q("property", wl(e[a], !0), {
-      fmtid: "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}",
-      pid: r,
-      name: ge(a)
+  if (!cp)
+    return o.join("");
+  var pid = 1;
+  keys(cp).forEach(function custprop(k) {
+    ++pid;
+    o[o.length] = writextag("property", write_vt(cp[k], true), {
+      "fmtid": "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}",
+      "pid": pid,
+      "name": escapexml(k)
     });
-  }), t.length > 2 && (t[t.length] = "</Properties>", t[1] = t[1].replace("/>", ">")), t.join("");
+  });
+  if (o.length > 2) {
+    o[o.length] = "</Properties>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-var za = {
+var XLMLDocPropsMap = {
   Title: "Title",
   Subject: "Subject",
   Author: "Author",
@@ -4773,430 +7240,738 @@ var za = {
   Identifier: "Identifier",
   Language: "Language"
 };
-function ic(e, t) {
-  var r = [];
-  return Xe(za).map(function(n) {
-    for (var a = 0; a < Yr.length; ++a)
-      if (Yr[a][1] == n)
-        return Yr[a];
-    for (a = 0; a < pt.length; ++a)
-      if (pt[a][1] == n)
-        return pt[a];
-    throw n;
-  }).forEach(function(n) {
-    if (e[n[1]] != null) {
-      var a = t && t.Props && t.Props[n[1]] != null ? t.Props[n[1]] : e[n[1]];
-      switch (n[2]) {
-        case "date":
-          a = new Date(a).toISOString().replace(/\.\d*Z/, "Z");
-          break;
-      }
-      typeof a == "number" ? a = String(a) : a === !0 || a === !1 ? a = a ? "1" : "0" : a instanceof Date && (a = new Date(a).toISOString().replace(/\.\d*Z/, "")), r.push(Ve(za[n[1]] || n[1], a));
+function xlml_write_docprops(Props, opts) {
+  var o = [];
+  keys(XLMLDocPropsMap).map(function(m) {
+    for (var i = 0; i < CORE_PROPS.length; ++i)
+      if (CORE_PROPS[i][1] == m)
+        return CORE_PROPS[i];
+    for (i = 0; i < EXT_PROPS.length; ++i)
+      if (EXT_PROPS[i][1] == m)
+        return EXT_PROPS[i];
+    throw m;
+  }).forEach(function(p) {
+    if (Props[p[1]] == null)
+      return;
+    var m = opts && opts.Props && opts.Props[p[1]] != null ? opts.Props[p[1]] : Props[p[1]];
+    switch (p[2]) {
+      case "date":
+        m = new Date(m).toISOString().replace(/\.\d*Z/, "Z");
+        break;
     }
-  }), q("DocumentProperties", r.join(""), { xmlns: fr.o });
+    if (typeof m == "number")
+      m = String(m);
+    else if (m === true || m === false) {
+      m = m ? "1" : "0";
+    } else if (m instanceof Date)
+      m = new Date(m).toISOString().replace(/\.\d*Z/, "");
+    o.push(writetag(XLMLDocPropsMap[p[1]] || p[1], m));
+  });
+  return writextag("DocumentProperties", o.join(""), { xmlns: XLMLNS.o });
 }
-function sc(e, t) {
-  var r = ["Worksheets", "SheetNames"], n = "CustomDocumentProperties", a = [];
-  return e && Xe(e).forEach(function(i) {
-    if (!!Object.prototype.hasOwnProperty.call(e, i)) {
-      for (var s = 0; s < Yr.length; ++s)
-        if (i == Yr[s][1])
+function xlml_write_custprops(Props, Custprops) {
+  var BLACKLIST = ["Worksheets", "SheetNames"];
+  var T = "CustomDocumentProperties";
+  var o = [];
+  if (Props)
+    keys(Props).forEach(function(k) {
+      if (!Object.prototype.hasOwnProperty.call(Props, k))
+        return;
+      for (var i = 0; i < CORE_PROPS.length; ++i)
+        if (k == CORE_PROPS[i][1])
           return;
-      for (s = 0; s < pt.length; ++s)
-        if (i == pt[s][1])
+      for (i = 0; i < EXT_PROPS.length; ++i)
+        if (k == EXT_PROPS[i][1])
           return;
-      for (s = 0; s < r.length; ++s)
-        if (i == r[s])
+      for (i = 0; i < BLACKLIST.length; ++i)
+        if (k == BLACKLIST[i])
           return;
-      var f = e[i], l = "string";
-      typeof f == "number" ? (l = "float", f = String(f)) : f === !0 || f === !1 ? (l = "boolean", f = f ? "1" : "0") : f = String(f), a.push(q(Pa(i), f, { "dt:dt": l }));
-    }
-  }), t && Xe(t).forEach(function(i) {
-    if (!!Object.prototype.hasOwnProperty.call(t, i) && !(e && Object.prototype.hasOwnProperty.call(e, i))) {
-      var s = t[i], f = "string";
-      typeof s == "number" ? (f = "float", s = String(s)) : s === !0 || s === !1 ? (f = "boolean", s = s ? "1" : "0") : s instanceof Date ? (f = "dateTime.tz", s = s.toISOString()) : s = String(s), a.push(q(Pa(i), s, { "dt:dt": f }));
-    }
-  }), "<" + n + ' xmlns="' + fr.o + '">' + a.join("") + "</" + n + ">";
+      var m = Props[k];
+      var t = "string";
+      if (typeof m == "number") {
+        t = "float";
+        m = String(m);
+      } else if (m === true || m === false) {
+        t = "boolean";
+        m = m ? "1" : "0";
+      } else
+        m = String(m);
+      o.push(writextag(escapexmltag(k), m, { "dt:dt": t }));
+    });
+  if (Custprops)
+    keys(Custprops).forEach(function(k) {
+      if (!Object.prototype.hasOwnProperty.call(Custprops, k))
+        return;
+      if (Props && Object.prototype.hasOwnProperty.call(Props, k))
+        return;
+      var m = Custprops[k];
+      var t = "string";
+      if (typeof m == "number") {
+        t = "float";
+        m = String(m);
+      } else if (m === true || m === false) {
+        t = "boolean";
+        m = m ? "1" : "0";
+      } else if (m instanceof Date) {
+        t = "dateTime.tz";
+        m = m.toISOString();
+      } else
+        m = String(m);
+      o.push(writextag(escapexmltag(k), m, { "dt:dt": t }));
+    });
+  return "<" + T + ' xmlns="' + XLMLNS.o + '">' + o.join("") + "</" + T + ">";
 }
-function fc(e) {
-  var t = typeof e == "string" ? new Date(Date.parse(e)) : e, r = t.getTime() / 1e3 + 11644473600, n = r % Math.pow(2, 32), a = (r - n) / Math.pow(2, 32);
-  n *= 1e7, a *= 1e7;
-  var i = n / Math.pow(2, 32) | 0;
-  i > 0 && (n = n % Math.pow(2, 32), a += i);
-  var s = U(8);
-  return s.write_shift(4, n), s.write_shift(4, a), s;
+function write_FILETIME(time) {
+  var date = typeof time == "string" ? new Date(Date.parse(time)) : time;
+  var t = date.getTime() / 1e3 + 11644473600;
+  var l = t % Math.pow(2, 32), h2 = (t - l) / Math.pow(2, 32);
+  l *= 1e7;
+  h2 *= 1e7;
+  var w = l / Math.pow(2, 32) | 0;
+  if (w > 0) {
+    l = l % Math.pow(2, 32);
+    h2 += w;
+  }
+  var o = new_buf(8);
+  o.write_shift(4, l);
+  o.write_shift(4, h2);
+  return o;
 }
-function Ka(e, t) {
-  var r = U(4), n = U(4);
-  switch (r.write_shift(4, e == 80 ? 31 : e), e) {
+function write_TypedPropertyValue(type, value) {
+  var o = new_buf(4), p = new_buf(4);
+  o.write_shift(4, type == 80 ? 31 : type);
+  switch (type) {
     case 3:
-      n.write_shift(-4, t);
+      p.write_shift(-4, value);
       break;
     case 5:
-      n = U(8), n.write_shift(8, t, "f");
+      p = new_buf(8);
+      p.write_shift(8, value, "f");
       break;
     case 11:
-      n.write_shift(4, t ? 1 : 0);
+      p.write_shift(4, value ? 1 : 0);
       break;
     case 64:
-      n = fc(t);
+      p = write_FILETIME(value);
       break;
     case 31:
     case 80:
-      for (n = U(4 + 2 * (t.length + 1) + (t.length % 2 ? 0 : 2)), n.write_shift(4, t.length + 1), n.write_shift(0, t, "dbcs"); n.l != n.length; )
-        n.write_shift(1, 0);
+      p = new_buf(4 + 2 * (value.length + 1) + (value.length % 2 ? 0 : 2));
+      p.write_shift(4, value.length + 1);
+      p.write_shift(0, value, "dbcs");
+      while (p.l != p.length)
+        p.write_shift(1, 0);
       break;
     default:
-      throw new Error("TypedPropertyValue unrecognized type " + e + " " + t);
+      throw new Error("TypedPropertyValue unrecognized type " + type + " " + value);
   }
-  return He([r, n]);
+  return bconcat([o, p]);
 }
-var gs = ["CodePage", "Thumbnail", "_PID_LINKBASE", "_PID_HLINKS", "SystemIdentifier", "FMTID"];
-function oc(e) {
-  switch (typeof e) {
+var XLSPSSkip = ["CodePage", "Thumbnail", "_PID_LINKBASE", "_PID_HLINKS", "SystemIdentifier", "FMTID"];
+function guess_property_type(val) {
+  switch (typeof val) {
     case "boolean":
       return 11;
     case "number":
-      return (e | 0) == e ? 3 : 5;
+      return (val | 0) == val ? 3 : 5;
     case "string":
       return 31;
     case "object":
-      if (e instanceof Date)
+      if (val instanceof Date)
         return 64;
       break;
   }
   return -1;
 }
-function Ya(e, t, r) {
-  var n = U(8), a = [], i = [], s = 8, f = 0, l = U(8), o = U(8);
-  if (l.write_shift(4, 2), l.write_shift(4, 1200), o.write_shift(4, 1), i.push(l), a.push(o), s += 8 + l.length, !t) {
-    o = U(8), o.write_shift(4, 0), a.unshift(o);
-    var c = [U(4)];
-    for (c[0].write_shift(4, e.length), f = 0; f < e.length; ++f) {
-      var p = e[f][0];
-      for (l = U(4 + 4 + 2 * (p.length + 1) + (p.length % 2 ? 0 : 2)), l.write_shift(4, f + 2), l.write_shift(4, p.length + 1), l.write_shift(0, p, "dbcs"); l.l != l.length; )
-        l.write_shift(1, 0);
-      c.push(l);
+function write_PropertySet(entries, RE, PIDSI) {
+  var hdr = new_buf(8), piao = [], prop = [];
+  var sz = 8, i = 0;
+  var pr = new_buf(8), pio = new_buf(8);
+  pr.write_shift(4, 2);
+  pr.write_shift(4, 1200);
+  pio.write_shift(4, 1);
+  prop.push(pr);
+  piao.push(pio);
+  sz += 8 + pr.length;
+  if (!RE) {
+    pio = new_buf(8);
+    pio.write_shift(4, 0);
+    piao.unshift(pio);
+    var bufs = [new_buf(4)];
+    bufs[0].write_shift(4, entries.length);
+    for (i = 0; i < entries.length; ++i) {
+      var value = entries[i][0];
+      pr = new_buf(4 + 4 + 2 * (value.length + 1) + (value.length % 2 ? 0 : 2));
+      pr.write_shift(4, i + 2);
+      pr.write_shift(4, value.length + 1);
+      pr.write_shift(0, value, "dbcs");
+      while (pr.l != pr.length)
+        pr.write_shift(1, 0);
+      bufs.push(pr);
     }
-    l = He(c), i.unshift(l), s += 8 + l.length;
+    pr = bconcat(bufs);
+    prop.unshift(pr);
+    sz += 8 + pr.length;
   }
-  for (f = 0; f < e.length; ++f)
-    if (!(t && !t[e[f][0]]) && !(gs.indexOf(e[f][0]) > -1 || ps.indexOf(e[f][0]) > -1) && e[f][1] != null) {
-      var u = e[f][1], v = 0;
-      if (t) {
-        v = +t[e[f][0]];
-        var T = r[v];
-        if (T.p == "version" && typeof u == "string") {
-          var x = u.split(".");
-          u = (+x[0] << 16) + (+x[1] || 0);
-        }
-        l = Ka(T.t, u);
-      } else {
-        var _ = oc(u);
-        _ == -1 && (_ = 31, u = String(u)), l = Ka(_, u);
+  for (i = 0; i < entries.length; ++i) {
+    if (RE && !RE[entries[i][0]])
+      continue;
+    if (XLSPSSkip.indexOf(entries[i][0]) > -1 || PseudoPropsPairs.indexOf(entries[i][0]) > -1)
+      continue;
+    if (entries[i][1] == null)
+      continue;
+    var val = entries[i][1], idx = 0;
+    if (RE) {
+      idx = +RE[entries[i][0]];
+      var pinfo = PIDSI[idx];
+      if (pinfo.p == "version" && typeof val == "string") {
+        var arr = val.split(".");
+        val = (+arr[0] << 16) + (+arr[1] || 0);
       }
-      i.push(l), o = U(8), o.write_shift(4, t ? v : 2 + f), a.push(o), s += 8 + l.length;
+      pr = write_TypedPropertyValue(pinfo.t, val);
+    } else {
+      var T = guess_property_type(val);
+      if (T == -1) {
+        T = 31;
+        val = String(val);
+      }
+      pr = write_TypedPropertyValue(T, val);
     }
-  var O = 8 * (i.length + 1);
-  for (f = 0; f < i.length; ++f)
-    a[f].write_shift(4, O), O += i[f].length;
-  return n.write_shift(4, s), n.write_shift(4, i.length), He([n].concat(a).concat(i));
-}
-function qa(e, t, r, n, a, i) {
-  var s = U(a ? 68 : 48), f = [s];
-  s.write_shift(2, 65534), s.write_shift(2, 0), s.write_shift(4, 842412599), s.write_shift(16, Ee.utils.consts.HEADER_CLSID, "hex"), s.write_shift(4, a ? 2 : 1), s.write_shift(16, t, "hex"), s.write_shift(4, a ? 68 : 48);
-  var l = Ya(e, r, n);
-  if (f.push(l), a) {
-    var o = Ya(a, null, null);
-    s.write_shift(16, i, "hex"), s.write_shift(4, 68 + l.length), f.push(o);
+    prop.push(pr);
+    pio = new_buf(8);
+    pio.write_shift(4, !RE ? 2 + i : idx);
+    piao.push(pio);
+    sz += 8 + pr.length;
   }
-  return He(f);
-}
-function lc(e, t) {
-  t || (t = U(e));
-  for (var r = 0; r < e; ++r)
-    t.write_shift(1, 0);
-  return t;
-}
-function cc(e, t) {
-  return e.read_shift(t) === 1;
-}
-function Je(e, t) {
-  return t || (t = U(2)), t.write_shift(2, +!!e), t;
-}
-function _s(e) {
-  return e.read_shift(2, "u");
-}
-function xr(e, t) {
-  return t || (t = U(2)), t.write_shift(2, e), t;
-}
-function Es(e, t, r) {
-  return r || (r = U(2)), r.write_shift(1, t == "e" ? +e : +!!e), r.write_shift(1, t == "e" ? 1 : 0), r;
-}
-function Ts(e, t, r) {
-  var n = e.read_shift(r && r.biff >= 12 ? 2 : 1), a = "sbcs-cont";
-  if (r && r.biff >= 8, !r || r.biff == 8) {
-    var i = e.read_shift(1);
-    i && (a = "dbcs-cont");
-  } else
-    r.biff == 12 && (a = "wstr");
-  r.biff >= 2 && r.biff <= 5 && (a = "cpstr");
-  var s = n ? e.read_shift(n, a) : "";
-  return s;
-}
-function hc(e) {
-  var t = e.t || "", r = U(3 + 0);
-  r.write_shift(2, t.length), r.write_shift(1, 1);
-  var n = U(2 * t.length);
-  n.write_shift(2 * t.length, t, "utf16le");
-  var a = [r, n];
-  return He(a);
-}
-function uc(e, t, r) {
-  var n;
-  if (r) {
-    if (r.biff >= 2 && r.biff <= 5)
-      return e.read_shift(t, "cpstr");
-    if (r.biff >= 12)
-      return e.read_shift(t, "dbcs-cont");
+  var w = 8 * (prop.length + 1);
+  for (i = 0; i < prop.length; ++i) {
+    piao[i].write_shift(4, w);
+    w += prop[i].length;
   }
-  var a = e.read_shift(1);
-  return a === 0 ? n = e.read_shift(t, "sbcs-cont") : n = e.read_shift(t, "dbcs-cont"), n;
+  hdr.write_shift(4, sz);
+  hdr.write_shift(4, prop.length);
+  return bconcat([hdr].concat(piao).concat(prop));
 }
-function xc(e, t, r) {
-  var n = e.read_shift(r && r.biff == 2 ? 1 : 2);
-  return n === 0 ? (e.l++, "") : uc(e, n, r);
+function write_PropertySetStream(entries, clsid, RE, PIDSI, entries2, clsid2) {
+  var hdr = new_buf(entries2 ? 68 : 48);
+  var bufs = [hdr];
+  hdr.write_shift(2, 65534);
+  hdr.write_shift(2, 0);
+  hdr.write_shift(4, 842412599);
+  hdr.write_shift(16, CFB.utils.consts.HEADER_CLSID, "hex");
+  hdr.write_shift(4, entries2 ? 2 : 1);
+  hdr.write_shift(16, clsid, "hex");
+  hdr.write_shift(4, entries2 ? 68 : 48);
+  var ps0 = write_PropertySet(entries, RE, PIDSI);
+  bufs.push(ps0);
+  if (entries2) {
+    var ps1 = write_PropertySet(entries2, null, null);
+    hdr.write_shift(16, clsid2, "hex");
+    hdr.write_shift(4, 68 + ps0.length);
+    bufs.push(ps1);
+  }
+  return bconcat(bufs);
 }
-function dc(e, t, r) {
-  if (r.biff > 5)
-    return xc(e, t, r);
-  var n = e.read_shift(1);
-  return n === 0 ? (e.l++, "") : e.read_shift(n, r.biff <= 4 || !e.lens ? "cpstr" : "sbcs-cont");
+function writezeroes(n, o) {
+  if (!o)
+    o = new_buf(n);
+  for (var j = 0; j < n; ++j)
+    o.write_shift(1, 0);
+  return o;
 }
-function ws(e, t, r) {
-  return r || (r = U(3 + 2 * e.length)), r.write_shift(2, e.length), r.write_shift(1, 1), r.write_shift(31, e, "utf16le"), r;
+function parsebool(blob, length) {
+  return blob.read_shift(length) === 1;
 }
-function Ja(e, t) {
-  t || (t = U(6 + e.length * 2)), t.write_shift(4, 1 + e.length);
-  for (var r = 0; r < e.length; ++r)
-    t.write_shift(2, e.charCodeAt(r));
-  return t.write_shift(2, 0), t;
+function writebool(v, o) {
+  if (!o)
+    o = new_buf(2);
+  o.write_shift(2, +!!v);
+  return o;
 }
-function pc(e) {
-  var t = U(512), r = 0, n = e.Target;
-  n.slice(0, 7) == "file://" && (n = n.slice(7));
-  var a = n.indexOf("#"), i = a > -1 ? 31 : 23;
-  switch (n.charAt(0)) {
+function parseuint16(blob) {
+  return blob.read_shift(2, "u");
+}
+function writeuint16(v, o) {
+  if (!o)
+    o = new_buf(2);
+  o.write_shift(2, v);
+  return o;
+}
+function write_Bes(v, t, o) {
+  if (!o)
+    o = new_buf(2);
+  o.write_shift(1, t == "e" ? +v : +!!v);
+  o.write_shift(1, t == "e" ? 1 : 0);
+  return o;
+}
+function parse_ShortXLUnicodeString(blob, length, opts) {
+  var cch = blob.read_shift(opts && opts.biff >= 12 ? 2 : 1);
+  var encoding = "sbcs-cont";
+  if (opts && opts.biff >= 8)
+    ;
+  if (!opts || opts.biff == 8) {
+    var fHighByte = blob.read_shift(1);
+    if (fHighByte) {
+      encoding = "dbcs-cont";
+    }
+  } else if (opts.biff == 12) {
+    encoding = "wstr";
+  }
+  if (opts.biff >= 2 && opts.biff <= 5)
+    encoding = "cpstr";
+  var o = cch ? blob.read_shift(cch, encoding) : "";
+  return o;
+}
+function write_XLUnicodeRichExtendedString(xlstr) {
+  var str = xlstr.t || "";
+  var hdr = new_buf(3 + 0);
+  hdr.write_shift(2, str.length);
+  hdr.write_shift(1, 0 | 1);
+  var otext = new_buf(2 * str.length);
+  otext.write_shift(2 * str.length, str, "utf16le");
+  var out = [hdr, otext];
+  return bconcat(out);
+}
+function parse_XLUnicodeStringNoCch(blob, cch, opts) {
+  var retval;
+  if (opts) {
+    if (opts.biff >= 2 && opts.biff <= 5)
+      return blob.read_shift(cch, "cpstr");
+    if (opts.biff >= 12)
+      return blob.read_shift(cch, "dbcs-cont");
+  }
+  var fHighByte = blob.read_shift(1);
+  if (fHighByte === 0) {
+    retval = blob.read_shift(cch, "sbcs-cont");
+  } else {
+    retval = blob.read_shift(cch, "dbcs-cont");
+  }
+  return retval;
+}
+function parse_XLUnicodeString(blob, length, opts) {
+  var cch = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+  if (cch === 0) {
+    blob.l++;
+    return "";
+  }
+  return parse_XLUnicodeStringNoCch(blob, cch, opts);
+}
+function parse_XLUnicodeString2(blob, length, opts) {
+  if (opts.biff > 5)
+    return parse_XLUnicodeString(blob, length, opts);
+  var cch = blob.read_shift(1);
+  if (cch === 0) {
+    blob.l++;
+    return "";
+  }
+  return blob.read_shift(cch, opts.biff <= 4 || !blob.lens ? "cpstr" : "sbcs-cont");
+}
+function write_XLUnicodeString(str, opts, o) {
+  if (!o)
+    o = new_buf(3 + 2 * str.length);
+  o.write_shift(2, str.length);
+  o.write_shift(1, 1);
+  o.write_shift(31, str, "utf16le");
+  return o;
+}
+function write_HyperlinkString(str, o) {
+  if (!o)
+    o = new_buf(6 + str.length * 2);
+  o.write_shift(4, 1 + str.length);
+  for (var i = 0; i < str.length; ++i)
+    o.write_shift(2, str.charCodeAt(i));
+  o.write_shift(2, 0);
+  return o;
+}
+function write_Hyperlink(hl) {
+  var out = new_buf(512), i = 0;
+  var Target = hl.Target;
+  if (Target.slice(0, 7) == "file://")
+    Target = Target.slice(7);
+  var hashidx = Target.indexOf("#");
+  var F = hashidx > -1 ? 31 : 23;
+  switch (Target.charAt(0)) {
     case "#":
-      i = 28;
+      F = 28;
       break;
     case ".":
-      i &= -3;
+      F &= ~2;
       break;
   }
-  t.write_shift(4, 2), t.write_shift(4, i);
-  var s = [8, 6815827, 6619237, 4849780, 83];
-  for (r = 0; r < s.length; ++r)
-    t.write_shift(4, s[r]);
-  if (i == 28)
-    n = n.slice(1), Ja(n, t);
-  else if (i & 2) {
-    for (s = "e0 c9 ea 79 f9 ba ce 11 8c 82 00 aa 00 4b a9 0b".split(" "), r = 0; r < s.length; ++r)
-      t.write_shift(1, parseInt(s[r], 16));
-    var f = a > -1 ? n.slice(0, a) : n;
-    for (t.write_shift(4, 2 * (f.length + 1)), r = 0; r < f.length; ++r)
-      t.write_shift(2, f.charCodeAt(r));
-    t.write_shift(2, 0), i & 8 && Ja(a > -1 ? n.slice(a + 1) : "", t);
+  out.write_shift(4, 2);
+  out.write_shift(4, F);
+  var data2 = [8, 6815827, 6619237, 4849780, 83];
+  for (i = 0; i < data2.length; ++i)
+    out.write_shift(4, data2[i]);
+  if (F == 28) {
+    Target = Target.slice(1);
+    write_HyperlinkString(Target, out);
+  } else if (F & 2) {
+    data2 = "e0 c9 ea 79 f9 ba ce 11 8c 82 00 aa 00 4b a9 0b".split(" ");
+    for (i = 0; i < data2.length; ++i)
+      out.write_shift(1, parseInt(data2[i], 16));
+    var Pretarget = hashidx > -1 ? Target.slice(0, hashidx) : Target;
+    out.write_shift(4, 2 * (Pretarget.length + 1));
+    for (i = 0; i < Pretarget.length; ++i)
+      out.write_shift(2, Pretarget.charCodeAt(i));
+    out.write_shift(2, 0);
+    if (F & 8)
+      write_HyperlinkString(hashidx > -1 ? Target.slice(hashidx + 1) : "", out);
   } else {
-    for (s = "03 03 00 00 00 00 00 00 c0 00 00 00 00 00 00 46".split(" "), r = 0; r < s.length; ++r)
-      t.write_shift(1, parseInt(s[r], 16));
-    for (var l = 0; n.slice(l * 3, l * 3 + 3) == "../" || n.slice(l * 3, l * 3 + 3) == "..\\"; )
-      ++l;
-    for (t.write_shift(2, l), t.write_shift(4, n.length - 3 * l + 1), r = 0; r < n.length - 3 * l; ++r)
-      t.write_shift(1, n.charCodeAt(r + 3 * l) & 255);
-    for (t.write_shift(1, 0), t.write_shift(2, 65535), t.write_shift(2, 57005), r = 0; r < 6; ++r)
-      t.write_shift(4, 0);
+    data2 = "03 03 00 00 00 00 00 00 c0 00 00 00 00 00 00 46".split(" ");
+    for (i = 0; i < data2.length; ++i)
+      out.write_shift(1, parseInt(data2[i], 16));
+    var P = 0;
+    while (Target.slice(P * 3, P * 3 + 3) == "../" || Target.slice(P * 3, P * 3 + 3) == "..\\")
+      ++P;
+    out.write_shift(2, P);
+    out.write_shift(4, Target.length - 3 * P + 1);
+    for (i = 0; i < Target.length - 3 * P; ++i)
+      out.write_shift(1, Target.charCodeAt(i + 3 * P) & 255);
+    out.write_shift(1, 0);
+    out.write_shift(2, 65535);
+    out.write_shift(2, 57005);
+    for (i = 0; i < 6; ++i)
+      out.write_shift(4, 0);
   }
-  return t.slice(0, t.l);
+  return out.slice(0, out.l);
 }
-function Zr(e, t, r, n) {
-  return n || (n = U(6)), n.write_shift(2, e), n.write_shift(2, t), n.write_shift(2, r || 0), n;
+function write_XLSCell(R, C, ixfe, o) {
+  if (!o)
+    o = new_buf(6);
+  o.write_shift(2, R);
+  o.write_shift(2, C);
+  o.write_shift(2, ixfe || 0);
+  return o;
 }
-function vc(e, t, r) {
-  var n = r.biff > 8 ? 4 : 2, a = e.read_shift(n), i = e.read_shift(n, "i"), s = e.read_shift(n, "i");
-  return [a, i, s];
+function parse_XTI(blob, length, opts) {
+  var w = opts.biff > 8 ? 4 : 2;
+  var iSupBook = blob.read_shift(w), itabFirst = blob.read_shift(w, "i"), itabLast = blob.read_shift(w, "i");
+  return [iSupBook, itabFirst, itabLast];
 }
-function mc(e) {
-  var t = e.read_shift(2), r = e.read_shift(2), n = e.read_shift(2), a = e.read_shift(2);
-  return { s: { c: n, r: t }, e: { c: a, r } };
+function parse_Ref8U(blob) {
+  var rwFirst = blob.read_shift(2);
+  var rwLast = blob.read_shift(2);
+  var colFirst = blob.read_shift(2);
+  var colLast = blob.read_shift(2);
+  return { s: { c: colFirst, r: rwFirst }, e: { c: colLast, r: rwLast } };
 }
-function Ss(e, t) {
-  return t || (t = U(8)), t.write_shift(2, e.s.r), t.write_shift(2, e.e.r), t.write_shift(2, e.s.c), t.write_shift(2, e.e.c), t;
+function write_Ref8U(r, o) {
+  if (!o)
+    o = new_buf(8);
+  o.write_shift(2, r.s.r);
+  o.write_shift(2, r.e.r);
+  o.write_shift(2, r.s.c);
+  o.write_shift(2, r.e.c);
+  return o;
 }
-function P0(e, t, r) {
-  var n = 1536, a = 16;
-  switch (r.bookType) {
+function write_BOF(wb, t, o) {
+  var h2 = 1536, w = 16;
+  switch (o.bookType) {
     case "biff8":
       break;
     case "biff5":
-      n = 1280, a = 8;
+      h2 = 1280;
+      w = 8;
       break;
     case "biff4":
-      n = 4, a = 6;
+      h2 = 4;
+      w = 6;
       break;
     case "biff3":
-      n = 3, a = 6;
+      h2 = 3;
+      w = 6;
       break;
     case "biff2":
-      n = 2, a = 4;
+      h2 = 2;
+      w = 4;
       break;
     case "xla":
       break;
     default:
       throw new Error("unsupported BIFF version");
   }
-  var i = U(a);
-  return i.write_shift(2, n), i.write_shift(2, t), a > 4 && i.write_shift(2, 29282), a > 6 && i.write_shift(2, 1997), a > 8 && (i.write_shift(2, 49161), i.write_shift(2, 1), i.write_shift(2, 1798), i.write_shift(2, 0)), i;
+  var out = new_buf(w);
+  out.write_shift(2, h2);
+  out.write_shift(2, t);
+  if (w > 4)
+    out.write_shift(2, 29282);
+  if (w > 6)
+    out.write_shift(2, 1997);
+  if (w > 8) {
+    out.write_shift(2, 49161);
+    out.write_shift(2, 1);
+    out.write_shift(2, 1798);
+    out.write_shift(2, 0);
+  }
+  return out;
 }
-function gc(e, t) {
-  var r = !t || t.biff == 8, n = U(r ? 112 : 54);
-  for (n.write_shift(t.biff == 8 ? 2 : 1, 7), r && n.write_shift(1, 0), n.write_shift(4, 859007059), n.write_shift(4, 5458548 | (r ? 0 : 536870912)); n.l < n.length; )
-    n.write_shift(1, r ? 0 : 32);
-  return n;
+function write_WriteAccess(s, opts) {
+  var b8 = !opts || opts.biff == 8;
+  var o = new_buf(b8 ? 112 : 54);
+  o.write_shift(opts.biff == 8 ? 2 : 1, 7);
+  if (b8)
+    o.write_shift(1, 0);
+  o.write_shift(4, 859007059);
+  o.write_shift(4, 5458548 | (b8 ? 0 : 536870912));
+  while (o.l < o.length)
+    o.write_shift(1, b8 ? 0 : 32);
+  return o;
 }
-function _c(e, t) {
-  var r = !t || t.biff >= 8 ? 2 : 1, n = U(8 + r * e.name.length);
-  n.write_shift(4, e.pos), n.write_shift(1, e.hs || 0), n.write_shift(1, e.dt), n.write_shift(1, e.name.length), t.biff >= 8 && n.write_shift(1, 1), n.write_shift(r * e.name.length, e.name, t.biff < 8 ? "sbcs" : "utf16le");
-  var a = n.slice(0, n.l);
-  return a.l = n.l, a;
+function write_BoundSheet8(data2, opts) {
+  var w = !opts || opts.biff >= 8 ? 2 : 1;
+  var o = new_buf(8 + w * data2.name.length);
+  o.write_shift(4, data2.pos);
+  o.write_shift(1, data2.hs || 0);
+  o.write_shift(1, data2.dt);
+  o.write_shift(1, data2.name.length);
+  if (opts.biff >= 8)
+    o.write_shift(1, 1);
+  o.write_shift(w * data2.name.length, data2.name, opts.biff < 8 ? "sbcs" : "utf16le");
+  var out = o.slice(0, o.l);
+  out.l = o.l;
+  return out;
 }
-function Ec(e, t) {
-  var r = U(8);
-  r.write_shift(4, e.Count), r.write_shift(4, e.Unique);
-  for (var n = [], a = 0; a < e.length; ++a)
-    n[a] = hc(e[a]);
-  var i = He([r].concat(n));
-  return i.parts = [r.length].concat(n.map(function(s) {
-    return s.length;
-  })), i;
+function write_SST(sst, opts) {
+  var header = new_buf(8);
+  header.write_shift(4, sst.Count);
+  header.write_shift(4, sst.Unique);
+  var strs = [];
+  for (var j = 0; j < sst.length; ++j)
+    strs[j] = write_XLUnicodeRichExtendedString(sst[j]);
+  var o = bconcat([header].concat(strs));
+  o.parts = [header.length].concat(strs.map(function(str) {
+    return str.length;
+  }));
+  return o;
 }
-function Tc() {
-  var e = U(18);
-  return e.write_shift(2, 0), e.write_shift(2, 0), e.write_shift(2, 29280), e.write_shift(2, 17600), e.write_shift(2, 56), e.write_shift(2, 0), e.write_shift(2, 0), e.write_shift(2, 1), e.write_shift(2, 500), e;
+function write_Window1() {
+  var o = new_buf(18);
+  o.write_shift(2, 0);
+  o.write_shift(2, 0);
+  o.write_shift(2, 29280);
+  o.write_shift(2, 17600);
+  o.write_shift(2, 56);
+  o.write_shift(2, 0);
+  o.write_shift(2, 0);
+  o.write_shift(2, 1);
+  o.write_shift(2, 500);
+  return o;
 }
-function wc(e) {
-  var t = U(18), r = 1718;
-  return e && e.RTL && (r |= 64), t.write_shift(2, r), t.write_shift(4, 0), t.write_shift(4, 64), t.write_shift(4, 0), t.write_shift(4, 0), t;
+function write_Window2(view) {
+  var o = new_buf(18), f = 1718;
+  if (view && view.RTL)
+    f |= 64;
+  o.write_shift(2, f);
+  o.write_shift(4, 0);
+  o.write_shift(4, 64);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  return o;
 }
-function Sc(e, t) {
-  var r = e.name || "Arial", n = t && t.biff == 5, a = n ? 15 + r.length : 16 + 2 * r.length, i = U(a);
-  return i.write_shift(2, (e.sz || 12) * 20), i.write_shift(4, 0), i.write_shift(2, 400), i.write_shift(4, 0), i.write_shift(2, 0), i.write_shift(1, r.length), n || i.write_shift(1, 1), i.write_shift((n ? 1 : 2) * r.length, r, n ? "sbcs" : "utf16le"), i;
+function write_Font(data2, opts) {
+  var name = data2.name || "Arial";
+  var b5 = opts && opts.biff == 5, w = b5 ? 15 + name.length : 16 + 2 * name.length;
+  var o = new_buf(w);
+  o.write_shift(2, (data2.sz || 12) * 20);
+  o.write_shift(4, 0);
+  o.write_shift(2, 400);
+  o.write_shift(4, 0);
+  o.write_shift(2, 0);
+  o.write_shift(1, name.length);
+  if (!b5)
+    o.write_shift(1, 1);
+  o.write_shift((b5 ? 1 : 2) * name.length, name, b5 ? "sbcs" : "utf16le");
+  return o;
 }
-function Ac(e, t, r, n) {
-  var a = U(10);
-  return Zr(e, t, n, a), a.write_shift(4, r), a;
+function write_LabelSst(R, C, v, os) {
+  var o = new_buf(10);
+  write_XLSCell(R, C, os, o);
+  o.write_shift(4, v);
+  return o;
 }
-function Fc(e, t, r, n, a) {
-  var i = !a || a.biff == 8, s = U(6 + 2 + +i + (1 + i) * r.length);
-  return Zr(e, t, n, s), s.write_shift(2, r.length), i && s.write_shift(1, 1), s.write_shift((1 + i) * r.length, r, i ? "utf16le" : "sbcs"), s;
+function write_Label(R, C, v, os, opts) {
+  var b8 = !opts || opts.biff == 8;
+  var o = new_buf(6 + 2 + +b8 + (1 + b8) * v.length);
+  write_XLSCell(R, C, os, o);
+  o.write_shift(2, v.length);
+  if (b8)
+    o.write_shift(1, 1);
+  o.write_shift((1 + b8) * v.length, v, b8 ? "utf16le" : "sbcs");
+  return o;
 }
-function yc(e, t, r, n) {
-  var a = r && r.biff == 5;
-  n || (n = U(a ? 3 + t.length : 5 + 2 * t.length)), n.write_shift(2, e), n.write_shift(a ? 1 : 2, t.length), a || n.write_shift(1, 1), n.write_shift((a ? 1 : 2) * t.length, t, a ? "sbcs" : "utf16le");
-  var i = n.length > n.l ? n.slice(0, n.l) : n;
-  return i.l == null && (i.l = i.length), i;
+function write_Format(i, f, opts, o) {
+  var b5 = opts && opts.biff == 5;
+  if (!o)
+    o = new_buf(b5 ? 3 + f.length : 5 + 2 * f.length);
+  o.write_shift(2, i);
+  o.write_shift(b5 ? 1 : 2, f.length);
+  if (!b5)
+    o.write_shift(1, 1);
+  o.write_shift((b5 ? 1 : 2) * f.length, f, b5 ? "sbcs" : "utf16le");
+  var out = o.length > o.l ? o.slice(0, o.l) : o;
+  if (out.l == null)
+    out.l = out.length;
+  return out;
 }
-function Cc(e, t) {
-  var r = t.biff == 8 || !t.biff ? 4 : 2, n = U(2 * r + 6);
-  return n.write_shift(r, e.s.r), n.write_shift(r, e.e.r + 1), n.write_shift(2, e.s.c), n.write_shift(2, e.e.c + 1), n.write_shift(2, 0), n;
+function write_Dimensions(range, opts) {
+  var w = opts.biff == 8 || !opts.biff ? 4 : 2;
+  var o = new_buf(2 * w + 6);
+  o.write_shift(w, range.s.r);
+  o.write_shift(w, range.e.r + 1);
+  o.write_shift(2, range.s.c);
+  o.write_shift(2, range.e.c + 1);
+  o.write_shift(2, 0);
+  return o;
 }
-function Za(e, t, r, n) {
-  var a = r && r.biff == 5;
-  n || (n = U(a ? 16 : 20)), n.write_shift(2, 0), e.style ? (n.write_shift(2, e.numFmtId || 0), n.write_shift(2, 65524)) : (n.write_shift(2, e.numFmtId || 0), n.write_shift(2, t << 4));
-  var i = 0;
-  return e.numFmtId > 0 && a && (i |= 1024), n.write_shift(4, i), n.write_shift(4, 0), a || n.write_shift(4, 0), n.write_shift(2, 0), n;
+function write_XF(data2, ixfeP, opts, o) {
+  var b5 = opts && opts.biff == 5;
+  if (!o)
+    o = new_buf(b5 ? 16 : 20);
+  o.write_shift(2, 0);
+  if (data2.style) {
+    o.write_shift(2, data2.numFmtId || 0);
+    o.write_shift(2, 65524);
+  } else {
+    o.write_shift(2, data2.numFmtId || 0);
+    o.write_shift(2, ixfeP << 4);
+  }
+  var f = 0;
+  if (data2.numFmtId > 0 && b5)
+    f |= 1024;
+  o.write_shift(4, f);
+  o.write_shift(4, 0);
+  if (!b5)
+    o.write_shift(4, 0);
+  o.write_shift(2, 0);
+  return o;
 }
-function Oc(e) {
-  var t = U(8);
-  return t.write_shift(4, 0), t.write_shift(2, e[0] ? e[0] + 1 : 0), t.write_shift(2, e[1] ? e[1] + 1 : 0), t;
+function write_Guts(guts) {
+  var o = new_buf(8);
+  o.write_shift(4, 0);
+  o.write_shift(2, guts[0] ? guts[0] + 1 : 0);
+  o.write_shift(2, guts[1] ? guts[1] + 1 : 0);
+  return o;
 }
-function Rc(e, t, r, n, a, i) {
-  var s = U(8);
-  return Zr(e, t, n, s), Es(r, i, s), s;
+function write_BoolErr(R, C, v, os, opts, t) {
+  var o = new_buf(8);
+  write_XLSCell(R, C, os, o);
+  write_Bes(v, t, o);
+  return o;
 }
-function Dc(e, t, r, n) {
-  var a = U(14);
-  return Zr(e, t, n, a), Jr(r, a), a;
+function write_Number(R, C, v, os) {
+  var o = new_buf(14);
+  write_XLSCell(R, C, os, o);
+  write_Xnum(v, o);
+  return o;
 }
-function Nc(e, t, r) {
-  if (r.biff < 8)
-    return Ic(e, t, r);
-  for (var n = [], a = e.l + t, i = e.read_shift(r.biff > 8 ? 4 : 2); i-- !== 0; )
-    n.push(vc(e, r.biff > 8 ? 12 : 6, r));
-  if (e.l != a)
-    throw new Error("Bad ExternSheet: " + e.l + " != " + a);
-  return n;
+function parse_ExternSheet(blob, length, opts) {
+  if (opts.biff < 8)
+    return parse_BIFF5ExternSheet(blob, length, opts);
+  var o = [], target = blob.l + length, len = blob.read_shift(opts.biff > 8 ? 4 : 2);
+  while (len-- !== 0)
+    o.push(parse_XTI(blob, opts.biff > 8 ? 12 : 6, opts));
+  if (blob.l != target)
+    throw new Error("Bad ExternSheet: " + blob.l + " != " + target);
+  return o;
 }
-function Ic(e, t, r) {
-  e[e.l + 1] == 3 && e[e.l]++;
-  var n = Ts(e, t, r);
-  return n.charCodeAt(0) == 3 ? n.slice(1) : n;
+function parse_BIFF5ExternSheet(blob, length, opts) {
+  if (blob[blob.l + 1] == 3)
+    blob[blob.l]++;
+  var o = parse_ShortXLUnicodeString(blob, length, opts);
+  return o.charCodeAt(0) == 3 ? o.slice(1) : o;
 }
-function kc(e) {
-  var t = U(2 + e.length * 8);
-  t.write_shift(2, e.length);
-  for (var r = 0; r < e.length; ++r)
-    Ss(e[r], t);
-  return t;
+function write_MergeCells(merges) {
+  var o = new_buf(2 + merges.length * 8);
+  o.write_shift(2, merges.length);
+  for (var i = 0; i < merges.length; ++i)
+    write_Ref8U(merges[i], o);
+  return o;
 }
-function Pc(e) {
-  var t = U(24), r = Me(e[0]);
-  t.write_shift(2, r.r), t.write_shift(2, r.r), t.write_shift(2, r.c), t.write_shift(2, r.c);
-  for (var n = "d0 c9 ea 79 f9 ba ce 11 8c 82 00 aa 00 4b a9 0b".split(" "), a = 0; a < 16; ++a)
-    t.write_shift(1, parseInt(n[a], 16));
-  return He([t, pc(e[1])]);
+function write_HLink(hl) {
+  var O = new_buf(24);
+  var ref = decode_cell(hl[0]);
+  O.write_shift(2, ref.r);
+  O.write_shift(2, ref.r);
+  O.write_shift(2, ref.c);
+  O.write_shift(2, ref.c);
+  var clsid = "d0 c9 ea 79 f9 ba ce 11 8c 82 00 aa 00 4b a9 0b".split(" ");
+  for (var i = 0; i < 16; ++i)
+    O.write_shift(1, parseInt(clsid[i], 16));
+  return bconcat([O, write_Hyperlink(hl[1])]);
 }
-function Lc(e) {
-  var t = e[1].Tooltip, r = U(10 + 2 * (t.length + 1));
-  r.write_shift(2, 2048);
-  var n = Me(e[0]);
-  r.write_shift(2, n.r), r.write_shift(2, n.r), r.write_shift(2, n.c), r.write_shift(2, n.c);
-  for (var a = 0; a < t.length; ++a)
-    r.write_shift(2, t.charCodeAt(a));
-  return r.write_shift(2, 0), r;
+function write_HLinkTooltip(hl) {
+  var TT = hl[1].Tooltip;
+  var O = new_buf(10 + 2 * (TT.length + 1));
+  O.write_shift(2, 2048);
+  var ref = decode_cell(hl[0]);
+  O.write_shift(2, ref.r);
+  O.write_shift(2, ref.r);
+  O.write_shift(2, ref.c);
+  O.write_shift(2, ref.c);
+  for (var i = 0; i < TT.length; ++i)
+    O.write_shift(2, TT.charCodeAt(i));
+  O.write_shift(2, 0);
+  return O;
 }
-function Bc(e) {
-  return e || (e = U(4)), e.write_shift(2, 1), e.write_shift(2, 1), e;
+function write_Country(o) {
+  if (!o)
+    o = new_buf(4);
+  o.write_shift(2, 1);
+  o.write_shift(2, 1);
+  return o;
 }
-function Mc(e, t, r) {
-  if (!r.cellStyles)
-    return Fr(e, t);
-  var n = r && r.biff >= 12 ? 4 : 2, a = e.read_shift(n), i = e.read_shift(n), s = e.read_shift(n), f = e.read_shift(n), l = e.read_shift(2);
-  n == 2 && (e.l += 2);
-  var o = { s: a, e: i, w: s, ixfe: f, flags: l };
-  return (r.biff >= 5 || !r.biff) && (o.level = l >> 8 & 7), o;
+function parse_ColInfo(blob, length, opts) {
+  if (!opts.cellStyles)
+    return parsenoop(blob, length);
+  var w = opts && opts.biff >= 12 ? 4 : 2;
+  var colFirst = blob.read_shift(w);
+  var colLast = blob.read_shift(w);
+  var coldx = blob.read_shift(w);
+  var ixfe = blob.read_shift(w);
+  var flags = blob.read_shift(2);
+  if (w == 2)
+    blob.l += 2;
+  var o = { s: colFirst, e: colLast, w: coldx, ixfe, flags };
+  if (opts.biff >= 5 || !opts.biff)
+    o.level = flags >> 8 & 7;
+  return o;
 }
-function Uc(e, t) {
-  var r = U(12);
-  r.write_shift(2, t), r.write_shift(2, t), r.write_shift(2, e.width * 256), r.write_shift(2, 0);
-  var n = 0;
-  return e.hidden && (n |= 1), r.write_shift(1, n), n = e.level || 0, r.write_shift(1, n), r.write_shift(2, 0), r;
+function write_ColInfo(col, idx) {
+  var o = new_buf(12);
+  o.write_shift(2, idx);
+  o.write_shift(2, idx);
+  o.write_shift(2, col.width * 256);
+  o.write_shift(2, 0);
+  var f = 0;
+  if (col.hidden)
+    f |= 1;
+  o.write_shift(1, f);
+  f = col.level || 0;
+  o.write_shift(1, f);
+  o.write_shift(2, 0);
+  return o;
 }
-function bc(e) {
-  for (var t = U(2 * e), r = 0; r < e; ++r)
-    t.write_shift(2, r + 1);
-  return t;
+function write_RRTabId(n) {
+  var out = new_buf(2 * n);
+  for (var i = 0; i < n; ++i)
+    out.write_shift(2, i + 1);
+  return out;
 }
-function Wc(e, t, r) {
-  var n = U(15);
-  return zt(n, e, t), n.write_shift(8, r, "f"), n;
+function write_BIFF2NUM(r, c, val) {
+  var out = new_buf(15);
+  write_BIFF2Cell(out, r, c);
+  out.write_shift(8, val, "f");
+  return out;
 }
-function Hc(e, t, r) {
-  var n = U(9);
-  return zt(n, e, t), n.write_shift(2, r), n;
+function write_BIFF2INT(r, c, val) {
+  var out = new_buf(9);
+  write_BIFF2Cell(out, r, c);
+  out.write_shift(2, val);
+  return out;
 }
-var Vc = /* @__PURE__ */ function() {
-  var e = {
+var DBF = /* @__PURE__ */ function() {
+  var dbf_codepage_map = {
     1: 437,
     2: 850,
     3: 1252,
@@ -5266,7 +8041,8 @@ var Vc = /* @__PURE__ */ function() {
     136: 857,
     204: 1257,
     255: 16969
-  }, t = S0({
+  };
+  var dbf_reverse_map = evert({
     1: 437,
     2: 850,
     3: 1252,
@@ -5295,57 +8071,99 @@ var Vc = /* @__PURE__ */ function() {
     203: 1253,
     0: 20127
   });
-  function r(f, l) {
-    var o = [], c = qr(1);
-    switch (l.type) {
+  function dbf_to_aoa(buf, opts) {
+    var out = [];
+    var d = new_raw_buf(1);
+    switch (opts.type) {
       case "base64":
-        c = _r(kr(f));
+        d = s2a(Base64_decode(buf));
         break;
       case "binary":
-        c = _r(f);
+        d = s2a(buf);
         break;
       case "buffer":
       case "array":
-        c = f;
+        d = buf;
         break;
     }
-    sr(c, 0);
-    var p = c.read_shift(1), u = !!(p & 136), v = !1, T = !1;
-    switch (p) {
+    prep_blob(d, 0);
+    var ft = d.read_shift(1);
+    var memo = !!(ft & 136);
+    var vfp = false, l7 = false;
+    switch (ft) {
       case 2:
         break;
       case 3:
         break;
       case 48:
-        v = !0, u = !0;
+        vfp = true;
+        memo = true;
         break;
       case 49:
-        v = !0, u = !0;
+        vfp = true;
+        memo = true;
         break;
       case 131:
         break;
       case 139:
         break;
       case 140:
-        T = !0;
+        l7 = true;
         break;
       case 245:
         break;
       default:
-        throw new Error("DBF Unsupported Version: " + p.toString(16));
+        throw new Error("DBF Unsupported Version: " + ft.toString(16));
     }
-    var x = 0, _ = 521;
-    p == 2 && (x = c.read_shift(2)), c.l += 3, p != 2 && (x = c.read_shift(4)), x > 1048576 && (x = 1e6), p != 2 && (_ = c.read_shift(2));
-    var O = c.read_shift(2), R = l.codepage || 1252;
-    p != 2 && (c.l += 16, c.read_shift(1), c[c.l] !== 0 && (R = e[c[c.l]]), c.l += 1, c.l += 2), T && (c.l += 36);
-    for (var y = [], M = {}, b = Math.min(c.length, p == 2 ? 521 : _ - 10 - (v ? 264 : 0)), re = T ? 32 : 11; c.l < b && c[c.l] != 13; )
-      switch (M = {}, M.name = zr.utils.decode(R, c.slice(c.l, c.l + re)).replace(/[\u0000\r\n].*$/g, ""), c.l += re, M.type = String.fromCharCode(c.read_shift(1)), p != 2 && !T && (M.offset = c.read_shift(4)), M.len = c.read_shift(1), p == 2 && (M.offset = c.read_shift(2)), M.dec = c.read_shift(1), M.name.length && y.push(M), p != 2 && (c.l += T ? 13 : 14), M.type) {
+    var nrow = 0, fpos = 521;
+    if (ft == 2)
+      nrow = d.read_shift(2);
+    d.l += 3;
+    if (ft != 2)
+      nrow = d.read_shift(4);
+    if (nrow > 1048576)
+      nrow = 1e6;
+    if (ft != 2)
+      fpos = d.read_shift(2);
+    var rlen = d.read_shift(2);
+    var current_cp = opts.codepage || 1252;
+    if (ft != 2) {
+      d.l += 16;
+      d.read_shift(1);
+      if (d[d.l] !== 0)
+        current_cp = dbf_codepage_map[d[d.l]];
+      d.l += 1;
+      d.l += 2;
+    }
+    if (l7)
+      d.l += 36;
+    var fields = [], field = {};
+    var hend = Math.min(d.length, ft == 2 ? 521 : fpos - 10 - (vfp ? 264 : 0));
+    var ww = l7 ? 32 : 11;
+    while (d.l < hend && d[d.l] != 13) {
+      field = {};
+      field.name = $cptable.utils.decode(current_cp, d.slice(d.l, d.l + ww)).replace(/[\u0000\r\n].*$/g, "");
+      d.l += ww;
+      field.type = String.fromCharCode(d.read_shift(1));
+      if (ft != 2 && !l7)
+        field.offset = d.read_shift(4);
+      field.len = d.read_shift(1);
+      if (ft == 2)
+        field.offset = d.read_shift(2);
+      field.dec = d.read_shift(1);
+      if (field.name.length)
+        fields.push(field);
+      if (ft != 2)
+        d.l += l7 ? 13 : 14;
+      switch (field.type) {
         case "B":
-          (!v || M.len != 8) && l.WTF && console.log("Skipping " + M.name + ":" + M.type);
+          if ((!vfp || field.len != 8) && opts.WTF)
+            console.log("Skipping " + field.name + ":" + field.type);
           break;
         case "G":
         case "P":
-          l.WTF && console.log("Skipping " + M.name + ":" + M.type);
+          if (opts.WTF)
+            console.log("Skipping " + field.name + ":" + field.type);
           break;
         case "+":
         case "0":
@@ -5362,215 +8180,299 @@ var Vc = /* @__PURE__ */ function() {
         case "Y":
           break;
         default:
-          throw new Error("Unknown Field Type: " + M.type);
+          throw new Error("Unknown Field Type: " + field.type);
       }
-    if (c[c.l] !== 13 && (c.l = _ - 1), c.read_shift(1) !== 13)
-      throw new Error("DBF Terminator not found " + c.l + " " + c[c.l]);
-    c.l = _;
-    var D = 0, H = 0;
-    for (o[0] = [], H = 0; H != y.length; ++H)
-      o[0][H] = y[H].name;
-    for (; x-- > 0; ) {
-      if (c[c.l] === 42) {
-        c.l += O;
+    }
+    if (d[d.l] !== 13)
+      d.l = fpos - 1;
+    if (d.read_shift(1) !== 13)
+      throw new Error("DBF Terminator not found " + d.l + " " + d[d.l]);
+    d.l = fpos;
+    var R = 0, C = 0;
+    out[0] = [];
+    for (C = 0; C != fields.length; ++C)
+      out[0][C] = fields[C].name;
+    while (nrow-- > 0) {
+      if (d[d.l] === 42) {
+        d.l += rlen;
         continue;
       }
-      for (++c.l, o[++D] = [], H = 0, H = 0; H != y.length; ++H) {
-        var L = c.slice(c.l, c.l + y[H].len);
-        c.l += y[H].len, sr(L, 0);
-        var G = zr.utils.decode(R, L);
-        switch (y[H].type) {
+      ++d.l;
+      out[++R] = [];
+      C = 0;
+      for (C = 0; C != fields.length; ++C) {
+        var dd = d.slice(d.l, d.l + fields[C].len);
+        d.l += fields[C].len;
+        prep_blob(dd, 0);
+        var s = $cptable.utils.decode(current_cp, dd);
+        switch (fields[C].type) {
           case "C":
-            G.trim().length && (o[D][H] = G.replace(/\s+$/, ""));
+            if (s.trim().length)
+              out[R][C] = s.replace(/\s+$/, "");
             break;
           case "D":
-            G.length === 8 ? o[D][H] = new Date(+G.slice(0, 4), +G.slice(4, 6) - 1, +G.slice(6, 8)) : o[D][H] = G;
+            if (s.length === 8)
+              out[R][C] = new Date(+s.slice(0, 4), +s.slice(4, 6) - 1, +s.slice(6, 8));
+            else
+              out[R][C] = s;
             break;
           case "F":
-            o[D][H] = parseFloat(G.trim());
+            out[R][C] = parseFloat(s.trim());
             break;
           case "+":
           case "I":
-            o[D][H] = T ? L.read_shift(-4, "i") ^ 2147483648 : L.read_shift(4, "i");
+            out[R][C] = l7 ? dd.read_shift(-4, "i") ^ 2147483648 : dd.read_shift(4, "i");
             break;
           case "L":
-            switch (G.trim().toUpperCase()) {
+            switch (s.trim().toUpperCase()) {
               case "Y":
               case "T":
-                o[D][H] = !0;
+                out[R][C] = true;
                 break;
               case "N":
               case "F":
-                o[D][H] = !1;
+                out[R][C] = false;
                 break;
               case "":
               case "?":
                 break;
               default:
-                throw new Error("DBF Unrecognized L:|" + G + "|");
+                throw new Error("DBF Unrecognized L:|" + s + "|");
             }
             break;
           case "M":
-            if (!u)
-              throw new Error("DBF Unexpected MEMO for type " + p.toString(16));
-            o[D][H] = "##MEMO##" + (T ? parseInt(G.trim(), 10) : L.read_shift(4));
+            if (!memo)
+              throw new Error("DBF Unexpected MEMO for type " + ft.toString(16));
+            out[R][C] = "##MEMO##" + (l7 ? parseInt(s.trim(), 10) : dd.read_shift(4));
             break;
           case "N":
-            G = G.replace(/\u0000/g, "").trim(), G && G != "." && (o[D][H] = +G || 0);
+            s = s.replace(/\u0000/g, "").trim();
+            if (s && s != ".")
+              out[R][C] = +s || 0;
             break;
           case "@":
-            o[D][H] = new Date(L.read_shift(-8, "f") - 621356832e5);
+            out[R][C] = new Date(dd.read_shift(-8, "f") - 621356832e5);
             break;
           case "T":
-            o[D][H] = new Date((L.read_shift(4) - 2440588) * 864e5 + L.read_shift(4));
+            out[R][C] = new Date((dd.read_shift(4) - 2440588) * 864e5 + dd.read_shift(4));
             break;
           case "Y":
-            o[D][H] = L.read_shift(4, "i") / 1e4 + L.read_shift(4, "i") / 1e4 * Math.pow(2, 32);
+            out[R][C] = dd.read_shift(4, "i") / 1e4 + dd.read_shift(4, "i") / 1e4 * Math.pow(2, 32);
             break;
           case "O":
-            o[D][H] = -L.read_shift(-8, "f");
+            out[R][C] = -dd.read_shift(-8, "f");
             break;
           case "B":
-            if (v && y[H].len == 8) {
-              o[D][H] = L.read_shift(8, "f");
+            if (vfp && fields[C].len == 8) {
+              out[R][C] = dd.read_shift(8, "f");
               break;
             }
           case "G":
           case "P":
-            L.l += y[H].len;
+            dd.l += fields[C].len;
             break;
           case "0":
-            if (y[H].name === "_NullFlags")
+            if (fields[C].name === "_NullFlags")
               break;
           default:
-            throw new Error("DBF Unsupported data type " + y[H].type);
+            throw new Error("DBF Unsupported data type " + fields[C].type);
         }
       }
     }
-    if (p != 2 && c.l < c.length && c[c.l++] != 26)
-      throw new Error("DBF EOF Marker missing " + (c.l - 1) + " of " + c.length + " " + c[c.l - 1].toString(16));
-    return l && l.sheetRows && (o = o.slice(0, l.sheetRows)), l.DBF = y, o;
+    if (ft != 2) {
+      if (d.l < d.length && d[d.l++] != 26)
+        throw new Error("DBF EOF Marker missing " + (d.l - 1) + " of " + d.length + " " + d[d.l - 1].toString(16));
+    }
+    if (opts && opts.sheetRows)
+      out = out.slice(0, opts.sheetRows);
+    opts.DBF = fields;
+    return out;
   }
-  function n(f, l) {
-    var o = l || {};
-    o.dateNF || (o.dateNF = "yyyymmdd");
-    var c = wt(r(f, o), o);
-    return c["!cols"] = o.DBF.map(function(p) {
+  function dbf_to_sheet(buf, opts) {
+    var o = opts || {};
+    if (!o.dateNF)
+      o.dateNF = "yyyymmdd";
+    var ws = aoa_to_sheet(dbf_to_aoa(buf, o), o);
+    ws["!cols"] = o.DBF.map(function(field) {
       return {
-        wch: p.len,
-        DBF: p
+        wch: field.len,
+        DBF: field
       };
-    }), delete o.DBF, c;
+    });
+    delete o.DBF;
+    return ws;
   }
-  function a(f, l) {
+  function dbf_to_workbook(buf, opts) {
     try {
-      return et(n(f, l), l);
-    } catch (o) {
-      if (l && l.WTF)
-        throw o;
+      return sheet_to_workbook(dbf_to_sheet(buf, opts), opts);
+    } catch (e) {
+      if (opts && opts.WTF)
+        throw e;
     }
     return { SheetNames: [], Sheets: {} };
   }
-  var i = { B: 8, C: 250, L: 1, D: 8, "?": 0, "": 0 };
-  function s(f, l) {
-    var o = l || {};
-    if (+o.codepage >= 0 && Bt(+o.codepage), o.type == "string")
+  var _RLEN = { "B": 8, "C": 250, "L": 1, "D": 8, "?": 0, "": 0 };
+  function sheet_to_dbf(ws, opts) {
+    var o = opts || {};
+    if (+o.codepage >= 0)
+      set_cp(+o.codepage);
+    if (o.type == "string")
       throw new Error("Cannot write DBF to JS string");
-    var c = Qe(), p = Tn(f, { header: 1, raw: !0, cellDates: !0 }), u = p[0], v = p.slice(1), T = f["!cols"] || [], x = 0, _ = 0, O = 0, R = 1;
-    for (x = 0; x < u.length; ++x) {
-      if (((T[x] || {}).DBF || {}).name) {
-        u[x] = T[x].DBF.name, ++O;
+    var ba = buf_array();
+    var aoa = sheet_to_json(ws, { header: 1, raw: true, cellDates: true });
+    var headers = aoa[0], data2 = aoa.slice(1), cols = ws["!cols"] || [];
+    var i = 0, j = 0, hcnt = 0, rlen = 1;
+    for (i = 0; i < headers.length; ++i) {
+      if (((cols[i] || {}).DBF || {}).name) {
+        headers[i] = cols[i].DBF.name;
+        ++hcnt;
         continue;
       }
-      if (u[x] != null) {
-        if (++O, typeof u[x] == "number" && (u[x] = u[x].toString(10)), typeof u[x] != "string")
-          throw new Error("DBF Invalid column name " + u[x] + " |" + typeof u[x] + "|");
-        if (u.indexOf(u[x]) !== x) {
-          for (_ = 0; _ < 1024; ++_)
-            if (u.indexOf(u[x] + "_" + _) == -1) {
-              u[x] += "_" + _;
-              break;
-            }
-        }
+      if (headers[i] == null)
+        continue;
+      ++hcnt;
+      if (typeof headers[i] === "number")
+        headers[i] = headers[i].toString(10);
+      if (typeof headers[i] !== "string")
+        throw new Error("DBF Invalid column name " + headers[i] + " |" + typeof headers[i] + "|");
+      if (headers.indexOf(headers[i]) !== i) {
+        for (j = 0; j < 1024; ++j)
+          if (headers.indexOf(headers[i] + "_" + j) == -1) {
+            headers[i] += "_" + j;
+            break;
+          }
       }
     }
-    var y = we(f["!ref"]), M = [], b = [], re = [];
-    for (x = 0; x <= y.e.c - y.s.c; ++x) {
-      var D = "", H = "", L = 0, G = [];
-      for (_ = 0; _ < v.length; ++_)
-        v[_][x] != null && G.push(v[_][x]);
-      if (G.length == 0 || u[x] == null) {
-        M[x] = "?";
+    var range = safe_decode_range(ws["!ref"]);
+    var coltypes = [];
+    var colwidths = [];
+    var coldecimals = [];
+    for (i = 0; i <= range.e.c - range.s.c; ++i) {
+      var guess = "", _guess = "", maxlen = 0;
+      var col = [];
+      for (j = 0; j < data2.length; ++j) {
+        if (data2[j][i] != null)
+          col.push(data2[j][i]);
+      }
+      if (col.length == 0 || headers[i] == null) {
+        coltypes[i] = "?";
         continue;
       }
-      for (_ = 0; _ < G.length; ++_) {
-        switch (typeof G[_]) {
+      for (j = 0; j < col.length; ++j) {
+        switch (typeof col[j]) {
           case "number":
-            H = "B";
+            _guess = "B";
             break;
           case "string":
-            H = "C";
+            _guess = "C";
             break;
           case "boolean":
-            H = "L";
+            _guess = "L";
             break;
           case "object":
-            H = G[_] instanceof Date ? "D" : "C";
+            _guess = col[j] instanceof Date ? "D" : "C";
             break;
           default:
-            H = "C";
+            _guess = "C";
         }
-        L = Math.max(L, String(G[_]).length), D = D && D != H ? "C" : H;
+        maxlen = Math.max(maxlen, String(col[j]).length);
+        guess = guess && guess != _guess ? "C" : _guess;
       }
-      L > 250 && (L = 250), H = ((T[x] || {}).DBF || {}).type, H == "C" && T[x].DBF.len > L && (L = T[x].DBF.len), D == "B" && H == "N" && (D = "N", re[x] = T[x].DBF.dec, L = T[x].DBF.len), b[x] = D == "C" || H == "N" ? L : i[D] || 0, R += b[x], M[x] = D;
-    }
-    var z = c.next(32);
-    for (z.write_shift(4, 318902576), z.write_shift(4, v.length), z.write_shift(2, 296 + 32 * O), z.write_shift(2, R), x = 0; x < 4; ++x)
-      z.write_shift(4, 0);
-    for (z.write_shift(4, 0 | (+t[Fi] || 3) << 8), x = 0, _ = 0; x < u.length; ++x)
-      if (u[x] != null) {
-        var j = c.next(32), Q = (u[x].slice(-10) + "\0\0\0\0\0\0\0\0\0\0\0").slice(0, 11);
-        j.write_shift(1, Q, "sbcs"), j.write_shift(1, M[x] == "?" ? "C" : M[x], "sbcs"), j.write_shift(4, _), j.write_shift(1, b[x] || i[M[x]] || 0), j.write_shift(1, re[x] || 0), j.write_shift(1, 2), j.write_shift(4, 0), j.write_shift(1, 0), j.write_shift(4, 0), j.write_shift(4, 0), _ += b[x] || i[M[x]] || 0;
+      if (maxlen > 250)
+        maxlen = 250;
+      _guess = ((cols[i] || {}).DBF || {}).type;
+      if (_guess == "C") {
+        if (cols[i].DBF.len > maxlen)
+          maxlen = cols[i].DBF.len;
       }
-    var he = c.next(264);
-    for (he.write_shift(4, 13), x = 0; x < 65; ++x)
-      he.write_shift(4, 0);
-    for (x = 0; x < v.length; ++x) {
-      var oe = c.next(R);
-      for (oe.write_shift(1, 0), _ = 0; _ < u.length; ++_)
-        if (u[_] != null)
-          switch (M[_]) {
-            case "L":
-              oe.write_shift(1, v[x][_] == null ? 63 : v[x][_] ? 84 : 70);
-              break;
-            case "B":
-              oe.write_shift(8, v[x][_] || 0, "f");
-              break;
-            case "N":
-              var Oe = "0";
-              for (typeof v[x][_] == "number" && (Oe = v[x][_].toFixed(re[_] || 0)), O = 0; O < b[_] - Oe.length; ++O)
-                oe.write_shift(1, 32);
-              oe.write_shift(1, Oe, "sbcs");
-              break;
-            case "D":
-              v[x][_] ? (oe.write_shift(4, ("0000" + v[x][_].getFullYear()).slice(-4), "sbcs"), oe.write_shift(2, ("00" + (v[x][_].getMonth() + 1)).slice(-2), "sbcs"), oe.write_shift(2, ("00" + v[x][_].getDate()).slice(-2), "sbcs")) : oe.write_shift(8, "00000000", "sbcs");
-              break;
-            case "C":
-              var Re = String(v[x][_] != null ? v[x][_] : "").slice(0, b[_]);
-              for (oe.write_shift(1, Re, "sbcs"), O = 0; O < b[_] - Re.length; ++O)
-                oe.write_shift(1, 32);
-              break;
-          }
+      if (guess == "B" && _guess == "N") {
+        guess = "N";
+        coldecimals[i] = cols[i].DBF.dec;
+        maxlen = cols[i].DBF.len;
+      }
+      colwidths[i] = guess == "C" || _guess == "N" ? maxlen : _RLEN[guess] || 0;
+      rlen += colwidths[i];
+      coltypes[i] = guess;
     }
-    return c.next(1).write_shift(1, 26), c.end();
+    var h2 = ba.next(32);
+    h2.write_shift(4, 318902576);
+    h2.write_shift(4, data2.length);
+    h2.write_shift(2, 296 + 32 * hcnt);
+    h2.write_shift(2, rlen);
+    for (i = 0; i < 4; ++i)
+      h2.write_shift(4, 0);
+    h2.write_shift(4, 0 | (+dbf_reverse_map[current_ansi] || 3) << 8);
+    for (i = 0, j = 0; i < headers.length; ++i) {
+      if (headers[i] == null)
+        continue;
+      var hf = ba.next(32);
+      var _f = (headers[i].slice(-10) + "\0\0\0\0\0\0\0\0\0\0\0").slice(0, 11);
+      hf.write_shift(1, _f, "sbcs");
+      hf.write_shift(1, coltypes[i] == "?" ? "C" : coltypes[i], "sbcs");
+      hf.write_shift(4, j);
+      hf.write_shift(1, colwidths[i] || _RLEN[coltypes[i]] || 0);
+      hf.write_shift(1, coldecimals[i] || 0);
+      hf.write_shift(1, 2);
+      hf.write_shift(4, 0);
+      hf.write_shift(1, 0);
+      hf.write_shift(4, 0);
+      hf.write_shift(4, 0);
+      j += colwidths[i] || _RLEN[coltypes[i]] || 0;
+    }
+    var hb = ba.next(264);
+    hb.write_shift(4, 13);
+    for (i = 0; i < 65; ++i)
+      hb.write_shift(4, 0);
+    for (i = 0; i < data2.length; ++i) {
+      var rout = ba.next(rlen);
+      rout.write_shift(1, 0);
+      for (j = 0; j < headers.length; ++j) {
+        if (headers[j] == null)
+          continue;
+        switch (coltypes[j]) {
+          case "L":
+            rout.write_shift(1, data2[i][j] == null ? 63 : data2[i][j] ? 84 : 70);
+            break;
+          case "B":
+            rout.write_shift(8, data2[i][j] || 0, "f");
+            break;
+          case "N":
+            var _n = "0";
+            if (typeof data2[i][j] == "number")
+              _n = data2[i][j].toFixed(coldecimals[j] || 0);
+            for (hcnt = 0; hcnt < colwidths[j] - _n.length; ++hcnt)
+              rout.write_shift(1, 32);
+            rout.write_shift(1, _n, "sbcs");
+            break;
+          case "D":
+            if (!data2[i][j])
+              rout.write_shift(8, "00000000", "sbcs");
+            else {
+              rout.write_shift(4, ("0000" + data2[i][j].getFullYear()).slice(-4), "sbcs");
+              rout.write_shift(2, ("00" + (data2[i][j].getMonth() + 1)).slice(-2), "sbcs");
+              rout.write_shift(2, ("00" + data2[i][j].getDate()).slice(-2), "sbcs");
+            }
+            break;
+          case "C":
+            var _s = String(data2[i][j] != null ? data2[i][j] : "").slice(0, colwidths[j]);
+            rout.write_shift(1, _s, "sbcs");
+            for (hcnt = 0; hcnt < colwidths[j] - _s.length; ++hcnt)
+              rout.write_shift(1, 32);
+            break;
+        }
+      }
+    }
+    ba.next(1).write_shift(1, 26);
+    return ba.end();
   }
   return {
-    to_workbook: a,
-    to_sheet: n,
-    from_sheet: s
+    to_workbook: dbf_to_workbook,
+    to_sheet: dbf_to_sheet,
+    from_sheet: sheet_to_dbf
   };
-}(), Gc = /* @__PURE__ */ function() {
-  var e = {
+}();
+var SYLK = /* @__PURE__ */ function() {
+  var sylk_escapes = {
     AA: "\xC0",
     BA: "\xC1",
     CA: "\xC2",
@@ -5658,36 +8560,47 @@ var Vc = /* @__PURE__ */ function() {
     ">": 190,
     "?": 191,
     "{": 223
-  }, t = new RegExp("\x1BN(" + Xe(e).join("|").replace(/\|\|\|/, "|\\||").replace(/([?()+])/g, "\\$1") + "|\\|)", "gm"), r = function(u, v) {
-    var T = e[v];
-    return typeof T == "number" ? wa(T) : T;
-  }, n = function(u, v, T) {
-    var x = v.charCodeAt(0) - 32 << 4 | T.charCodeAt(0) - 48;
-    return x == 59 ? u : wa(x);
   };
-  e["|"] = 254;
-  function a(u, v) {
-    switch (v.type) {
+  var sylk_char_regex = new RegExp("\x1BN(" + keys(sylk_escapes).join("|").replace(/\|\|\|/, "|\\||").replace(/([?()+])/g, "\\$1") + "|\\|)", "gm");
+  var sylk_char_fn = function(_, $1) {
+    var o = sylk_escapes[$1];
+    return typeof o == "number" ? _getansi(o) : o;
+  };
+  var decode_sylk_char = function($$, $1, $2) {
+    var newcc = $1.charCodeAt(0) - 32 << 4 | $2.charCodeAt(0) - 48;
+    return newcc == 59 ? $$ : _getansi(newcc);
+  };
+  sylk_escapes["|"] = 254;
+  function sylk_to_aoa(d, opts) {
+    switch (opts.type) {
       case "base64":
-        return i(kr(u), v);
+        return sylk_to_aoa_str(Base64_decode(d), opts);
       case "binary":
-        return i(u, v);
+        return sylk_to_aoa_str(d, opts);
       case "buffer":
-        return i(de && Buffer.isBuffer(u) ? u.toString("binary") : Vt(u), v);
+        return sylk_to_aoa_str(has_buf && Buffer.isBuffer(d) ? d.toString("binary") : a2s(d), opts);
       case "array":
-        return i(Dn(u), v);
+        return sylk_to_aoa_str(cc2str(d), opts);
     }
-    throw new Error("Unrecognized type " + v.type);
+    throw new Error("Unrecognized type " + opts.type);
   }
-  function i(u, v) {
-    var T = u.split(/[\n\r]+/), x = -1, _ = -1, O = 0, R = 0, y = [], M = [], b = null, re = {}, D = [], H = [], L = [], G = 0, z;
-    for (+v.codepage >= 0 && Bt(+v.codepage); O !== T.length; ++O) {
-      G = 0;
-      var j = T[O].trim().replace(/\x1B([\x20-\x2F])([\x30-\x3F])/g, n).replace(t, r), Q = j.replace(/;;/g, "\0").split(";").map(function(F) {
-        return F.replace(/\u0000/g, ";");
-      }), he = Q[0], oe;
-      if (j.length > 0)
-        switch (he) {
+  function sylk_to_aoa_str(str, opts) {
+    var records = str.split(/[\n\r]+/), R = -1, C = -1, ri = 0, rj = 0, arr = [];
+    var formats = [];
+    var next_cell_format = null;
+    var sht = {}, rowinfo = [], colinfo = [], cw = [];
+    var Mval = 0, j;
+    if (+opts.codepage >= 0)
+      set_cp(+opts.codepage);
+    for (; ri !== records.length; ++ri) {
+      Mval = 0;
+      var rstr = records[ri].trim().replace(/\x1B([\x20-\x2F])([\x30-\x3F])/g, decode_sylk_char).replace(sylk_char_regex, sylk_char_fn);
+      var record = rstr.replace(/;;/g, "\0").split(";").map(function(x) {
+        return x.replace(/\u0000/g, ";");
+      });
+      var RT = record[0], val;
+      if (rstr.length > 0)
+        switch (RT) {
           case "ID":
             break;
           case "E":
@@ -5699,73 +8612,102 @@ var Vc = /* @__PURE__ */ function() {
           case "W":
             break;
           case "P":
-            Q[1].charAt(0) == "P" && M.push(j.slice(3).replace(/;;/g, ";"));
+            if (record[1].charAt(0) == "P")
+              formats.push(rstr.slice(3).replace(/;;/g, ";"));
             break;
           case "C":
-            var Oe = !1, Re = !1, pr = !1, Pe = !1, cr = -1, nr = -1;
-            for (R = 1; R < Q.length; ++R)
-              switch (Q[R].charAt(0)) {
+            var C_seen_K = false, C_seen_X = false, C_seen_S = false, C_seen_E = false, _R = -1, _C = -1;
+            for (rj = 1; rj < record.length; ++rj)
+              switch (record[rj].charAt(0)) {
                 case "A":
                   break;
                 case "X":
-                  _ = parseInt(Q[R].slice(1)) - 1, Re = !0;
+                  C = parseInt(record[rj].slice(1)) - 1;
+                  C_seen_X = true;
                   break;
                 case "Y":
-                  for (x = parseInt(Q[R].slice(1)) - 1, Re || (_ = 0), z = y.length; z <= x; ++z)
-                    y[z] = [];
+                  R = parseInt(record[rj].slice(1)) - 1;
+                  if (!C_seen_X)
+                    C = 0;
+                  for (j = arr.length; j <= R; ++j)
+                    arr[j] = [];
                   break;
                 case "K":
-                  oe = Q[R].slice(1), oe.charAt(0) === '"' ? oe = oe.slice(1, oe.length - 1) : oe === "TRUE" ? oe = !0 : oe === "FALSE" ? oe = !1 : isNaN(Nr(oe)) ? isNaN(Ut(oe).getDate()) || (oe = Ze(oe)) : (oe = Nr(oe), b !== null && Mi(b) && (oe = Hi(oe))), Oe = !0;
+                  val = record[rj].slice(1);
+                  if (val.charAt(0) === '"')
+                    val = val.slice(1, val.length - 1);
+                  else if (val === "TRUE")
+                    val = true;
+                  else if (val === "FALSE")
+                    val = false;
+                  else if (!isNaN(fuzzynum(val))) {
+                    val = fuzzynum(val);
+                    if (next_cell_format !== null && fmt_is_date(next_cell_format))
+                      val = numdate(val);
+                  } else if (!isNaN(fuzzydate(val).getDate())) {
+                    val = parseDate(val);
+                  }
+                  C_seen_K = true;
                   break;
                 case "E":
-                  Pe = !0;
-                  var A = Hh(Q[R].slice(1), { r: x, c: _ });
-                  y[x][_] = [y[x][_], A];
+                  C_seen_E = true;
+                  var formula = rc_to_a1(record[rj].slice(1), { r: R, c: C });
+                  arr[R][C] = [arr[R][C], formula];
                   break;
                 case "S":
-                  pr = !0, y[x][_] = [y[x][_], "S5S"];
+                  C_seen_S = true;
+                  arr[R][C] = [arr[R][C], "S5S"];
                   break;
                 case "G":
                   break;
                 case "R":
-                  cr = parseInt(Q[R].slice(1)) - 1;
+                  _R = parseInt(record[rj].slice(1)) - 1;
                   break;
                 case "C":
-                  nr = parseInt(Q[R].slice(1)) - 1;
+                  _C = parseInt(record[rj].slice(1)) - 1;
                   break;
                 default:
-                  if (v && v.WTF)
-                    throw new Error("SYLK bad record " + j);
+                  if (opts && opts.WTF)
+                    throw new Error("SYLK bad record " + rstr);
               }
-            if (Oe && (y[x][_] && y[x][_].length == 2 ? y[x][_][0] = oe : y[x][_] = oe, b = null), pr) {
-              if (Pe)
+            if (C_seen_K) {
+              if (arr[R][C] && arr[R][C].length == 2)
+                arr[R][C][0] = val;
+              else
+                arr[R][C] = val;
+              next_cell_format = null;
+            }
+            if (C_seen_S) {
+              if (C_seen_E)
                 throw new Error("SYLK shared formula cannot have own formula");
-              var B = cr > -1 && y[cr][nr];
-              if (!B || !B[1])
+              var shrbase = _R > -1 && arr[_R][_C];
+              if (!shrbase || !shrbase[1])
                 throw new Error("SYLK shared formula cannot find base");
-              y[x][_][1] = Vh(B[1], { r: x - cr, c: _ - nr });
+              arr[R][C][1] = shift_formula_str(shrbase[1], { r: R - _R, c: C - _C });
             }
             break;
           case "F":
-            var C = 0;
-            for (R = 1; R < Q.length; ++R)
-              switch (Q[R].charAt(0)) {
+            var F_seen = 0;
+            for (rj = 1; rj < record.length; ++rj)
+              switch (record[rj].charAt(0)) {
                 case "X":
-                  _ = parseInt(Q[R].slice(1)) - 1, ++C;
+                  C = parseInt(record[rj].slice(1)) - 1;
+                  ++F_seen;
                   break;
                 case "Y":
-                  for (x = parseInt(Q[R].slice(1)) - 1, z = y.length; z <= x; ++z)
-                    y[z] = [];
+                  R = parseInt(record[rj].slice(1)) - 1;
+                  for (j = arr.length; j <= R; ++j)
+                    arr[j] = [];
                   break;
                 case "M":
-                  G = parseInt(Q[R].slice(1)) / 20;
+                  Mval = parseInt(record[rj].slice(1)) / 20;
                   break;
                 case "F":
                   break;
                 case "G":
                   break;
                 case "P":
-                  b = M[parseInt(Q[R].slice(1))];
+                  next_cell_format = formats[parseInt(record[rj].slice(1))];
                   break;
                 case "S":
                   break;
@@ -5774,654 +8716,1105 @@ var Vc = /* @__PURE__ */ function() {
                 case "N":
                   break;
                 case "W":
-                  for (L = Q[R].slice(1).split(" "), z = parseInt(L[0], 10); z <= parseInt(L[1], 10); ++z)
-                    G = parseInt(L[2], 10), H[z - 1] = G === 0 ? { hidden: !0 } : { wch: G }, L0(H[z - 1]);
+                  cw = record[rj].slice(1).split(" ");
+                  for (j = parseInt(cw[0], 10); j <= parseInt(cw[1], 10); ++j) {
+                    Mval = parseInt(cw[2], 10);
+                    colinfo[j - 1] = Mval === 0 ? { hidden: true } : { wch: Mval };
+                    process_col(colinfo[j - 1]);
+                  }
                   break;
                 case "C":
-                  _ = parseInt(Q[R].slice(1)) - 1, H[_] || (H[_] = {});
+                  C = parseInt(record[rj].slice(1)) - 1;
+                  if (!colinfo[C])
+                    colinfo[C] = {};
                   break;
                 case "R":
-                  x = parseInt(Q[R].slice(1)) - 1, D[x] || (D[x] = {}), G > 0 ? (D[x].hpt = G, D[x].hpx = Os(G)) : G === 0 && (D[x].hidden = !0);
+                  R = parseInt(record[rj].slice(1)) - 1;
+                  if (!rowinfo[R])
+                    rowinfo[R] = {};
+                  if (Mval > 0) {
+                    rowinfo[R].hpt = Mval;
+                    rowinfo[R].hpx = pt2px(Mval);
+                  } else if (Mval === 0)
+                    rowinfo[R].hidden = true;
                   break;
                 default:
-                  if (v && v.WTF)
-                    throw new Error("SYLK bad record " + j);
+                  if (opts && opts.WTF)
+                    throw new Error("SYLK bad record " + rstr);
               }
-            C < 1 && (b = null);
+            if (F_seen < 1)
+              next_cell_format = null;
             break;
           default:
-            if (v && v.WTF)
-              throw new Error("SYLK bad record " + j);
+            if (opts && opts.WTF)
+              throw new Error("SYLK bad record " + rstr);
         }
     }
-    return D.length > 0 && (re["!rows"] = D), H.length > 0 && (re["!cols"] = H), v && v.sheetRows && (y = y.slice(0, v.sheetRows)), [y, re];
+    if (rowinfo.length > 0)
+      sht["!rows"] = rowinfo;
+    if (colinfo.length > 0)
+      sht["!cols"] = colinfo;
+    if (opts && opts.sheetRows)
+      arr = arr.slice(0, opts.sheetRows);
+    return [arr, sht];
   }
-  function s(u, v) {
-    var T = a(u, v), x = T[0], _ = T[1], O = wt(x, v);
-    return Xe(_).forEach(function(R) {
-      O[R] = _[R];
-    }), O;
+  function sylk_to_sheet(d, opts) {
+    var aoasht = sylk_to_aoa(d, opts);
+    var aoa = aoasht[0], ws = aoasht[1];
+    var o = aoa_to_sheet(aoa, opts);
+    keys(ws).forEach(function(k) {
+      o[k] = ws[k];
+    });
+    return o;
   }
-  function f(u, v) {
-    return et(s(u, v), v);
+  function sylk_to_workbook(d, opts) {
+    return sheet_to_workbook(sylk_to_sheet(d, opts), opts);
   }
-  function l(u, v, T, x) {
-    var _ = "C;Y" + (T + 1) + ";X" + (x + 1) + ";K";
-    switch (u.t) {
+  function write_ws_cell_sylk(cell, ws, R, C) {
+    var o = "C;Y" + (R + 1) + ";X" + (C + 1) + ";K";
+    switch (cell.t) {
       case "n":
-        _ += u.v || 0, u.f && !u.F && (_ += ";E" + M0(u.f, { r: T, c: x }));
+        o += cell.v || 0;
+        if (cell.f && !cell.F)
+          o += ";E" + a1_to_rc(cell.f, { r: R, c: C });
         break;
       case "b":
-        _ += u.v ? "TRUE" : "FALSE";
+        o += cell.v ? "TRUE" : "FALSE";
         break;
       case "e":
-        _ += u.w || u.v;
+        o += cell.w || cell.v;
         break;
       case "d":
-        _ += '"' + (u.w || u.v) + '"';
+        o += '"' + (cell.w || cell.v) + '"';
         break;
       case "s":
-        _ += '"' + u.v.replace(/"/g, "").replace(/;/g, ";;") + '"';
+        o += '"' + cell.v.replace(/"/g, "").replace(/;/g, ";;") + '"';
         break;
     }
-    return _;
+    return o;
   }
-  function o(u, v) {
-    v.forEach(function(T, x) {
-      var _ = "F;W" + (x + 1) + " " + (x + 1) + " ";
-      T.hidden ? _ += "0" : (typeof T.width == "number" && !T.wpx && (T.wpx = mn(T.width)), typeof T.wpx == "number" && !T.wch && (T.wch = gn(T.wpx)), typeof T.wch == "number" && (_ += Math.round(T.wch))), _.charAt(_.length - 1) != " " && u.push(_);
-    });
-  }
-  function c(u, v) {
-    v.forEach(function(T, x) {
-      var _ = "F;";
-      T.hidden ? _ += "M0;" : T.hpt ? _ += "M" + 20 * T.hpt + ";" : T.hpx && (_ += "M" + 20 * _n(T.hpx) + ";"), _.length > 2 && u.push(_ + "R" + (x + 1));
-    });
-  }
-  function p(u, v) {
-    var T = ["ID;PWXL;N;E"], x = [], _ = we(u["!ref"]), O, R = Array.isArray(u), y = `\r
-`;
-    T.push("P;PGeneral"), T.push("F;P0;DG0G8;M255"), u["!cols"] && o(T, u["!cols"]), u["!rows"] && c(T, u["!rows"]), T.push("B;Y" + (_.e.r - _.s.r + 1) + ";X" + (_.e.c - _.s.c + 1) + ";D" + [_.s.c, _.s.r, _.e.c, _.e.r].join(" "));
-    for (var M = _.s.r; M <= _.e.r; ++M)
-      for (var b = _.s.c; b <= _.e.c; ++b) {
-        var re = _e({ r: M, c: b });
-        O = R ? (u[M] || [])[b] : u[re], !(!O || O.v == null && (!O.f || O.F)) && x.push(l(O, u, M, b));
+  function write_ws_cols_sylk(out, cols) {
+    cols.forEach(function(col, i) {
+      var rec = "F;W" + (i + 1) + " " + (i + 1) + " ";
+      if (col.hidden)
+        rec += "0";
+      else {
+        if (typeof col.width == "number" && !col.wpx)
+          col.wpx = width2px(col.width);
+        if (typeof col.wpx == "number" && !col.wch)
+          col.wch = px2char(col.wpx);
+        if (typeof col.wch == "number")
+          rec += Math.round(col.wch);
       }
-    return T.join(y) + y + x.join(y) + y + "E" + y;
+      if (rec.charAt(rec.length - 1) != " ")
+        out.push(rec);
+    });
+  }
+  function write_ws_rows_sylk(out, rows) {
+    rows.forEach(function(row, i) {
+      var rec = "F;";
+      if (row.hidden)
+        rec += "M0;";
+      else if (row.hpt)
+        rec += "M" + 20 * row.hpt + ";";
+      else if (row.hpx)
+        rec += "M" + 20 * px2pt(row.hpx) + ";";
+      if (rec.length > 2)
+        out.push(rec + "R" + (i + 1));
+    });
+  }
+  function sheet_to_sylk(ws, opts) {
+    var preamble = ["ID;PWXL;N;E"], o = [];
+    var r = safe_decode_range(ws["!ref"]), cell;
+    var dense = Array.isArray(ws);
+    var RS = "\r\n";
+    preamble.push("P;PGeneral");
+    preamble.push("F;P0;DG0G8;M255");
+    if (ws["!cols"])
+      write_ws_cols_sylk(preamble, ws["!cols"]);
+    if (ws["!rows"])
+      write_ws_rows_sylk(preamble, ws["!rows"]);
+    preamble.push("B;Y" + (r.e.r - r.s.r + 1) + ";X" + (r.e.c - r.s.c + 1) + ";D" + [r.s.c, r.s.r, r.e.c, r.e.r].join(" "));
+    for (var R = r.s.r; R <= r.e.r; ++R) {
+      for (var C = r.s.c; C <= r.e.c; ++C) {
+        var coord = encode_cell({ r: R, c: C });
+        cell = dense ? (ws[R] || [])[C] : ws[coord];
+        if (!cell || cell.v == null && (!cell.f || cell.F))
+          continue;
+        o.push(write_ws_cell_sylk(cell, ws, R, C));
+      }
+    }
+    return preamble.join(RS) + RS + o.join(RS) + RS + "E" + RS;
   }
   return {
-    to_workbook: f,
-    to_sheet: s,
-    from_sheet: p
+    to_workbook: sylk_to_workbook,
+    to_sheet: sylk_to_sheet,
+    from_sheet: sheet_to_sylk
   };
-}(), Xc = /* @__PURE__ */ function() {
-  function e(i, s) {
-    switch (s.type) {
+}();
+var DIF = /* @__PURE__ */ function() {
+  function dif_to_aoa(d, opts) {
+    switch (opts.type) {
       case "base64":
-        return t(kr(i), s);
+        return dif_to_aoa_str(Base64_decode(d), opts);
       case "binary":
-        return t(i, s);
+        return dif_to_aoa_str(d, opts);
       case "buffer":
-        return t(de && Buffer.isBuffer(i) ? i.toString("binary") : Vt(i), s);
+        return dif_to_aoa_str(has_buf && Buffer.isBuffer(d) ? d.toString("binary") : a2s(d), opts);
       case "array":
-        return t(Dn(i), s);
+        return dif_to_aoa_str(cc2str(d), opts);
     }
-    throw new Error("Unrecognized type " + s.type);
+    throw new Error("Unrecognized type " + opts.type);
   }
-  function t(i, s) {
-    for (var f = i.split(`
-`), l = -1, o = -1, c = 0, p = []; c !== f.length; ++c) {
-      if (f[c].trim() === "BOT") {
-        p[++l] = [], o = 0;
+  function dif_to_aoa_str(str, opts) {
+    var records = str.split("\n"), R = -1, C = -1, ri = 0, arr = [];
+    for (; ri !== records.length; ++ri) {
+      if (records[ri].trim() === "BOT") {
+        arr[++R] = [];
+        C = 0;
         continue;
       }
-      if (!(l < 0)) {
-        var u = f[c].trim().split(","), v = u[0], T = u[1];
-        ++c;
-        for (var x = f[c] || ""; (x.match(/["]/g) || []).length & 1 && c < f.length - 1; )
-          x += `
-` + f[++c];
-        switch (x = x.trim(), +v) {
-          case -1:
-            if (x === "BOT") {
-              p[++l] = [], o = 0;
-              continue;
-            } else if (x !== "EOD")
-              throw new Error("Unrecognized DIF special command " + x);
-            break;
-          case 0:
-            x === "TRUE" ? p[l][o] = !0 : x === "FALSE" ? p[l][o] = !1 : isNaN(Nr(T)) ? isNaN(Ut(T).getDate()) ? p[l][o] = T : p[l][o] = Ze(T) : p[l][o] = Nr(T), ++o;
-            break;
-          case 1:
-            x = x.slice(1, x.length - 1), x = x.replace(/""/g, '"'), x && x.match(/^=".*"$/) && (x = x.slice(2, -1)), p[l][o++] = x !== "" ? x : null;
-            break;
-        }
-        if (x === "EOD")
+      if (R < 0)
+        continue;
+      var metadata = records[ri].trim().split(",");
+      var type = metadata[0], value = metadata[1];
+      ++ri;
+      var data2 = records[ri] || "";
+      while ((data2.match(/["]/g) || []).length & 1 && ri < records.length - 1)
+        data2 += "\n" + records[++ri];
+      data2 = data2.trim();
+      switch (+type) {
+        case -1:
+          if (data2 === "BOT") {
+            arr[++R] = [];
+            C = 0;
+            continue;
+          } else if (data2 !== "EOD")
+            throw new Error("Unrecognized DIF special command " + data2);
+          break;
+        case 0:
+          if (data2 === "TRUE")
+            arr[R][C] = true;
+          else if (data2 === "FALSE")
+            arr[R][C] = false;
+          else if (!isNaN(fuzzynum(value)))
+            arr[R][C] = fuzzynum(value);
+          else if (!isNaN(fuzzydate(value).getDate()))
+            arr[R][C] = parseDate(value);
+          else
+            arr[R][C] = value;
+          ++C;
+          break;
+        case 1:
+          data2 = data2.slice(1, data2.length - 1);
+          data2 = data2.replace(/""/g, '"');
+          if (data2 && data2.match(/^=".*"$/))
+            data2 = data2.slice(2, -1);
+          arr[R][C++] = data2 !== "" ? data2 : null;
           break;
       }
+      if (data2 === "EOD")
+        break;
     }
-    return s && s.sheetRows && (p = p.slice(0, s.sheetRows)), p;
+    if (opts && opts.sheetRows)
+      arr = arr.slice(0, opts.sheetRows);
+    return arr;
   }
-  function r(i, s) {
-    return wt(e(i, s), s);
+  function dif_to_sheet(str, opts) {
+    return aoa_to_sheet(dif_to_aoa(str, opts), opts);
   }
-  function n(i, s) {
-    return et(r(i, s), s);
+  function dif_to_workbook(str, opts) {
+    return sheet_to_workbook(dif_to_sheet(str, opts), opts);
   }
-  var a = /* @__PURE__ */ function() {
-    var i = function(l, o, c, p, u) {
-      l.push(o), l.push(c + "," + p), l.push('"' + u.replace(/"/g, '""') + '"');
-    }, s = function(l, o, c, p) {
-      l.push(o + "," + c), l.push(o == 1 ? '"' + p.replace(/"/g, '""') + '"' : p);
+  var sheet_to_dif = /* @__PURE__ */ function() {
+    var push_field = function pf(o, topic, v, n, s) {
+      o.push(topic);
+      o.push(v + "," + n);
+      o.push('"' + s.replace(/"/g, '""') + '"');
     };
-    return function(l) {
-      var o = [], c = we(l["!ref"]), p, u = Array.isArray(l);
-      i(o, "TABLE", 0, 1, "sheetjs"), i(o, "VECTORS", 0, c.e.r - c.s.r + 1, ""), i(o, "TUPLES", 0, c.e.c - c.s.c + 1, ""), i(o, "DATA", 0, 0, "");
-      for (var v = c.s.r; v <= c.e.r; ++v) {
-        s(o, -1, 0, "BOT");
-        for (var T = c.s.c; T <= c.e.c; ++T) {
-          var x = _e({ r: v, c: T });
-          if (p = u ? (l[v] || [])[T] : l[x], !p) {
-            s(o, 1, 0, "");
+    var push_value = function po(o, type, v, s) {
+      o.push(type + "," + v);
+      o.push(type == 1 ? '"' + s.replace(/"/g, '""') + '"' : s);
+    };
+    return function sheet_to_dif2(ws) {
+      var o = [];
+      var r = safe_decode_range(ws["!ref"]), cell;
+      var dense = Array.isArray(ws);
+      push_field(o, "TABLE", 0, 1, "sheetjs");
+      push_field(o, "VECTORS", 0, r.e.r - r.s.r + 1, "");
+      push_field(o, "TUPLES", 0, r.e.c - r.s.c + 1, "");
+      push_field(o, "DATA", 0, 0, "");
+      for (var R = r.s.r; R <= r.e.r; ++R) {
+        push_value(o, -1, 0, "BOT");
+        for (var C = r.s.c; C <= r.e.c; ++C) {
+          var coord = encode_cell({ r: R, c: C });
+          cell = dense ? (ws[R] || [])[C] : ws[coord];
+          if (!cell) {
+            push_value(o, 1, 0, "");
             continue;
           }
-          switch (p.t) {
+          switch (cell.t) {
             case "n":
-              var _ = p.w;
-              !_ && p.v != null && (_ = p.v), _ == null ? p.f && !p.F ? s(o, 1, 0, "=" + p.f) : s(o, 1, 0, "") : s(o, 0, _, "V");
+              var val = cell.w;
+              if (!val && cell.v != null)
+                val = cell.v;
+              if (val == null) {
+                if (cell.f && !cell.F)
+                  push_value(o, 1, 0, "=" + cell.f);
+                else
+                  push_value(o, 1, 0, "");
+              } else
+                push_value(o, 0, val, "V");
               break;
             case "b":
-              s(o, 0, p.v ? 1 : 0, p.v ? "TRUE" : "FALSE");
+              push_value(o, 0, cell.v ? 1 : 0, cell.v ? "TRUE" : "FALSE");
               break;
             case "s":
-              s(o, 1, 0, isNaN(p.v) ? p.v : '="' + p.v + '"');
+              push_value(o, 1, 0, isNaN(cell.v) ? cell.v : '="' + cell.v + '"');
               break;
             case "d":
-              p.w || (p.w = Wr(p.z || Ce[14], rr(Ze(p.v)))), s(o, 0, p.w, "V");
+              if (!cell.w)
+                cell.w = SSF_format(cell.z || table_fmt[14], datenum(parseDate(cell.v)));
+              push_value(o, 0, cell.w, "V");
               break;
             default:
-              s(o, 1, 0, "");
+              push_value(o, 1, 0, "");
           }
         }
       }
-      s(o, -1, 0, "EOD");
-      var O = `\r
-`, R = o.join(O);
-      return R;
+      push_value(o, -1, 0, "EOD");
+      var RS = "\r\n";
+      var oo = o.join(RS);
+      return oo;
     };
   }();
   return {
-    to_workbook: n,
-    to_sheet: r,
-    from_sheet: a
+    to_workbook: dif_to_workbook,
+    to_sheet: dif_to_sheet,
+    from_sheet: sheet_to_dif
   };
-}(), As = /* @__PURE__ */ function() {
-  function e(p) {
-    return p.replace(/\\b/g, "\\").replace(/\\c/g, ":").replace(/\\n/g, `
-`);
+}();
+var ETH = /* @__PURE__ */ function() {
+  function decode(s) {
+    return s.replace(/\\b/g, "\\").replace(/\\c/g, ":").replace(/\\n/g, "\n");
   }
-  function t(p) {
-    return p.replace(/\\/g, "\\b").replace(/:/g, "\\c").replace(/\n/g, "\\n");
+  function encode2(s) {
+    return s.replace(/\\/g, "\\b").replace(/:/g, "\\c").replace(/\n/g, "\\n");
   }
-  function r(p, u) {
-    for (var v = p.split(`
-`), T = -1, x = -1, _ = 0, O = []; _ !== v.length; ++_) {
-      var R = v[_].trim().split(":");
-      if (R[0] === "cell") {
-        var y = Me(R[1]);
-        if (O.length <= y.r)
-          for (T = O.length; T <= y.r; ++T)
-            O[T] || (O[T] = []);
-        switch (T = y.r, x = y.c, R[2]) {
-          case "t":
-            O[T][x] = e(R[3]);
-            break;
-          case "v":
-            O[T][x] = +R[3];
-            break;
-          case "vtf":
-            var M = R[R.length - 1];
-          case "vtc":
-            switch (R[3]) {
-              case "nl":
-                O[T][x] = !!+R[4];
-                break;
-              default:
-                O[T][x] = +R[4];
-                break;
-            }
-            R[2] == "vtf" && (O[T][x] = [O[T][x], M]);
-        }
+  function eth_to_aoa(str, opts) {
+    var records = str.split("\n"), R = -1, C = -1, ri = 0, arr = [];
+    for (; ri !== records.length; ++ri) {
+      var record = records[ri].trim().split(":");
+      if (record[0] !== "cell")
+        continue;
+      var addr = decode_cell(record[1]);
+      if (arr.length <= addr.r) {
+        for (R = arr.length; R <= addr.r; ++R)
+          if (!arr[R])
+            arr[R] = [];
+      }
+      R = addr.r;
+      C = addr.c;
+      switch (record[2]) {
+        case "t":
+          arr[R][C] = decode(record[3]);
+          break;
+        case "v":
+          arr[R][C] = +record[3];
+          break;
+        case "vtf":
+          var _f = record[record.length - 1];
+        case "vtc":
+          switch (record[3]) {
+            case "nl":
+              arr[R][C] = +record[4] ? true : false;
+              break;
+            default:
+              arr[R][C] = +record[4];
+              break;
+          }
+          if (record[2] == "vtf")
+            arr[R][C] = [arr[R][C], _f];
       }
     }
-    return u && u.sheetRows && (O = O.slice(0, u.sheetRows)), O;
+    if (opts && opts.sheetRows)
+      arr = arr.slice(0, opts.sheetRows);
+    return arr;
   }
-  function n(p, u) {
-    return wt(r(p, u), u);
+  function eth_to_sheet(d, opts) {
+    return aoa_to_sheet(eth_to_aoa(d, opts), opts);
   }
-  function a(p, u) {
-    return et(n(p, u), u);
+  function eth_to_workbook(d, opts) {
+    return sheet_to_workbook(eth_to_sheet(d, opts), opts);
   }
-  var i = [
+  var header = [
     "socialcalc:version:1.5",
     "MIME-Version: 1.0",
     "Content-Type: multipart/mixed; boundary=SocialCalcSpreadsheetControlSave"
-  ].join(`
-`), s = [
+  ].join("\n");
+  var sep = [
     "--SocialCalcSpreadsheetControlSave",
     "Content-type: text/plain; charset=UTF-8"
-  ].join(`
-`) + `
-`, f = [
+  ].join("\n") + "\n";
+  var meta = [
     "# SocialCalc Spreadsheet Control Save",
     "part:sheet"
-  ].join(`
-`), l = "--SocialCalcSpreadsheetControlSave--";
-  function o(p) {
-    if (!p || !p["!ref"])
+  ].join("\n");
+  var end = "--SocialCalcSpreadsheetControlSave--";
+  function sheet_to_eth_data(ws) {
+    if (!ws || !ws["!ref"])
       return "";
-    for (var u = [], v = [], T, x = "", _ = lr(p["!ref"]), O = Array.isArray(p), R = _.s.r; R <= _.e.r; ++R)
-      for (var y = _.s.c; y <= _.e.c; ++y)
-        if (x = _e({ r: R, c: y }), T = O ? (p[R] || [])[y] : p[x], !(!T || T.v == null || T.t === "z")) {
-          switch (v = ["cell", x, "t"], T.t) {
-            case "s":
-            case "str":
-              v.push(t(T.v));
-              break;
-            case "n":
-              T.f ? (v[2] = "vtf", v[3] = "n", v[4] = T.v, v[5] = t(T.f)) : (v[2] = "v", v[3] = T.v);
-              break;
-            case "b":
-              v[2] = "vt" + (T.f ? "f" : "c"), v[3] = "nl", v[4] = T.v ? "1" : "0", v[5] = t(T.f || (T.v ? "TRUE" : "FALSE"));
-              break;
-            case "d":
-              var M = rr(Ze(T.v));
-              v[2] = "vtc", v[3] = "nd", v[4] = "" + M, v[5] = T.w || Wr(T.z || Ce[14], M);
-              break;
-            case "e":
-              continue;
-          }
-          u.push(v.join(":"));
+    var o = [], oo = [], cell, coord = "";
+    var r = decode_range(ws["!ref"]);
+    var dense = Array.isArray(ws);
+    for (var R = r.s.r; R <= r.e.r; ++R) {
+      for (var C = r.s.c; C <= r.e.c; ++C) {
+        coord = encode_cell({ r: R, c: C });
+        cell = dense ? (ws[R] || [])[C] : ws[coord];
+        if (!cell || cell.v == null || cell.t === "z")
+          continue;
+        oo = ["cell", coord, "t"];
+        switch (cell.t) {
+          case "s":
+          case "str":
+            oo.push(encode2(cell.v));
+            break;
+          case "n":
+            if (!cell.f) {
+              oo[2] = "v";
+              oo[3] = cell.v;
+            } else {
+              oo[2] = "vtf";
+              oo[3] = "n";
+              oo[4] = cell.v;
+              oo[5] = encode2(cell.f);
+            }
+            break;
+          case "b":
+            oo[2] = "vt" + (cell.f ? "f" : "c");
+            oo[3] = "nl";
+            oo[4] = cell.v ? "1" : "0";
+            oo[5] = encode2(cell.f || (cell.v ? "TRUE" : "FALSE"));
+            break;
+          case "d":
+            var t = datenum(parseDate(cell.v));
+            oo[2] = "vtc";
+            oo[3] = "nd";
+            oo[4] = "" + t;
+            oo[5] = cell.w || SSF_format(cell.z || table_fmt[14], t);
+            break;
+          case "e":
+            continue;
         }
-    return u.push("sheet:c:" + (_.e.c - _.s.c + 1) + ":r:" + (_.e.r - _.s.r + 1) + ":tvf:1"), u.push("valueformat:1:text-wiki"), u.join(`
-`);
+        o.push(oo.join(":"));
+      }
+    }
+    o.push("sheet:c:" + (r.e.c - r.s.c + 1) + ":r:" + (r.e.r - r.s.r + 1) + ":tvf:1");
+    o.push("valueformat:1:text-wiki");
+    return o.join("\n");
   }
-  function c(p) {
-    return [i, s, f, s, o(p), l].join(`
-`);
+  function sheet_to_eth(ws) {
+    return [header, sep, meta, sep, sheet_to_eth_data(ws), end].join("\n");
   }
   return {
-    to_workbook: a,
-    to_sheet: n,
-    from_sheet: c
+    to_workbook: eth_to_workbook,
+    to_sheet: eth_to_sheet,
+    from_sheet: sheet_to_eth
   };
-}(), $c = /* @__PURE__ */ function() {
-  function e(c, p, u, v, T) {
-    T.raw ? p[u][v] = c : c === "" || (c === "TRUE" ? p[u][v] = !0 : c === "FALSE" ? p[u][v] = !1 : isNaN(Nr(c)) ? isNaN(Ut(c).getDate()) ? p[u][v] = c : p[u][v] = Ze(c) : p[u][v] = Nr(c));
+}();
+var PRN = /* @__PURE__ */ function() {
+  function set_text_arr(data2, arr, R, C, o) {
+    if (o.raw)
+      arr[R][C] = data2;
+    else if (data2 === "")
+      ;
+    else if (data2 === "TRUE")
+      arr[R][C] = true;
+    else if (data2 === "FALSE")
+      arr[R][C] = false;
+    else if (!isNaN(fuzzynum(data2)))
+      arr[R][C] = fuzzynum(data2);
+    else if (!isNaN(fuzzydate(data2).getDate()))
+      arr[R][C] = parseDate(data2);
+    else
+      arr[R][C] = data2;
   }
-  function t(c, p) {
-    var u = p || {}, v = [];
-    if (!c || c.length === 0)
-      return v;
-    for (var T = c.split(/[\r\n]/), x = T.length - 1; x >= 0 && T[x].length === 0; )
-      --x;
-    for (var _ = 10, O = 0, R = 0; R <= x; ++R)
-      O = T[R].indexOf(" "), O == -1 ? O = T[R].length : O++, _ = Math.max(_, O);
-    for (R = 0; R <= x; ++R) {
-      v[R] = [];
-      var y = 0;
-      for (e(T[R].slice(0, _).trim(), v, R, y, u), y = 1; y <= (T[R].length - _) / 10 + 1; ++y)
-        e(T[R].slice(_ + (y - 1) * 10, _ + y * 10).trim(), v, R, y, u);
+  function prn_to_aoa_str(f, opts) {
+    var o = opts || {};
+    var arr = [];
+    if (!f || f.length === 0)
+      return arr;
+    var lines = f.split(/[\r\n]/);
+    var L = lines.length - 1;
+    while (L >= 0 && lines[L].length === 0)
+      --L;
+    var start = 10, idx = 0;
+    var R = 0;
+    for (; R <= L; ++R) {
+      idx = lines[R].indexOf(" ");
+      if (idx == -1)
+        idx = lines[R].length;
+      else
+        idx++;
+      start = Math.max(start, idx);
     }
-    return u.sheetRows && (v = v.slice(0, u.sheetRows)), v;
+    for (R = 0; R <= L; ++R) {
+      arr[R] = [];
+      var C = 0;
+      set_text_arr(lines[R].slice(0, start).trim(), arr, R, C, o);
+      for (C = 1; C <= (lines[R].length - start) / 10 + 1; ++C)
+        set_text_arr(lines[R].slice(start + (C - 1) * 10, start + C * 10).trim(), arr, R, C, o);
+    }
+    if (o.sheetRows)
+      arr = arr.slice(0, o.sheetRows);
+    return arr;
   }
-  var r = {
+  var guess_seps = {
     44: ",",
     9: "	",
     59: ";",
     124: "|"
-  }, n = {
+  };
+  var guess_sep_weights = {
     44: 3,
     9: 2,
     59: 1,
     124: 0
   };
-  function a(c) {
-    for (var p = {}, u = !1, v = 0, T = 0; v < c.length; ++v)
-      (T = c.charCodeAt(v)) == 34 ? u = !u : !u && T in r && (p[T] = (p[T] || 0) + 1);
-    T = [];
-    for (v in p)
-      Object.prototype.hasOwnProperty.call(p, v) && T.push([p[v], v]);
-    if (!T.length) {
-      p = n;
-      for (v in p)
-        Object.prototype.hasOwnProperty.call(p, v) && T.push([p[v], v]);
+  function guess_sep(str) {
+    var cnt = {}, instr = false, end = 0, cc = 0;
+    for (; end < str.length; ++end) {
+      if ((cc = str.charCodeAt(end)) == 34)
+        instr = !instr;
+      else if (!instr && cc in guess_seps)
+        cnt[cc] = (cnt[cc] || 0) + 1;
     }
-    return T.sort(function(x, _) {
-      return x[0] - _[0] || n[x[1]] - n[_[1]];
-    }), r[T.pop()[1]] || 44;
+    cc = [];
+    for (end in cnt)
+      if (Object.prototype.hasOwnProperty.call(cnt, end)) {
+        cc.push([cnt[end], end]);
+      }
+    if (!cc.length) {
+      cnt = guess_sep_weights;
+      for (end in cnt)
+        if (Object.prototype.hasOwnProperty.call(cnt, end)) {
+          cc.push([cnt[end], end]);
+        }
+    }
+    cc.sort(function(a, b) {
+      return a[0] - b[0] || guess_sep_weights[a[1]] - guess_sep_weights[b[1]];
+    });
+    return guess_seps[cc.pop()[1]] || 44;
   }
-  function i(c, p) {
-    var u = p || {}, v = "", T = u.dense ? [] : {}, x = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
-    c.slice(0, 4) == "sep=" ? c.charCodeAt(5) == 13 && c.charCodeAt(6) == 10 ? (v = c.charAt(4), c = c.slice(7)) : c.charCodeAt(5) == 13 || c.charCodeAt(5) == 10 ? (v = c.charAt(4), c = c.slice(6)) : v = a(c.slice(0, 1024)) : u && u.FS ? v = u.FS : v = a(c.slice(0, 1024));
-    var _ = 0, O = 0, R = 0, y = 0, M = 0, b = v.charCodeAt(0), re = !1, D = 0, H = c.charCodeAt(0);
-    c = c.replace(/\r\n/mg, `
-`);
-    var L = u.dateNF != null ? fl(u.dateNF) : null;
-    function G() {
-      var z = c.slice(y, M), j = {};
-      if (z.charAt(0) == '"' && z.charAt(z.length - 1) == '"' && (z = z.slice(1, -1).replace(/""/g, '"')), z.length === 0)
-        j.t = "z";
-      else if (u.raw)
-        j.t = "s", j.v = z;
-      else if (z.trim().length === 0)
-        j.t = "s", j.v = z;
-      else if (z.charCodeAt(0) == 61)
-        z.charCodeAt(1) == 34 && z.charCodeAt(z.length - 1) == 34 ? (j.t = "s", j.v = z.slice(2, -1).replace(/""/g, '"')) : Gh(z) ? (j.t = "n", j.f = z.slice(1)) : (j.t = "s", j.v = z);
-      else if (z == "TRUE")
-        j.t = "b", j.v = !0;
-      else if (z == "FALSE")
-        j.t = "b", j.v = !1;
-      else if (!isNaN(R = Nr(z)))
-        j.t = "n", u.cellText !== !1 && (j.w = z), j.v = R;
-      else if (!isNaN(Ut(z).getDate()) || L && z.match(L)) {
-        j.z = u.dateNF || Ce[14];
-        var Q = 0;
-        L && z.match(L) && (z = ol(z, u.dateNF, z.match(L) || []), Q = 1), u.cellDates ? (j.t = "d", j.v = Ze(z, Q)) : (j.t = "n", j.v = rr(Ze(z, Q))), u.cellText !== !1 && (j.w = Wr(j.z, j.v instanceof Date ? rr(j.v) : j.v)), u.cellNF || delete j.z;
+  function dsv_to_sheet_str(str, opts) {
+    var o = opts || {};
+    var sep = "";
+    var ws = o.dense ? [] : {};
+    var range = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
+    if (str.slice(0, 4) == "sep=") {
+      if (str.charCodeAt(5) == 13 && str.charCodeAt(6) == 10) {
+        sep = str.charAt(4);
+        str = str.slice(7);
+      } else if (str.charCodeAt(5) == 13 || str.charCodeAt(5) == 10) {
+        sep = str.charAt(4);
+        str = str.slice(6);
       } else
-        j.t = "s", j.v = z;
-      if (j.t == "z" || (u.dense ? (T[_] || (T[_] = []), T[_][O] = j) : T[_e({ c: O, r: _ })] = j), y = M + 1, H = c.charCodeAt(y), x.e.c < O && (x.e.c = O), x.e.r < _ && (x.e.r = _), D == b)
-        ++O;
-      else if (O = 0, ++_, u.sheetRows && u.sheetRows <= _)
-        return !0;
+        sep = guess_sep(str.slice(0, 1024));
+    } else if (o && o.FS)
+      sep = o.FS;
+    else
+      sep = guess_sep(str.slice(0, 1024));
+    var R = 0, C = 0, v = 0;
+    var start = 0, end = 0, sepcc = sep.charCodeAt(0), instr = false, cc = 0, startcc = str.charCodeAt(0);
+    str = str.replace(/\r\n/mg, "\n");
+    var _re = o.dateNF != null ? dateNF_regex(o.dateNF) : null;
+    function finish_cell() {
+      var s = str.slice(start, end);
+      var cell = {};
+      if (s.charAt(0) == '"' && s.charAt(s.length - 1) == '"')
+        s = s.slice(1, -1).replace(/""/g, '"');
+      if (s.length === 0)
+        cell.t = "z";
+      else if (o.raw) {
+        cell.t = "s";
+        cell.v = s;
+      } else if (s.trim().length === 0) {
+        cell.t = "s";
+        cell.v = s;
+      } else if (s.charCodeAt(0) == 61) {
+        if (s.charCodeAt(1) == 34 && s.charCodeAt(s.length - 1) == 34) {
+          cell.t = "s";
+          cell.v = s.slice(2, -1).replace(/""/g, '"');
+        } else if (fuzzyfmla(s)) {
+          cell.t = "n";
+          cell.f = s.slice(1);
+        } else {
+          cell.t = "s";
+          cell.v = s;
+        }
+      } else if (s == "TRUE") {
+        cell.t = "b";
+        cell.v = true;
+      } else if (s == "FALSE") {
+        cell.t = "b";
+        cell.v = false;
+      } else if (!isNaN(v = fuzzynum(s))) {
+        cell.t = "n";
+        if (o.cellText !== false)
+          cell.w = s;
+        cell.v = v;
+      } else if (!isNaN(fuzzydate(s).getDate()) || _re && s.match(_re)) {
+        cell.z = o.dateNF || table_fmt[14];
+        var k = 0;
+        if (_re && s.match(_re)) {
+          s = dateNF_fix(s, o.dateNF, s.match(_re) || []);
+          k = 1;
+        }
+        if (o.cellDates) {
+          cell.t = "d";
+          cell.v = parseDate(s, k);
+        } else {
+          cell.t = "n";
+          cell.v = datenum(parseDate(s, k));
+        }
+        if (o.cellText !== false)
+          cell.w = SSF_format(cell.z, cell.v instanceof Date ? datenum(cell.v) : cell.v);
+        if (!o.cellNF)
+          delete cell.z;
+      } else {
+        cell.t = "s";
+        cell.v = s;
+      }
+      if (cell.t == "z")
+        ;
+      else if (o.dense) {
+        if (!ws[R])
+          ws[R] = [];
+        ws[R][C] = cell;
+      } else
+        ws[encode_cell({ c: C, r: R })] = cell;
+      start = end + 1;
+      startcc = str.charCodeAt(start);
+      if (range.e.c < C)
+        range.e.c = C;
+      if (range.e.r < R)
+        range.e.r = R;
+      if (cc == sepcc)
+        ++C;
+      else {
+        C = 0;
+        ++R;
+        if (o.sheetRows && o.sheetRows <= R)
+          return true;
+      }
     }
-    e:
-      for (; M < c.length; ++M)
-        switch (D = c.charCodeAt(M)) {
+    outer:
+      for (; end < str.length; ++end)
+        switch (cc = str.charCodeAt(end)) {
           case 34:
-            H === 34 && (re = !re);
+            if (startcc === 34)
+              instr = !instr;
             break;
-          case b:
+          case sepcc:
           case 10:
           case 13:
-            if (!re && G())
-              break e;
+            if (!instr && finish_cell())
+              break outer;
             break;
         }
-    return M - y > 0 && G(), T["!ref"] = Ne(x), T;
+    if (end - start > 0)
+      finish_cell();
+    ws["!ref"] = encode_range(range);
+    return ws;
   }
-  function s(c, p) {
-    return !(p && p.PRN) || p.FS || c.slice(0, 4) == "sep=" || c.indexOf("	") >= 0 || c.indexOf(",") >= 0 || c.indexOf(";") >= 0 ? i(c, p) : wt(t(c, p), p);
+  function prn_to_sheet_str(str, opts) {
+    if (!(opts && opts.PRN))
+      return dsv_to_sheet_str(str, opts);
+    if (opts.FS)
+      return dsv_to_sheet_str(str, opts);
+    if (str.slice(0, 4) == "sep=")
+      return dsv_to_sheet_str(str, opts);
+    if (str.indexOf("	") >= 0 || str.indexOf(",") >= 0 || str.indexOf(";") >= 0)
+      return dsv_to_sheet_str(str, opts);
+    return aoa_to_sheet(prn_to_aoa_str(str, opts), opts);
   }
-  function f(c, p) {
-    var u = "", v = p.type == "string" ? [0, 0, 0, 0] : n2(c, p);
-    switch (p.type) {
+  function prn_to_sheet(d, opts) {
+    var str = "", bytes = opts.type == "string" ? [0, 0, 0, 0] : firstbyte(d, opts);
+    switch (opts.type) {
       case "base64":
-        u = kr(c);
+        str = Base64_decode(d);
         break;
       case "binary":
-        u = c;
+        str = d;
         break;
       case "buffer":
-        p.codepage == 65001 ? u = c.toString("utf8") : p.codepage && typeof zr < "u" ? u = zr.utils.decode(p.codepage, c) : u = de && Buffer.isBuffer(c) ? c.toString("binary") : Vt(c);
+        if (opts.codepage == 65001)
+          str = d.toString("utf8");
+        else if (opts.codepage && typeof $cptable !== "undefined")
+          str = $cptable.utils.decode(opts.codepage, d);
+        else
+          str = has_buf && Buffer.isBuffer(d) ? d.toString("binary") : a2s(d);
         break;
       case "array":
-        u = Dn(c);
+        str = cc2str(d);
         break;
       case "string":
-        u = c;
+        str = d;
         break;
       default:
-        throw new Error("Unrecognized type " + p.type);
+        throw new Error("Unrecognized type " + opts.type);
     }
-    return v[0] == 239 && v[1] == 187 && v[2] == 191 ? u = Nt(u.slice(3)) : p.type != "string" && p.type != "buffer" && p.codepage == 65001 ? u = Nt(u) : p.type == "binary" && typeof zr < "u" && p.codepage && (u = zr.utils.decode(p.codepage, zr.utils.encode(28591, u))), u.slice(0, 19) == "socialcalc:version:" ? As.to_sheet(p.type == "string" ? u : Nt(u), p) : s(u, p);
+    if (bytes[0] == 239 && bytes[1] == 187 && bytes[2] == 191)
+      str = utf8read(str.slice(3));
+    else if (opts.type != "string" && opts.type != "buffer" && opts.codepage == 65001)
+      str = utf8read(str);
+    else if (opts.type == "binary" && typeof $cptable !== "undefined" && opts.codepage)
+      str = $cptable.utils.decode(opts.codepage, $cptable.utils.encode(28591, str));
+    if (str.slice(0, 19) == "socialcalc:version:")
+      return ETH.to_sheet(opts.type == "string" ? str : utf8read(str), opts);
+    return prn_to_sheet_str(str, opts);
   }
-  function l(c, p) {
-    return et(f(c, p), p);
+  function prn_to_workbook(d, opts) {
+    return sheet_to_workbook(prn_to_sheet(d, opts), opts);
   }
-  function o(c) {
-    for (var p = [], u = we(c["!ref"]), v, T = Array.isArray(c), x = u.s.r; x <= u.e.r; ++x) {
-      for (var _ = [], O = u.s.c; O <= u.e.c; ++O) {
-        var R = _e({ r: x, c: O });
-        if (v = T ? (c[x] || [])[O] : c[R], !v || v.v == null) {
-          _.push("          ");
+  function sheet_to_prn(ws) {
+    var o = [];
+    var r = safe_decode_range(ws["!ref"]), cell;
+    var dense = Array.isArray(ws);
+    for (var R = r.s.r; R <= r.e.r; ++R) {
+      var oo = [];
+      for (var C = r.s.c; C <= r.e.c; ++C) {
+        var coord = encode_cell({ r: R, c: C });
+        cell = dense ? (ws[R] || [])[C] : ws[coord];
+        if (!cell || cell.v == null) {
+          oo.push("          ");
           continue;
         }
-        for (var y = (v.w || (Pr(v), v.w) || "").slice(0, 10); y.length < 10; )
-          y += " ";
-        _.push(y + (O === 0 ? " " : ""));
+        var w = (cell.w || (format_cell(cell), cell.w) || "").slice(0, 10);
+        while (w.length < 10)
+          w += " ";
+        oo.push(w + (C === 0 ? " " : ""));
       }
-      p.push(_.join(""));
+      o.push(oo.join(""));
     }
-    return p.join(`
-`);
+    return o.join("\n");
   }
   return {
-    to_workbook: l,
-    to_sheet: f,
-    from_sheet: o
+    to_workbook: prn_to_workbook,
+    to_sheet: prn_to_sheet,
+    from_sheet: sheet_to_prn
   };
-}(), Qa = /* @__PURE__ */ function() {
-  function e(A, B, C) {
-    if (!!A) {
-      sr(A, A.l || 0);
-      for (var F = C.Enum || cr; A.l < A.length; ) {
-        var X = A.read_shift(2), se = F[X] || F[65535], fe = A.read_shift(2), ie = A.l + fe, ee = se.f && se.f(A, fe, C);
-        if (A.l = ie, B(ee, se, X))
-          return;
-      }
+}();
+var WK_ = /* @__PURE__ */ function() {
+  function lotushopper(data2, cb, opts) {
+    if (!data2)
+      return;
+    prep_blob(data2, data2.l || 0);
+    var Enum = opts.Enum || WK1Enum;
+    while (data2.l < data2.length) {
+      var RT = data2.read_shift(2);
+      var R = Enum[RT] || Enum[65535];
+      var length = data2.read_shift(2);
+      var tgt = data2.l + length;
+      var d = R.f && R.f(data2, length, opts);
+      data2.l = tgt;
+      if (cb(d, R, RT))
+        return;
     }
   }
-  function t(A, B) {
-    switch (B.type) {
+  function lotus_to_workbook(d, opts) {
+    switch (opts.type) {
       case "base64":
-        return r(_r(kr(A)), B);
+        return lotus_to_workbook_buf(s2a(Base64_decode(d)), opts);
       case "binary":
-        return r(_r(A), B);
+        return lotus_to_workbook_buf(s2a(d), opts);
       case "buffer":
       case "array":
-        return r(A, B);
+        return lotus_to_workbook_buf(d, opts);
     }
-    throw "Unsupported type " + B.type;
+    throw "Unsupported type " + opts.type;
   }
-  function r(A, B) {
-    if (!A)
-      return A;
-    var C = B || {}, F = C.dense ? [] : {}, X = "Sheet1", se = "", fe = 0, ie = {}, ee = [], Te = [], ue = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } }, Ye = C.sheetRows || 0;
-    if (A[2] == 0 && (A[3] == 8 || A[3] == 9) && A.length >= 16 && A[14] == 5 && A[15] === 108)
-      throw new Error("Unsupported Works 3 for Mac file");
-    if (A[2] == 2)
-      C.Enum = cr, e(A, function(ae, hr, Cr) {
-        switch (Cr) {
+  function lotus_to_workbook_buf(d, opts) {
+    if (!d)
+      return d;
+    var o = opts || {};
+    var s = o.dense ? [] : {}, n = "Sheet1", next_n = "", sidx = 0;
+    var sheets = {}, snames = [], realnames = [];
+    var refguess = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } };
+    var sheetRows = o.sheetRows || 0;
+    if (d[2] == 0) {
+      if (d[3] == 8 || d[3] == 9) {
+        if (d.length >= 16 && d[14] == 5 && d[15] === 108)
+          throw new Error("Unsupported Works 3 for Mac file");
+      }
+    }
+    if (d[2] == 2) {
+      o.Enum = WK1Enum;
+      lotushopper(d, function(val, R, RT) {
+        switch (RT) {
           case 0:
-            C.vers = ae, ae >= 4096 && (C.qpro = !0);
+            o.vers = val;
+            if (val >= 4096)
+              o.qpro = true;
             break;
           case 6:
-            ue = ae;
+            refguess = val;
             break;
           case 204:
-            ae && (se = ae);
+            if (val)
+              next_n = val;
             break;
           case 222:
-            se = ae;
+            next_n = val;
             break;
           case 15:
           case 51:
-            C.qpro || (ae[1].v = ae[1].v.slice(1));
+            if (!o.qpro)
+              val[1].v = val[1].v.slice(1);
           case 13:
           case 14:
           case 16:
-            Cr == 14 && (ae[2] & 112) == 112 && (ae[2] & 15) > 1 && (ae[2] & 15) < 15 && (ae[1].z = C.dateNF || Ce[14], C.cellDates && (ae[1].t = "d", ae[1].v = Hi(ae[1].v))), C.qpro && ae[3] > fe && (F["!ref"] = Ne(ue), ie[X] = F, ee.push(X), F = C.dense ? [] : {}, ue = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } }, fe = ae[3], X = se || "Sheet" + (fe + 1), se = "");
-            var Xr = C.dense ? (F[ae[0].r] || [])[ae[0].c] : F[_e(ae[0])];
-            if (Xr) {
-              Xr.t = ae[1].t, Xr.v = ae[1].v, ae[1].z != null && (Xr.z = ae[1].z), ae[1].f != null && (Xr.f = ae[1].f);
+            if (RT == 14 && (val[2] & 112) == 112 && (val[2] & 15) > 1 && (val[2] & 15) < 15) {
+              val[1].z = o.dateNF || table_fmt[14];
+              if (o.cellDates) {
+                val[1].t = "d";
+                val[1].v = numdate(val[1].v);
+              }
+            }
+            if (o.qpro) {
+              if (val[3] > sidx) {
+                s["!ref"] = encode_range(refguess);
+                sheets[n] = s;
+                snames.push(n);
+                s = o.dense ? [] : {};
+                refguess = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } };
+                sidx = val[3];
+                n = next_n || "Sheet" + (sidx + 1);
+                next_n = "";
+              }
+            }
+            var tmpcell = o.dense ? (s[val[0].r] || [])[val[0].c] : s[encode_cell(val[0])];
+            if (tmpcell) {
+              tmpcell.t = val[1].t;
+              tmpcell.v = val[1].v;
+              if (val[1].z != null)
+                tmpcell.z = val[1].z;
+              if (val[1].f != null)
+                tmpcell.f = val[1].f;
               break;
             }
-            C.dense ? (F[ae[0].r] || (F[ae[0].r] = []), F[ae[0].r][ae[0].c] = ae[1]) : F[_e(ae[0])] = ae[1];
+            if (o.dense) {
+              if (!s[val[0].r])
+                s[val[0].r] = [];
+              s[val[0].r][val[0].c] = val[1];
+            } else
+              s[encode_cell(val[0])] = val[1];
             break;
         }
-      }, C);
-    else if (A[2] == 26 || A[2] == 14)
-      C.Enum = nr, A[2] == 14 && (C.qpro = !0, A.l = 0), e(A, function(ae, hr, Cr) {
-        switch (Cr) {
+      }, o);
+    } else if (d[2] == 26 || d[2] == 14) {
+      o.Enum = WK3Enum;
+      if (d[2] == 14) {
+        o.qpro = true;
+        d.l = 0;
+      }
+      lotushopper(d, function(val, R, RT) {
+        switch (RT) {
           case 204:
-            X = ae;
+            n = val;
             break;
           case 22:
-            ae[1].v = ae[1].v.slice(1);
+            val[1].v = val[1].v.slice(1);
           case 23:
           case 24:
           case 25:
           case 37:
           case 39:
           case 40:
-            if (ae[3] > fe && (F["!ref"] = Ne(ue), ie[X] = F, ee.push(X), F = C.dense ? [] : {}, ue = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } }, fe = ae[3], X = "Sheet" + (fe + 1)), Ye > 0 && ae[0].r >= Ye)
+            if (val[3] > sidx) {
+              s["!ref"] = encode_range(refguess);
+              sheets[n] = s;
+              snames.push(n);
+              s = o.dense ? [] : {};
+              refguess = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } };
+              sidx = val[3];
+              n = "Sheet" + (sidx + 1);
+            }
+            if (sheetRows > 0 && val[0].r >= sheetRows)
               break;
-            C.dense ? (F[ae[0].r] || (F[ae[0].r] = []), F[ae[0].r][ae[0].c] = ae[1]) : F[_e(ae[0])] = ae[1], ue.e.c < ae[0].c && (ue.e.c = ae[0].c), ue.e.r < ae[0].r && (ue.e.r = ae[0].r);
+            if (o.dense) {
+              if (!s[val[0].r])
+                s[val[0].r] = [];
+              s[val[0].r][val[0].c] = val[1];
+            } else
+              s[encode_cell(val[0])] = val[1];
+            if (refguess.e.c < val[0].c)
+              refguess.e.c = val[0].c;
+            if (refguess.e.r < val[0].r)
+              refguess.e.r = val[0].r;
             break;
           case 27:
-            ae[14e3] && (Te[ae[14e3][0]] = ae[14e3][1]);
+            if (val[14e3])
+              realnames[val[14e3][0]] = val[14e3][1];
             break;
           case 1537:
-            Te[ae[0]] = ae[1], ae[0] == fe && (X = ae[1]);
+            realnames[val[0]] = val[1];
+            if (val[0] == sidx)
+              n = val[1];
             break;
         }
-      }, C);
-    else
-      throw new Error("Unrecognized LOTUS BOF " + A[2]);
-    if (F["!ref"] = Ne(ue), ie[se || X] = F, ee.push(se || X), !Te.length)
-      return { SheetNames: ee, Sheets: ie };
-    for (var pe = {}, yr = [], Fe = 0; Fe < Te.length; ++Fe)
-      ie[ee[Fe]] ? (yr.push(Te[Fe] || ee[Fe]), pe[Te[Fe]] = ie[Te[Fe]] || ie[ee[Fe]]) : (yr.push(Te[Fe]), pe[Te[Fe]] = { "!ref": "A1" });
-    return { SheetNames: yr, Sheets: pe };
+      }, o);
+    } else
+      throw new Error("Unrecognized LOTUS BOF " + d[2]);
+    s["!ref"] = encode_range(refguess);
+    sheets[next_n || n] = s;
+    snames.push(next_n || n);
+    if (!realnames.length)
+      return { SheetNames: snames, Sheets: sheets };
+    var osheets = {}, rnames = [];
+    for (var i = 0; i < realnames.length; ++i)
+      if (sheets[snames[i]]) {
+        rnames.push(realnames[i] || snames[i]);
+        osheets[realnames[i]] = sheets[realnames[i]] || sheets[snames[i]];
+      } else {
+        rnames.push(realnames[i]);
+        osheets[realnames[i]] = { "!ref": "A1" };
+      }
+    return { SheetNames: rnames, Sheets: osheets };
   }
-  function n(A, B) {
-    var C = B || {};
-    if (+C.codepage >= 0 && Bt(+C.codepage), C.type == "string")
+  function sheet_to_wk1(ws, opts) {
+    var o = opts || {};
+    if (+o.codepage >= 0)
+      set_cp(+o.codepage);
+    if (o.type == "string")
       throw new Error("Cannot write WK1 to JS string");
-    var F = Qe(), X = we(A["!ref"]), se = Array.isArray(A), fe = [];
-    J(F, 0, i(1030)), J(F, 6, l(X));
-    for (var ie = Math.min(X.e.r, 8191), ee = X.s.r; ee <= ie; ++ee)
-      for (var Te = Ge(ee), ue = X.s.c; ue <= X.e.c; ++ue) {
-        ee === X.s.r && (fe[ue] = ze(ue));
-        var Ye = fe[ue] + Te, pe = se ? (A[ee] || [])[ue] : A[Ye];
-        if (!(!pe || pe.t == "z"))
-          if (pe.t == "n")
-            (pe.v | 0) == pe.v && pe.v >= -32768 && pe.v <= 32767 ? J(F, 13, v(ee, ue, pe.v)) : J(F, 14, x(ee, ue, pe.v));
-          else {
-            var yr = Pr(pe);
-            J(F, 15, p(ee, ue, yr.slice(0, 239)));
-          }
+    var ba = buf_array();
+    var range = safe_decode_range(ws["!ref"]);
+    var dense = Array.isArray(ws);
+    var cols = [];
+    write_biff_rec(ba, 0, write_BOF_WK1(1030));
+    write_biff_rec(ba, 6, write_RANGE(range));
+    var max_R = Math.min(range.e.r, 8191);
+    for (var R = range.s.r; R <= max_R; ++R) {
+      var rr = encode_row(R);
+      for (var C = range.s.c; C <= range.e.c; ++C) {
+        if (R === range.s.r)
+          cols[C] = encode_col(C);
+        var ref = cols[C] + rr;
+        var cell = dense ? (ws[R] || [])[C] : ws[ref];
+        if (!cell || cell.t == "z")
+          continue;
+        if (cell.t == "n") {
+          if ((cell.v | 0) == cell.v && cell.v >= -32768 && cell.v <= 32767)
+            write_biff_rec(ba, 13, write_INTEGER(R, C, cell.v));
+          else
+            write_biff_rec(ba, 14, write_NUMBER(R, C, cell.v));
+        } else {
+          var str = format_cell(cell);
+          write_biff_rec(ba, 15, write_LABEL(R, C, str.slice(0, 239)));
+        }
       }
-    return J(F, 1), F.end();
+    }
+    write_biff_rec(ba, 1);
+    return ba.end();
   }
-  function a(A, B) {
-    var C = B || {};
-    if (+C.codepage >= 0 && Bt(+C.codepage), C.type == "string")
+  function book_to_wk3(wb, opts) {
+    var o = opts || {};
+    if (+o.codepage >= 0)
+      set_cp(+o.codepage);
+    if (o.type == "string")
       throw new Error("Cannot write WK3 to JS string");
-    var F = Qe();
-    J(F, 0, s(A));
-    for (var X = 0, se = 0; X < A.SheetNames.length; ++X)
-      (A.Sheets[A.SheetNames[X]] || {})["!ref"] && J(F, 27, Pe(A.SheetNames[X], se++));
-    var fe = 0;
-    for (X = 0; X < A.SheetNames.length; ++X) {
-      var ie = A.Sheets[A.SheetNames[X]];
-      if (!(!ie || !ie["!ref"])) {
-        for (var ee = we(ie["!ref"]), Te = Array.isArray(ie), ue = [], Ye = Math.min(ee.e.r, 8191), pe = ee.s.r; pe <= Ye; ++pe)
-          for (var yr = Ge(pe), Fe = ee.s.c; Fe <= ee.e.c; ++Fe) {
-            pe === ee.s.r && (ue[Fe] = ze(Fe));
-            var ae = ue[Fe] + yr, hr = Te ? (ie[pe] || [])[Fe] : ie[ae];
-            if (!(!hr || hr.t == "z"))
-              if (hr.t == "n")
-                J(F, 23, G(pe, Fe, fe, hr.v));
-              else {
-                var Cr = Pr(hr);
-                J(F, 22, D(pe, Fe, fe, Cr.slice(0, 239)));
-              }
+    var ba = buf_array();
+    write_biff_rec(ba, 0, write_BOF_WK3(wb));
+    for (var i = 0, cnt = 0; i < wb.SheetNames.length; ++i)
+      if ((wb.Sheets[wb.SheetNames[i]] || {})["!ref"])
+        write_biff_rec(ba, 27, write_XFORMAT_SHEETNAME(wb.SheetNames[i], cnt++));
+    var wsidx = 0;
+    for (i = 0; i < wb.SheetNames.length; ++i) {
+      var ws = wb.Sheets[wb.SheetNames[i]];
+      if (!ws || !ws["!ref"])
+        continue;
+      var range = safe_decode_range(ws["!ref"]);
+      var dense = Array.isArray(ws);
+      var cols = [];
+      var max_R = Math.min(range.e.r, 8191);
+      for (var R = range.s.r; R <= max_R; ++R) {
+        var rr = encode_row(R);
+        for (var C = range.s.c; C <= range.e.c; ++C) {
+          if (R === range.s.r)
+            cols[C] = encode_col(C);
+          var ref = cols[C] + rr;
+          var cell = dense ? (ws[R] || [])[C] : ws[ref];
+          if (!cell || cell.t == "z")
+            continue;
+          if (cell.t == "n") {
+            write_biff_rec(ba, 23, write_NUMBER_17(R, C, wsidx, cell.v));
+          } else {
+            var str = format_cell(cell);
+            write_biff_rec(ba, 22, write_LABEL_16(R, C, wsidx, str.slice(0, 239)));
           }
-        ++fe;
+        }
       }
+      ++wsidx;
     }
-    return J(F, 1), F.end();
+    write_biff_rec(ba, 1);
+    return ba.end();
   }
-  function i(A) {
-    var B = U(2);
-    return B.write_shift(2, A), B;
+  function write_BOF_WK1(v) {
+    var out = new_buf(2);
+    out.write_shift(2, v);
+    return out;
   }
-  function s(A) {
-    var B = U(26);
-    B.write_shift(2, 4096), B.write_shift(2, 4), B.write_shift(4, 0);
-    for (var C = 0, F = 0, X = 0, se = 0; se < A.SheetNames.length; ++se) {
-      var fe = A.SheetNames[se], ie = A.Sheets[fe];
-      if (!(!ie || !ie["!ref"])) {
-        ++X;
-        var ee = lr(ie["!ref"]);
-        C < ee.e.r && (C = ee.e.r), F < ee.e.c && (F = ee.e.c);
-      }
+  function write_BOF_WK3(wb) {
+    var out = new_buf(26);
+    out.write_shift(2, 4096);
+    out.write_shift(2, 4);
+    out.write_shift(4, 0);
+    var rows = 0, cols = 0, wscnt = 0;
+    for (var i = 0; i < wb.SheetNames.length; ++i) {
+      var name = wb.SheetNames[i];
+      var ws = wb.Sheets[name];
+      if (!ws || !ws["!ref"])
+        continue;
+      ++wscnt;
+      var range = decode_range(ws["!ref"]);
+      if (rows < range.e.r)
+        rows = range.e.r;
+      if (cols < range.e.c)
+        cols = range.e.c;
     }
-    return C > 8191 && (C = 8191), B.write_shift(2, C), B.write_shift(1, X), B.write_shift(1, F), B.write_shift(2, 0), B.write_shift(2, 0), B.write_shift(1, 1), B.write_shift(1, 2), B.write_shift(4, 0), B.write_shift(4, 0), B;
+    if (rows > 8191)
+      rows = 8191;
+    out.write_shift(2, rows);
+    out.write_shift(1, wscnt);
+    out.write_shift(1, cols);
+    out.write_shift(2, 0);
+    out.write_shift(2, 0);
+    out.write_shift(1, 1);
+    out.write_shift(1, 2);
+    out.write_shift(4, 0);
+    out.write_shift(4, 0);
+    return out;
   }
-  function f(A, B, C) {
-    var F = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
-    return B == 8 && C.qpro ? (F.s.c = A.read_shift(1), A.l++, F.s.r = A.read_shift(2), F.e.c = A.read_shift(1), A.l++, F.e.r = A.read_shift(2), F) : (F.s.c = A.read_shift(2), F.s.r = A.read_shift(2), B == 12 && C.qpro && (A.l += 2), F.e.c = A.read_shift(2), F.e.r = A.read_shift(2), B == 12 && C.qpro && (A.l += 2), F.s.c == 65535 && (F.s.c = F.e.c = F.s.r = F.e.r = 0), F);
-  }
-  function l(A) {
-    var B = U(8);
-    return B.write_shift(2, A.s.c), B.write_shift(2, A.s.r), B.write_shift(2, A.e.c), B.write_shift(2, A.e.r), B;
-  }
-  function o(A, B, C) {
-    var F = [{ c: 0, r: 0 }, { t: "n", v: 0 }, 0, 0];
-    return C.qpro && C.vers != 20768 ? (F[0].c = A.read_shift(1), F[3] = A.read_shift(1), F[0].r = A.read_shift(2), A.l += 2) : (F[2] = A.read_shift(1), F[0].c = A.read_shift(2), F[0].r = A.read_shift(2)), F;
-  }
-  function c(A, B, C) {
-    var F = A.l + B, X = o(A, B, C);
-    if (X[1].t = "s", C.vers == 20768) {
-      A.l++;
-      var se = A.read_shift(1);
-      return X[1].v = A.read_shift(se, "utf8"), X;
+  function parse_RANGE(blob, length, opts) {
+    var o = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
+    if (length == 8 && opts.qpro) {
+      o.s.c = blob.read_shift(1);
+      blob.l++;
+      o.s.r = blob.read_shift(2);
+      o.e.c = blob.read_shift(1);
+      blob.l++;
+      o.e.r = blob.read_shift(2);
+      return o;
     }
-    return C.qpro && A.l++, X[1].v = A.read_shift(F - A.l, "cstr"), X;
+    o.s.c = blob.read_shift(2);
+    o.s.r = blob.read_shift(2);
+    if (length == 12 && opts.qpro)
+      blob.l += 2;
+    o.e.c = blob.read_shift(2);
+    o.e.r = blob.read_shift(2);
+    if (length == 12 && opts.qpro)
+      blob.l += 2;
+    if (o.s.c == 65535)
+      o.s.c = o.e.c = o.s.r = o.e.r = 0;
+    return o;
   }
-  function p(A, B, C) {
-    var F = U(7 + C.length);
-    F.write_shift(1, 255), F.write_shift(2, B), F.write_shift(2, A), F.write_shift(1, 39);
-    for (var X = 0; X < F.length; ++X) {
-      var se = C.charCodeAt(X);
-      F.write_shift(1, se >= 128 ? 95 : se);
+  function write_RANGE(range) {
+    var out = new_buf(8);
+    out.write_shift(2, range.s.c);
+    out.write_shift(2, range.s.r);
+    out.write_shift(2, range.e.c);
+    out.write_shift(2, range.e.r);
+    return out;
+  }
+  function parse_cell(blob, length, opts) {
+    var o = [{ c: 0, r: 0 }, { t: "n", v: 0 }, 0, 0];
+    if (opts.qpro && opts.vers != 20768) {
+      o[0].c = blob.read_shift(1);
+      o[3] = blob.read_shift(1);
+      o[0].r = blob.read_shift(2);
+      blob.l += 2;
+    } else {
+      o[2] = blob.read_shift(1);
+      o[0].c = blob.read_shift(2);
+      o[0].r = blob.read_shift(2);
     }
-    return F.write_shift(1, 0), F;
+    return o;
   }
-  function u(A, B, C) {
-    var F = o(A, B, C);
-    return F[1].v = A.read_shift(2, "i"), F;
+  function parse_LABEL(blob, length, opts) {
+    var tgt = blob.l + length;
+    var o = parse_cell(blob, length, opts);
+    o[1].t = "s";
+    if (opts.vers == 20768) {
+      blob.l++;
+      var len = blob.read_shift(1);
+      o[1].v = blob.read_shift(len, "utf8");
+      return o;
+    }
+    if (opts.qpro)
+      blob.l++;
+    o[1].v = blob.read_shift(tgt - blob.l, "cstr");
+    return o;
   }
-  function v(A, B, C) {
-    var F = U(7);
-    return F.write_shift(1, 255), F.write_shift(2, B), F.write_shift(2, A), F.write_shift(2, C, "i"), F;
+  function write_LABEL(R, C, s) {
+    var o = new_buf(7 + s.length);
+    o.write_shift(1, 255);
+    o.write_shift(2, C);
+    o.write_shift(2, R);
+    o.write_shift(1, 39);
+    for (var i = 0; i < o.length; ++i) {
+      var cc = s.charCodeAt(i);
+      o.write_shift(1, cc >= 128 ? 95 : cc);
+    }
+    o.write_shift(1, 0);
+    return o;
   }
-  function T(A, B, C) {
-    var F = o(A, B, C);
-    return F[1].v = A.read_shift(8, "f"), F;
+  function parse_INTEGER(blob, length, opts) {
+    var o = parse_cell(blob, length, opts);
+    o[1].v = blob.read_shift(2, "i");
+    return o;
   }
-  function x(A, B, C) {
-    var F = U(13);
-    return F.write_shift(1, 255), F.write_shift(2, B), F.write_shift(2, A), F.write_shift(8, C, "f"), F;
+  function write_INTEGER(R, C, v) {
+    var o = new_buf(7);
+    o.write_shift(1, 255);
+    o.write_shift(2, C);
+    o.write_shift(2, R);
+    o.write_shift(2, v, "i");
+    return o;
   }
-  function _(A, B, C) {
-    var F = A.l + B, X = o(A, B, C);
-    if (X[1].v = A.read_shift(8, "f"), C.qpro)
-      A.l = F;
+  function parse_NUMBER(blob, length, opts) {
+    var o = parse_cell(blob, length, opts);
+    o[1].v = blob.read_shift(8, "f");
+    return o;
+  }
+  function write_NUMBER(R, C, v) {
+    var o = new_buf(13);
+    o.write_shift(1, 255);
+    o.write_shift(2, C);
+    o.write_shift(2, R);
+    o.write_shift(8, v, "f");
+    return o;
+  }
+  function parse_FORMULA(blob, length, opts) {
+    var tgt = blob.l + length;
+    var o = parse_cell(blob, length, opts);
+    o[1].v = blob.read_shift(8, "f");
+    if (opts.qpro)
+      blob.l = tgt;
     else {
-      var se = A.read_shift(2);
-      M(A.slice(A.l, A.l + se), X), A.l += se;
+      var flen = blob.read_shift(2);
+      wk1_fmla_to_csf(blob.slice(blob.l, blob.l + flen), o);
+      blob.l += flen;
     }
-    return X;
+    return o;
   }
-  function O(A, B, C) {
-    var F = B & 32768;
-    return B &= -32769, B = (F ? A : 0) + (B >= 8192 ? B - 16384 : B), (F ? "" : "$") + (C ? ze(B) : Ge(B));
+  function wk1_parse_rc(B, V, col) {
+    var rel = V & 32768;
+    V &= ~32768;
+    V = (rel ? B : 0) + (V >= 8192 ? V - 16384 : V);
+    return (rel ? "" : "$") + (col ? encode_col(V) : encode_row(V));
   }
-  var R = {
+  var FuncTab = {
     51: ["FALSE", 0],
     52: ["TRUE", 0],
     70: ["LEN", 1],
@@ -6431,7 +9824,8 @@ var Vc = /* @__PURE__ */ function() {
     83: ["MINA", 69],
     84: ["MAXA", 69],
     111: ["T", 1]
-  }, y = [
+  };
+  var BinOpTab = [
     "",
     "",
     "",
@@ -6465,207 +9859,307 @@ var Vc = /* @__PURE__ */ function() {
     "",
     ""
   ];
-  function M(A, B) {
-    sr(A, 0);
-    for (var C = [], F = 0, X = "", se = "", fe = "", ie = ""; A.l < A.length; ) {
-      var ee = A[A.l++];
-      switch (ee) {
+  function wk1_fmla_to_csf(blob, o) {
+    prep_blob(blob, 0);
+    var out = [], argc = 0, R = "", C = "", argL = "", argR = "";
+    while (blob.l < blob.length) {
+      var cc = blob[blob.l++];
+      switch (cc) {
         case 0:
-          C.push(A.read_shift(8, "f"));
+          out.push(blob.read_shift(8, "f"));
           break;
         case 1:
-          se = O(B[0].c, A.read_shift(2), !0), X = O(B[0].r, A.read_shift(2), !1), C.push(se + X);
+          {
+            C = wk1_parse_rc(o[0].c, blob.read_shift(2), true);
+            R = wk1_parse_rc(o[0].r, blob.read_shift(2), false);
+            out.push(C + R);
+          }
           break;
         case 2:
           {
-            var Te = O(B[0].c, A.read_shift(2), !0), ue = O(B[0].r, A.read_shift(2), !1);
-            se = O(B[0].c, A.read_shift(2), !0), X = O(B[0].r, A.read_shift(2), !1), C.push(Te + ue + ":" + se + X);
+            var c = wk1_parse_rc(o[0].c, blob.read_shift(2), true);
+            var r = wk1_parse_rc(o[0].r, blob.read_shift(2), false);
+            C = wk1_parse_rc(o[0].c, blob.read_shift(2), true);
+            R = wk1_parse_rc(o[0].r, blob.read_shift(2), false);
+            out.push(c + r + ":" + C + R);
           }
           break;
         case 3:
-          if (A.l < A.length) {
+          if (blob.l < blob.length) {
             console.error("WK1 premature formula end");
             return;
           }
           break;
         case 4:
-          C.push("(" + C.pop() + ")");
+          out.push("(" + out.pop() + ")");
           break;
         case 5:
-          C.push(A.read_shift(2));
+          out.push(blob.read_shift(2));
           break;
         case 6:
           {
-            for (var Ye = ""; ee = A[A.l++]; )
-              Ye += String.fromCharCode(ee);
-            C.push('"' + Ye.replace(/"/g, '""') + '"');
+            var Z = "";
+            while (cc = blob[blob.l++])
+              Z += String.fromCharCode(cc);
+            out.push('"' + Z.replace(/"/g, '""') + '"');
           }
           break;
         case 8:
-          C.push("-" + C.pop());
+          out.push("-" + out.pop());
           break;
         case 23:
-          C.push("+" + C.pop());
+          out.push("+" + out.pop());
           break;
         case 22:
-          C.push("NOT(" + C.pop() + ")");
+          out.push("NOT(" + out.pop() + ")");
           break;
         case 20:
         case 21:
-          ie = C.pop(), fe = C.pop(), C.push(["AND", "OR"][ee - 20] + "(" + fe + "," + ie + ")");
+          {
+            argR = out.pop();
+            argL = out.pop();
+            out.push(["AND", "OR"][cc - 20] + "(" + argL + "," + argR + ")");
+          }
           break;
         default:
-          if (ee < 32 && y[ee])
-            ie = C.pop(), fe = C.pop(), C.push(fe + y[ee] + ie);
-          else if (R[ee]) {
-            if (F = R[ee][1], F == 69 && (F = A[A.l++]), F > C.length) {
-              console.error("WK1 bad formula parse 0x" + ee.toString(16) + ":|" + C.join("|") + "|");
+          if (cc < 32 && BinOpTab[cc]) {
+            argR = out.pop();
+            argL = out.pop();
+            out.push(argL + BinOpTab[cc] + argR);
+          } else if (FuncTab[cc]) {
+            argc = FuncTab[cc][1];
+            if (argc == 69)
+              argc = blob[blob.l++];
+            if (argc > out.length) {
+              console.error("WK1 bad formula parse 0x" + cc.toString(16) + ":|" + out.join("|") + "|");
               return;
             }
-            var pe = C.slice(-F);
-            C.length -= F, C.push(R[ee][0] + "(" + pe.join(",") + ")");
-          } else
-            return ee <= 7 ? console.error("WK1 invalid opcode " + ee.toString(16)) : ee <= 24 ? console.error("WK1 unsupported op " + ee.toString(16)) : ee <= 30 ? console.error("WK1 invalid opcode " + ee.toString(16)) : ee <= 115 ? console.error("WK1 unsupported function opcode " + ee.toString(16)) : console.error("WK1 unrecognized opcode " + ee.toString(16));
+            var args = out.slice(-argc);
+            out.length -= argc;
+            out.push(FuncTab[cc][0] + "(" + args.join(",") + ")");
+          } else if (cc <= 7)
+            return console.error("WK1 invalid opcode " + cc.toString(16));
+          else if (cc <= 24)
+            return console.error("WK1 unsupported op " + cc.toString(16));
+          else if (cc <= 30)
+            return console.error("WK1 invalid opcode " + cc.toString(16));
+          else if (cc <= 115)
+            return console.error("WK1 unsupported function opcode " + cc.toString(16));
+          else
+            return console.error("WK1 unrecognized opcode " + cc.toString(16));
       }
     }
-    C.length == 1 ? B[1].f = "" + C[0] : console.error("WK1 bad formula parse |" + C.join("|") + "|");
+    if (out.length == 1)
+      o[1].f = "" + out[0];
+    else
+      console.error("WK1 bad formula parse |" + out.join("|") + "|");
   }
-  function b(A) {
-    var B = [{ c: 0, r: 0 }, { t: "n", v: 0 }, 0];
-    return B[0].r = A.read_shift(2), B[3] = A[A.l++], B[0].c = A[A.l++], B;
+  function parse_cell_3(blob) {
+    var o = [{ c: 0, r: 0 }, { t: "n", v: 0 }, 0];
+    o[0].r = blob.read_shift(2);
+    o[3] = blob[blob.l++];
+    o[0].c = blob[blob.l++];
+    return o;
   }
-  function re(A, B) {
-    var C = b(A);
-    return C[1].t = "s", C[1].v = A.read_shift(B - 4, "cstr"), C;
+  function parse_LABEL_16(blob, length) {
+    var o = parse_cell_3(blob);
+    o[1].t = "s";
+    o[1].v = blob.read_shift(length - 4, "cstr");
+    return o;
   }
-  function D(A, B, C, F) {
-    var X = U(6 + F.length);
-    X.write_shift(2, A), X.write_shift(1, C), X.write_shift(1, B), X.write_shift(1, 39);
-    for (var se = 0; se < F.length; ++se) {
-      var fe = F.charCodeAt(se);
-      X.write_shift(1, fe >= 128 ? 95 : fe);
+  function write_LABEL_16(R, C, wsidx, s) {
+    var o = new_buf(6 + s.length);
+    o.write_shift(2, R);
+    o.write_shift(1, wsidx);
+    o.write_shift(1, C);
+    o.write_shift(1, 39);
+    for (var i = 0; i < s.length; ++i) {
+      var cc = s.charCodeAt(i);
+      o.write_shift(1, cc >= 128 ? 95 : cc);
     }
-    return X.write_shift(1, 0), X;
+    o.write_shift(1, 0);
+    return o;
   }
-  function H(A, B) {
-    var C = b(A);
-    C[1].v = A.read_shift(2);
-    var F = C[1].v >> 1;
-    if (C[1].v & 1)
-      switch (F & 7) {
+  function parse_NUMBER_18(blob, length) {
+    var o = parse_cell_3(blob);
+    o[1].v = blob.read_shift(2);
+    var v = o[1].v >> 1;
+    if (o[1].v & 1) {
+      switch (v & 7) {
         case 0:
-          F = (F >> 3) * 5e3;
+          v = (v >> 3) * 5e3;
           break;
         case 1:
-          F = (F >> 3) * 500;
+          v = (v >> 3) * 500;
           break;
         case 2:
-          F = (F >> 3) / 20;
+          v = (v >> 3) / 20;
           break;
         case 3:
-          F = (F >> 3) / 200;
+          v = (v >> 3) / 200;
           break;
         case 4:
-          F = (F >> 3) / 2e3;
+          v = (v >> 3) / 2e3;
           break;
         case 5:
-          F = (F >> 3) / 2e4;
+          v = (v >> 3) / 2e4;
           break;
         case 6:
-          F = (F >> 3) / 16;
+          v = (v >> 3) / 16;
           break;
         case 7:
-          F = (F >> 3) / 64;
+          v = (v >> 3) / 64;
           break;
       }
-    return C[1].v = F, C;
-  }
-  function L(A, B) {
-    var C = b(A), F = A.read_shift(4), X = A.read_shift(4), se = A.read_shift(2);
-    if (se == 65535)
-      return F === 0 && X === 3221225472 ? (C[1].t = "e", C[1].v = 15) : F === 0 && X === 3489660928 ? (C[1].t = "e", C[1].v = 42) : C[1].v = 0, C;
-    var fe = se & 32768;
-    return se = (se & 32767) - 16446, C[1].v = (1 - fe * 2) * (X * Math.pow(2, se + 32) + F * Math.pow(2, se)), C;
-  }
-  function G(A, B, C, F) {
-    var X = U(14);
-    if (X.write_shift(2, A), X.write_shift(1, C), X.write_shift(1, B), F == 0)
-      return X.write_shift(4, 0), X.write_shift(4, 0), X.write_shift(2, 65535), X;
-    var se = 0, fe = 0, ie = 0, ee = 0;
-    return F < 0 && (se = 1, F = -F), fe = Math.log2(F) | 0, F /= Math.pow(2, fe - 31), ee = F >>> 0, (ee & 2147483648) == 0 && (F /= 2, ++fe, ee = F >>> 0), F -= ee, ee |= 2147483648, ee >>>= 0, F *= Math.pow(2, 32), ie = F >>> 0, X.write_shift(4, ie), X.write_shift(4, ee), fe += 16383 + (se ? 32768 : 0), X.write_shift(2, fe), X;
-  }
-  function z(A, B) {
-    var C = L(A);
-    return A.l += B - 14, C;
-  }
-  function j(A, B) {
-    var C = b(A), F = A.read_shift(4);
-    return C[1].v = F >> 6, C;
-  }
-  function Q(A, B) {
-    var C = b(A), F = A.read_shift(8, "f");
-    return C[1].v = F, C;
-  }
-  function he(A, B) {
-    var C = Q(A);
-    return A.l += B - 10, C;
-  }
-  function oe(A, B) {
-    return A[A.l + B - 1] == 0 ? A.read_shift(B, "cstr") : "";
-  }
-  function Oe(A, B) {
-    var C = A[A.l++];
-    C > B - 1 && (C = B - 1);
-    for (var F = ""; F.length < C; )
-      F += String.fromCharCode(A[A.l++]);
-    return F;
-  }
-  function Re(A, B, C) {
-    if (!(!C.qpro || B < 21)) {
-      var F = A.read_shift(1);
-      A.l += 17, A.l += 1, A.l += 2;
-      var X = A.read_shift(B - 21, "cstr");
-      return [F, X];
     }
+    o[1].v = v;
+    return o;
   }
-  function pr(A, B) {
-    for (var C = {}, F = A.l + B; A.l < F; ) {
-      var X = A.read_shift(2);
-      if (X == 14e3) {
-        for (C[X] = [0, ""], C[X][0] = A.read_shift(2); A[A.l]; )
-          C[X][1] += String.fromCharCode(A[A.l]), A.l++;
-        A.l++;
+  function parse_NUMBER_17(blob, length) {
+    var o = parse_cell_3(blob);
+    var v1 = blob.read_shift(4);
+    var v2 = blob.read_shift(4);
+    var e = blob.read_shift(2);
+    if (e == 65535) {
+      if (v1 === 0 && v2 === 3221225472) {
+        o[1].t = "e";
+        o[1].v = 15;
+      } else if (v1 === 0 && v2 === 3489660928) {
+        o[1].t = "e";
+        o[1].v = 42;
+      } else
+        o[1].v = 0;
+      return o;
+    }
+    var s = e & 32768;
+    e = (e & 32767) - 16446;
+    o[1].v = (1 - s * 2) * (v2 * Math.pow(2, e + 32) + v1 * Math.pow(2, e));
+    return o;
+  }
+  function write_NUMBER_17(R, C, wsidx, v) {
+    var o = new_buf(14);
+    o.write_shift(2, R);
+    o.write_shift(1, wsidx);
+    o.write_shift(1, C);
+    if (v == 0) {
+      o.write_shift(4, 0);
+      o.write_shift(4, 0);
+      o.write_shift(2, 65535);
+      return o;
+    }
+    var s = 0, e = 0, v1 = 0, v2 = 0;
+    if (v < 0) {
+      s = 1;
+      v = -v;
+    }
+    e = Math.log2(v) | 0;
+    v /= Math.pow(2, e - 31);
+    v2 = v >>> 0;
+    if ((v2 & 2147483648) == 0) {
+      v /= 2;
+      ++e;
+      v2 = v >>> 0;
+    }
+    v -= v2;
+    v2 |= 2147483648;
+    v2 >>>= 0;
+    v *= Math.pow(2, 32);
+    v1 = v >>> 0;
+    o.write_shift(4, v1);
+    o.write_shift(4, v2);
+    e += 16383 + (s ? 32768 : 0);
+    o.write_shift(2, e);
+    return o;
+  }
+  function parse_FORMULA_19(blob, length) {
+    var o = parse_NUMBER_17(blob);
+    blob.l += length - 14;
+    return o;
+  }
+  function parse_NUMBER_25(blob, length) {
+    var o = parse_cell_3(blob);
+    var v1 = blob.read_shift(4);
+    o[1].v = v1 >> 6;
+    return o;
+  }
+  function parse_NUMBER_27(blob, length) {
+    var o = parse_cell_3(blob);
+    var v1 = blob.read_shift(8, "f");
+    o[1].v = v1;
+    return o;
+  }
+  function parse_FORMULA_28(blob, length) {
+    var o = parse_NUMBER_27(blob);
+    blob.l += length - 10;
+    return o;
+  }
+  function parse_SHEETNAMECS(blob, length) {
+    return blob[blob.l + length - 1] == 0 ? blob.read_shift(length, "cstr") : "";
+  }
+  function parse_SHEETNAMELP(blob, length) {
+    var len = blob[blob.l++];
+    if (len > length - 1)
+      len = length - 1;
+    var o = "";
+    while (o.length < len)
+      o += String.fromCharCode(blob[blob.l++]);
+    return o;
+  }
+  function parse_SHEETINFOQP(blob, length, opts) {
+    if (!opts.qpro || length < 21)
+      return;
+    var id = blob.read_shift(1);
+    blob.l += 17;
+    blob.l += 1;
+    blob.l += 2;
+    var nm = blob.read_shift(length - 21, "cstr");
+    return [id, nm];
+  }
+  function parse_XFORMAT(blob, length) {
+    var o = {}, tgt = blob.l + length;
+    while (blob.l < tgt) {
+      var dt = blob.read_shift(2);
+      if (dt == 14e3) {
+        o[dt] = [0, ""];
+        o[dt][0] = blob.read_shift(2);
+        while (blob[blob.l]) {
+          o[dt][1] += String.fromCharCode(blob[blob.l]);
+          blob.l++;
+        }
+        blob.l++;
       }
     }
-    return C;
+    return o;
   }
-  function Pe(A, B) {
-    var C = U(5 + A.length);
-    C.write_shift(2, 14e3), C.write_shift(2, B);
-    for (var F = 0; F < A.length; ++F) {
-      var X = A.charCodeAt(F);
-      C[C.l++] = X > 127 ? 95 : X;
+  function write_XFORMAT_SHEETNAME(name, wsidx) {
+    var out = new_buf(5 + name.length);
+    out.write_shift(2, 14e3);
+    out.write_shift(2, wsidx);
+    for (var i = 0; i < name.length; ++i) {
+      var cc = name.charCodeAt(i);
+      out[out.l++] = cc > 127 ? 95 : cc;
     }
-    return C[C.l++] = 0, C;
+    out[out.l++] = 0;
+    return out;
   }
-  var cr = {
-    0: { n: "BOF", f: _s },
+  var WK1Enum = {
+    0: { n: "BOF", f: parseuint16 },
     1: { n: "EOF" },
     2: { n: "CALCMODE" },
     3: { n: "CALCORDER" },
     4: { n: "SPLIT" },
     5: { n: "SYNC" },
-    6: { n: "RANGE", f },
+    6: { n: "RANGE", f: parse_RANGE },
     7: { n: "WINDOW1" },
     8: { n: "COLW1" },
     9: { n: "WINTWO" },
     10: { n: "COLW2" },
     11: { n: "NAME" },
     12: { n: "BLANK" },
-    13: { n: "INTEGER", f: u },
-    14: { n: "NUMBER", f: T },
-    15: { n: "LABEL", f: c },
-    16: { n: "FORMULA", f: _ },
+    13: { n: "INTEGER", f: parse_INTEGER },
+    14: { n: "NUMBER", f: parse_NUMBER },
+    15: { n: "LABEL", f: parse_LABEL },
+    16: { n: "FORMULA", f: parse_FORMULA },
     24: { n: "TABLE" },
     25: { n: "ORANGE" },
     26: { n: "PRANGE" },
@@ -6688,7 +10182,7 @@ var Vc = /* @__PURE__ */ function() {
     48: { n: "UNFORMATTED" },
     49: { n: "CURSORW12" },
     50: { n: "WINDOW" },
-    51: { n: "STRING", f: c },
+    51: { n: "STRING", f: parse_LABEL },
     55: { n: "PASSWORD" },
     56: { n: "LOCKED" },
     60: { n: "QUERY" },
@@ -6710,10 +10204,11 @@ var Vc = /* @__PURE__ */ function() {
     103: { n: "RRANGES??" },
     104: { n: "FNAME??" },
     105: { n: "MRANGES??" },
-    204: { n: "SHEETNAMECS", f: oe },
-    222: { n: "SHEETNAMELP", f: Oe },
+    204: { n: "SHEETNAMECS", f: parse_SHEETNAMECS },
+    222: { n: "SHEETNAMELP", f: parse_SHEETNAMELP },
     65535: { n: "" }
-  }, nr = {
+  };
+  var WK3Enum = {
     0: { n: "BOF" },
     1: { n: "EOF" },
     2: { n: "PASSWORD" },
@@ -6736,12 +10231,12 @@ var Vc = /* @__PURE__ */ function() {
     19: { n: "??" },
     20: { n: "ERRCELL" },
     21: { n: "NACELL" },
-    22: { n: "LABEL16", f: re },
-    23: { n: "NUMBER17", f: L },
-    24: { n: "NUMBER18", f: H },
-    25: { n: "FORMULA19", f: z },
+    22: { n: "LABEL16", f: parse_LABEL_16 },
+    23: { n: "NUMBER17", f: parse_NUMBER_17 },
+    24: { n: "NUMBER18", f: parse_NUMBER_18 },
+    25: { n: "FORMULA19", f: parse_FORMULA_19 },
     26: { n: "FORMULA1A" },
-    27: { n: "XFORMAT", f: pr },
+    27: { n: "XFORMAT", f: parse_XFORMAT },
     28: { n: "DTLABELMISC" },
     29: { n: "DTLABELCELL" },
     30: { n: "GRAPHWINDOW" },
@@ -6750,10 +10245,10 @@ var Vc = /* @__PURE__ */ function() {
     33: { n: "QUERY" },
     34: { n: "HIDDENSHEET" },
     35: { n: "??" },
-    37: { n: "NUMBER25", f: j },
+    37: { n: "NUMBER25", f: parse_NUMBER_25 },
     38: { n: "??" },
-    39: { n: "NUMBER27", f: Q },
-    40: { n: "FORMULA28", f: he },
+    39: { n: "NUMBER27", f: parse_NUMBER_27 },
+    40: { n: "FORMULA28", f: parse_FORMULA_28 },
     142: { n: "??" },
     147: { n: "??" },
     150: { n: "??" },
@@ -6775,7 +10270,7 @@ var Vc = /* @__PURE__ */ function() {
     188: { n: "??" },
     195: { n: "??" },
     201: { n: "??" },
-    204: { n: "SHEETNAMECS", f: oe },
+    204: { n: "SHEETNAMECS", f: parse_SHEETNAMECS },
     205: { n: "??" },
     206: { n: "??" },
     207: { n: "??" },
@@ -6820,7 +10315,7 @@ var Vc = /* @__PURE__ */ function() {
     666: { n: "??" },
     768: { n: "??" },
     772: { n: "??" },
-    1537: { n: "SHEETINFOQP", f: Re },
+    1537: { n: "SHEETINFOQP", f: parse_SHEETINFOQP },
     1600: { n: "??" },
     1602: { n: "??" },
     1793: { n: "??" },
@@ -6839,203 +10334,347 @@ var Vc = /* @__PURE__ */ function() {
     65535: { n: "" }
   };
   return {
-    sheet_to_wk1: n,
-    book_to_wk3: a,
-    to_workbook: t
+    sheet_to_wk1,
+    book_to_wk3,
+    to_workbook: lotus_to_workbook
   };
-}(), jc = /^\s|\s$|[\t\n\r]/;
-function Fs(e, t) {
-  if (!t.bookSST)
+}();
+var straywsregex = /^\s|\s$|[\t\n\r]/;
+function write_sst_xml(sst, opts) {
+  if (!opts.bookSST)
     return "";
-  var r = [Ie];
-  r[r.length] = q("sst", null, {
-    xmlns: Tt[0],
-    count: e.Count,
-    uniqueCount: e.Unique
+  var o = [XML_HEADER];
+  o[o.length] = writextag("sst", null, {
+    xmlns: XMLNS_main[0],
+    count: sst.Count,
+    uniqueCount: sst.Unique
   });
-  for (var n = 0; n != e.length; ++n)
-    if (e[n] != null) {
-      var a = e[n], i = "<si>";
-      a.r ? i += a.r : (i += "<t", a.t || (a.t = ""), a.t.match(jc) && (i += ' xml:space="preserve"'), i += ">" + ge(a.t) + "</t>"), i += "</si>", r[r.length] = i;
+  for (var i = 0; i != sst.length; ++i) {
+    if (sst[i] == null)
+      continue;
+    var s = sst[i];
+    var sitag = "<si>";
+    if (s.r)
+      sitag += s.r;
+    else {
+      sitag += "<t";
+      if (!s.t)
+        s.t = "";
+      if (s.t.match(straywsregex))
+        sitag += ' xml:space="preserve"';
+      sitag += ">" + escapexml(s.t) + "</t>";
     }
-  return r.length > 2 && (r[r.length] = "</sst>", r[1] = r[1].replace("/>", ">")), r.join("");
-}
-function zc(e) {
-  return [e.read_shift(4), e.read_shift(4)];
-}
-function Kc(e, t) {
-  return t || (t = U(8)), t.write_shift(4, e.Count), t.write_shift(4, e.Unique), t;
-}
-var Yc = bl;
-function qc(e) {
-  var t = Qe();
-  V(t, 159, Kc(e));
-  for (var r = 0; r < e.length; ++r)
-    V(t, 19, Yc(e[r]));
-  return V(t, 160), t.end();
-}
-function Jc(e) {
-  for (var t = [], r = e.split(""), n = 0; n < r.length; ++n)
-    t[n] = r[n].charCodeAt(0);
-  return t;
-}
-function ys(e) {
-  var t = 0, r, n = Jc(e), a = n.length + 1, i, s, f, l, o;
-  for (r = qr(a), r[0] = n.length, i = 1; i != a; ++i)
-    r[i] = n[i - 1];
-  for (i = a - 1; i >= 0; --i)
-    s = r[i], f = (t & 16384) === 0 ? 0 : 1, l = t << 1 & 32767, o = f | l, t = o ^ s;
-  return t ^ 52811;
-}
-var Zc = /* @__PURE__ */ function() {
-  function e(a, i) {
-    switch (i.type) {
-      case "base64":
-        return t(kr(a), i);
-      case "binary":
-        return t(a, i);
-      case "buffer":
-        return t(de && Buffer.isBuffer(a) ? a.toString("binary") : Vt(a), i);
-      case "array":
-        return t(Dn(a), i);
-    }
-    throw new Error("Unrecognized type " + i.type);
+    sitag += "</si>";
+    o[o.length] = sitag;
   }
-  function t(a, i) {
-    var s = i || {}, f = s.dense ? [] : {}, l = a.match(/\\trowd.*?\\row\b/g);
-    if (!l.length)
+  if (o.length > 2) {
+    o[o.length] = "</sst>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
+}
+function parse_BrtBeginSst(data2) {
+  return [data2.read_shift(4), data2.read_shift(4)];
+}
+function write_BrtBeginSst(sst, o) {
+  if (!o)
+    o = new_buf(8);
+  o.write_shift(4, sst.Count);
+  o.write_shift(4, sst.Unique);
+  return o;
+}
+var write_BrtSSTItem = write_RichStr;
+function write_sst_bin(sst) {
+  var ba = buf_array();
+  write_record(ba, 159, write_BrtBeginSst(sst));
+  for (var i = 0; i < sst.length; ++i)
+    write_record(ba, 19, write_BrtSSTItem(sst[i]));
+  write_record(ba, 160);
+  return ba.end();
+}
+function _JS2ANSI(str) {
+  var o = [], oo = str.split("");
+  for (var i = 0; i < oo.length; ++i)
+    o[i] = oo[i].charCodeAt(0);
+  return o;
+}
+function crypto_CreatePasswordVerifier_Method1(Password) {
+  var Verifier = 0, PasswordArray;
+  var PasswordDecoded = _JS2ANSI(Password);
+  var len = PasswordDecoded.length + 1, i, PasswordByte;
+  var Intermediate1, Intermediate2, Intermediate3;
+  PasswordArray = new_raw_buf(len);
+  PasswordArray[0] = PasswordDecoded.length;
+  for (i = 1; i != len; ++i)
+    PasswordArray[i] = PasswordDecoded[i - 1];
+  for (i = len - 1; i >= 0; --i) {
+    PasswordByte = PasswordArray[i];
+    Intermediate1 = (Verifier & 16384) === 0 ? 0 : 1;
+    Intermediate2 = Verifier << 1 & 32767;
+    Intermediate3 = Intermediate1 | Intermediate2;
+    Verifier = Intermediate3 ^ PasswordByte;
+  }
+  return Verifier ^ 52811;
+}
+var RTF = /* @__PURE__ */ function() {
+  function rtf_to_sheet(d, opts) {
+    switch (opts.type) {
+      case "base64":
+        return rtf_to_sheet_str(Base64_decode(d), opts);
+      case "binary":
+        return rtf_to_sheet_str(d, opts);
+      case "buffer":
+        return rtf_to_sheet_str(has_buf && Buffer.isBuffer(d) ? d.toString("binary") : a2s(d), opts);
+      case "array":
+        return rtf_to_sheet_str(cc2str(d), opts);
+    }
+    throw new Error("Unrecognized type " + opts.type);
+  }
+  function rtf_to_sheet_str(str, opts) {
+    var o = opts || {};
+    var ws = o.dense ? [] : {};
+    var rows = str.match(/\\trowd.*?\\row\b/g);
+    if (!rows.length)
       throw new Error("RTF missing table");
-    var o = { s: { c: 0, r: 0 }, e: { c: 0, r: l.length - 1 } };
-    return l.forEach(function(c, p) {
-      Array.isArray(f) && (f[p] = []);
-      for (var u = /\\\w+\b/g, v = 0, T, x = -1; T = u.exec(c); ) {
-        switch (T[0]) {
+    var range = { s: { c: 0, r: 0 }, e: { c: 0, r: rows.length - 1 } };
+    rows.forEach(function(rowtf, R) {
+      if (Array.isArray(ws))
+        ws[R] = [];
+      var rtfre = /\\\w+\b/g;
+      var last_index = 0;
+      var res;
+      var C = -1;
+      while (res = rtfre.exec(rowtf)) {
+        switch (res[0]) {
           case "\\cell":
-            var _ = c.slice(v, u.lastIndex - T[0].length);
-            if (_[0] == " " && (_ = _.slice(1)), ++x, _.length) {
-              var O = { v: _, t: "s" };
-              Array.isArray(f) ? f[p][x] = O : f[_e({ r: p, c: x })] = O;
+            var data2 = rowtf.slice(last_index, rtfre.lastIndex - res[0].length);
+            if (data2[0] == " ")
+              data2 = data2.slice(1);
+            ++C;
+            if (data2.length) {
+              var cell = { v: data2, t: "s" };
+              if (Array.isArray(ws))
+                ws[R][C] = cell;
+              else
+                ws[encode_cell({ r: R, c: C })] = cell;
             }
             break;
         }
-        v = u.lastIndex;
+        last_index = rtfre.lastIndex;
       }
-      x > o.e.c && (o.e.c = x);
-    }), f["!ref"] = Ne(o), f;
+      if (C > range.e.c)
+        range.e.c = C;
+    });
+    ws["!ref"] = encode_range(range);
+    return ws;
   }
-  function r(a, i) {
-    return et(e(a, i), i);
+  function rtf_to_workbook(d, opts) {
+    return sheet_to_workbook(rtf_to_sheet(d, opts), opts);
   }
-  function n(a) {
-    for (var i = ["{\\rtf1\\ansi"], s = we(a["!ref"]), f, l = Array.isArray(a), o = s.s.r; o <= s.e.r; ++o) {
-      i.push("\\trowd\\trautofit1");
-      for (var c = s.s.c; c <= s.e.c; ++c)
-        i.push("\\cellx" + (c + 1));
-      for (i.push("\\pard\\intbl"), c = s.s.c; c <= s.e.c; ++c) {
-        var p = _e({ r: o, c });
-        f = l ? (a[o] || [])[c] : a[p], !(!f || f.v == null && (!f.f || f.F)) && (i.push(" " + (f.w || (Pr(f), f.w))), i.push("\\cell"));
+  function sheet_to_rtf(ws) {
+    var o = ["{\\rtf1\\ansi"];
+    var r = safe_decode_range(ws["!ref"]), cell;
+    var dense = Array.isArray(ws);
+    for (var R = r.s.r; R <= r.e.r; ++R) {
+      o.push("\\trowd\\trautofit1");
+      for (var C = r.s.c; C <= r.e.c; ++C)
+        o.push("\\cellx" + (C + 1));
+      o.push("\\pard\\intbl");
+      for (C = r.s.c; C <= r.e.c; ++C) {
+        var coord = encode_cell({ r: R, c: C });
+        cell = dense ? (ws[R] || [])[C] : ws[coord];
+        if (!cell || cell.v == null && (!cell.f || cell.F))
+          continue;
+        o.push(" " + (cell.w || (format_cell(cell), cell.w)));
+        o.push("\\cell");
       }
-      i.push("\\pard\\intbl\\row");
+      o.push("\\pard\\intbl\\row");
     }
-    return i.join("") + "}";
+    return o.join("") + "}";
   }
   return {
-    to_workbook: r,
-    to_sheet: e,
-    from_sheet: n
+    to_workbook: rtf_to_workbook,
+    to_sheet: rtf_to_sheet,
+    from_sheet: sheet_to_rtf
   };
 }();
-function ei(e) {
-  for (var t = 0, r = 1; t != 3; ++t)
-    r = r * 256 + (e[t] > 255 ? 255 : e[t] < 0 ? 0 : e[t]);
-  return r.toString(16).toUpperCase().slice(1);
+function rgb2Hex(rgb) {
+  for (var i = 0, o = 1; i != 3; ++i)
+    o = o * 256 + (rgb[i] > 255 ? 255 : rgb[i] < 0 ? 0 : rgb[i]);
+  return o.toString(16).toUpperCase().slice(1);
 }
-var Qc = 6, Ir = Qc;
-function mn(e) {
-  return Math.floor((e + Math.round(128 / Ir) / 256) * Ir);
+var DEF_MDW = 6, MDW = DEF_MDW;
+function width2px(width) {
+  return Math.floor((width + Math.round(128 / MDW) / 256) * MDW);
 }
-function gn(e) {
-  return Math.floor((e - 5) / Ir * 100 + 0.5) / 100;
+function px2char(px) {
+  return Math.floor((px - 5) / MDW * 100 + 0.5) / 100;
 }
-function u0(e) {
-  return Math.round((e * Ir + 5) / Ir * 256) / 256;
+function char2width(chr) {
+  return Math.round((chr * MDW + 5) / MDW * 256) / 256;
 }
-function L0(e) {
-  e.width ? (e.wpx = mn(e.width), e.wch = gn(e.wpx), e.MDW = Ir) : e.wpx ? (e.wch = gn(e.wpx), e.width = u0(e.wch), e.MDW = Ir) : typeof e.wch == "number" && (e.width = u0(e.wch), e.wpx = mn(e.width), e.MDW = Ir), e.customWidth && delete e.customWidth;
+function process_col(coll) {
+  if (coll.width) {
+    coll.wpx = width2px(coll.width);
+    coll.wch = px2char(coll.wpx);
+    coll.MDW = MDW;
+  } else if (coll.wpx) {
+    coll.wch = px2char(coll.wpx);
+    coll.width = char2width(coll.wch);
+    coll.MDW = MDW;
+  } else if (typeof coll.wch == "number") {
+    coll.width = char2width(coll.wch);
+    coll.wpx = width2px(coll.width);
+    coll.MDW = MDW;
+  }
+  if (coll.customWidth)
+    delete coll.customWidth;
 }
-var eh = 96, Cs = eh;
-function _n(e) {
-  return e * 96 / Cs;
+var DEF_PPI = 96, PPI = DEF_PPI;
+function px2pt(px) {
+  return px * 96 / PPI;
 }
-function Os(e) {
-  return e * Cs / 96;
+function pt2px(pt) {
+  return pt * PPI / 96;
 }
-function rh(e) {
-  var t = ["<numFmts>"];
-  return [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(r) {
-    for (var n = r[0]; n <= r[1]; ++n)
-      e[n] != null && (t[t.length] = q("numFmt", null, { numFmtId: n, formatCode: ge(e[n]) }));
-  }), t.length === 1 ? "" : (t[t.length] = "</numFmts>", t[0] = q("numFmts", null, { count: t.length - 2 }).replace("/>", ">"), t.join(""));
+function write_numFmts(NF) {
+  var o = ["<numFmts>"];
+  [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(r) {
+    for (var i = r[0]; i <= r[1]; ++i)
+      if (NF[i] != null)
+        o[o.length] = writextag("numFmt", null, { numFmtId: i, formatCode: escapexml(NF[i]) });
+  });
+  if (o.length === 1)
+    return "";
+  o[o.length] = "</numFmts>";
+  o[0] = writextag("numFmts", null, { count: o.length - 2 }).replace("/>", ">");
+  return o.join("");
 }
-function th(e) {
-  var t = [];
-  return t[t.length] = q("cellXfs", null), e.forEach(function(r) {
-    t[t.length] = q("xf", null, r);
-  }), t[t.length] = "</cellXfs>", t.length === 2 ? "" : (t[0] = q("cellXfs", null, { count: t.length - 2 }).replace("/>", ">"), t.join(""));
+function write_cellXfs(cellXfs) {
+  var o = [];
+  o[o.length] = writextag("cellXfs", null);
+  cellXfs.forEach(function(c) {
+    o[o.length] = writextag("xf", null, c);
+  });
+  o[o.length] = "</cellXfs>";
+  if (o.length === 2)
+    return "";
+  o[0] = writextag("cellXfs", null, { count: o.length - 2 }).replace("/>", ">");
+  return o.join("");
 }
-function Rs(e, t) {
-  var r = [Ie, q("styleSheet", null, {
-    xmlns: Tt[0],
-    "xmlns:vt": Be.vt
-  })], n;
-  return e.SSF && (n = rh(e.SSF)) != null && (r[r.length] = n), r[r.length] = '<fonts count="1"><font><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font></fonts>', r[r.length] = '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>', r[r.length] = '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>', r[r.length] = '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>', (n = th(t.cellXfs)) && (r[r.length] = n), r[r.length] = '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>', r[r.length] = '<dxfs count="0"/>', r[r.length] = '<tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleMedium4"/>', r.length > 2 && (r[r.length] = "</styleSheet>", r[1] = r[1].replace("/>", ">")), r.join("");
+function write_sty_xml(wb, opts) {
+  var o = [XML_HEADER, writextag("styleSheet", null, {
+    "xmlns": XMLNS_main[0],
+    "xmlns:vt": XMLNS.vt
+  })], w;
+  if (wb.SSF && (w = write_numFmts(wb.SSF)) != null)
+    o[o.length] = w;
+  o[o.length] = '<fonts count="1"><font><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font></fonts>';
+  o[o.length] = '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>';
+  o[o.length] = '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>';
+  o[o.length] = '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>';
+  if (w = write_cellXfs(opts.cellXfs))
+    o[o.length] = w;
+  o[o.length] = '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>';
+  o[o.length] = '<dxfs count="0"/>';
+  o[o.length] = '<tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleMedium4"/>';
+  if (o.length > 2) {
+    o[o.length] = "</styleSheet>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-function nh(e, t) {
-  var r = e.read_shift(2), n = Ke(e);
-  return [r, n];
+function parse_BrtFmt(data2, length) {
+  var numFmtId = data2.read_shift(2);
+  var stFmtCode = parse_XLWideString(data2);
+  return [numFmtId, stFmtCode];
 }
-function ah(e, t, r) {
-  r || (r = U(6 + 4 * t.length)), r.write_shift(2, e), Ue(t, r);
-  var n = r.length > r.l ? r.slice(0, r.l) : r;
-  return r.l == null && (r.l = r.length), n;
+function write_BrtFmt(i, f, o) {
+  if (!o)
+    o = new_buf(6 + 4 * f.length);
+  o.write_shift(2, i);
+  write_XLWideString(f, o);
+  var out = o.length > o.l ? o.slice(0, o.l) : o;
+  if (o.l == null)
+    o.l = o.length;
+  return out;
 }
-function ih(e, t, r) {
-  var n = {};
-  n.sz = e.read_shift(2) / 20;
-  var a = jl(e);
-  a.fItalic && (n.italic = 1), a.fCondense && (n.condense = 1), a.fExtend && (n.extend = 1), a.fShadow && (n.shadow = 1), a.fOutline && (n.outline = 1), a.fStrikeout && (n.strike = 1);
-  var i = e.read_shift(2);
-  switch (i === 700 && (n.bold = 1), e.read_shift(2)) {
+function parse_BrtFont(data2, length, opts) {
+  var out = {};
+  out.sz = data2.read_shift(2) / 20;
+  var grbit = parse_FontFlags(data2);
+  if (grbit.fItalic)
+    out.italic = 1;
+  if (grbit.fCondense)
+    out.condense = 1;
+  if (grbit.fExtend)
+    out.extend = 1;
+  if (grbit.fShadow)
+    out.shadow = 1;
+  if (grbit.fOutline)
+    out.outline = 1;
+  if (grbit.fStrikeout)
+    out.strike = 1;
+  var bls = data2.read_shift(2);
+  if (bls === 700)
+    out.bold = 1;
+  switch (data2.read_shift(2)) {
     case 1:
-      n.vertAlign = "superscript";
+      out.vertAlign = "superscript";
       break;
     case 2:
-      n.vertAlign = "subscript";
+      out.vertAlign = "subscript";
       break;
   }
-  var s = e.read_shift(1);
-  s != 0 && (n.underline = s);
-  var f = e.read_shift(1);
-  f > 0 && (n.family = f);
-  var l = e.read_shift(1);
-  switch (l > 0 && (n.charset = l), e.l++, n.color = $l(e), e.read_shift(1)) {
+  var underline = data2.read_shift(1);
+  if (underline != 0)
+    out.underline = underline;
+  var family = data2.read_shift(1);
+  if (family > 0)
+    out.family = family;
+  var bCharSet = data2.read_shift(1);
+  if (bCharSet > 0)
+    out.charset = bCharSet;
+  data2.l++;
+  out.color = parse_BrtColor(data2);
+  switch (data2.read_shift(1)) {
     case 1:
-      n.scheme = "major";
+      out.scheme = "major";
       break;
     case 2:
-      n.scheme = "minor";
+      out.scheme = "minor";
       break;
   }
-  return n.name = Ke(e), n;
+  out.name = parse_XLWideString(data2);
+  return out;
 }
-function sh(e, t) {
-  t || (t = U(25 + 4 * 32)), t.write_shift(2, e.sz * 20), zl(e, t), t.write_shift(2, e.bold ? 700 : 400);
-  var r = 0;
-  e.vertAlign == "superscript" ? r = 1 : e.vertAlign == "subscript" && (r = 2), t.write_shift(2, r), t.write_shift(1, e.underline || 0), t.write_shift(1, e.family || 0), t.write_shift(1, e.charset || 0), t.write_shift(1, 0), pn(e.color, t);
-  var n = 0;
-  return e.scheme == "major" && (n = 1), e.scheme == "minor" && (n = 2), t.write_shift(1, n), Ue(e.name, t), t.length > t.l ? t.slice(0, t.l) : t;
+function write_BrtFont(font, o) {
+  if (!o)
+    o = new_buf(25 + 4 * 32);
+  o.write_shift(2, font.sz * 20);
+  write_FontFlags(font, o);
+  o.write_shift(2, font.bold ? 700 : 400);
+  var sss = 0;
+  if (font.vertAlign == "superscript")
+    sss = 1;
+  else if (font.vertAlign == "subscript")
+    sss = 2;
+  o.write_shift(2, sss);
+  o.write_shift(1, font.underline || 0);
+  o.write_shift(1, font.family || 0);
+  o.write_shift(1, font.charset || 0);
+  o.write_shift(1, 0);
+  write_BrtColor(font.color, o);
+  var scheme = 0;
+  if (font.scheme == "major")
+    scheme = 1;
+  if (font.scheme == "minor")
+    scheme = 2;
+  o.write_shift(1, scheme);
+  write_XLWideString(font.name, o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-var fh = [
+var XLSBFillPTNames = [
   "none",
   "solid",
   "mediumGray",
@@ -7055,662 +10694,1122 @@ var fh = [
   "lightTrellis",
   "gray125",
   "gray0625"
-], a0, oh = Fr;
-function ri(e, t) {
-  t || (t = U(4 * 3 + 8 * 7 + 16 * 1)), a0 || (a0 = S0(fh));
-  var r = a0[e.patternType];
-  r == null && (r = 40), t.write_shift(4, r);
-  var n = 0;
-  if (r != 40)
-    for (pn({ auto: 1 }, t), pn({ auto: 1 }, t); n < 12; ++n)
-      t.write_shift(4, 0);
-  else {
-    for (; n < 4; ++n)
-      t.write_shift(4, 0);
-    for (; n < 12; ++n)
-      t.write_shift(4, 0);
+];
+var rev_XLSBFillPTNames;
+var parse_BrtFill = parsenoop;
+function write_BrtFill(fill2, o) {
+  if (!o)
+    o = new_buf(4 * 3 + 8 * 7 + 16 * 1);
+  if (!rev_XLSBFillPTNames)
+    rev_XLSBFillPTNames = evert(XLSBFillPTNames);
+  var fls = rev_XLSBFillPTNames[fill2.patternType];
+  if (fls == null)
+    fls = 40;
+  o.write_shift(4, fls);
+  var j = 0;
+  if (fls != 40) {
+    write_BrtColor({ auto: 1 }, o);
+    write_BrtColor({ auto: 1 }, o);
+    for (; j < 12; ++j)
+      o.write_shift(4, 0);
+  } else {
+    for (; j < 4; ++j)
+      o.write_shift(4, 0);
+    for (; j < 12; ++j)
+      o.write_shift(4, 0);
   }
-  return t.length > t.l ? t.slice(0, t.l) : t;
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function lh(e, t) {
-  var r = e.l + t, n = e.read_shift(2), a = e.read_shift(2);
-  return e.l = r, { ixfe: n, numFmtId: a };
+function parse_BrtXF(data2, length) {
+  var tgt = data2.l + length;
+  var ixfeParent = data2.read_shift(2);
+  var ifmt = data2.read_shift(2);
+  data2.l = tgt;
+  return { ixfe: ixfeParent, numFmtId: ifmt };
 }
-function Ds(e, t, r) {
-  r || (r = U(16)), r.write_shift(2, t || 0), r.write_shift(2, e.numFmtId || 0), r.write_shift(2, 0), r.write_shift(2, 0), r.write_shift(2, 0), r.write_shift(1, 0), r.write_shift(1, 0);
-  var n = 0;
-  return r.write_shift(1, n), r.write_shift(1, 0), r.write_shift(1, 0), r.write_shift(1, 0), r;
+function write_BrtXF(data2, ixfeP, o) {
+  if (!o)
+    o = new_buf(16);
+  o.write_shift(2, ixfeP || 0);
+  o.write_shift(2, data2.numFmtId || 0);
+  o.write_shift(2, 0);
+  o.write_shift(2, 0);
+  o.write_shift(2, 0);
+  o.write_shift(1, 0);
+  o.write_shift(1, 0);
+  var flow = 0;
+  o.write_shift(1, flow);
+  o.write_shift(1, 0);
+  o.write_shift(1, 0);
+  o.write_shift(1, 0);
+  return o;
 }
-function Ot(e, t) {
-  return t || (t = U(10)), t.write_shift(1, 0), t.write_shift(1, 0), t.write_shift(4, 0), t.write_shift(4, 0), t;
+function write_Blxf(data2, o) {
+  if (!o)
+    o = new_buf(10);
+  o.write_shift(1, 0);
+  o.write_shift(1, 0);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  return o;
 }
-var ch = Fr;
-function hh(e, t) {
-  return t || (t = U(51)), t.write_shift(1, 0), Ot(null, t), Ot(null, t), Ot(null, t), Ot(null, t), Ot(null, t), t.length > t.l ? t.slice(0, t.l) : t;
+var parse_BrtBorder = parsenoop;
+function write_BrtBorder(border, o) {
+  if (!o)
+    o = new_buf(51);
+  o.write_shift(1, 0);
+  write_Blxf(null, o);
+  write_Blxf(null, o);
+  write_Blxf(null, o);
+  write_Blxf(null, o);
+  write_Blxf(null, o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function uh(e, t) {
-  return t || (t = U(12 + 4 * 10)), t.write_shift(4, e.xfId), t.write_shift(2, 1), t.write_shift(1, +e.builtinId), t.write_shift(1, 0), dn(e.name || "", t), t.length > t.l ? t.slice(0, t.l) : t;
+function write_BrtStyle(style, o) {
+  if (!o)
+    o = new_buf(12 + 4 * 10);
+  o.write_shift(4, style.xfId);
+  o.write_shift(2, 1);
+  o.write_shift(1, +style.builtinId);
+  o.write_shift(1, 0);
+  write_XLNullableWideString(style.name || "", o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function xh(e, t, r) {
-  var n = U(2052);
-  return n.write_shift(4, e), dn(t, n), dn(r, n), n.length > n.l ? n.slice(0, n.l) : n;
+function write_BrtBeginTableStyles(cnt, defTableStyle, defPivotStyle) {
+  var o = new_buf(4 + 256 * 2 * 4);
+  o.write_shift(4, cnt);
+  write_XLNullableWideString(defTableStyle, o);
+  write_XLNullableWideString(defPivotStyle, o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function dh(e, t) {
-  if (!!t) {
-    var r = 0;
-    [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(n) {
-      for (var a = n[0]; a <= n[1]; ++a)
-        t[a] != null && ++r;
-    }), r != 0 && (V(e, 615, Tr(r)), [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(n) {
-      for (var a = n[0]; a <= n[1]; ++a)
-        t[a] != null && V(e, 44, ah(a, t[a]));
-    }), V(e, 616));
-  }
+function write_FMTS_bin(ba, NF) {
+  if (!NF)
+    return;
+  var cnt = 0;
+  [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(r) {
+    for (var i = r[0]; i <= r[1]; ++i)
+      if (NF[i] != null)
+        ++cnt;
+  });
+  if (cnt == 0)
+    return;
+  write_record(ba, 615, write_UInt32LE(cnt));
+  [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(r) {
+    for (var i = r[0]; i <= r[1]; ++i)
+      if (NF[i] != null)
+        write_record(ba, 44, write_BrtFmt(i, NF[i]));
+  });
+  write_record(ba, 616);
 }
-function ph(e) {
-  var t = 1;
-  V(e, 611, Tr(t)), V(e, 43, sh({
+function write_FONTS_bin(ba) {
+  var cnt = 1;
+  write_record(ba, 611, write_UInt32LE(cnt));
+  write_record(ba, 43, write_BrtFont({
     sz: 12,
     color: { theme: 1 },
     name: "Calibri",
     family: 2,
     scheme: "minor"
-  })), V(e, 612);
+  }));
+  write_record(ba, 612);
 }
-function vh(e) {
-  var t = 2;
-  V(e, 603, Tr(t)), V(e, 45, ri({ patternType: "none" })), V(e, 45, ri({ patternType: "gray125" })), V(e, 604);
+function write_FILLS_bin(ba) {
+  var cnt = 2;
+  write_record(ba, 603, write_UInt32LE(cnt));
+  write_record(ba, 45, write_BrtFill({ patternType: "none" }));
+  write_record(ba, 45, write_BrtFill({ patternType: "gray125" }));
+  write_record(ba, 604);
 }
-function mh(e) {
-  var t = 1;
-  V(e, 613, Tr(t)), V(e, 46, hh()), V(e, 614);
+function write_BORDERS_bin(ba) {
+  var cnt = 1;
+  write_record(ba, 613, write_UInt32LE(cnt));
+  write_record(ba, 46, write_BrtBorder());
+  write_record(ba, 614);
 }
-function gh(e) {
-  var t = 1;
-  V(e, 626, Tr(t)), V(e, 47, Ds({
+function write_CELLSTYLEXFS_bin(ba) {
+  var cnt = 1;
+  write_record(ba, 626, write_UInt32LE(cnt));
+  write_record(ba, 47, write_BrtXF({
     numFmtId: 0,
     fontId: 0,
     fillId: 0,
     borderId: 0
-  }, 65535)), V(e, 627);
+  }, 65535));
+  write_record(ba, 627);
 }
-function _h(e, t) {
-  V(e, 617, Tr(t.length)), t.forEach(function(r) {
-    V(e, 47, Ds(r, 0));
-  }), V(e, 618);
+function write_CELLXFS_bin(ba, data2) {
+  write_record(ba, 617, write_UInt32LE(data2.length));
+  data2.forEach(function(c) {
+    write_record(ba, 47, write_BrtXF(c, 0));
+  });
+  write_record(ba, 618);
 }
-function Eh(e) {
-  var t = 1;
-  V(e, 619, Tr(t)), V(e, 48, uh({
+function write_STYLES_bin(ba) {
+  var cnt = 1;
+  write_record(ba, 619, write_UInt32LE(cnt));
+  write_record(ba, 48, write_BrtStyle({
     xfId: 0,
     builtinId: 0,
     name: "Normal"
-  })), V(e, 620);
+  }));
+  write_record(ba, 620);
 }
-function Th(e) {
-  var t = 0;
-  V(e, 505, Tr(t)), V(e, 506);
+function write_DXFS_bin(ba) {
+  var cnt = 0;
+  write_record(ba, 505, write_UInt32LE(cnt));
+  write_record(ba, 506);
 }
-function wh(e) {
-  var t = 0;
-  V(e, 508, xh(t, "TableStyleMedium9", "PivotStyleMedium4")), V(e, 509);
+function write_TABLESTYLES_bin(ba) {
+  var cnt = 0;
+  write_record(ba, 508, write_BrtBeginTableStyles(cnt, "TableStyleMedium9", "PivotStyleMedium4"));
+  write_record(ba, 509);
 }
-function Sh(e, t) {
-  var r = Qe();
-  return V(r, 278), dh(r, e.SSF), ph(r), vh(r), mh(r), gh(r), _h(r, t.cellXfs), Eh(r), Th(r), wh(r), V(r, 279), r.end();
+function write_sty_bin(wb, opts) {
+  var ba = buf_array();
+  write_record(ba, 278);
+  write_FMTS_bin(ba, wb.SSF);
+  write_FONTS_bin(ba);
+  write_FILLS_bin(ba);
+  write_BORDERS_bin(ba);
+  write_CELLSTYLEXFS_bin(ba);
+  write_CELLXFS_bin(ba, opts.cellXfs);
+  write_STYLES_bin(ba);
+  write_DXFS_bin(ba);
+  write_TABLESTYLES_bin(ba);
+  write_record(ba, 279);
+  return ba.end();
 }
-function Ns(e, t) {
-  if (t && t.themeXLSX)
-    return t.themeXLSX;
-  if (e && typeof e.raw == "string")
-    return e.raw;
-  var r = [Ie];
-  return r[r.length] = '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">', r[r.length] = "<a:themeElements>", r[r.length] = '<a:clrScheme name="Office">', r[r.length] = '<a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1>', r[r.length] = '<a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>', r[r.length] = '<a:dk2><a:srgbClr val="1F497D"/></a:dk2>', r[r.length] = '<a:lt2><a:srgbClr val="EEECE1"/></a:lt2>', r[r.length] = '<a:accent1><a:srgbClr val="4F81BD"/></a:accent1>', r[r.length] = '<a:accent2><a:srgbClr val="C0504D"/></a:accent2>', r[r.length] = '<a:accent3><a:srgbClr val="9BBB59"/></a:accent3>', r[r.length] = '<a:accent4><a:srgbClr val="8064A2"/></a:accent4>', r[r.length] = '<a:accent5><a:srgbClr val="4BACC6"/></a:accent5>', r[r.length] = '<a:accent6><a:srgbClr val="F79646"/></a:accent6>', r[r.length] = '<a:hlink><a:srgbClr val="0000FF"/></a:hlink>', r[r.length] = '<a:folHlink><a:srgbClr val="800080"/></a:folHlink>', r[r.length] = "</a:clrScheme>", r[r.length] = '<a:fontScheme name="Office">', r[r.length] = "<a:majorFont>", r[r.length] = '<a:latin typeface="Cambria"/>', r[r.length] = '<a:ea typeface=""/>', r[r.length] = '<a:cs typeface=""/>', r[r.length] = '<a:font script="Jpan" typeface="\uFF2D\uFF33 \uFF30\u30B4\u30B7\u30C3\u30AF"/>', r[r.length] = '<a:font script="Hang" typeface="\uB9D1\uC740 \uACE0\uB515"/>', r[r.length] = '<a:font script="Hans" typeface="\u5B8B\u4F53"/>', r[r.length] = '<a:font script="Hant" typeface="\u65B0\u7D30\u660E\u9AD4"/>', r[r.length] = '<a:font script="Arab" typeface="Times New Roman"/>', r[r.length] = '<a:font script="Hebr" typeface="Times New Roman"/>', r[r.length] = '<a:font script="Thai" typeface="Tahoma"/>', r[r.length] = '<a:font script="Ethi" typeface="Nyala"/>', r[r.length] = '<a:font script="Beng" typeface="Vrinda"/>', r[r.length] = '<a:font script="Gujr" typeface="Shruti"/>', r[r.length] = '<a:font script="Khmr" typeface="MoolBoran"/>', r[r.length] = '<a:font script="Knda" typeface="Tunga"/>', r[r.length] = '<a:font script="Guru" typeface="Raavi"/>', r[r.length] = '<a:font script="Cans" typeface="Euphemia"/>', r[r.length] = '<a:font script="Cher" typeface="Plantagenet Cherokee"/>', r[r.length] = '<a:font script="Yiii" typeface="Microsoft Yi Baiti"/>', r[r.length] = '<a:font script="Tibt" typeface="Microsoft Himalaya"/>', r[r.length] = '<a:font script="Thaa" typeface="MV Boli"/>', r[r.length] = '<a:font script="Deva" typeface="Mangal"/>', r[r.length] = '<a:font script="Telu" typeface="Gautami"/>', r[r.length] = '<a:font script="Taml" typeface="Latha"/>', r[r.length] = '<a:font script="Syrc" typeface="Estrangelo Edessa"/>', r[r.length] = '<a:font script="Orya" typeface="Kalinga"/>', r[r.length] = '<a:font script="Mlym" typeface="Kartika"/>', r[r.length] = '<a:font script="Laoo" typeface="DokChampa"/>', r[r.length] = '<a:font script="Sinh" typeface="Iskoola Pota"/>', r[r.length] = '<a:font script="Mong" typeface="Mongolian Baiti"/>', r[r.length] = '<a:font script="Viet" typeface="Times New Roman"/>', r[r.length] = '<a:font script="Uigh" typeface="Microsoft Uighur"/>', r[r.length] = '<a:font script="Geor" typeface="Sylfaen"/>', r[r.length] = "</a:majorFont>", r[r.length] = "<a:minorFont>", r[r.length] = '<a:latin typeface="Calibri"/>', r[r.length] = '<a:ea typeface=""/>', r[r.length] = '<a:cs typeface=""/>', r[r.length] = '<a:font script="Jpan" typeface="\uFF2D\uFF33 \uFF30\u30B4\u30B7\u30C3\u30AF"/>', r[r.length] = '<a:font script="Hang" typeface="\uB9D1\uC740 \uACE0\uB515"/>', r[r.length] = '<a:font script="Hans" typeface="\u5B8B\u4F53"/>', r[r.length] = '<a:font script="Hant" typeface="\u65B0\u7D30\u660E\u9AD4"/>', r[r.length] = '<a:font script="Arab" typeface="Arial"/>', r[r.length] = '<a:font script="Hebr" typeface="Arial"/>', r[r.length] = '<a:font script="Thai" typeface="Tahoma"/>', r[r.length] = '<a:font script="Ethi" typeface="Nyala"/>', r[r.length] = '<a:font script="Beng" typeface="Vrinda"/>', r[r.length] = '<a:font script="Gujr" typeface="Shruti"/>', r[r.length] = '<a:font script="Khmr" typeface="DaunPenh"/>', r[r.length] = '<a:font script="Knda" typeface="Tunga"/>', r[r.length] = '<a:font script="Guru" typeface="Raavi"/>', r[r.length] = '<a:font script="Cans" typeface="Euphemia"/>', r[r.length] = '<a:font script="Cher" typeface="Plantagenet Cherokee"/>', r[r.length] = '<a:font script="Yiii" typeface="Microsoft Yi Baiti"/>', r[r.length] = '<a:font script="Tibt" typeface="Microsoft Himalaya"/>', r[r.length] = '<a:font script="Thaa" typeface="MV Boli"/>', r[r.length] = '<a:font script="Deva" typeface="Mangal"/>', r[r.length] = '<a:font script="Telu" typeface="Gautami"/>', r[r.length] = '<a:font script="Taml" typeface="Latha"/>', r[r.length] = '<a:font script="Syrc" typeface="Estrangelo Edessa"/>', r[r.length] = '<a:font script="Orya" typeface="Kalinga"/>', r[r.length] = '<a:font script="Mlym" typeface="Kartika"/>', r[r.length] = '<a:font script="Laoo" typeface="DokChampa"/>', r[r.length] = '<a:font script="Sinh" typeface="Iskoola Pota"/>', r[r.length] = '<a:font script="Mong" typeface="Mongolian Baiti"/>', r[r.length] = '<a:font script="Viet" typeface="Arial"/>', r[r.length] = '<a:font script="Uigh" typeface="Microsoft Uighur"/>', r[r.length] = '<a:font script="Geor" typeface="Sylfaen"/>', r[r.length] = "</a:minorFont>", r[r.length] = "</a:fontScheme>", r[r.length] = '<a:fmtScheme name="Office">', r[r.length] = "<a:fillStyleLst>", r[r.length] = '<a:solidFill><a:schemeClr val="phClr"/></a:solidFill>', r[r.length] = '<a:gradFill rotWithShape="1">', r[r.length] = "<a:gsLst>", r[r.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="50000"/><a:satMod val="300000"/></a:schemeClr></a:gs>', r[r.length] = '<a:gs pos="35000"><a:schemeClr val="phClr"><a:tint val="37000"/><a:satMod val="300000"/></a:schemeClr></a:gs>', r[r.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="15000"/><a:satMod val="350000"/></a:schemeClr></a:gs>', r[r.length] = "</a:gsLst>", r[r.length] = '<a:lin ang="16200000" scaled="1"/>', r[r.length] = "</a:gradFill>", r[r.length] = '<a:gradFill rotWithShape="1">', r[r.length] = "<a:gsLst>", r[r.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="100000"/><a:shade val="100000"/><a:satMod val="130000"/></a:schemeClr></a:gs>', r[r.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="50000"/><a:shade val="100000"/><a:satMod val="350000"/></a:schemeClr></a:gs>', r[r.length] = "</a:gsLst>", r[r.length] = '<a:lin ang="16200000" scaled="0"/>', r[r.length] = "</a:gradFill>", r[r.length] = "</a:fillStyleLst>", r[r.length] = "<a:lnStyleLst>", r[r.length] = '<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"><a:shade val="95000"/><a:satMod val="105000"/></a:schemeClr></a:solidFill><a:prstDash val="solid"/></a:ln>', r[r.length] = '<a:ln w="25400" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln>', r[r.length] = '<a:ln w="38100" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln>', r[r.length] = "</a:lnStyleLst>", r[r.length] = "<a:effectStyleLst>", r[r.length] = "<a:effectStyle>", r[r.length] = "<a:effectLst>", r[r.length] = '<a:outerShdw blurRad="40000" dist="20000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw>', r[r.length] = "</a:effectLst>", r[r.length] = "</a:effectStyle>", r[r.length] = "<a:effectStyle>", r[r.length] = "<a:effectLst>", r[r.length] = '<a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw>', r[r.length] = "</a:effectLst>", r[r.length] = "</a:effectStyle>", r[r.length] = "<a:effectStyle>", r[r.length] = "<a:effectLst>", r[r.length] = '<a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw>', r[r.length] = "</a:effectLst>", r[r.length] = '<a:scene3d><a:camera prst="orthographicFront"><a:rot lat="0" lon="0" rev="0"/></a:camera><a:lightRig rig="threePt" dir="t"><a:rot lat="0" lon="0" rev="1200000"/></a:lightRig></a:scene3d>', r[r.length] = '<a:sp3d><a:bevelT w="63500" h="25400"/></a:sp3d>', r[r.length] = "</a:effectStyle>", r[r.length] = "</a:effectStyleLst>", r[r.length] = "<a:bgFillStyleLst>", r[r.length] = '<a:solidFill><a:schemeClr val="phClr"/></a:solidFill>', r[r.length] = '<a:gradFill rotWithShape="1">', r[r.length] = "<a:gsLst>", r[r.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="40000"/><a:satMod val="350000"/></a:schemeClr></a:gs>', r[r.length] = '<a:gs pos="40000"><a:schemeClr val="phClr"><a:tint val="45000"/><a:shade val="99000"/><a:satMod val="350000"/></a:schemeClr></a:gs>', r[r.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="20000"/><a:satMod val="255000"/></a:schemeClr></a:gs>', r[r.length] = "</a:gsLst>", r[r.length] = '<a:path path="circle"><a:fillToRect l="50000" t="-80000" r="50000" b="180000"/></a:path>', r[r.length] = "</a:gradFill>", r[r.length] = '<a:gradFill rotWithShape="1">', r[r.length] = "<a:gsLst>", r[r.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="80000"/><a:satMod val="300000"/></a:schemeClr></a:gs>', r[r.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="30000"/><a:satMod val="200000"/></a:schemeClr></a:gs>', r[r.length] = "</a:gsLst>", r[r.length] = '<a:path path="circle"><a:fillToRect l="50000" t="50000" r="50000" b="50000"/></a:path>', r[r.length] = "</a:gradFill>", r[r.length] = "</a:bgFillStyleLst>", r[r.length] = "</a:fmtScheme>", r[r.length] = "</a:themeElements>", r[r.length] = "<a:objectDefaults>", r[r.length] = "<a:spDef>", r[r.length] = '<a:spPr/><a:bodyPr/><a:lstStyle/><a:style><a:lnRef idx="1"><a:schemeClr val="accent1"/></a:lnRef><a:fillRef idx="3"><a:schemeClr val="accent1"/></a:fillRef><a:effectRef idx="2"><a:schemeClr val="accent1"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="lt1"/></a:fontRef></a:style>', r[r.length] = "</a:spDef>", r[r.length] = "<a:lnDef>", r[r.length] = '<a:spPr/><a:bodyPr/><a:lstStyle/><a:style><a:lnRef idx="2"><a:schemeClr val="accent1"/></a:lnRef><a:fillRef idx="0"><a:schemeClr val="accent1"/></a:fillRef><a:effectRef idx="1"><a:schemeClr val="accent1"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="tx1"/></a:fontRef></a:style>', r[r.length] = "</a:lnDef>", r[r.length] = "</a:objectDefaults>", r[r.length] = "<a:extraClrSchemeLst/>", r[r.length] = "</a:theme>", r.join("");
+function write_theme(Themes, opts) {
+  if (opts && opts.themeXLSX)
+    return opts.themeXLSX;
+  if (Themes && typeof Themes.raw == "string")
+    return Themes.raw;
+  var o = [XML_HEADER];
+  o[o.length] = '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">';
+  o[o.length] = "<a:themeElements>";
+  o[o.length] = '<a:clrScheme name="Office">';
+  o[o.length] = '<a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1>';
+  o[o.length] = '<a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>';
+  o[o.length] = '<a:dk2><a:srgbClr val="1F497D"/></a:dk2>';
+  o[o.length] = '<a:lt2><a:srgbClr val="EEECE1"/></a:lt2>';
+  o[o.length] = '<a:accent1><a:srgbClr val="4F81BD"/></a:accent1>';
+  o[o.length] = '<a:accent2><a:srgbClr val="C0504D"/></a:accent2>';
+  o[o.length] = '<a:accent3><a:srgbClr val="9BBB59"/></a:accent3>';
+  o[o.length] = '<a:accent4><a:srgbClr val="8064A2"/></a:accent4>';
+  o[o.length] = '<a:accent5><a:srgbClr val="4BACC6"/></a:accent5>';
+  o[o.length] = '<a:accent6><a:srgbClr val="F79646"/></a:accent6>';
+  o[o.length] = '<a:hlink><a:srgbClr val="0000FF"/></a:hlink>';
+  o[o.length] = '<a:folHlink><a:srgbClr val="800080"/></a:folHlink>';
+  o[o.length] = "</a:clrScheme>";
+  o[o.length] = '<a:fontScheme name="Office">';
+  o[o.length] = "<a:majorFont>";
+  o[o.length] = '<a:latin typeface="Cambria"/>';
+  o[o.length] = '<a:ea typeface=""/>';
+  o[o.length] = '<a:cs typeface=""/>';
+  o[o.length] = '<a:font script="Jpan" typeface="\uFF2D\uFF33 \uFF30\u30B4\u30B7\u30C3\u30AF"/>';
+  o[o.length] = '<a:font script="Hang" typeface="\uB9D1\uC740 \uACE0\uB515"/>';
+  o[o.length] = '<a:font script="Hans" typeface="\u5B8B\u4F53"/>';
+  o[o.length] = '<a:font script="Hant" typeface="\u65B0\u7D30\u660E\u9AD4"/>';
+  o[o.length] = '<a:font script="Arab" typeface="Times New Roman"/>';
+  o[o.length] = '<a:font script="Hebr" typeface="Times New Roman"/>';
+  o[o.length] = '<a:font script="Thai" typeface="Tahoma"/>';
+  o[o.length] = '<a:font script="Ethi" typeface="Nyala"/>';
+  o[o.length] = '<a:font script="Beng" typeface="Vrinda"/>';
+  o[o.length] = '<a:font script="Gujr" typeface="Shruti"/>';
+  o[o.length] = '<a:font script="Khmr" typeface="MoolBoran"/>';
+  o[o.length] = '<a:font script="Knda" typeface="Tunga"/>';
+  o[o.length] = '<a:font script="Guru" typeface="Raavi"/>';
+  o[o.length] = '<a:font script="Cans" typeface="Euphemia"/>';
+  o[o.length] = '<a:font script="Cher" typeface="Plantagenet Cherokee"/>';
+  o[o.length] = '<a:font script="Yiii" typeface="Microsoft Yi Baiti"/>';
+  o[o.length] = '<a:font script="Tibt" typeface="Microsoft Himalaya"/>';
+  o[o.length] = '<a:font script="Thaa" typeface="MV Boli"/>';
+  o[o.length] = '<a:font script="Deva" typeface="Mangal"/>';
+  o[o.length] = '<a:font script="Telu" typeface="Gautami"/>';
+  o[o.length] = '<a:font script="Taml" typeface="Latha"/>';
+  o[o.length] = '<a:font script="Syrc" typeface="Estrangelo Edessa"/>';
+  o[o.length] = '<a:font script="Orya" typeface="Kalinga"/>';
+  o[o.length] = '<a:font script="Mlym" typeface="Kartika"/>';
+  o[o.length] = '<a:font script="Laoo" typeface="DokChampa"/>';
+  o[o.length] = '<a:font script="Sinh" typeface="Iskoola Pota"/>';
+  o[o.length] = '<a:font script="Mong" typeface="Mongolian Baiti"/>';
+  o[o.length] = '<a:font script="Viet" typeface="Times New Roman"/>';
+  o[o.length] = '<a:font script="Uigh" typeface="Microsoft Uighur"/>';
+  o[o.length] = '<a:font script="Geor" typeface="Sylfaen"/>';
+  o[o.length] = "</a:majorFont>";
+  o[o.length] = "<a:minorFont>";
+  o[o.length] = '<a:latin typeface="Calibri"/>';
+  o[o.length] = '<a:ea typeface=""/>';
+  o[o.length] = '<a:cs typeface=""/>';
+  o[o.length] = '<a:font script="Jpan" typeface="\uFF2D\uFF33 \uFF30\u30B4\u30B7\u30C3\u30AF"/>';
+  o[o.length] = '<a:font script="Hang" typeface="\uB9D1\uC740 \uACE0\uB515"/>';
+  o[o.length] = '<a:font script="Hans" typeface="\u5B8B\u4F53"/>';
+  o[o.length] = '<a:font script="Hant" typeface="\u65B0\u7D30\u660E\u9AD4"/>';
+  o[o.length] = '<a:font script="Arab" typeface="Arial"/>';
+  o[o.length] = '<a:font script="Hebr" typeface="Arial"/>';
+  o[o.length] = '<a:font script="Thai" typeface="Tahoma"/>';
+  o[o.length] = '<a:font script="Ethi" typeface="Nyala"/>';
+  o[o.length] = '<a:font script="Beng" typeface="Vrinda"/>';
+  o[o.length] = '<a:font script="Gujr" typeface="Shruti"/>';
+  o[o.length] = '<a:font script="Khmr" typeface="DaunPenh"/>';
+  o[o.length] = '<a:font script="Knda" typeface="Tunga"/>';
+  o[o.length] = '<a:font script="Guru" typeface="Raavi"/>';
+  o[o.length] = '<a:font script="Cans" typeface="Euphemia"/>';
+  o[o.length] = '<a:font script="Cher" typeface="Plantagenet Cherokee"/>';
+  o[o.length] = '<a:font script="Yiii" typeface="Microsoft Yi Baiti"/>';
+  o[o.length] = '<a:font script="Tibt" typeface="Microsoft Himalaya"/>';
+  o[o.length] = '<a:font script="Thaa" typeface="MV Boli"/>';
+  o[o.length] = '<a:font script="Deva" typeface="Mangal"/>';
+  o[o.length] = '<a:font script="Telu" typeface="Gautami"/>';
+  o[o.length] = '<a:font script="Taml" typeface="Latha"/>';
+  o[o.length] = '<a:font script="Syrc" typeface="Estrangelo Edessa"/>';
+  o[o.length] = '<a:font script="Orya" typeface="Kalinga"/>';
+  o[o.length] = '<a:font script="Mlym" typeface="Kartika"/>';
+  o[o.length] = '<a:font script="Laoo" typeface="DokChampa"/>';
+  o[o.length] = '<a:font script="Sinh" typeface="Iskoola Pota"/>';
+  o[o.length] = '<a:font script="Mong" typeface="Mongolian Baiti"/>';
+  o[o.length] = '<a:font script="Viet" typeface="Arial"/>';
+  o[o.length] = '<a:font script="Uigh" typeface="Microsoft Uighur"/>';
+  o[o.length] = '<a:font script="Geor" typeface="Sylfaen"/>';
+  o[o.length] = "</a:minorFont>";
+  o[o.length] = "</a:fontScheme>";
+  o[o.length] = '<a:fmtScheme name="Office">';
+  o[o.length] = "<a:fillStyleLst>";
+  o[o.length] = '<a:solidFill><a:schemeClr val="phClr"/></a:solidFill>';
+  o[o.length] = '<a:gradFill rotWithShape="1">';
+  o[o.length] = "<a:gsLst>";
+  o[o.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="50000"/><a:satMod val="300000"/></a:schemeClr></a:gs>';
+  o[o.length] = '<a:gs pos="35000"><a:schemeClr val="phClr"><a:tint val="37000"/><a:satMod val="300000"/></a:schemeClr></a:gs>';
+  o[o.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="15000"/><a:satMod val="350000"/></a:schemeClr></a:gs>';
+  o[o.length] = "</a:gsLst>";
+  o[o.length] = '<a:lin ang="16200000" scaled="1"/>';
+  o[o.length] = "</a:gradFill>";
+  o[o.length] = '<a:gradFill rotWithShape="1">';
+  o[o.length] = "<a:gsLst>";
+  o[o.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="100000"/><a:shade val="100000"/><a:satMod val="130000"/></a:schemeClr></a:gs>';
+  o[o.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="50000"/><a:shade val="100000"/><a:satMod val="350000"/></a:schemeClr></a:gs>';
+  o[o.length] = "</a:gsLst>";
+  o[o.length] = '<a:lin ang="16200000" scaled="0"/>';
+  o[o.length] = "</a:gradFill>";
+  o[o.length] = "</a:fillStyleLst>";
+  o[o.length] = "<a:lnStyleLst>";
+  o[o.length] = '<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"><a:shade val="95000"/><a:satMod val="105000"/></a:schemeClr></a:solidFill><a:prstDash val="solid"/></a:ln>';
+  o[o.length] = '<a:ln w="25400" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln>';
+  o[o.length] = '<a:ln w="38100" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln>';
+  o[o.length] = "</a:lnStyleLst>";
+  o[o.length] = "<a:effectStyleLst>";
+  o[o.length] = "<a:effectStyle>";
+  o[o.length] = "<a:effectLst>";
+  o[o.length] = '<a:outerShdw blurRad="40000" dist="20000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw>';
+  o[o.length] = "</a:effectLst>";
+  o[o.length] = "</a:effectStyle>";
+  o[o.length] = "<a:effectStyle>";
+  o[o.length] = "<a:effectLst>";
+  o[o.length] = '<a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw>';
+  o[o.length] = "</a:effectLst>";
+  o[o.length] = "</a:effectStyle>";
+  o[o.length] = "<a:effectStyle>";
+  o[o.length] = "<a:effectLst>";
+  o[o.length] = '<a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw>';
+  o[o.length] = "</a:effectLst>";
+  o[o.length] = '<a:scene3d><a:camera prst="orthographicFront"><a:rot lat="0" lon="0" rev="0"/></a:camera><a:lightRig rig="threePt" dir="t"><a:rot lat="0" lon="0" rev="1200000"/></a:lightRig></a:scene3d>';
+  o[o.length] = '<a:sp3d><a:bevelT w="63500" h="25400"/></a:sp3d>';
+  o[o.length] = "</a:effectStyle>";
+  o[o.length] = "</a:effectStyleLst>";
+  o[o.length] = "<a:bgFillStyleLst>";
+  o[o.length] = '<a:solidFill><a:schemeClr val="phClr"/></a:solidFill>';
+  o[o.length] = '<a:gradFill rotWithShape="1">';
+  o[o.length] = "<a:gsLst>";
+  o[o.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="40000"/><a:satMod val="350000"/></a:schemeClr></a:gs>';
+  o[o.length] = '<a:gs pos="40000"><a:schemeClr val="phClr"><a:tint val="45000"/><a:shade val="99000"/><a:satMod val="350000"/></a:schemeClr></a:gs>';
+  o[o.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="20000"/><a:satMod val="255000"/></a:schemeClr></a:gs>';
+  o[o.length] = "</a:gsLst>";
+  o[o.length] = '<a:path path="circle"><a:fillToRect l="50000" t="-80000" r="50000" b="180000"/></a:path>';
+  o[o.length] = "</a:gradFill>";
+  o[o.length] = '<a:gradFill rotWithShape="1">';
+  o[o.length] = "<a:gsLst>";
+  o[o.length] = '<a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="80000"/><a:satMod val="300000"/></a:schemeClr></a:gs>';
+  o[o.length] = '<a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="30000"/><a:satMod val="200000"/></a:schemeClr></a:gs>';
+  o[o.length] = "</a:gsLst>";
+  o[o.length] = '<a:path path="circle"><a:fillToRect l="50000" t="50000" r="50000" b="50000"/></a:path>';
+  o[o.length] = "</a:gradFill>";
+  o[o.length] = "</a:bgFillStyleLst>";
+  o[o.length] = "</a:fmtScheme>";
+  o[o.length] = "</a:themeElements>";
+  o[o.length] = "<a:objectDefaults>";
+  o[o.length] = "<a:spDef>";
+  o[o.length] = '<a:spPr/><a:bodyPr/><a:lstStyle/><a:style><a:lnRef idx="1"><a:schemeClr val="accent1"/></a:lnRef><a:fillRef idx="3"><a:schemeClr val="accent1"/></a:fillRef><a:effectRef idx="2"><a:schemeClr val="accent1"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="lt1"/></a:fontRef></a:style>';
+  o[o.length] = "</a:spDef>";
+  o[o.length] = "<a:lnDef>";
+  o[o.length] = '<a:spPr/><a:bodyPr/><a:lstStyle/><a:style><a:lnRef idx="2"><a:schemeClr val="accent1"/></a:lnRef><a:fillRef idx="0"><a:schemeClr val="accent1"/></a:fillRef><a:effectRef idx="1"><a:schemeClr val="accent1"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="tx1"/></a:fontRef></a:style>';
+  o[o.length] = "</a:lnDef>";
+  o[o.length] = "</a:objectDefaults>";
+  o[o.length] = "<a:extraClrSchemeLst/>";
+  o[o.length] = "</a:theme>";
+  return o.join("");
 }
-function Ah(e, t) {
+function parse_BrtMdtinfo(data2, length) {
   return {
-    flags: e.read_shift(4),
-    version: e.read_shift(4),
-    name: Ke(e)
+    flags: data2.read_shift(4),
+    version: data2.read_shift(4),
+    name: parse_XLWideString(data2)
   };
 }
-function Fh(e) {
-  var t = U(12 + 2 * e.name.length);
-  return t.write_shift(4, e.flags), t.write_shift(4, e.version), Ue(e.name, t), t.slice(0, t.l);
+function write_BrtMdtinfo(data2) {
+  var o = new_buf(12 + 2 * data2.name.length);
+  o.write_shift(4, data2.flags);
+  o.write_shift(4, data2.version);
+  write_XLWideString(data2.name, o);
+  return o.slice(0, o.l);
 }
-function yh(e) {
-  for (var t = [], r = e.read_shift(4); r-- > 0; )
-    t.push([e.read_shift(4), e.read_shift(4)]);
-  return t;
+function parse_BrtMdb(data2) {
+  var out = [];
+  var cnt = data2.read_shift(4);
+  while (cnt-- > 0)
+    out.push([data2.read_shift(4), data2.read_shift(4)]);
+  return out;
 }
-function Ch(e) {
-  var t = U(4 + 8 * e.length);
-  t.write_shift(4, e.length);
-  for (var r = 0; r < e.length; ++r)
-    t.write_shift(4, e[r][0]), t.write_shift(4, e[r][1]);
-  return t;
+function write_BrtMdb(mdb) {
+  var o = new_buf(4 + 8 * mdb.length);
+  o.write_shift(4, mdb.length);
+  for (var i = 0; i < mdb.length; ++i) {
+    o.write_shift(4, mdb[i][0]);
+    o.write_shift(4, mdb[i][1]);
+  }
+  return o;
 }
-function Oh(e, t) {
-  var r = U(8 + 2 * t.length);
-  return r.write_shift(4, e), Ue(t, r), r.slice(0, r.l);
+function write_BrtBeginEsfmd(cnt, name) {
+  var o = new_buf(8 + 2 * name.length);
+  o.write_shift(4, cnt);
+  write_XLWideString(name, o);
+  return o.slice(0, o.l);
 }
-function Rh(e) {
-  return e.l += 4, e.read_shift(4) != 0;
+function parse_BrtBeginEsmdb(data2) {
+  data2.l += 4;
+  return data2.read_shift(4) != 0;
 }
-function Dh(e, t) {
-  var r = U(8);
-  return r.write_shift(4, e), r.write_shift(4, t ? 1 : 0), r;
+function write_BrtBeginEsmdb(cnt, cm) {
+  var o = new_buf(8);
+  o.write_shift(4, cnt);
+  o.write_shift(4, cm ? 1 : 0);
+  return o;
 }
-function Nh() {
-  var e = Qe();
-  return V(e, 332), V(e, 334, Tr(1)), V(e, 335, Fh({
+function write_xlmeta_bin() {
+  var ba = buf_array();
+  write_record(ba, 332);
+  write_record(ba, 334, write_UInt32LE(1));
+  write_record(ba, 335, write_BrtMdtinfo({
     name: "XLDAPR",
     version: 12e4,
     flags: 3496657072
-  })), V(e, 336), V(e, 339, Oh(1, "XLDAPR")), V(e, 52), V(e, 35, Tr(514)), V(e, 4096, Tr(0)), V(e, 4097, xr(1)), V(e, 36), V(e, 53), V(e, 340), V(e, 337, Dh(1, !0)), V(e, 51, Ch([[1, 0]])), V(e, 338), V(e, 333), e.end();
+  }));
+  write_record(ba, 336);
+  write_record(ba, 339, write_BrtBeginEsfmd(1, "XLDAPR"));
+  write_record(ba, 52);
+  write_record(ba, 35, write_UInt32LE(514));
+  write_record(ba, 4096, write_UInt32LE(0));
+  write_record(ba, 4097, writeuint16(1));
+  write_record(ba, 36);
+  write_record(ba, 53);
+  write_record(ba, 340);
+  write_record(ba, 337, write_BrtBeginEsmdb(1, true));
+  write_record(ba, 51, write_BrtMdb([[1, 0]]));
+  write_record(ba, 338);
+  write_record(ba, 333);
+  return ba.end();
 }
-function Is() {
-  var e = [Ie];
-  return e.push(`<metadata xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xlrd="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray">
-  <metadataTypes count="1">
-    <metadataType name="XLDAPR" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1" cellMeta="1"/>
-  </metadataTypes>
-  <futureMetadata name="XLDAPR" count="1">
-    <bk>
-      <extLst>
-        <ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}">
-          <xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/>
-        </ext>
-      </extLst>
-    </bk>
-  </futureMetadata>
-  <cellMetadata count="1">
-    <bk>
-      <rc t="1" v="0"/>
-    </bk>
-  </cellMetadata>
-</metadata>`), e.join("");
+function write_xlmeta_xml() {
+  var o = [XML_HEADER];
+  o.push('<metadata xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xlrd="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray">\n  <metadataTypes count="1">\n    <metadataType name="XLDAPR" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1" cellMeta="1"/>\n  </metadataTypes>\n  <futureMetadata name="XLDAPR" count="1">\n    <bk>\n      <extLst>\n        <ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}">\n          <xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/>\n        </ext>\n      </extLst>\n    </bk>\n  </futureMetadata>\n  <cellMetadata count="1">\n    <bk>\n      <rc t="1" v="0"/>\n    </bk>\n  </cellMetadata>\n</metadata>');
+  return o.join("");
 }
-function Ih(e) {
-  var t = {};
-  t.i = e.read_shift(4);
-  var r = {};
-  r.r = e.read_shift(4), r.c = e.read_shift(4), t.r = _e(r);
-  var n = e.read_shift(1);
-  return n & 2 && (t.l = "1"), n & 8 && (t.a = "1"), t;
+function parse_BrtCalcChainItem$(data2) {
+  var out = {};
+  out.i = data2.read_shift(4);
+  var cell = {};
+  cell.r = data2.read_shift(4);
+  cell.c = data2.read_shift(4);
+  out.r = encode_cell(cell);
+  var flags = data2.read_shift(1);
+  if (flags & 2)
+    out.l = "1";
+  if (flags & 8)
+    out.a = "1";
+  return out;
 }
-var ut = 1024;
-function ks(e, t) {
-  for (var r = [21600, 21600], n = ["m0,0l0", r[1], r[0], r[1], r[0], "0xe"].join(","), a = [
-    q("xml", null, { "xmlns:v": fr.v, "xmlns:o": fr.o, "xmlns:x": fr.x, "xmlns:mv": fr.mv }).replace(/\/>/, ">"),
-    q("o:shapelayout", q("o:idmap", null, { "v:ext": "edit", data: e }), { "v:ext": "edit" }),
-    q("v:shapetype", [
-      q("v:stroke", null, { joinstyle: "miter" }),
-      q("v:path", null, { gradientshapeok: "t", "o:connecttype": "rect" })
-    ].join(""), { id: "_x0000_t202", "o:spt": 202, coordsize: r.join(","), path: n })
-  ]; ut < e * 1e3; )
-    ut += 1e3;
-  return t.forEach(function(i) {
-    var s = Me(i[0]), f = { color2: "#BEFF82", type: "gradient" };
-    f.type == "gradient" && (f.angle = "-180");
-    var l = f.type == "gradient" ? q("o:fill", null, { type: "gradientUnscaled", "v:ext": "view" }) : null, o = q("v:fill", l, f), c = { on: "t", obscured: "t" };
-    ++ut, a = a.concat([
-      "<v:shape" + bt({
-        id: "_x0000_s" + ut,
+var _shapeid = 1024;
+function write_comments_vml(rId, comments) {
+  var csize = [21600, 21600];
+  var bbox = ["m0,0l0", csize[1], csize[0], csize[1], csize[0], "0xe"].join(",");
+  var o = [
+    writextag("xml", null, { "xmlns:v": XLMLNS.v, "xmlns:o": XLMLNS.o, "xmlns:x": XLMLNS.x, "xmlns:mv": XLMLNS.mv }).replace(/\/>/, ">"),
+    writextag("o:shapelayout", writextag("o:idmap", null, { "v:ext": "edit", "data": rId }), { "v:ext": "edit" }),
+    writextag("v:shapetype", [
+      writextag("v:stroke", null, { joinstyle: "miter" }),
+      writextag("v:path", null, { gradientshapeok: "t", "o:connecttype": "rect" })
+    ].join(""), { id: "_x0000_t202", "o:spt": 202, coordsize: csize.join(","), path: bbox })
+  ];
+  while (_shapeid < rId * 1e3)
+    _shapeid += 1e3;
+  comments.forEach(function(x) {
+    var c = decode_cell(x[0]);
+    var fillopts = { "color2": "#BEFF82", "type": "gradient" };
+    if (fillopts.type == "gradient")
+      fillopts.angle = "-180";
+    var fillparm = fillopts.type == "gradient" ? writextag("o:fill", null, { type: "gradientUnscaled", "v:ext": "view" }) : null;
+    var fillxml = writextag("v:fill", fillparm, fillopts);
+    var shadata = { on: "t", "obscured": "t" };
+    ++_shapeid;
+    o = o.concat([
+      "<v:shape" + wxt_helper({
+        id: "_x0000_s" + _shapeid,
         type: "#_x0000_t202",
-        style: "position:absolute; margin-left:80pt;margin-top:5pt;width:104pt;height:64pt;z-index:10" + (i[1].hidden ? ";visibility:hidden" : ""),
+        style: "position:absolute; margin-left:80pt;margin-top:5pt;width:104pt;height:64pt;z-index:10" + (x[1].hidden ? ";visibility:hidden" : ""),
         fillcolor: "#ECFAD4",
         strokecolor: "#edeaa1"
       }) + ">",
-      o,
-      q("v:shadow", null, c),
-      q("v:path", null, { "o:connecttype": "none" }),
+      fillxml,
+      writextag("v:shadow", null, shadata),
+      writextag("v:path", null, { "o:connecttype": "none" }),
       '<v:textbox><div style="text-align:left"></div></v:textbox>',
       '<x:ClientData ObjectType="Note">',
       "<x:MoveWithCells/>",
       "<x:SizeWithCells/>",
-      Ve("x:Anchor", [s.c + 1, 0, s.r + 1, 0, s.c + 3, 20, s.r + 5, 20].join(",")),
-      Ve("x:AutoFill", "False"),
-      Ve("x:Row", String(s.r)),
-      Ve("x:Column", String(s.c)),
-      i[1].hidden ? "" : "<x:Visible/>",
+      writetag("x:Anchor", [c.c + 1, 0, c.r + 1, 0, c.c + 3, 20, c.r + 5, 20].join(",")),
+      writetag("x:AutoFill", "False"),
+      writetag("x:Row", String(c.r)),
+      writetag("x:Column", String(c.c)),
+      x[1].hidden ? "" : "<x:Visible/>",
       "</x:ClientData>",
       "</v:shape>"
     ]);
-  }), a.push("</xml>"), a.join("");
+  });
+  o.push("</xml>");
+  return o.join("");
 }
-function Ps(e) {
-  var t = [Ie, q("comments", null, { xmlns: Tt[0] })], r = [];
-  return t.push("<authors>"), e.forEach(function(n) {
-    n[1].forEach(function(a) {
-      var i = ge(a.a);
-      r.indexOf(i) == -1 && (r.push(i), t.push("<author>" + i + "</author>")), a.T && a.ID && r.indexOf("tc=" + a.ID) == -1 && (r.push("tc=" + a.ID), t.push("<author>tc=" + a.ID + "</author>"));
+function write_comments_xml(data2) {
+  var o = [XML_HEADER, writextag("comments", null, { "xmlns": XMLNS_main[0] })];
+  var iauthor = [];
+  o.push("<authors>");
+  data2.forEach(function(x) {
+    x[1].forEach(function(w) {
+      var a = escapexml(w.a);
+      if (iauthor.indexOf(a) == -1) {
+        iauthor.push(a);
+        o.push("<author>" + a + "</author>");
+      }
+      if (w.T && w.ID && iauthor.indexOf("tc=" + w.ID) == -1) {
+        iauthor.push("tc=" + w.ID);
+        o.push("<author>tc=" + w.ID + "</author>");
+      }
     });
-  }), r.length == 0 && (r.push("SheetJ5"), t.push("<author>SheetJ5</author>")), t.push("</authors>"), t.push("<commentList>"), e.forEach(function(n) {
-    var a = 0, i = [];
-    if (n[1][0] && n[1][0].T && n[1][0].ID ? a = r.indexOf("tc=" + n[1][0].ID) : n[1].forEach(function(l) {
-      l.a && (a = r.indexOf(ge(l.a))), i.push(l.t || "");
-    }), t.push('<comment ref="' + n[0] + '" authorId="' + a + '"><text>'), i.length <= 1)
-      t.push(Ve("t", ge(i[0] || "")));
+  });
+  if (iauthor.length == 0) {
+    iauthor.push("SheetJ5");
+    o.push("<author>SheetJ5</author>");
+  }
+  o.push("</authors>");
+  o.push("<commentList>");
+  data2.forEach(function(d) {
+    var lastauthor = 0, ts = [];
+    if (d[1][0] && d[1][0].T && d[1][0].ID)
+      lastauthor = iauthor.indexOf("tc=" + d[1][0].ID);
+    else
+      d[1].forEach(function(c) {
+        if (c.a)
+          lastauthor = iauthor.indexOf(escapexml(c.a));
+        ts.push(c.t || "");
+      });
+    o.push('<comment ref="' + d[0] + '" authorId="' + lastauthor + '"><text>');
+    if (ts.length <= 1)
+      o.push(writetag("t", escapexml(ts[0] || "")));
     else {
-      for (var s = `Comment:
-    ` + i[0] + `
-`, f = 1; f < i.length; ++f)
-        s += `Reply:
-    ` + i[f] + `
-`;
-      t.push(Ve("t", ge(s)));
+      var t = "Comment:\n    " + ts[0] + "\n";
+      for (var i = 1; i < ts.length; ++i)
+        t += "Reply:\n    " + ts[i] + "\n";
+      o.push(writetag("t", escapexml(t)));
     }
-    t.push("</text></comment>");
-  }), t.push("</commentList>"), t.length > 2 && (t[t.length] = "</comments>", t[1] = t[1].replace("/>", ">")), t.join("");
+    o.push("</text></comment>");
+  });
+  o.push("</commentList>");
+  if (o.length > 2) {
+    o[o.length] = "</comments>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-function kh(e, t, r) {
-  var n = [Ie, q("ThreadedComments", null, { xmlns: Be.TCMNT }).replace(/[\/]>/, ">")];
-  return e.forEach(function(a) {
-    var i = "";
-    (a[1] || []).forEach(function(s, f) {
-      if (!s.T) {
-        delete s.ID;
+function write_tcmnt_xml(comments, people, opts) {
+  var o = [XML_HEADER, writextag("ThreadedComments", null, { "xmlns": XMLNS.TCMNT }).replace(/[\/]>/, ">")];
+  comments.forEach(function(carr) {
+    var rootid = "";
+    (carr[1] || []).forEach(function(c, idx) {
+      if (!c.T) {
+        delete c.ID;
         return;
       }
-      s.a && t.indexOf(s.a) == -1 && t.push(s.a);
-      var l = {
-        ref: a[0],
-        id: "{54EE7951-7262-4200-6969-" + ("000000000000" + r.tcid++).slice(-12) + "}"
+      if (c.a && people.indexOf(c.a) == -1)
+        people.push(c.a);
+      var tcopts = {
+        ref: carr[0],
+        id: "{54EE7951-7262-4200-6969-" + ("000000000000" + opts.tcid++).slice(-12) + "}"
       };
-      f == 0 ? i = l.id : l.parentId = i, s.ID = l.id, s.a && (l.personId = "{54EE7950-7262-4200-6969-" + ("000000000000" + t.indexOf(s.a)).slice(-12) + "}"), n.push(q("threadedComment", Ve("text", s.t || ""), l));
+      if (idx == 0)
+        rootid = tcopts.id;
+      else
+        tcopts.parentId = rootid;
+      c.ID = tcopts.id;
+      if (c.a)
+        tcopts.personId = "{54EE7950-7262-4200-6969-" + ("000000000000" + people.indexOf(c.a)).slice(-12) + "}";
+      o.push(writextag("threadedComment", writetag("text", c.t || ""), tcopts));
     });
-  }), n.push("</ThreadedComments>"), n.join("");
+  });
+  o.push("</ThreadedComments>");
+  return o.join("");
 }
-function Ph(e) {
-  var t = [Ie, q("personList", null, {
-    xmlns: Be.TCMNT,
-    "xmlns:x": Tt[0]
+function write_people_xml(people) {
+  var o = [XML_HEADER, writextag("personList", null, {
+    "xmlns": XMLNS.TCMNT,
+    "xmlns:x": XMLNS_main[0]
   }).replace(/[\/]>/, ">")];
-  return e.forEach(function(r, n) {
-    t.push(q("person", null, {
-      displayName: r,
-      id: "{54EE7950-7262-4200-6969-" + ("000000000000" + n).slice(-12) + "}",
-      userId: r,
+  people.forEach(function(person, idx) {
+    o.push(writextag("person", null, {
+      displayName: person,
+      id: "{54EE7950-7262-4200-6969-" + ("000000000000" + idx).slice(-12) + "}",
+      userId: person,
       providerId: "None"
     }));
-  }), t.push("</personList>"), t.join("");
+  });
+  o.push("</personList>");
+  return o.join("");
 }
-function Lh(e) {
-  var t = {};
-  t.iauthor = e.read_shift(4);
-  var r = at(e);
-  return t.rfx = r.s, t.ref = _e(r.s), e.l += 16, t;
+function parse_BrtBeginComment(data2) {
+  var out = {};
+  out.iauthor = data2.read_shift(4);
+  var rfx = parse_UncheckedRfX(data2);
+  out.rfx = rfx.s;
+  out.ref = encode_cell(rfx.s);
+  data2.l += 16;
+  return out;
 }
-function Bh(e, t) {
-  return t == null && (t = U(36)), t.write_shift(4, e[1].iauthor), St(e[0], t), t.write_shift(4, 0), t.write_shift(4, 0), t.write_shift(4, 0), t.write_shift(4, 0), t;
+function write_BrtBeginComment(data2, o) {
+  if (o == null)
+    o = new_buf(36);
+  o.write_shift(4, data2[1].iauthor);
+  write_UncheckedRfX(data2[0], o);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  return o;
 }
-var Mh = Ke;
-function Uh(e) {
-  return Ue(e.slice(0, 54));
+var parse_BrtCommentAuthor = parse_XLWideString;
+function write_BrtCommentAuthor(data2) {
+  return write_XLWideString(data2.slice(0, 54));
 }
-function bh(e) {
-  var t = Qe(), r = [];
-  return V(t, 628), V(t, 630), e.forEach(function(n) {
-    n[1].forEach(function(a) {
-      r.indexOf(a.a) > -1 || (r.push(a.a.slice(0, 54)), V(t, 632, Uh(a.a)));
+function write_comments_bin(data2) {
+  var ba = buf_array();
+  var iauthor = [];
+  write_record(ba, 628);
+  write_record(ba, 630);
+  data2.forEach(function(comment) {
+    comment[1].forEach(function(c) {
+      if (iauthor.indexOf(c.a) > -1)
+        return;
+      iauthor.push(c.a.slice(0, 54));
+      write_record(ba, 632, write_BrtCommentAuthor(c.a));
     });
-  }), V(t, 631), V(t, 633), e.forEach(function(n) {
-    n[1].forEach(function(a) {
-      a.iauthor = r.indexOf(a.a);
-      var i = { s: Me(n[0]), e: Me(n[0]) };
-      V(t, 635, Bh([i, a])), a.t && a.t.length > 0 && V(t, 637, Hl(a)), V(t, 636), delete a.iauthor;
+  });
+  write_record(ba, 631);
+  write_record(ba, 633);
+  data2.forEach(function(comment) {
+    comment[1].forEach(function(c) {
+      c.iauthor = iauthor.indexOf(c.a);
+      var range = { s: decode_cell(comment[0]), e: decode_cell(comment[0]) };
+      write_record(ba, 635, write_BrtBeginComment([range, c]));
+      if (c.t && c.t.length > 0)
+        write_record(ba, 637, write_BrtCommentText(c));
+      write_record(ba, 636);
+      delete c.iauthor;
     });
-  }), V(t, 634), V(t, 629), t.end();
+  });
+  write_record(ba, 634);
+  write_record(ba, 629);
+  return ba.end();
 }
-function Wh(e, t) {
-  t.FullPaths.forEach(function(r, n) {
-    if (n != 0) {
-      var a = r.replace(/[^\/]*[\/]/, "/_VBA_PROJECT_CUR/");
-      a.slice(-1) !== "/" && Ee.utils.cfb_add(e, a, t.FileIndex[n].content);
-    }
+function fill_vba_xls(cfb, vba) {
+  vba.FullPaths.forEach(function(p, i) {
+    if (i == 0)
+      return;
+    var newpath = p.replace(/[^\/]*[\/]/, "/_VBA_PROJECT_CUR/");
+    if (newpath.slice(-1) !== "/")
+      CFB.utils.cfb_add(cfb, newpath, vba.FileIndex[i].content);
   });
 }
-var Ls = ["xlsb", "xlsm", "xlam", "biff8", "xla"], Hh = /* @__PURE__ */ function() {
-  var e = /(^|[^A-Za-z_])R(\[?-?\d+\]|[1-9]\d*|)C(\[?-?\d+\]|[1-9]\d*|)(?![A-Za-z0-9_])/g, t = { r: 0, c: 0 };
-  function r(n, a, i, s) {
-    var f = !1, l = !1;
-    i.length == 0 ? l = !0 : i.charAt(0) == "[" && (l = !0, i = i.slice(1, -1)), s.length == 0 ? f = !0 : s.charAt(0) == "[" && (f = !0, s = s.slice(1, -1));
-    var o = i.length > 0 ? parseInt(i, 10) | 0 : 0, c = s.length > 0 ? parseInt(s, 10) | 0 : 0;
-    return f ? c += t.c : --c, l ? o += t.r : --o, a + (f ? "" : "$") + ze(c) + (l ? "" : "$") + Ge(o);
+var VBAFMTS = ["xlsb", "xlsm", "xlam", "biff8", "xla"];
+var rc_to_a1 = /* @__PURE__ */ function() {
+  var rcregex = /(^|[^A-Za-z_])R(\[?-?\d+\]|[1-9]\d*|)C(\[?-?\d+\]|[1-9]\d*|)(?![A-Za-z0-9_])/g;
+  var rcbase = { r: 0, c: 0 };
+  function rcfunc($$, $1, $2, $3) {
+    var cRel = false, rRel = false;
+    if ($2.length == 0)
+      rRel = true;
+    else if ($2.charAt(0) == "[") {
+      rRel = true;
+      $2 = $2.slice(1, -1);
+    }
+    if ($3.length == 0)
+      cRel = true;
+    else if ($3.charAt(0) == "[") {
+      cRel = true;
+      $3 = $3.slice(1, -1);
+    }
+    var R = $2.length > 0 ? parseInt($2, 10) | 0 : 0, C = $3.length > 0 ? parseInt($3, 10) | 0 : 0;
+    if (cRel)
+      C += rcbase.c;
+    else
+      --C;
+    if (rRel)
+      R += rcbase.r;
+    else
+      --R;
+    return $1 + (cRel ? "" : "$") + encode_col(C) + (rRel ? "" : "$") + encode_row(R);
   }
-  return function(a, i) {
-    return t = i, a.replace(e, r);
+  return function rc_to_a12(fstr, base) {
+    rcbase = base;
+    return fstr.replace(rcregex, rcfunc);
   };
-}(), B0 = /(^|[^._A-Z0-9])([$]?)([A-Z]{1,2}|[A-W][A-Z]{2}|X[A-E][A-Z]|XF[A-D])([$]?)(10[0-3]\d{4}|104[0-7]\d{3}|1048[0-4]\d{2}|10485[0-6]\d|104857[0-6]|[1-9]\d{0,5})(?![_.\(A-Za-z0-9])/g, M0 = /* @__PURE__ */ function() {
-  return function(t, r) {
-    return t.replace(B0, function(n, a, i, s, f, l) {
-      var o = D0(s) - (i ? 0 : r.c), c = R0(l) - (f ? 0 : r.r), p = c == 0 ? "" : f ? c + 1 : "[" + c + "]", u = o == 0 ? "" : i ? o + 1 : "[" + o + "]";
-      return a + "R" + p + "C" + u;
+}();
+var crefregex = /(^|[^._A-Z0-9])([$]?)([A-Z]{1,2}|[A-W][A-Z]{2}|X[A-E][A-Z]|XF[A-D])([$]?)(10[0-3]\d{4}|104[0-7]\d{3}|1048[0-4]\d{2}|10485[0-6]\d|104857[0-6]|[1-9]\d{0,5})(?![_.\(A-Za-z0-9])/g;
+var a1_to_rc = /* @__PURE__ */ function() {
+  return function a1_to_rc2(fstr, base) {
+    return fstr.replace(crefregex, function($0, $1, $2, $3, $4, $5) {
+      var c = decode_col($3) - ($2 ? 0 : base.c);
+      var r = decode_row($5) - ($4 ? 0 : base.r);
+      var R = r == 0 ? "" : !$4 ? "[" + r + "]" : r + 1;
+      var C = c == 0 ? "" : !$2 ? "[" + c + "]" : c + 1;
+      return $1 + "R" + R + "C" + C;
     });
   };
 }();
-function Vh(e, t) {
-  return e.replace(B0, function(r, n, a, i, s, f) {
-    return n + (a == "$" ? a + i : ze(D0(i) + t.c)) + (s == "$" ? s + f : Ge(R0(f) + t.r));
+function shift_formula_str(f, delta) {
+  return f.replace(crefregex, function($0, $1, $2, $3, $4, $5) {
+    return $1 + ($2 == "$" ? $2 + $3 : encode_col(decode_col($3) + delta.c)) + ($4 == "$" ? $4 + $5 : encode_row(decode_row($5) + delta.r));
   });
 }
-function Gh(e) {
-  return e.length != 1;
+function fuzzyfmla(f) {
+  if (f.length == 1)
+    return false;
+  return true;
 }
-function De(e) {
-  e.l += 1;
+function parseread1(blob) {
+  blob.l += 1;
+  return;
 }
-function Hr(e, t) {
-  var r = e.read_shift(t == 1 ? 1 : 2);
-  return [r & 16383, r >> 14 & 1, r >> 15 & 1];
+function parse_ColRelU(blob, length) {
+  var c = blob.read_shift(length == 1 ? 1 : 2);
+  return [c & 16383, c >> 14 & 1, c >> 15 & 1];
 }
-function Bs(e, t, r) {
-  var n = 2;
-  if (r) {
-    if (r.biff >= 2 && r.biff <= 5)
-      return Ms(e);
-    r.biff == 12 && (n = 4);
+function parse_RgceArea(blob, length, opts) {
+  var w = 2;
+  if (opts) {
+    if (opts.biff >= 2 && opts.biff <= 5)
+      return parse_RgceArea_BIFF2(blob);
+    else if (opts.biff == 12)
+      w = 4;
   }
-  var a = e.read_shift(n), i = e.read_shift(n), s = Hr(e, 2), f = Hr(e, 2);
-  return { s: { r: a, c: s[0], cRel: s[1], rRel: s[2] }, e: { r: i, c: f[0], cRel: f[1], rRel: f[2] } };
+  var r = blob.read_shift(w), R = blob.read_shift(w);
+  var c = parse_ColRelU(blob, 2);
+  var C = parse_ColRelU(blob, 2);
+  return { s: { r, c: c[0], cRel: c[1], rRel: c[2] }, e: { r: R, c: C[0], cRel: C[1], rRel: C[2] } };
 }
-function Ms(e) {
-  var t = Hr(e, 2), r = Hr(e, 2), n = e.read_shift(1), a = e.read_shift(1);
-  return { s: { r: t[0], c: n, cRel: t[1], rRel: t[2] }, e: { r: r[0], c: a, cRel: r[1], rRel: r[2] } };
+function parse_RgceArea_BIFF2(blob) {
+  var r = parse_ColRelU(blob, 2), R = parse_ColRelU(blob, 2);
+  var c = blob.read_shift(1);
+  var C = blob.read_shift(1);
+  return { s: { r: r[0], c, cRel: r[1], rRel: r[2] }, e: { r: R[0], c: C, cRel: R[1], rRel: R[2] } };
 }
-function Xh(e, t, r) {
-  if (r.biff < 8)
-    return Ms(e);
-  var n = e.read_shift(r.biff == 12 ? 4 : 2), a = e.read_shift(r.biff == 12 ? 4 : 2), i = Hr(e, 2), s = Hr(e, 2);
-  return { s: { r: n, c: i[0], cRel: i[1], rRel: i[2] }, e: { r: a, c: s[0], cRel: s[1], rRel: s[2] } };
+function parse_RgceAreaRel(blob, length, opts) {
+  if (opts.biff < 8)
+    return parse_RgceArea_BIFF2(blob);
+  var r = blob.read_shift(opts.biff == 12 ? 4 : 2), R = blob.read_shift(opts.biff == 12 ? 4 : 2);
+  var c = parse_ColRelU(blob, 2);
+  var C = parse_ColRelU(blob, 2);
+  return { s: { r, c: c[0], cRel: c[1], rRel: c[2] }, e: { r: R, c: C[0], cRel: C[1], rRel: C[2] } };
 }
-function Us(e, t, r) {
-  if (r && r.biff >= 2 && r.biff <= 5)
-    return $h(e);
-  var n = e.read_shift(r && r.biff == 12 ? 4 : 2), a = Hr(e, 2);
-  return { r: n, c: a[0], cRel: a[1], rRel: a[2] };
+function parse_RgceLoc(blob, length, opts) {
+  if (opts && opts.biff >= 2 && opts.biff <= 5)
+    return parse_RgceLoc_BIFF2(blob);
+  var r = blob.read_shift(opts && opts.biff == 12 ? 4 : 2);
+  var c = parse_ColRelU(blob, 2);
+  return { r, c: c[0], cRel: c[1], rRel: c[2] };
 }
-function $h(e) {
-  var t = Hr(e, 2), r = e.read_shift(1);
-  return { r: t[0], c: r, cRel: t[1], rRel: t[2] };
+function parse_RgceLoc_BIFF2(blob) {
+  var r = parse_ColRelU(blob, 2);
+  var c = blob.read_shift(1);
+  return { r: r[0], c, cRel: r[1], rRel: r[2] };
 }
-function jh(e) {
-  var t = e.read_shift(2), r = e.read_shift(2);
-  return { r: t, c: r & 255, fQuoted: !!(r & 16384), cRel: r >> 15, rRel: r >> 15 };
+function parse_RgceElfLoc(blob) {
+  var r = blob.read_shift(2);
+  var c = blob.read_shift(2);
+  return { r, c: c & 255, fQuoted: !!(c & 16384), cRel: c >> 15, rRel: c >> 15 };
 }
-function zh(e, t, r) {
-  var n = r && r.biff ? r.biff : 8;
-  if (n >= 2 && n <= 5)
-    return Kh(e);
-  var a = e.read_shift(n >= 12 ? 4 : 2), i = e.read_shift(2), s = (i & 16384) >> 14, f = (i & 32768) >> 15;
-  if (i &= 16383, f == 1)
-    for (; a > 524287; )
-      a -= 1048576;
-  if (s == 1)
-    for (; i > 8191; )
-      i = i - 16384;
-  return { r: a, c: i, cRel: s, rRel: f };
+function parse_RgceLocRel(blob, length, opts) {
+  var biff = opts && opts.biff ? opts.biff : 8;
+  if (biff >= 2 && biff <= 5)
+    return parse_RgceLocRel_BIFF2(blob);
+  var r = blob.read_shift(biff >= 12 ? 4 : 2);
+  var cl = blob.read_shift(2);
+  var cRel = (cl & 16384) >> 14, rRel = (cl & 32768) >> 15;
+  cl &= 16383;
+  if (rRel == 1)
+    while (r > 524287)
+      r -= 1048576;
+  if (cRel == 1)
+    while (cl > 8191)
+      cl = cl - 16384;
+  return { r, c: cl, cRel, rRel };
 }
-function Kh(e) {
-  var t = e.read_shift(2), r = e.read_shift(1), n = (t & 32768) >> 15, a = (t & 16384) >> 14;
-  return t &= 16383, n == 1 && t >= 8192 && (t = t - 16384), a == 1 && r >= 128 && (r = r - 256), { r: t, c: r, cRel: a, rRel: n };
+function parse_RgceLocRel_BIFF2(blob) {
+  var rl = blob.read_shift(2);
+  var c = blob.read_shift(1);
+  var rRel = (rl & 32768) >> 15, cRel = (rl & 16384) >> 14;
+  rl &= 16383;
+  if (rRel == 1 && rl >= 8192)
+    rl = rl - 16384;
+  if (cRel == 1 && c >= 128)
+    c = c - 256;
+  return { r: rl, c, cRel, rRel };
 }
-function Yh(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5, a = Bs(e, r.biff >= 2 && r.biff <= 5 ? 6 : 8, r);
-  return [n, a];
+function parse_PtgArea(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  var area = parse_RgceArea(blob, opts.biff >= 2 && opts.biff <= 5 ? 6 : 8, opts);
+  return [type, area];
 }
-function qh(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5, a = e.read_shift(2, "i"), i = 8;
-  if (r)
-    switch (r.biff) {
+function parse_PtgArea3d(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  var ixti = blob.read_shift(2, "i");
+  var w = 8;
+  if (opts)
+    switch (opts.biff) {
       case 5:
-        e.l += 12, i = 6;
+        blob.l += 12;
+        w = 6;
         break;
       case 12:
-        i = 12;
+        w = 12;
         break;
     }
-  var s = Bs(e, i, r);
-  return [n, a, s];
+  var area = parse_RgceArea(blob, w, opts);
+  return [type, ixti, area];
 }
-function Jh(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5;
-  return e.l += r && r.biff > 8 ? 12 : r.biff < 8 ? 6 : 8, [n];
+function parse_PtgAreaErr(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  blob.l += opts && opts.biff > 8 ? 12 : opts.biff < 8 ? 6 : 8;
+  return [type];
 }
-function Zh(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5, a = e.read_shift(2), i = 8;
-  if (r)
-    switch (r.biff) {
+function parse_PtgAreaErr3d(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  var ixti = blob.read_shift(2);
+  var w = 8;
+  if (opts)
+    switch (opts.biff) {
       case 5:
-        e.l += 12, i = 6;
+        blob.l += 12;
+        w = 6;
         break;
       case 12:
-        i = 12;
+        w = 12;
         break;
     }
-  return e.l += i, [n, a];
+  blob.l += w;
+  return [type, ixti];
 }
-function Qh(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5, a = Xh(e, t - 1, r);
-  return [n, a];
+function parse_PtgAreaN(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  var area = parse_RgceAreaRel(blob, length - 1, opts);
+  return [type, area];
 }
-function eu(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5;
-  return e.l += r.biff == 2 ? 6 : r.biff == 12 ? 14 : 7, [n];
+function parse_PtgArray(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  blob.l += opts.biff == 2 ? 6 : opts.biff == 12 ? 14 : 7;
+  return [type];
 }
-function ti(e) {
-  var t = e[e.l + 1] & 1, r = 1;
-  return e.l += 4, [t, r];
+function parse_PtgAttrBaxcel(blob) {
+  var bitSemi = blob[blob.l + 1] & 1;
+  var bitBaxcel = 1;
+  blob.l += 4;
+  return [bitSemi, bitBaxcel];
 }
-function ru(e, t, r) {
-  e.l += 2;
-  for (var n = e.read_shift(r && r.biff == 2 ? 1 : 2), a = [], i = 0; i <= n; ++i)
-    a.push(e.read_shift(r && r.biff == 2 ? 1 : 2));
-  return a;
+function parse_PtgAttrChoose(blob, length, opts) {
+  blob.l += 2;
+  var offset = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+  var o = [];
+  for (var i = 0; i <= offset; ++i)
+    o.push(blob.read_shift(opts && opts.biff == 2 ? 1 : 2));
+  return o;
 }
-function tu(e, t, r) {
-  var n = e[e.l + 1] & 255 ? 1 : 0;
-  return e.l += 2, [n, e.read_shift(r && r.biff == 2 ? 1 : 2)];
+function parse_PtgAttrGoto(blob, length, opts) {
+  var bitGoto = blob[blob.l + 1] & 255 ? 1 : 0;
+  blob.l += 2;
+  return [bitGoto, blob.read_shift(opts && opts.biff == 2 ? 1 : 2)];
 }
-function nu(e, t, r) {
-  var n = e[e.l + 1] & 255 ? 1 : 0;
-  return e.l += 2, [n, e.read_shift(r && r.biff == 2 ? 1 : 2)];
+function parse_PtgAttrIf(blob, length, opts) {
+  var bitIf = blob[blob.l + 1] & 255 ? 1 : 0;
+  blob.l += 2;
+  return [bitIf, blob.read_shift(opts && opts.biff == 2 ? 1 : 2)];
 }
-function au(e) {
-  var t = e[e.l + 1] & 255 ? 1 : 0;
-  return e.l += 2, [t, e.read_shift(2)];
+function parse_PtgAttrIfError(blob) {
+  var bitIf = blob[blob.l + 1] & 255 ? 1 : 0;
+  blob.l += 2;
+  return [bitIf, blob.read_shift(2)];
 }
-function iu(e, t, r) {
-  var n = e[e.l + 1] & 255 ? 1 : 0;
-  return e.l += r && r.biff == 2 ? 3 : 4, [n];
+function parse_PtgAttrSemi(blob, length, opts) {
+  var bitSemi = blob[blob.l + 1] & 255 ? 1 : 0;
+  blob.l += opts && opts.biff == 2 ? 3 : 4;
+  return [bitSemi];
 }
-function bs(e) {
-  var t = e.read_shift(1), r = e.read_shift(1);
-  return [t, r];
+function parse_PtgAttrSpaceType(blob) {
+  var type = blob.read_shift(1), cch = blob.read_shift(1);
+  return [type, cch];
 }
-function su(e) {
-  return e.read_shift(2), bs(e);
+function parse_PtgAttrSpace(blob) {
+  blob.read_shift(2);
+  return parse_PtgAttrSpaceType(blob);
 }
-function fu(e) {
-  return e.read_shift(2), bs(e);
+function parse_PtgAttrSpaceSemi(blob) {
+  blob.read_shift(2);
+  return parse_PtgAttrSpaceType(blob);
 }
-function ou(e, t, r) {
-  var n = (e[e.l] & 96) >> 5;
-  e.l += 1;
-  var a = Us(e, 0, r);
-  return [n, a];
+function parse_PtgRef(blob, length, opts) {
+  var type = (blob[blob.l] & 96) >> 5;
+  blob.l += 1;
+  var loc = parse_RgceLoc(blob, 0, opts);
+  return [type, loc];
 }
-function lu(e, t, r) {
-  var n = (e[e.l] & 96) >> 5;
-  e.l += 1;
-  var a = zh(e, 0, r);
-  return [n, a];
+function parse_PtgRefN(blob, length, opts) {
+  var type = (blob[blob.l] & 96) >> 5;
+  blob.l += 1;
+  var loc = parse_RgceLocRel(blob, 0, opts);
+  return [type, loc];
 }
-function cu(e, t, r) {
-  var n = (e[e.l] & 96) >> 5;
-  e.l += 1;
-  var a = e.read_shift(2);
-  r && r.biff == 5 && (e.l += 12);
-  var i = Us(e, 0, r);
-  return [n, a, i];
+function parse_PtgRef3d(blob, length, opts) {
+  var type = (blob[blob.l] & 96) >> 5;
+  blob.l += 1;
+  var ixti = blob.read_shift(2);
+  if (opts && opts.biff == 5)
+    blob.l += 12;
+  var loc = parse_RgceLoc(blob, 0, opts);
+  return [type, ixti, loc];
 }
-function hu(e, t, r) {
-  var n = (e[e.l] & 96) >> 5;
-  e.l += 1;
-  var a = e.read_shift(r && r.biff <= 3 ? 1 : 2);
-  return [h1[a], Vs[a], n];
+function parse_PtgFunc(blob, length, opts) {
+  var type = (blob[blob.l] & 96) >> 5;
+  blob.l += 1;
+  var iftab = blob.read_shift(opts && opts.biff <= 3 ? 1 : 2);
+  return [FtabArgc[iftab], Ftab[iftab], type];
 }
-function uu(e, t, r) {
-  var n = e[e.l++], a = e.read_shift(1), i = r && r.biff <= 3 ? [n == 88 ? -1 : 0, e.read_shift(1)] : xu(e);
-  return [a, (i[0] === 0 ? Vs : c1)[i[1]]];
+function parse_PtgFuncVar(blob, length, opts) {
+  var type = blob[blob.l++];
+  var cparams = blob.read_shift(1), tab = opts && opts.biff <= 3 ? [type == 88 ? -1 : 0, blob.read_shift(1)] : parsetab(blob);
+  return [cparams, (tab[0] === 0 ? Ftab : Cetab)[tab[1]]];
 }
-function xu(e) {
-  return [e[e.l + 1] >> 7, e.read_shift(2) & 32767];
+function parsetab(blob) {
+  return [blob[blob.l + 1] >> 7, blob.read_shift(2) & 32767];
 }
-function du(e, t, r) {
-  e.l += r && r.biff == 2 ? 3 : 4;
+function parse_PtgAttrSum(blob, length, opts) {
+  blob.l += opts && opts.biff == 2 ? 3 : 4;
+  return;
 }
-function pu(e, t, r) {
-  if (e.l++, r && r.biff == 12)
-    return [e.read_shift(4, "i"), 0];
-  var n = e.read_shift(2), a = e.read_shift(r && r.biff == 2 ? 1 : 2);
-  return [n, a];
+function parse_PtgExp(blob, length, opts) {
+  blob.l++;
+  if (opts && opts.biff == 12)
+    return [blob.read_shift(4, "i"), 0];
+  var row = blob.read_shift(2);
+  var col = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+  return [row, col];
 }
-function vu(e) {
-  return e.l++, $t[e.read_shift(1)];
+function parse_PtgErr(blob) {
+  blob.l++;
+  return BErr[blob.read_shift(1)];
 }
-function mu(e) {
-  return e.l++, e.read_shift(2);
+function parse_PtgInt(blob) {
+  blob.l++;
+  return blob.read_shift(2);
 }
-function gu(e) {
-  return e.l++, e.read_shift(1) !== 0;
+function parse_PtgBool(blob) {
+  blob.l++;
+  return blob.read_shift(1) !== 0;
 }
-function _u(e) {
-  return e.l++, At(e);
+function parse_PtgNum(blob) {
+  blob.l++;
+  return parse_Xnum(blob);
 }
-function Eu(e, t, r) {
-  return e.l++, Ts(e, t - 1, r);
+function parse_PtgStr(blob, length, opts) {
+  blob.l++;
+  return parse_ShortXLUnicodeString(blob, length - 1, opts);
 }
-function Tu(e, t) {
-  var r = [e.read_shift(1)];
-  if (t == 12)
-    switch (r[0]) {
+function parse_SerAr(blob, biff) {
+  var val = [blob.read_shift(1)];
+  if (biff == 12)
+    switch (val[0]) {
       case 2:
-        r[0] = 4;
+        val[0] = 4;
         break;
       case 4:
-        r[0] = 16;
+        val[0] = 16;
         break;
       case 0:
-        r[0] = 1;
+        val[0] = 1;
         break;
       case 1:
-        r[0] = 2;
+        val[0] = 2;
         break;
     }
-  switch (r[0]) {
+  switch (val[0]) {
     case 4:
-      r[1] = cc(e, 1) ? "TRUE" : "FALSE", t != 12 && (e.l += 7);
+      val[1] = parsebool(blob, 1) ? "TRUE" : "FALSE";
+      if (biff != 12)
+        blob.l += 7;
       break;
     case 37:
     case 16:
-      r[1] = $t[e[e.l]], e.l += t == 12 ? 4 : 8;
+      val[1] = BErr[blob[blob.l]];
+      blob.l += biff == 12 ? 4 : 8;
       break;
     case 0:
-      e.l += 8;
+      blob.l += 8;
       break;
     case 1:
-      r[1] = At(e);
+      val[1] = parse_Xnum(blob);
       break;
     case 2:
-      r[1] = dc(e, 0, { biff: t > 0 && t < 8 ? 2 : t });
+      val[1] = parse_XLUnicodeString2(blob, 0, { biff: biff > 0 && biff < 8 ? 2 : biff });
       break;
     default:
-      throw new Error("Bad SerAr: " + r[0]);
+      throw new Error("Bad SerAr: " + val[0]);
   }
-  return r;
+  return val;
 }
-function wu(e, t, r) {
-  for (var n = e.read_shift(r.biff == 12 ? 4 : 2), a = [], i = 0; i != n; ++i)
-    a.push((r.biff == 12 ? at : mc)(e));
-  return a;
+function parse_PtgExtraMem(blob, cce, opts) {
+  var count = blob.read_shift(opts.biff == 12 ? 4 : 2);
+  var out = [];
+  for (var i = 0; i != count; ++i)
+    out.push((opts.biff == 12 ? parse_UncheckedRfX : parse_Ref8U)(blob));
+  return out;
 }
-function Su(e, t, r) {
-  var n = 0, a = 0;
-  r.biff == 12 ? (n = e.read_shift(4), a = e.read_shift(4)) : (a = 1 + e.read_shift(1), n = 1 + e.read_shift(2)), r.biff >= 2 && r.biff < 8 && (--n, --a == 0 && (a = 256));
-  for (var i = 0, s = []; i != n && (s[i] = []); ++i)
-    for (var f = 0; f != a; ++f)
-      s[i][f] = Tu(e, r.biff);
-  return s;
+function parse_PtgExtraArray(blob, length, opts) {
+  var rows = 0, cols = 0;
+  if (opts.biff == 12) {
+    rows = blob.read_shift(4);
+    cols = blob.read_shift(4);
+  } else {
+    cols = 1 + blob.read_shift(1);
+    rows = 1 + blob.read_shift(2);
+  }
+  if (opts.biff >= 2 && opts.biff < 8) {
+    --rows;
+    if (--cols == 0)
+      cols = 256;
+  }
+  for (var i = 0, o = []; i != rows && (o[i] = []); ++i)
+    for (var j = 0; j != cols; ++j)
+      o[i][j] = parse_SerAr(blob, opts.biff);
+  return o;
 }
-function Au(e, t, r) {
-  var n = e.read_shift(1) >>> 5 & 3, a = !r || r.biff >= 8 ? 4 : 2, i = e.read_shift(a);
-  switch (r.biff) {
+function parse_PtgName(blob, length, opts) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  var w = !opts || opts.biff >= 8 ? 4 : 2;
+  var nameindex = blob.read_shift(w);
+  switch (opts.biff) {
     case 2:
-      e.l += 5;
+      blob.l += 5;
       break;
     case 3:
     case 4:
-      e.l += 8;
+      blob.l += 8;
       break;
     case 5:
-      e.l += 12;
+      blob.l += 12;
       break;
   }
-  return [n, 0, i];
+  return [type, 0, nameindex];
 }
-function Fu(e, t, r) {
-  if (r.biff == 5)
-    return yu(e);
-  var n = e.read_shift(1) >>> 5 & 3, a = e.read_shift(2), i = e.read_shift(4);
-  return [n, a, i];
+function parse_PtgNameX(blob, length, opts) {
+  if (opts.biff == 5)
+    return parse_PtgNameX_BIFF5(blob);
+  var type = blob.read_shift(1) >>> 5 & 3;
+  var ixti = blob.read_shift(2);
+  var nameindex = blob.read_shift(4);
+  return [type, ixti, nameindex];
 }
-function yu(e) {
-  var t = e.read_shift(1) >>> 5 & 3, r = e.read_shift(2, "i");
-  e.l += 8;
-  var n = e.read_shift(2);
-  return e.l += 12, [t, r, n];
+function parse_PtgNameX_BIFF5(blob) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  var ixti = blob.read_shift(2, "i");
+  blob.l += 8;
+  var nameindex = blob.read_shift(2);
+  blob.l += 12;
+  return [type, ixti, nameindex];
 }
-function Cu(e, t, r) {
-  var n = e.read_shift(1) >>> 5 & 3;
-  e.l += r && r.biff == 2 ? 3 : 4;
-  var a = e.read_shift(r && r.biff == 2 ? 1 : 2);
-  return [n, a];
+function parse_PtgMemArea(blob, length, opts) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  blob.l += opts && opts.biff == 2 ? 3 : 4;
+  var cce = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+  return [type, cce];
 }
-function Ou(e, t, r) {
-  var n = e.read_shift(1) >>> 5 & 3, a = e.read_shift(r && r.biff == 2 ? 1 : 2);
-  return [n, a];
+function parse_PtgMemFunc(blob, length, opts) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  var cce = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+  return [type, cce];
 }
-function Ru(e, t, r) {
-  var n = e.read_shift(1) >>> 5 & 3;
-  return e.l += 4, r.biff < 8 && e.l--, r.biff == 12 && (e.l += 2), [n];
+function parse_PtgRefErr(blob, length, opts) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  blob.l += 4;
+  if (opts.biff < 8)
+    blob.l--;
+  if (opts.biff == 12)
+    blob.l += 2;
+  return [type];
 }
-function Du(e, t, r) {
-  var n = (e[e.l++] & 96) >> 5, a = e.read_shift(2), i = 4;
-  if (r)
-    switch (r.biff) {
+function parse_PtgRefErr3d(blob, length, opts) {
+  var type = (blob[blob.l++] & 96) >> 5;
+  var ixti = blob.read_shift(2);
+  var w = 4;
+  if (opts)
+    switch (opts.biff) {
       case 5:
-        i = 15;
+        w = 15;
         break;
       case 12:
-        i = 6;
+        w = 6;
         break;
     }
-  return e.l += i, [n, a];
+  blob.l += w;
+  return [type, ixti];
 }
-var Nu = Fr, Iu = Fr, ku = Fr;
-function jt(e, t, r) {
-  return e.l += 2, [jh(e)];
+var parse_PtgMemErr = parsenoop;
+var parse_PtgMemNoMem = parsenoop;
+var parse_PtgTbl = parsenoop;
+function parse_PtgElfLoc(blob, length, opts) {
+  blob.l += 2;
+  return [parse_RgceElfLoc(blob)];
 }
-function U0(e) {
-  return e.l += 6, [];
+function parse_PtgElfNoop(blob) {
+  blob.l += 6;
+  return [];
 }
-var Pu = jt, Lu = U0, Bu = U0, Mu = jt;
-function Ws(e) {
-  return e.l += 2, [_s(e), e.read_shift(2) & 1];
+var parse_PtgElfCol = parse_PtgElfLoc;
+var parse_PtgElfColS = parse_PtgElfNoop;
+var parse_PtgElfColSV = parse_PtgElfNoop;
+var parse_PtgElfColV = parse_PtgElfLoc;
+function parse_PtgElfLel(blob) {
+  blob.l += 2;
+  return [parseuint16(blob), blob.read_shift(2) & 1];
 }
-var Uu = jt, bu = Ws, Wu = U0, Hu = jt, Vu = jt, Gu = [
+var parse_PtgElfRadical = parse_PtgElfLoc;
+var parse_PtgElfRadicalLel = parse_PtgElfLel;
+var parse_PtgElfRadicalS = parse_PtgElfNoop;
+var parse_PtgElfRw = parse_PtgElfLoc;
+var parse_PtgElfRwV = parse_PtgElfLoc;
+var PtgListRT = [
   "Data",
   "All",
   "Headers",
@@ -7729,84 +11828,98 @@ var Uu = jt, bu = Ws, Wu = U0, Hu = jt, Vu = jt, Gu = [
   "??",
   "?Current"
 ];
-function Xu(e) {
-  e.l += 2;
-  var t = e.read_shift(2), r = e.read_shift(2), n = e.read_shift(4), a = e.read_shift(2), i = e.read_shift(2), s = Gu[r >> 2 & 31];
-  return { ixti: t, coltype: r & 3, rt: s, idx: n, c: a, C: i };
+function parse_PtgList(blob) {
+  blob.l += 2;
+  var ixti = blob.read_shift(2);
+  var flags = blob.read_shift(2);
+  var idx = blob.read_shift(4);
+  var c = blob.read_shift(2);
+  var C = blob.read_shift(2);
+  var rt = PtgListRT[flags >> 2 & 31];
+  return { ixti, coltype: flags & 3, rt, idx, c, C };
 }
-function $u(e) {
-  return e.l += 2, [e.read_shift(4)];
+function parse_PtgSxName(blob) {
+  blob.l += 2;
+  return [blob.read_shift(4)];
 }
-function ju(e, t, r) {
-  return e.l += 5, e.l += 2, e.l += r.biff == 2 ? 1 : 4, ["PTGSHEET"];
+function parse_PtgSheet(blob, length, opts) {
+  blob.l += 5;
+  blob.l += 2;
+  blob.l += opts.biff == 2 ? 1 : 4;
+  return ["PTGSHEET"];
 }
-function zu(e, t, r) {
-  return e.l += r.biff == 2 ? 4 : 5, ["PTGENDSHEET"];
+function parse_PtgEndSheet(blob, length, opts) {
+  blob.l += opts.biff == 2 ? 4 : 5;
+  return ["PTGENDSHEET"];
 }
-function Ku(e) {
-  var t = e.read_shift(1) >>> 5 & 3, r = e.read_shift(2);
-  return [t, r];
+function parse_PtgMemAreaN(blob) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  var cce = blob.read_shift(2);
+  return [type, cce];
 }
-function Yu(e) {
-  var t = e.read_shift(1) >>> 5 & 3, r = e.read_shift(2);
-  return [t, r];
+function parse_PtgMemNoMemN(blob) {
+  var type = blob.read_shift(1) >>> 5 & 3;
+  var cce = blob.read_shift(2);
+  return [type, cce];
 }
-function qu(e) {
-  return e.l += 4, [0, 0];
+function parse_PtgAttrNoop(blob) {
+  blob.l += 4;
+  return [0, 0];
 }
-var ni = {
-  1: { n: "PtgExp", f: pu },
-  2: { n: "PtgTbl", f: ku },
-  3: { n: "PtgAdd", f: De },
-  4: { n: "PtgSub", f: De },
-  5: { n: "PtgMul", f: De },
-  6: { n: "PtgDiv", f: De },
-  7: { n: "PtgPower", f: De },
-  8: { n: "PtgConcat", f: De },
-  9: { n: "PtgLt", f: De },
-  10: { n: "PtgLe", f: De },
-  11: { n: "PtgEq", f: De },
-  12: { n: "PtgGe", f: De },
-  13: { n: "PtgGt", f: De },
-  14: { n: "PtgNe", f: De },
-  15: { n: "PtgIsect", f: De },
-  16: { n: "PtgUnion", f: De },
-  17: { n: "PtgRange", f: De },
-  18: { n: "PtgUplus", f: De },
-  19: { n: "PtgUminus", f: De },
-  20: { n: "PtgPercent", f: De },
-  21: { n: "PtgParen", f: De },
-  22: { n: "PtgMissArg", f: De },
-  23: { n: "PtgStr", f: Eu },
-  26: { n: "PtgSheet", f: ju },
-  27: { n: "PtgEndSheet", f: zu },
-  28: { n: "PtgErr", f: vu },
-  29: { n: "PtgBool", f: gu },
-  30: { n: "PtgInt", f: mu },
-  31: { n: "PtgNum", f: _u },
-  32: { n: "PtgArray", f: eu },
-  33: { n: "PtgFunc", f: hu },
-  34: { n: "PtgFuncVar", f: uu },
-  35: { n: "PtgName", f: Au },
-  36: { n: "PtgRef", f: ou },
-  37: { n: "PtgArea", f: Yh },
-  38: { n: "PtgMemArea", f: Cu },
-  39: { n: "PtgMemErr", f: Nu },
-  40: { n: "PtgMemNoMem", f: Iu },
-  41: { n: "PtgMemFunc", f: Ou },
-  42: { n: "PtgRefErr", f: Ru },
-  43: { n: "PtgAreaErr", f: Jh },
-  44: { n: "PtgRefN", f: lu },
-  45: { n: "PtgAreaN", f: Qh },
-  46: { n: "PtgMemAreaN", f: Ku },
-  47: { n: "PtgMemNoMemN", f: Yu },
-  57: { n: "PtgNameX", f: Fu },
-  58: { n: "PtgRef3d", f: cu },
-  59: { n: "PtgArea3d", f: qh },
-  60: { n: "PtgRefErr3d", f: Du },
-  61: { n: "PtgAreaErr3d", f: Zh },
+var PtgTypes = {
+  1: { n: "PtgExp", f: parse_PtgExp },
+  2: { n: "PtgTbl", f: parse_PtgTbl },
+  3: { n: "PtgAdd", f: parseread1 },
+  4: { n: "PtgSub", f: parseread1 },
+  5: { n: "PtgMul", f: parseread1 },
+  6: { n: "PtgDiv", f: parseread1 },
+  7: { n: "PtgPower", f: parseread1 },
+  8: { n: "PtgConcat", f: parseread1 },
+  9: { n: "PtgLt", f: parseread1 },
+  10: { n: "PtgLe", f: parseread1 },
+  11: { n: "PtgEq", f: parseread1 },
+  12: { n: "PtgGe", f: parseread1 },
+  13: { n: "PtgGt", f: parseread1 },
+  14: { n: "PtgNe", f: parseread1 },
+  15: { n: "PtgIsect", f: parseread1 },
+  16: { n: "PtgUnion", f: parseread1 },
+  17: { n: "PtgRange", f: parseread1 },
+  18: { n: "PtgUplus", f: parseread1 },
+  19: { n: "PtgUminus", f: parseread1 },
+  20: { n: "PtgPercent", f: parseread1 },
+  21: { n: "PtgParen", f: parseread1 },
+  22: { n: "PtgMissArg", f: parseread1 },
+  23: { n: "PtgStr", f: parse_PtgStr },
+  26: { n: "PtgSheet", f: parse_PtgSheet },
+  27: { n: "PtgEndSheet", f: parse_PtgEndSheet },
+  28: { n: "PtgErr", f: parse_PtgErr },
+  29: { n: "PtgBool", f: parse_PtgBool },
+  30: { n: "PtgInt", f: parse_PtgInt },
+  31: { n: "PtgNum", f: parse_PtgNum },
+  32: { n: "PtgArray", f: parse_PtgArray },
+  33: { n: "PtgFunc", f: parse_PtgFunc },
+  34: { n: "PtgFuncVar", f: parse_PtgFuncVar },
+  35: { n: "PtgName", f: parse_PtgName },
+  36: { n: "PtgRef", f: parse_PtgRef },
+  37: { n: "PtgArea", f: parse_PtgArea },
+  38: { n: "PtgMemArea", f: parse_PtgMemArea },
+  39: { n: "PtgMemErr", f: parse_PtgMemErr },
+  40: { n: "PtgMemNoMem", f: parse_PtgMemNoMem },
+  41: { n: "PtgMemFunc", f: parse_PtgMemFunc },
+  42: { n: "PtgRefErr", f: parse_PtgRefErr },
+  43: { n: "PtgAreaErr", f: parse_PtgAreaErr },
+  44: { n: "PtgRefN", f: parse_PtgRefN },
+  45: { n: "PtgAreaN", f: parse_PtgAreaN },
+  46: { n: "PtgMemAreaN", f: parse_PtgMemAreaN },
+  47: { n: "PtgMemNoMemN", f: parse_PtgMemNoMemN },
+  57: { n: "PtgNameX", f: parse_PtgNameX },
+  58: { n: "PtgRef3d", f: parse_PtgRef3d },
+  59: { n: "PtgArea3d", f: parse_PtgArea3d },
+  60: { n: "PtgRefErr3d", f: parse_PtgRefErr3d },
+  61: { n: "PtgAreaErr3d", f: parse_PtgAreaErr3d },
   255: {}
-}, Ju = {
+};
+var PtgDupes = {
   64: 32,
   96: 32,
   65: 33,
@@ -7851,81 +11964,108 @@ var ni = {
   124: 60,
   93: 61,
   125: 61
-}, Zu = {
-  1: { n: "PtgElfLel", f: Ws },
-  2: { n: "PtgElfRw", f: Hu },
-  3: { n: "PtgElfCol", f: Pu },
-  6: { n: "PtgElfRwV", f: Vu },
-  7: { n: "PtgElfColV", f: Mu },
-  10: { n: "PtgElfRadical", f: Uu },
-  11: { n: "PtgElfRadicalS", f: Wu },
-  13: { n: "PtgElfColS", f: Lu },
-  15: { n: "PtgElfColSV", f: Bu },
-  16: { n: "PtgElfRadicalLel", f: bu },
-  25: { n: "PtgList", f: Xu },
-  29: { n: "PtgSxName", f: $u },
-  255: {}
-}, Qu = {
-  0: { n: "PtgAttrNoop", f: qu },
-  1: { n: "PtgAttrSemi", f: iu },
-  2: { n: "PtgAttrIf", f: nu },
-  4: { n: "PtgAttrChoose", f: ru },
-  8: { n: "PtgAttrGoto", f: tu },
-  16: { n: "PtgAttrSum", f: du },
-  32: { n: "PtgAttrBaxcel", f: ti },
-  33: { n: "PtgAttrBaxcel", f: ti },
-  64: { n: "PtgAttrSpace", f: su },
-  65: { n: "PtgAttrSpaceSemi", f: fu },
-  128: { n: "PtgAttrIfError", f: au },
+};
+var Ptg18 = {
+  1: { n: "PtgElfLel", f: parse_PtgElfLel },
+  2: { n: "PtgElfRw", f: parse_PtgElfRw },
+  3: { n: "PtgElfCol", f: parse_PtgElfCol },
+  6: { n: "PtgElfRwV", f: parse_PtgElfRwV },
+  7: { n: "PtgElfColV", f: parse_PtgElfColV },
+  10: { n: "PtgElfRadical", f: parse_PtgElfRadical },
+  11: { n: "PtgElfRadicalS", f: parse_PtgElfRadicalS },
+  13: { n: "PtgElfColS", f: parse_PtgElfColS },
+  15: { n: "PtgElfColSV", f: parse_PtgElfColSV },
+  16: { n: "PtgElfRadicalLel", f: parse_PtgElfRadicalLel },
+  25: { n: "PtgList", f: parse_PtgList },
+  29: { n: "PtgSxName", f: parse_PtgSxName },
   255: {}
 };
-function e1(e, t, r, n) {
-  if (n.biff < 8)
-    return Fr(e, t);
-  for (var a = e.l + t, i = [], s = 0; s !== r.length; ++s)
-    switch (r[s][0]) {
+var Ptg19 = {
+  0: { n: "PtgAttrNoop", f: parse_PtgAttrNoop },
+  1: { n: "PtgAttrSemi", f: parse_PtgAttrSemi },
+  2: { n: "PtgAttrIf", f: parse_PtgAttrIf },
+  4: { n: "PtgAttrChoose", f: parse_PtgAttrChoose },
+  8: { n: "PtgAttrGoto", f: parse_PtgAttrGoto },
+  16: { n: "PtgAttrSum", f: parse_PtgAttrSum },
+  32: { n: "PtgAttrBaxcel", f: parse_PtgAttrBaxcel },
+  33: { n: "PtgAttrBaxcel", f: parse_PtgAttrBaxcel },
+  64: { n: "PtgAttrSpace", f: parse_PtgAttrSpace },
+  65: { n: "PtgAttrSpaceSemi", f: parse_PtgAttrSpaceSemi },
+  128: { n: "PtgAttrIfError", f: parse_PtgAttrIfError },
+  255: {}
+};
+function parse_RgbExtra(blob, length, rgce, opts) {
+  if (opts.biff < 8)
+    return parsenoop(blob, length);
+  var target = blob.l + length;
+  var o = [];
+  for (var i = 0; i !== rgce.length; ++i) {
+    switch (rgce[i][0]) {
       case "PtgArray":
-        r[s][1] = Su(e, 0, n), i.push(r[s][1]);
+        rgce[i][1] = parse_PtgExtraArray(blob, 0, opts);
+        o.push(rgce[i][1]);
         break;
       case "PtgMemArea":
-        r[s][2] = wu(e, r[s][1], n), i.push(r[s][2]);
+        rgce[i][2] = parse_PtgExtraMem(blob, rgce[i][1], opts);
+        o.push(rgce[i][2]);
         break;
       case "PtgExp":
-        n && n.biff == 12 && (r[s][1][1] = e.read_shift(4), i.push(r[s][1]));
+        if (opts && opts.biff == 12) {
+          rgce[i][1][1] = blob.read_shift(4);
+          o.push(rgce[i][1]);
+        }
         break;
       case "PtgList":
       case "PtgElfRadicalS":
       case "PtgElfColS":
       case "PtgElfColSV":
-        throw "Unsupported " + r[s][0];
+        throw "Unsupported " + rgce[i][0];
     }
-  return t = a - e.l, t !== 0 && i.push(Fr(e, t)), i;
+  }
+  length = target - blob.l;
+  if (length !== 0)
+    o.push(parsenoop(blob, length));
+  return o;
 }
-function r1(e, t, r) {
-  for (var n = e.l + t, a, i, s = []; n != e.l; )
-    t = n - e.l, i = e[e.l], a = ni[i] || ni[Ju[i]], (i === 24 || i === 25) && (a = (i === 24 ? Zu : Qu)[e[e.l + 1]]), !a || !a.f ? Fr(e, t) : s.push([a.n, a.f(e, t, r)]);
-  return s;
+function parse_Rgce(blob, length, opts) {
+  var target = blob.l + length;
+  var R, id, ptgs = [];
+  while (target != blob.l) {
+    length = target - blob.l;
+    id = blob[blob.l];
+    R = PtgTypes[id] || PtgTypes[PtgDupes[id]];
+    if (id === 24 || id === 25)
+      R = (id === 24 ? Ptg18 : Ptg19)[blob[blob.l + 1]];
+    if (!R || !R.f) {
+      parsenoop(blob, length);
+    } else {
+      ptgs.push([R.n, R.f(blob, length, opts)]);
+    }
+  }
+  return ptgs;
 }
-function t1(e) {
-  for (var t = [], r = 0; r < e.length; ++r) {
-    for (var n = e[r], a = [], i = 0; i < n.length; ++i) {
-      var s = n[i];
-      if (s)
-        switch (s[0]) {
+function stringify_array(f) {
+  var o = [];
+  for (var i = 0; i < f.length; ++i) {
+    var x = f[i], r = [];
+    for (var j = 0; j < x.length; ++j) {
+      var y = x[j];
+      if (y)
+        switch (y[0]) {
           case 2:
-            a.push('"' + s[1].replace(/"/g, '""') + '"');
+            r.push('"' + y[1].replace(/"/g, '""') + '"');
             break;
           default:
-            a.push(s[1]);
+            r.push(y[1]);
         }
       else
-        a.push("");
+        r.push("");
     }
-    t.push(a.join(","));
+    o.push(r.join(","));
   }
-  return t.join(";");
+  return o.join(";");
 }
-var n1 = {
+var PtgBinOp = {
   PtgAdd: "+",
   PtgConcat: "&",
   PtgDiv: "/",
@@ -7939,64 +12079,81 @@ var n1 = {
   PtgPower: "^",
   PtgSub: "-"
 };
-function a1(e, t) {
-  if (!e && !(t && t.biff <= 5 && t.biff >= 2))
+function formula_quote_sheet_name(sname, opts) {
+  if (!sname && !(opts && opts.biff <= 5 && opts.biff >= 2))
     throw new Error("empty sheet name");
-  return /[^\w\u4E00-\u9FFF\u3040-\u30FF]/.test(e) ? "'" + e + "'" : e;
+  if (/[^\w\u4E00-\u9FFF\u3040-\u30FF]/.test(sname))
+    return "'" + sname + "'";
+  return sname;
 }
-function Hs(e, t, r) {
-  if (!e)
+function get_ixti_raw(supbooks, ixti, opts) {
+  if (!supbooks)
     return "SH33TJSERR0";
-  if (r.biff > 8 && (!e.XTI || !e.XTI[t]))
-    return e.SheetNames[t];
-  if (!e.XTI)
+  if (opts.biff > 8 && (!supbooks.XTI || !supbooks.XTI[ixti]))
+    return supbooks.SheetNames[ixti];
+  if (!supbooks.XTI)
     return "SH33TJSERR6";
-  var n = e.XTI[t];
-  if (r.biff < 8)
-    return t > 1e4 && (t -= 65536), t < 0 && (t = -t), t == 0 ? "" : e.XTI[t - 1];
-  if (!n)
+  var XTI = supbooks.XTI[ixti];
+  if (opts.biff < 8) {
+    if (ixti > 1e4)
+      ixti -= 65536;
+    if (ixti < 0)
+      ixti = -ixti;
+    return ixti == 0 ? "" : supbooks.XTI[ixti - 1];
+  }
+  if (!XTI)
     return "SH33TJSERR1";
-  var a = "";
-  if (r.biff > 8)
-    switch (e[n[0]][0]) {
+  var o = "";
+  if (opts.biff > 8)
+    switch (supbooks[XTI[0]][0]) {
       case 357:
-        return a = n[1] == -1 ? "#REF" : e.SheetNames[n[1]], n[1] == n[2] ? a : a + ":" + e.SheetNames[n[2]];
+        o = XTI[1] == -1 ? "#REF" : supbooks.SheetNames[XTI[1]];
+        return XTI[1] == XTI[2] ? o : o + ":" + supbooks.SheetNames[XTI[2]];
       case 358:
-        return r.SID != null ? e.SheetNames[r.SID] : "SH33TJSSAME" + e[n[0]][0];
+        if (opts.SID != null)
+          return supbooks.SheetNames[opts.SID];
+        return "SH33TJSSAME" + supbooks[XTI[0]][0];
       case 355:
       default:
-        return "SH33TJSSRC" + e[n[0]][0];
+        return "SH33TJSSRC" + supbooks[XTI[0]][0];
     }
-  switch (e[n[0]][0][0]) {
+  switch (supbooks[XTI[0]][0][0]) {
     case 1025:
-      return a = n[1] == -1 ? "#REF" : e.SheetNames[n[1]] || "SH33TJSERR3", n[1] == n[2] ? a : a + ":" + e.SheetNames[n[2]];
+      o = XTI[1] == -1 ? "#REF" : supbooks.SheetNames[XTI[1]] || "SH33TJSERR3";
+      return XTI[1] == XTI[2] ? o : o + ":" + supbooks.SheetNames[XTI[2]];
     case 14849:
-      return e[n[0]].slice(1).map(function(i) {
-        return i.Name;
+      return supbooks[XTI[0]].slice(1).map(function(name) {
+        return name.Name;
       }).join(";;");
     default:
-      return e[n[0]][0][3] ? (a = n[1] == -1 ? "#REF" : e[n[0]][0][3][n[1]] || "SH33TJSERR4", n[1] == n[2] ? a : a + ":" + e[n[0]][0][3][n[2]]) : "SH33TJSERR2";
+      if (!supbooks[XTI[0]][0][3])
+        return "SH33TJSERR2";
+      o = XTI[1] == -1 ? "#REF" : supbooks[XTI[0]][0][3][XTI[1]] || "SH33TJSERR4";
+      return XTI[1] == XTI[2] ? o : o + ":" + supbooks[XTI[0]][0][3][XTI[2]];
   }
 }
-function ai(e, t, r) {
-  var n = Hs(e, t, r);
-  return n == "#REF" ? n : a1(n, r);
+function get_ixti(supbooks, ixti, opts) {
+  var ixtiraw = get_ixti_raw(supbooks, ixti, opts);
+  return ixtiraw == "#REF" ? ixtiraw : formula_quote_sheet_name(ixtiraw, opts);
 }
-function _t(e, t, r, n, a) {
-  var i = a && a.biff || 8, s = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } }, f = [], l, o, c, p = 0, u = 0, v, T = "";
-  if (!e[0] || !e[0][0])
+function stringify_formula(formula, range, cell, supbooks, opts) {
+  var biff = opts && opts.biff || 8;
+  var _range = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
+  var stack = [], e1, e2, c, ixti = 0, nameidx = 0, r, sname = "";
+  if (!formula[0] || !formula[0][0])
     return "";
-  for (var x = -1, _ = "", O = 0, R = e[0].length; O < R; ++O) {
-    var y = e[0][O];
-    switch (y[0]) {
+  var last_sp = -1, sp = "";
+  for (var ff = 0, fflen = formula[0].length; ff < fflen; ++ff) {
+    var f = formula[0][ff];
+    switch (f[0]) {
       case "PtgUminus":
-        f.push("-" + f.pop());
+        stack.push("-" + stack.pop());
         break;
       case "PtgUplus":
-        f.push("+" + f.pop());
+        stack.push("+" + stack.pop());
         break;
       case "PtgPercent":
-        f.push(f.pop() + "%");
+        stack.push(stack.pop() + "%");
         break;
       case "PtgAdd":
       case "PtgConcat":
@@ -8010,30 +12167,40 @@ function _t(e, t, r, n, a) {
       case "PtgNe":
       case "PtgPower":
       case "PtgSub":
-        if (l = f.pop(), o = f.pop(), x >= 0) {
-          switch (e[0][x][1][0]) {
+        e1 = stack.pop();
+        e2 = stack.pop();
+        if (last_sp >= 0) {
+          switch (formula[0][last_sp][1][0]) {
             case 0:
-              _ = ye(" ", e[0][x][1][1]);
+              sp = fill(" ", formula[0][last_sp][1][1]);
               break;
             case 1:
-              _ = ye("\r", e[0][x][1][1]);
+              sp = fill("\r", formula[0][last_sp][1][1]);
               break;
             default:
-              if (_ = "", a.WTF)
-                throw new Error("Unexpected PtgAttrSpaceType " + e[0][x][1][0]);
+              sp = "";
+              if (opts.WTF)
+                throw new Error("Unexpected PtgAttrSpaceType " + formula[0][last_sp][1][0]);
           }
-          o = o + _, x = -1;
+          e2 = e2 + sp;
+          last_sp = -1;
         }
-        f.push(o + n1[y[0]] + l);
+        stack.push(e2 + PtgBinOp[f[0]] + e1);
         break;
       case "PtgIsect":
-        l = f.pop(), o = f.pop(), f.push(o + " " + l);
+        e1 = stack.pop();
+        e2 = stack.pop();
+        stack.push(e2 + " " + e1);
         break;
       case "PtgUnion":
-        l = f.pop(), o = f.pop(), f.push(o + "," + l);
+        e1 = stack.pop();
+        e2 = stack.pop();
+        stack.push(e2 + "," + e1);
         break;
       case "PtgRange":
-        l = f.pop(), o = f.pop(), f.push(o + ":" + l);
+        e1 = stack.pop();
+        e2 = stack.pop();
+        stack.push(e2 + ":" + e1);
         break;
       case "PtgAttrChoose":
         break;
@@ -8044,147 +12211,188 @@ function _t(e, t, r, n, a) {
       case "PtgAttrIfError":
         break;
       case "PtgRef":
-        c = kt(y[1][1], s, a), f.push(Pt(c, i));
+        c = shift_cell_xls(f[1][1], _range, opts);
+        stack.push(encode_cell_xls(c, biff));
         break;
       case "PtgRefN":
-        c = r ? kt(y[1][1], r, a) : y[1][1], f.push(Pt(c, i));
+        c = cell ? shift_cell_xls(f[1][1], cell, opts) : f[1][1];
+        stack.push(encode_cell_xls(c, biff));
         break;
       case "PtgRef3d":
-        p = y[1][1], c = kt(y[1][2], s, a), T = ai(n, p, a), f.push(T + "!" + Pt(c, i));
+        ixti = f[1][1];
+        c = shift_cell_xls(f[1][2], _range, opts);
+        sname = get_ixti(supbooks, ixti, opts);
+        stack.push(sname + "!" + encode_cell_xls(c, biff));
         break;
       case "PtgFunc":
       case "PtgFuncVar":
-        var M = y[1][0], b = y[1][1];
-        M || (M = 0), M &= 127;
-        var re = M == 0 ? [] : f.slice(-M);
-        f.length -= M, b === "User" && (b = re.shift()), f.push(b + "(" + re.join(",") + ")");
+        var argc = f[1][0], func = f[1][1];
+        if (!argc)
+          argc = 0;
+        argc &= 127;
+        var args = argc == 0 ? [] : stack.slice(-argc);
+        stack.length -= argc;
+        if (func === "User")
+          func = args.shift();
+        stack.push(func + "(" + args.join(",") + ")");
         break;
       case "PtgBool":
-        f.push(y[1] ? "TRUE" : "FALSE");
+        stack.push(f[1] ? "TRUE" : "FALSE");
         break;
       case "PtgInt":
-        f.push(y[1]);
+        stack.push(f[1]);
         break;
       case "PtgNum":
-        f.push(String(y[1]));
+        stack.push(String(f[1]));
         break;
       case "PtgStr":
-        f.push('"' + y[1].replace(/"/g, '""') + '"');
+        stack.push('"' + f[1].replace(/"/g, '""') + '"');
         break;
       case "PtgErr":
-        f.push(y[1]);
+        stack.push(f[1]);
         break;
       case "PtgAreaN":
-        v = Va(y[1][1], r ? { s: r } : s, a), f.push(t0(v, a));
+        r = shift_range_xls(f[1][1], cell ? { s: cell } : _range, opts);
+        stack.push(encode_range_xls(r, opts));
         break;
       case "PtgArea":
-        v = Va(y[1][1], s, a), f.push(t0(v, a));
+        r = shift_range_xls(f[1][1], _range, opts);
+        stack.push(encode_range_xls(r, opts));
         break;
       case "PtgArea3d":
-        p = y[1][1], v = y[1][2], T = ai(n, p, a), f.push(T + "!" + t0(v, a));
+        ixti = f[1][1];
+        r = f[1][2];
+        sname = get_ixti(supbooks, ixti, opts);
+        stack.push(sname + "!" + encode_range_xls(r, opts));
         break;
       case "PtgAttrSum":
-        f.push("SUM(" + f.pop() + ")");
+        stack.push("SUM(" + stack.pop() + ")");
         break;
       case "PtgAttrBaxcel":
       case "PtgAttrSemi":
         break;
       case "PtgName":
-        u = y[1][2];
-        var D = (n.names || [])[u - 1] || (n[0] || [])[u], H = D ? D.Name : "SH33TJSNAME" + String(u);
-        H && H.slice(0, 6) == "_xlfn." && !a.xlfn && (H = H.slice(6)), f.push(H);
+        nameidx = f[1][2];
+        var lbl = (supbooks.names || [])[nameidx - 1] || (supbooks[0] || [])[nameidx];
+        var name = lbl ? lbl.Name : "SH33TJSNAME" + String(nameidx);
+        if (name && name.slice(0, 6) == "_xlfn." && !opts.xlfn)
+          name = name.slice(6);
+        stack.push(name);
         break;
       case "PtgNameX":
-        var L = y[1][1];
-        u = y[1][2];
-        var G;
-        if (a.biff <= 5)
-          L < 0 && (L = -L), n[L] && (G = n[L][u]);
-        else {
-          var z = "";
-          if (((n[L] || [])[0] || [])[0] == 14849 || (((n[L] || [])[0] || [])[0] == 1025 ? n[L][u] && n[L][u].itab > 0 && (z = n.SheetNames[n[L][u].itab - 1] + "!") : z = n.SheetNames[u - 1] + "!"), n[L] && n[L][u])
-            z += n[L][u].Name;
-          else if (n[0] && n[0][u])
-            z += n[0][u].Name;
+        var bookidx = f[1][1];
+        nameidx = f[1][2];
+        var externbook;
+        if (opts.biff <= 5) {
+          if (bookidx < 0)
+            bookidx = -bookidx;
+          if (supbooks[bookidx])
+            externbook = supbooks[bookidx][nameidx];
+        } else {
+          var o = "";
+          if (((supbooks[bookidx] || [])[0] || [])[0] == 14849)
+            ;
+          else if (((supbooks[bookidx] || [])[0] || [])[0] == 1025) {
+            if (supbooks[bookidx][nameidx] && supbooks[bookidx][nameidx].itab > 0) {
+              o = supbooks.SheetNames[supbooks[bookidx][nameidx].itab - 1] + "!";
+            }
+          } else
+            o = supbooks.SheetNames[nameidx - 1] + "!";
+          if (supbooks[bookidx] && supbooks[bookidx][nameidx])
+            o += supbooks[bookidx][nameidx].Name;
+          else if (supbooks[0] && supbooks[0][nameidx])
+            o += supbooks[0][nameidx].Name;
           else {
-            var j = (Hs(n, L, a) || "").split(";;");
-            j[u - 1] ? z = j[u - 1] : z += "SH33TJSERRX";
+            var ixtidata = (get_ixti_raw(supbooks, bookidx, opts) || "").split(";;");
+            if (ixtidata[nameidx - 1])
+              o = ixtidata[nameidx - 1];
+            else
+              o += "SH33TJSERRX";
           }
-          f.push(z);
+          stack.push(o);
           break;
         }
-        G || (G = { Name: "SH33TJSERRY" }), f.push(G.Name);
+        if (!externbook)
+          externbook = { Name: "SH33TJSERRY" };
+        stack.push(externbook.Name);
         break;
       case "PtgParen":
-        var Q = "(", he = ")";
-        if (x >= 0) {
-          switch (_ = "", e[0][x][1][0]) {
+        var lp = "(", rp = ")";
+        if (last_sp >= 0) {
+          sp = "";
+          switch (formula[0][last_sp][1][0]) {
             case 2:
-              Q = ye(" ", e[0][x][1][1]) + Q;
+              lp = fill(" ", formula[0][last_sp][1][1]) + lp;
               break;
             case 3:
-              Q = ye("\r", e[0][x][1][1]) + Q;
+              lp = fill("\r", formula[0][last_sp][1][1]) + lp;
               break;
             case 4:
-              he = ye(" ", e[0][x][1][1]) + he;
+              rp = fill(" ", formula[0][last_sp][1][1]) + rp;
               break;
             case 5:
-              he = ye("\r", e[0][x][1][1]) + he;
+              rp = fill("\r", formula[0][last_sp][1][1]) + rp;
               break;
             default:
-              if (a.WTF)
-                throw new Error("Unexpected PtgAttrSpaceType " + e[0][x][1][0]);
+              if (opts.WTF)
+                throw new Error("Unexpected PtgAttrSpaceType " + formula[0][last_sp][1][0]);
           }
-          x = -1;
+          last_sp = -1;
         }
-        f.push(Q + f.pop() + he);
+        stack.push(lp + stack.pop() + rp);
         break;
       case "PtgRefErr":
-        f.push("#REF!");
+        stack.push("#REF!");
         break;
       case "PtgRefErr3d":
-        f.push("#REF!");
+        stack.push("#REF!");
         break;
       case "PtgExp":
-        c = { c: y[1][1], r: y[1][0] };
-        var oe = { c: r.c, r: r.r };
-        if (n.sharedf[_e(c)]) {
-          var Oe = n.sharedf[_e(c)];
-          f.push(_t(Oe, s, oe, n, a));
+        c = { c: f[1][1], r: f[1][0] };
+        var q = { c: cell.c, r: cell.r };
+        if (supbooks.sharedf[encode_cell(c)]) {
+          var parsedf = supbooks.sharedf[encode_cell(c)];
+          stack.push(stringify_formula(parsedf, _range, q, supbooks, opts));
         } else {
-          var Re = !1;
-          for (l = 0; l != n.arrayf.length; ++l)
-            if (o = n.arrayf[l], !(c.c < o[0].s.c || c.c > o[0].e.c) && !(c.r < o[0].s.r || c.r > o[0].e.r)) {
-              f.push(_t(o[1], s, oe, n, a)), Re = !0;
-              break;
-            }
-          Re || f.push(y[1]);
+          var fnd = false;
+          for (e1 = 0; e1 != supbooks.arrayf.length; ++e1) {
+            e2 = supbooks.arrayf[e1];
+            if (c.c < e2[0].s.c || c.c > e2[0].e.c)
+              continue;
+            if (c.r < e2[0].s.r || c.r > e2[0].e.r)
+              continue;
+            stack.push(stringify_formula(e2[1], _range, q, supbooks, opts));
+            fnd = true;
+            break;
+          }
+          if (!fnd)
+            stack.push(f[1]);
         }
         break;
       case "PtgArray":
-        f.push("{" + t1(y[1]) + "}");
+        stack.push("{" + stringify_array(f[1]) + "}");
         break;
       case "PtgMemArea":
         break;
       case "PtgAttrSpace":
       case "PtgAttrSpaceSemi":
-        x = O;
+        last_sp = ff;
         break;
       case "PtgTbl":
         break;
       case "PtgMemErr":
         break;
       case "PtgMissArg":
-        f.push("");
+        stack.push("");
         break;
       case "PtgAreaErr":
-        f.push("#REF!");
+        stack.push("#REF!");
         break;
       case "PtgAreaErr3d":
-        f.push("#REF!");
+        stack.push("#REF!");
         break;
       case "PtgList":
-        f.push("Table" + y[1].idx + "[#" + y[1].rt + "]");
+        stack.push("Table" + f[1].idx + "[#" + f[1].rt + "]");
         break;
       case "PtgMemAreaN":
       case "PtgMemNoMemN":
@@ -8208,57 +12416,78 @@ function _t(e, t, r, n, a) {
       case "PtgElfRwV":
         throw new Error("Unsupported ELFs");
       case "PtgSxName":
-        throw new Error("Unrecognized Formula Token: " + String(y));
+        throw new Error("Unrecognized Formula Token: " + String(f));
       default:
-        throw new Error("Unrecognized Formula Token: " + String(y));
+        throw new Error("Unrecognized Formula Token: " + String(f));
     }
-    var pr = ["PtgAttrSpace", "PtgAttrSpaceSemi", "PtgAttrGoto"];
-    if (a.biff != 3 && x >= 0 && pr.indexOf(e[0][O][0]) == -1) {
-      y = e[0][x];
-      var Pe = !0;
-      switch (y[1][0]) {
-        case 4:
-          Pe = !1;
-        case 0:
-          _ = ye(" ", y[1][1]);
-          break;
-        case 5:
-          Pe = !1;
-        case 1:
-          _ = ye("\r", y[1][1]);
-          break;
-        default:
-          if (_ = "", a.WTF)
-            throw new Error("Unexpected PtgAttrSpaceType " + y[1][0]);
+    var PtgNonDisp = ["PtgAttrSpace", "PtgAttrSpaceSemi", "PtgAttrGoto"];
+    if (opts.biff != 3) {
+      if (last_sp >= 0 && PtgNonDisp.indexOf(formula[0][ff][0]) == -1) {
+        f = formula[0][last_sp];
+        var _left = true;
+        switch (f[1][0]) {
+          case 4:
+            _left = false;
+          case 0:
+            sp = fill(" ", f[1][1]);
+            break;
+          case 5:
+            _left = false;
+          case 1:
+            sp = fill("\r", f[1][1]);
+            break;
+          default:
+            sp = "";
+            if (opts.WTF)
+              throw new Error("Unexpected PtgAttrSpaceType " + f[1][0]);
+        }
+        stack.push((_left ? sp : "") + stack.pop() + (_left ? "" : sp));
+        last_sp = -1;
       }
-      f.push((Pe ? _ : "") + f.pop() + (Pe ? "" : _)), x = -1;
     }
   }
-  if (f.length > 1 && a.WTF)
+  if (stack.length > 1 && opts.WTF)
     throw new Error("bad formula stack");
-  return f[0];
+  return stack[0];
 }
-function i1(e) {
-  if (e == null) {
-    var t = U(8);
-    return t.write_shift(1, 3), t.write_shift(1, 0), t.write_shift(2, 0), t.write_shift(2, 0), t.write_shift(2, 65535), t;
-  } else if (typeof e == "number")
-    return Jr(e);
-  return Jr(0);
+function write_FormulaValue(value) {
+  if (value == null) {
+    var o = new_buf(8);
+    o.write_shift(1, 3);
+    o.write_shift(1, 0);
+    o.write_shift(2, 0);
+    o.write_shift(2, 0);
+    o.write_shift(2, 65535);
+    return o;
+  } else if (typeof value == "number")
+    return write_Xnum(value);
+  return write_Xnum(0);
 }
-function s1(e, t, r, n, a) {
-  var i = Zr(t, r, a), s = i1(e.v), f = U(6), l = 33;
-  f.write_shift(2, l), f.write_shift(4, 0);
-  for (var o = U(e.bf.length), c = 0; c < e.bf.length; ++c)
-    o[c] = e.bf[c];
-  var p = He([i, s, f, o]);
-  return p;
+function write_Formula(cell, R, C, opts, os) {
+  var o1 = write_XLSCell(R, C, os);
+  var o2 = write_FormulaValue(cell.v);
+  var o3 = new_buf(6);
+  var flags = 1 | 32;
+  o3.write_shift(2, flags);
+  o3.write_shift(4, 0);
+  var bf = new_buf(cell.bf.length);
+  for (var i = 0; i < cell.bf.length; ++i)
+    bf[i] = cell.bf[i];
+  var out = bconcat([o1, o2, o3, bf]);
+  return out;
 }
-function Nn(e, t, r) {
-  var n = e.read_shift(4), a = r1(e, n, r), i = e.read_shift(4), s = i > 0 ? e1(e, i, a, r) : null;
-  return [a, s];
+function parse_XLSBParsedFormula(data2, length, opts) {
+  var cce = data2.read_shift(4);
+  var rgce = parse_Rgce(data2, cce, opts);
+  var cb = data2.read_shift(4);
+  var rgcb = cb > 0 ? parse_RgbExtra(data2, cb, rgce, opts) : null;
+  return [rgce, rgcb];
 }
-var f1 = Nn, In = Nn, o1 = Nn, l1 = Nn, c1 = {
+var parse_XLSBArrayParsedFormula = parse_XLSBParsedFormula;
+var parse_XLSBCellParsedFormula = parse_XLSBParsedFormula;
+var parse_XLSBNameParsedFormula = parse_XLSBParsedFormula;
+var parse_XLSBSharedParsedFormula = parse_XLSBParsedFormula;
+var Cetab = {
   0: "BEEP",
   1: "OPEN",
   2: "OPEN.LINKS",
@@ -8655,7 +12884,8 @@ var f1 = Nn, In = Nn, o1 = Nn, l1 = Nn, c1 = {
   753: "OPTIONS.SAVE",
   755: "OPTIONS.SPELL",
   808: "HIDEALL.INKANNOTS"
-}, Vs = {
+};
+var Ftab = {
   0: "COUNT",
   1: "IF",
   2: "ISNA",
@@ -9135,7 +13365,8 @@ var f1 = Nn, In = Nn, o1 = Nn, l1 = Nn, c1 = {
   482: "SUMIFS",
   483: "AVERAGEIF",
   484: "AVERAGEIFS"
-}, h1 = {
+};
+var FtabArgc = {
   2: 1,
   3: 1,
   10: 0,
@@ -9389,90 +13620,158 @@ var f1 = Nn, In = Nn, o1 = Nn, l1 = Nn, c1 = {
   480: 2,
   65535: 0
 };
-function u1(e) {
-  var t = "of:=" + e.replace(B0, "$1[.$2$3$4$5]").replace(/\]:\[/g, ":");
-  return t.replace(/;/g, "|").replace(/,/g, ";");
+function csf_to_ods_formula(f) {
+  var o = "of:=" + f.replace(crefregex, "$1[.$2$3$4$5]").replace(/\]:\[/g, ":");
+  return o.replace(/;/g, "|").replace(/,/g, ";");
 }
-function x1(e) {
-  return e.replace(/\./, "!");
+function csf_to_ods_3D(r) {
+  return r.replace(/\./, "!");
 }
-var Lt = typeof Map < "u";
-function b0(e, t, r) {
-  var n = 0, a = e.length;
-  if (r) {
-    if (Lt ? r.has(t) : Object.prototype.hasOwnProperty.call(r, t)) {
-      for (var i = Lt ? r.get(t) : r[t]; n < i.length; ++n)
-        if (e[i[n]].t === t)
-          return e.Count++, i[n];
+var browser_has_Map = typeof Map !== "undefined";
+function get_sst_id(sst, str, rev) {
+  var i = 0, len = sst.length;
+  if (rev) {
+    if (browser_has_Map ? rev.has(str) : Object.prototype.hasOwnProperty.call(rev, str)) {
+      var revarr = browser_has_Map ? rev.get(str) : rev[str];
+      for (; i < revarr.length; ++i) {
+        if (sst[revarr[i]].t === str) {
+          sst.Count++;
+          return revarr[i];
+        }
+      }
     }
   } else
-    for (; n < a; ++n)
-      if (e[n].t === t)
-        return e.Count++, n;
-  return e[a] = { t }, e.Count++, e.Unique++, r && (Lt ? (r.has(t) || r.set(t, []), r.get(t).push(a)) : (Object.prototype.hasOwnProperty.call(r, t) || (r[t] = []), r[t].push(a))), a;
-}
-function kn(e, t) {
-  var r = { min: e + 1, max: e + 1 }, n = -1;
-  return t.MDW && (Ir = t.MDW), t.width != null ? r.customWidth = 1 : t.wpx != null ? n = gn(t.wpx) : t.wch != null && (n = t.wch), n > -1 ? (r.width = u0(n), r.customWidth = 1) : t.width != null && (r.width = t.width), t.hidden && (r.hidden = !0), t.level != null && (r.outlineLevel = r.level = t.level), r;
-}
-function Gs(e, t) {
-  if (!!e) {
-    var r = [0.7, 0.7, 0.75, 0.75, 0.3, 0.3];
-    t == "xlml" && (r = [1, 1, 1, 1, 0.5, 0.5]), e.left == null && (e.left = r[0]), e.right == null && (e.right = r[1]), e.top == null && (e.top = r[2]), e.bottom == null && (e.bottom = r[3]), e.header == null && (e.header = r[4]), e.footer == null && (e.footer = r[5]);
+    for (; i < len; ++i) {
+      if (sst[i].t === str) {
+        sst.Count++;
+        return i;
+      }
+    }
+  sst[len] = { t: str };
+  sst.Count++;
+  sst.Unique++;
+  if (rev) {
+    if (browser_has_Map) {
+      if (!rev.has(str))
+        rev.set(str, []);
+      rev.get(str).push(len);
+    } else {
+      if (!Object.prototype.hasOwnProperty.call(rev, str))
+        rev[str] = [];
+      rev[str].push(len);
+    }
   }
+  return len;
 }
-function Gr(e, t, r) {
-  var n = r.revssf[t.z != null ? t.z : "General"], a = 60, i = e.length;
-  if (n == null && r.ssf) {
-    for (; a < 392; ++a)
-      if (r.ssf[a] == null) {
-        Ui(t.z, a), r.ssf[a] = t.z, r.revssf[t.z] = n = a;
+function col_obj_w(C, col) {
+  var p = { min: C + 1, max: C + 1 };
+  var wch = -1;
+  if (col.MDW)
+    MDW = col.MDW;
+  if (col.width != null)
+    p.customWidth = 1;
+  else if (col.wpx != null)
+    wch = px2char(col.wpx);
+  else if (col.wch != null)
+    wch = col.wch;
+  if (wch > -1) {
+    p.width = char2width(wch);
+    p.customWidth = 1;
+  } else if (col.width != null)
+    p.width = col.width;
+  if (col.hidden)
+    p.hidden = true;
+  if (col.level != null) {
+    p.outlineLevel = p.level = col.level;
+  }
+  return p;
+}
+function default_margins(margins, mode) {
+  if (!margins)
+    return;
+  var defs = [0.7, 0.7, 0.75, 0.75, 0.3, 0.3];
+  if (mode == "xlml")
+    defs = [1, 1, 1, 1, 0.5, 0.5];
+  if (margins.left == null)
+    margins.left = defs[0];
+  if (margins.right == null)
+    margins.right = defs[1];
+  if (margins.top == null)
+    margins.top = defs[2];
+  if (margins.bottom == null)
+    margins.bottom = defs[3];
+  if (margins.header == null)
+    margins.header = defs[4];
+  if (margins.footer == null)
+    margins.footer = defs[5];
+}
+function get_cell_style(styles, cell, opts) {
+  var z = opts.revssf[cell.z != null ? cell.z : "General"];
+  var i = 60, len = styles.length;
+  if (z == null && opts.ssf) {
+    for (; i < 392; ++i)
+      if (opts.ssf[i] == null) {
+        SSF_load(cell.z, i);
+        opts.ssf[i] = cell.z;
+        opts.revssf[cell.z] = z = i;
         break;
       }
   }
-  for (a = 0; a != i; ++a)
-    if (e[a].numFmtId === n)
-      return a;
-  return e[i] = {
-    numFmtId: n,
+  for (i = 0; i != len; ++i)
+    if (styles[i].numFmtId === z)
+      return i;
+  styles[len] = {
+    numFmtId: z,
     fontId: 0,
     fillId: 0,
     borderId: 0,
     xfId: 0,
     applyNumberFormat: 1
-  }, i;
+  };
+  return len;
 }
-function d1(e, t, r) {
-  if (e && e["!ref"]) {
-    var n = we(e["!ref"]);
-    if (n.e.c < n.s.c || n.e.r < n.s.r)
-      throw new Error("Bad range (" + r + "): " + e["!ref"]);
+function check_ws(ws, sname, i) {
+  if (ws && ws["!ref"]) {
+    var range = safe_decode_range(ws["!ref"]);
+    if (range.e.c < range.s.c || range.e.r < range.s.r)
+      throw new Error("Bad range (" + i + "): " + ws["!ref"]);
   }
 }
-function p1(e) {
-  if (e.length === 0)
+function write_ws_xml_merges(merges) {
+  if (merges.length === 0)
     return "";
-  for (var t = '<mergeCells count="' + e.length + '">', r = 0; r != e.length; ++r)
-    t += '<mergeCell ref="' + Ne(e[r]) + '"/>';
-  return t + "</mergeCells>";
+  var o = '<mergeCells count="' + merges.length + '">';
+  for (var i = 0; i != merges.length; ++i)
+    o += '<mergeCell ref="' + encode_range(merges[i]) + '"/>';
+  return o + "</mergeCells>";
 }
-function v1(e, t, r, n, a) {
-  var i = !1, s = {}, f = null;
-  if (n.bookType !== "xlsx" && t.vbaraw) {
-    var l = t.SheetNames[r];
+function write_ws_xml_sheetpr(ws, wb, idx, opts, o) {
+  var needed = false;
+  var props = {}, payload = null;
+  if (opts.bookType !== "xlsx" && wb.vbaraw) {
+    var cname = wb.SheetNames[idx];
     try {
-      t.Workbook && (l = t.Workbook.Sheets[r].CodeName || l);
-    } catch {
+      if (wb.Workbook)
+        cname = wb.Workbook.Sheets[idx].CodeName || cname;
+    } catch (e) {
     }
-    i = !0, s.codeName = Rr(ge(l));
+    needed = true;
+    props.codeName = utf8write(escapexml(cname));
   }
-  if (e && e["!outline"]) {
-    var o = { summaryBelow: 1, summaryRight: 1 };
-    e["!outline"].above && (o.summaryBelow = 0), e["!outline"].left && (o.summaryRight = 0), f = (f || "") + q("outlinePr", null, o);
+  if (ws && ws["!outline"]) {
+    var outlineprops = { summaryBelow: 1, summaryRight: 1 };
+    if (ws["!outline"].above)
+      outlineprops.summaryBelow = 0;
+    if (ws["!outline"].left)
+      outlineprops.summaryRight = 0;
+    payload = (payload || "") + writextag("outlinePr", null, outlineprops);
   }
-  !i && !f || (a[a.length] = q("sheetPr", f, s));
+  if (!needed && !payload)
+    return;
+  o[o.length] = writextag("sheetPr", payload, props);
 }
-var m1 = ["objects", "scenarios", "selectLockedCells", "selectUnlockedCells"], g1 = [
+var sheetprot_deffalse = ["objects", "scenarios", "selectLockedCells", "selectUnlockedCells"];
+var sheetprot_deftrue = [
   "formatColumns",
   "formatRows",
   "formatCells",
@@ -9485,941 +13784,1689 @@ var m1 = ["objects", "scenarios", "selectLockedCells", "selectUnlockedCells"], g
   "autoFilter",
   "pivotTables"
 ];
-function _1(e) {
-  var t = { sheet: 1 };
-  return m1.forEach(function(r) {
-    e[r] != null && e[r] && (t[r] = "1");
-  }), g1.forEach(function(r) {
-    e[r] != null && !e[r] && (t[r] = "0");
-  }), e.password && (t.password = ys(e.password).toString(16).toUpperCase()), q("sheetProtection", null, t);
+function write_ws_xml_protection(sp) {
+  var o = { sheet: 1 };
+  sheetprot_deffalse.forEach(function(n) {
+    if (sp[n] != null && sp[n])
+      o[n] = "1";
+  });
+  sheetprot_deftrue.forEach(function(n) {
+    if (sp[n] != null && !sp[n])
+      o[n] = "0";
+  });
+  if (sp.password)
+    o.password = crypto_CreatePasswordVerifier_Method1(sp.password).toString(16).toUpperCase();
+  return writextag("sheetProtection", null, o);
 }
-function E1(e) {
-  return Gs(e), q("pageMargins", null, e);
+function write_ws_xml_margins(margin) {
+  default_margins(margin);
+  return writextag("pageMargins", null, margin);
 }
-function T1(e, t) {
-  for (var r = ["<cols>"], n, a = 0; a != t.length; ++a)
-    !(n = t[a]) || (r[r.length] = q("col", null, kn(a, n)));
-  return r[r.length] = "</cols>", r.join("");
-}
-function w1(e, t, r, n) {
-  var a = typeof e.ref == "string" ? e.ref : Ne(e.ref);
-  r.Workbook || (r.Workbook = { Sheets: [] }), r.Workbook.Names || (r.Workbook.Names = []);
-  var i = r.Workbook.Names, s = lr(a);
-  s.s.r == s.e.r && (s.e.r = lr(t["!ref"]).e.r, a = Ne(s));
-  for (var f = 0; f < i.length; ++f) {
-    var l = i[f];
-    if (l.Name == "_xlnm._FilterDatabase" && l.Sheet == n) {
-      l.Ref = "'" + r.SheetNames[n] + "'!" + a;
-      break;
-    }
+function write_ws_xml_cols(ws, cols) {
+  var o = ["<cols>"], col;
+  for (var i = 0; i != cols.length; ++i) {
+    if (!(col = cols[i]))
+      continue;
+    o[o.length] = writextag("col", null, col_obj_w(i, col));
   }
-  return f == i.length && i.push({ Name: "_xlnm._FilterDatabase", Sheet: n, Ref: "'" + r.SheetNames[n] + "'!" + a }), q("autoFilter", null, { ref: a });
+  o[o.length] = "</cols>";
+  return o.join("");
 }
-function S1(e, t, r, n) {
-  var a = { workbookViewId: "0" };
-  return (((n || {}).Workbook || {}).Views || [])[0] && (a.rightToLeft = n.Workbook.Views[0].RTL ? "1" : "0"), q("sheetViews", q("sheetView", null, a), {});
+function write_ws_xml_autofilter(data2, ws, wb, idx) {
+  var ref = typeof data2.ref == "string" ? data2.ref : encode_range(data2.ref);
+  if (!wb.Workbook)
+    wb.Workbook = { Sheets: [] };
+  if (!wb.Workbook.Names)
+    wb.Workbook.Names = [];
+  var names = wb.Workbook.Names;
+  var range = decode_range(ref);
+  if (range.s.r == range.e.r) {
+    range.e.r = decode_range(ws["!ref"]).e.r;
+    ref = encode_range(range);
+  }
+  for (var i = 0; i < names.length; ++i) {
+    var name = names[i];
+    if (name.Name != "_xlnm._FilterDatabase")
+      continue;
+    if (name.Sheet != idx)
+      continue;
+    name.Ref = "'" + wb.SheetNames[idx] + "'!" + ref;
+    break;
+  }
+  if (i == names.length)
+    names.push({ Name: "_xlnm._FilterDatabase", Sheet: idx, Ref: "'" + wb.SheetNames[idx] + "'!" + ref });
+  return writextag("autoFilter", null, { ref });
 }
-function A1(e, t, r, n) {
-  if (e.c && r["!comments"].push([t, e.c]), e.v === void 0 && typeof e.f != "string" || e.t === "z" && !e.f)
+function write_ws_xml_sheetviews(ws, opts, idx, wb) {
+  var sview = { workbookViewId: "0" };
+  if ((((wb || {}).Workbook || {}).Views || [])[0])
+    sview.rightToLeft = wb.Workbook.Views[0].RTL ? "1" : "0";
+  return writextag("sheetViews", writextag("sheetView", null, sview), {});
+}
+function write_ws_xml_cell(cell, ref, ws, opts) {
+  if (cell.c)
+    ws["!comments"].push([ref, cell.c]);
+  if (cell.v === void 0 && typeof cell.f !== "string" || cell.t === "z" && !cell.f)
     return "";
-  var a = "", i = e.t, s = e.v;
-  if (e.t !== "z")
-    switch (e.t) {
+  var vv = "";
+  var oldt = cell.t, oldv = cell.v;
+  if (cell.t !== "z")
+    switch (cell.t) {
       case "b":
-        a = e.v ? "1" : "0";
+        vv = cell.v ? "1" : "0";
         break;
       case "n":
-        a = "" + e.v;
+        vv = "" + cell.v;
         break;
       case "e":
-        a = $t[e.v];
+        vv = BErr[cell.v];
         break;
       case "d":
-        n && n.cellDates ? a = Ze(e.v, -1).toISOString() : (e = tr(e), e.t = "n", a = "" + (e.v = rr(Ze(e.v)))), typeof e.z > "u" && (e.z = Ce[14]);
+        if (opts && opts.cellDates)
+          vv = parseDate(cell.v, -1).toISOString();
+        else {
+          cell = dup(cell);
+          cell.t = "n";
+          vv = "" + (cell.v = datenum(parseDate(cell.v)));
+        }
+        if (typeof cell.z === "undefined")
+          cell.z = table_fmt[14];
         break;
       default:
-        a = e.v;
+        vv = cell.v;
         break;
     }
-  var f = Ve("v", ge(a)), l = { r: t }, o = Gr(n.cellXfs, e, n);
-  switch (o !== 0 && (l.s = o), e.t) {
+  var v = writetag("v", escapexml(vv)), o = { r: ref };
+  var os = get_cell_style(opts.cellXfs, cell, opts);
+  if (os !== 0)
+    o.s = os;
+  switch (cell.t) {
     case "n":
       break;
     case "d":
-      l.t = "d";
+      o.t = "d";
       break;
     case "b":
-      l.t = "b";
+      o.t = "b";
       break;
     case "e":
-      l.t = "e";
+      o.t = "e";
       break;
     case "z":
       break;
     default:
-      if (e.v == null) {
-        delete e.t;
+      if (cell.v == null) {
+        delete cell.t;
         break;
       }
-      if (e.v.length > 32767)
+      if (cell.v.length > 32767)
         throw new Error("Text length must not exceed 32767 characters");
-      if (n && n.bookSST) {
-        f = Ve("v", "" + b0(n.Strings, e.v, n.revStrings)), l.t = "s";
+      if (opts && opts.bookSST) {
+        v = writetag("v", "" + get_sst_id(opts.Strings, cell.v, opts.revStrings));
+        o.t = "s";
         break;
       }
-      l.t = "str";
+      o.t = "str";
       break;
   }
-  if (e.t != i && (e.t = i, e.v = s), typeof e.f == "string" && e.f) {
-    var c = e.F && e.F.slice(0, t.length) == t ? { t: "array", ref: e.F } : null;
-    f = q("f", ge(e.f), c) + (e.v != null ? f : "");
+  if (cell.t != oldt) {
+    cell.t = oldt;
+    cell.v = oldv;
   }
-  return e.l && r["!links"].push([t, e.l]), e.D && (l.cm = 1), q("c", f, l);
+  if (typeof cell.f == "string" && cell.f) {
+    var ff = cell.F && cell.F.slice(0, ref.length) == ref ? { t: "array", ref: cell.F } : null;
+    v = writextag("f", escapexml(cell.f), ff) + (cell.v != null ? v : "");
+  }
+  if (cell.l)
+    ws["!links"].push([ref, cell.l]);
+  if (cell.D)
+    o.cm = 1;
+  return writextag("c", v, o);
 }
-function F1(e, t, r, n) {
-  var a = [], i = [], s = we(e["!ref"]), f = "", l, o = "", c = [], p = 0, u = 0, v = e["!rows"], T = Array.isArray(e), x = { r: o }, _, O = -1;
-  for (u = s.s.c; u <= s.e.c; ++u)
-    c[u] = ze(u);
-  for (p = s.s.r; p <= s.e.r; ++p) {
-    for (i = [], o = Ge(p), u = s.s.c; u <= s.e.c; ++u) {
-      l = c[u] + o;
-      var R = T ? (e[p] || [])[u] : e[l];
-      R !== void 0 && (f = A1(R, l, e, t)) != null && i.push(f);
+function write_ws_xml_data(ws, opts, idx, wb) {
+  var o = [], r = [], range = safe_decode_range(ws["!ref"]), cell = "", ref, rr = "", cols = [], R = 0, C = 0, rows = ws["!rows"];
+  var dense = Array.isArray(ws);
+  var params = { r: rr }, row, height = -1;
+  for (C = range.s.c; C <= range.e.c; ++C)
+    cols[C] = encode_col(C);
+  for (R = range.s.r; R <= range.e.r; ++R) {
+    r = [];
+    rr = encode_row(R);
+    for (C = range.s.c; C <= range.e.c; ++C) {
+      ref = cols[C] + rr;
+      var _cell = dense ? (ws[R] || [])[C] : ws[ref];
+      if (_cell === void 0)
+        continue;
+      if ((cell = write_ws_xml_cell(_cell, ref, ws, opts)) != null)
+        r.push(cell);
     }
-    (i.length > 0 || v && v[p]) && (x = { r: o }, v && v[p] && (_ = v[p], _.hidden && (x.hidden = 1), O = -1, _.hpx ? O = _n(_.hpx) : _.hpt && (O = _.hpt), O > -1 && (x.ht = O, x.customHeight = 1), _.level && (x.outlineLevel = _.level)), a[a.length] = q("row", i.join(""), x));
-  }
-  if (v)
-    for (; p < v.length; ++p)
-      v && v[p] && (x = { r: p + 1 }, _ = v[p], _.hidden && (x.hidden = 1), O = -1, _.hpx ? O = _n(_.hpx) : _.hpt && (O = _.hpt), O > -1 && (x.ht = O, x.customHeight = 1), _.level && (x.outlineLevel = _.level), a[a.length] = q("row", "", x));
-  return a.join("");
-}
-function Xs(e, t, r, n) {
-  var a = [Ie, q("worksheet", null, {
-    xmlns: Tt[0],
-    "xmlns:r": Be.r
-  })], i = r.SheetNames[e], s = 0, f = "", l = r.Sheets[i];
-  l == null && (l = {});
-  var o = l["!ref"] || "A1", c = we(o);
-  if (c.e.c > 16383 || c.e.r > 1048575) {
-    if (t.WTF)
-      throw new Error("Range " + o + " exceeds format limit A1:XFD1048576");
-    c.e.c = Math.min(c.e.c, 16383), c.e.r = Math.min(c.e.c, 1048575), o = Ne(c);
-  }
-  n || (n = {}), l["!comments"] = [];
-  var p = [];
-  v1(l, r, e, t, a), a[a.length] = q("dimension", null, { ref: o }), a[a.length] = S1(l, t, e, r), t.sheetFormat && (a[a.length] = q("sheetFormatPr", null, {
-    defaultRowHeight: t.sheetFormat.defaultRowHeight || "16",
-    baseColWidth: t.sheetFormat.baseColWidth || "10",
-    outlineLevelRow: t.sheetFormat.outlineLevelRow || "7"
-  })), l["!cols"] != null && l["!cols"].length > 0 && (a[a.length] = T1(l, l["!cols"])), a[s = a.length] = "<sheetData/>", l["!links"] = [], l["!ref"] != null && (f = F1(l, t), f.length > 0 && (a[a.length] = f)), a.length > s + 1 && (a[a.length] = "</sheetData>", a[s] = a[s].replace("/>", ">")), l["!protect"] && (a[a.length] = _1(l["!protect"])), l["!autofilter"] != null && (a[a.length] = w1(l["!autofilter"], l, r, e)), l["!merges"] != null && l["!merges"].length > 0 && (a[a.length] = p1(l["!merges"]));
-  var u = -1, v, T = -1;
-  return l["!links"].length > 0 && (a[a.length] = "<hyperlinks>", l["!links"].forEach(function(x) {
-    !x[1].Target || (v = { ref: x[0] }, x[1].Target.charAt(0) != "#" && (T = me(n, -1, ge(x[1].Target).replace(/#.*$/, ""), xe.HLINK), v["r:id"] = "rId" + T), (u = x[1].Target.indexOf("#")) > -1 && (v.location = ge(x[1].Target.slice(u + 1))), x[1].Tooltip && (v.tooltip = ge(x[1].Tooltip)), a[a.length] = q("hyperlink", null, v));
-  }), a[a.length] = "</hyperlinks>"), delete l["!links"], l["!margins"] != null && (a[a.length] = E1(l["!margins"])), (!t || t.ignoreEC || t.ignoreEC == null) && (a[a.length] = Ve("ignoredErrors", q("ignoredError", null, { numberStoredAsText: 1, sqref: o }))), p.length > 0 && (T = me(n, -1, "../drawings/drawing" + (e + 1) + ".xml", xe.DRAW), a[a.length] = q("drawing", null, { "r:id": "rId" + T }), l["!drawing"] = p), l["!comments"].length > 0 && (T = me(n, -1, "../drawings/vmlDrawing" + (e + 1) + ".vml", xe.VML), a[a.length] = q("legacyDrawing", null, { "r:id": "rId" + T }), l["!legacy"] = T), a.length > 1 && (a[a.length] = "</worksheet>", a[1] = a[1].replace("/>", ">")), a.join("");
-}
-function y1(e, t) {
-  var r = {}, n = e.l + t;
-  r.r = e.read_shift(4), e.l += 4;
-  var a = e.read_shift(2);
-  e.l += 1;
-  var i = e.read_shift(1);
-  return e.l = n, i & 7 && (r.level = i & 7), i & 16 && (r.hidden = !0), i & 32 && (r.hpt = a / 20), r;
-}
-function C1(e, t, r) {
-  var n = U(145), a = (r["!rows"] || [])[e] || {};
-  n.write_shift(4, e), n.write_shift(4, 0);
-  var i = 320;
-  a.hpx ? i = _n(a.hpx) * 20 : a.hpt && (i = a.hpt * 20), n.write_shift(2, i), n.write_shift(1, 0);
-  var s = 0;
-  a.level && (s |= a.level), a.hidden && (s |= 16), (a.hpx || a.hpt) && (s |= 32), n.write_shift(1, s), n.write_shift(1, 0);
-  var f = 0, l = n.l;
-  n.l += 4;
-  for (var o = { r: e, c: 0 }, c = 0; c < 16; ++c)
-    if (!(t.s.c > c + 1 << 10 || t.e.c < c << 10)) {
-      for (var p = -1, u = -1, v = c << 10; v < c + 1 << 10; ++v) {
-        o.c = v;
-        var T = Array.isArray(r) ? (r[o.r] || [])[o.c] : r[_e(o)];
-        T && (p < 0 && (p = v), u = v);
+    if (r.length > 0 || rows && rows[R]) {
+      params = { r: rr };
+      if (rows && rows[R]) {
+        row = rows[R];
+        if (row.hidden)
+          params.hidden = 1;
+        height = -1;
+        if (row.hpx)
+          height = px2pt(row.hpx);
+        else if (row.hpt)
+          height = row.hpt;
+        if (height > -1) {
+          params.ht = height;
+          params.customHeight = 1;
+        }
+        if (row.level) {
+          params.outlineLevel = row.level;
+        }
       }
-      p < 0 || (++f, n.write_shift(4, p), n.write_shift(4, u));
+      o[o.length] = writextag("row", r.join(""), params);
     }
-  var x = n.l;
-  return n.l = l, n.write_shift(4, f), n.l = x, n.length > n.l ? n.slice(0, n.l) : n;
+  }
+  if (rows)
+    for (; R < rows.length; ++R) {
+      if (rows && rows[R]) {
+        params = { r: R + 1 };
+        row = rows[R];
+        if (row.hidden)
+          params.hidden = 1;
+        height = -1;
+        if (row.hpx)
+          height = px2pt(row.hpx);
+        else if (row.hpt)
+          height = row.hpt;
+        if (height > -1) {
+          params.ht = height;
+          params.customHeight = 1;
+        }
+        if (row.level) {
+          params.outlineLevel = row.level;
+        }
+        o[o.length] = writextag("row", "", params);
+      }
+    }
+  return o.join("");
 }
-function O1(e, t, r, n) {
-  var a = C1(n, r, t);
-  (a.length > 17 || (t["!rows"] || [])[n]) && V(e, 0, a);
+function write_ws_xml(idx, opts, wb, rels) {
+  var o = [XML_HEADER, writextag("worksheet", null, {
+    "xmlns": XMLNS_main[0],
+    "xmlns:r": XMLNS.r
+  })];
+  var s = wb.SheetNames[idx], sidx = 0, rdata = "";
+  var ws = wb.Sheets[s];
+  if (ws == null)
+    ws = {};
+  var ref = ws["!ref"] || "A1";
+  var range = safe_decode_range(ref);
+  if (range.e.c > 16383 || range.e.r > 1048575) {
+    if (opts.WTF)
+      throw new Error("Range " + ref + " exceeds format limit A1:XFD1048576");
+    range.e.c = Math.min(range.e.c, 16383);
+    range.e.r = Math.min(range.e.c, 1048575);
+    ref = encode_range(range);
+  }
+  if (!rels)
+    rels = {};
+  ws["!comments"] = [];
+  var _drawing = [];
+  write_ws_xml_sheetpr(ws, wb, idx, opts, o);
+  o[o.length] = writextag("dimension", null, { "ref": ref });
+  o[o.length] = write_ws_xml_sheetviews(ws, opts, idx, wb);
+  if (opts.sheetFormat)
+    o[o.length] = writextag("sheetFormatPr", null, {
+      defaultRowHeight: opts.sheetFormat.defaultRowHeight || "16",
+      baseColWidth: opts.sheetFormat.baseColWidth || "10",
+      outlineLevelRow: opts.sheetFormat.outlineLevelRow || "7"
+    });
+  if (ws["!cols"] != null && ws["!cols"].length > 0)
+    o[o.length] = write_ws_xml_cols(ws, ws["!cols"]);
+  o[sidx = o.length] = "<sheetData/>";
+  ws["!links"] = [];
+  if (ws["!ref"] != null) {
+    rdata = write_ws_xml_data(ws, opts);
+    if (rdata.length > 0)
+      o[o.length] = rdata;
+  }
+  if (o.length > sidx + 1) {
+    o[o.length] = "</sheetData>";
+    o[sidx] = o[sidx].replace("/>", ">");
+  }
+  if (ws["!protect"])
+    o[o.length] = write_ws_xml_protection(ws["!protect"]);
+  if (ws["!autofilter"] != null)
+    o[o.length] = write_ws_xml_autofilter(ws["!autofilter"], ws, wb, idx);
+  if (ws["!merges"] != null && ws["!merges"].length > 0)
+    o[o.length] = write_ws_xml_merges(ws["!merges"]);
+  var relc = -1, rel, rId = -1;
+  if (ws["!links"].length > 0) {
+    o[o.length] = "<hyperlinks>";
+    ws["!links"].forEach(function(l) {
+      if (!l[1].Target)
+        return;
+      rel = { "ref": l[0] };
+      if (l[1].Target.charAt(0) != "#") {
+        rId = add_rels(rels, -1, escapexml(l[1].Target).replace(/#.*$/, ""), RELS.HLINK);
+        rel["r:id"] = "rId" + rId;
+      }
+      if ((relc = l[1].Target.indexOf("#")) > -1)
+        rel.location = escapexml(l[1].Target.slice(relc + 1));
+      if (l[1].Tooltip)
+        rel.tooltip = escapexml(l[1].Tooltip);
+      o[o.length] = writextag("hyperlink", null, rel);
+    });
+    o[o.length] = "</hyperlinks>";
+  }
+  delete ws["!links"];
+  if (ws["!margins"] != null)
+    o[o.length] = write_ws_xml_margins(ws["!margins"]);
+  if (!opts || opts.ignoreEC || opts.ignoreEC == void 0)
+    o[o.length] = writetag("ignoredErrors", writextag("ignoredError", null, { numberStoredAsText: 1, sqref: ref }));
+  if (_drawing.length > 0) {
+    rId = add_rels(rels, -1, "../drawings/drawing" + (idx + 1) + ".xml", RELS.DRAW);
+    o[o.length] = writextag("drawing", null, { "r:id": "rId" + rId });
+    ws["!drawing"] = _drawing;
+  }
+  if (ws["!comments"].length > 0) {
+    rId = add_rels(rels, -1, "../drawings/vmlDrawing" + (idx + 1) + ".vml", RELS.VML);
+    o[o.length] = writextag("legacyDrawing", null, { "r:id": "rId" + rId });
+    ws["!legacy"] = rId;
+  }
+  if (o.length > 1) {
+    o[o.length] = "</worksheet>";
+    o[1] = o[1].replace("/>", ">");
+  }
+  return o.join("");
 }
-var R1 = at, D1 = St;
-function N1() {
+function parse_BrtRowHdr(data2, length) {
+  var z = {};
+  var tgt = data2.l + length;
+  z.r = data2.read_shift(4);
+  data2.l += 4;
+  var miyRw = data2.read_shift(2);
+  data2.l += 1;
+  var flags = data2.read_shift(1);
+  data2.l = tgt;
+  if (flags & 7)
+    z.level = flags & 7;
+  if (flags & 16)
+    z.hidden = true;
+  if (flags & 32)
+    z.hpt = miyRw / 20;
+  return z;
 }
-function I1(e, t) {
-  var r = {}, n = e[e.l];
-  return ++e.l, r.above = !(n & 64), r.left = !(n & 128), e.l += 18, r.name = Vl(e), r;
+function write_BrtRowHdr(R, range, ws) {
+  var o = new_buf(17 + 8 * 16);
+  var row = (ws["!rows"] || [])[R] || {};
+  o.write_shift(4, R);
+  o.write_shift(4, 0);
+  var miyRw = 320;
+  if (row.hpx)
+    miyRw = px2pt(row.hpx) * 20;
+  else if (row.hpt)
+    miyRw = row.hpt * 20;
+  o.write_shift(2, miyRw);
+  o.write_shift(1, 0);
+  var flags = 0;
+  if (row.level)
+    flags |= row.level;
+  if (row.hidden)
+    flags |= 16;
+  if (row.hpx || row.hpt)
+    flags |= 32;
+  o.write_shift(1, flags);
+  o.write_shift(1, 0);
+  var ncolspan = 0, lcs = o.l;
+  o.l += 4;
+  var caddr = { r: R, c: 0 };
+  for (var i = 0; i < 16; ++i) {
+    if (range.s.c > i + 1 << 10 || range.e.c < i << 10)
+      continue;
+    var first = -1, last = -1;
+    for (var j = i << 10; j < i + 1 << 10; ++j) {
+      caddr.c = j;
+      var cell = Array.isArray(ws) ? (ws[caddr.r] || [])[caddr.c] : ws[encode_cell(caddr)];
+      if (cell) {
+        if (first < 0)
+          first = j;
+        last = j;
+      }
+    }
+    if (first < 0)
+      continue;
+    ++ncolspan;
+    o.write_shift(4, first);
+    o.write_shift(4, last);
+  }
+  var l = o.l;
+  o.l = lcs;
+  o.write_shift(4, ncolspan);
+  o.l = l;
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function k1(e, t, r) {
-  r == null && (r = U(84 + 4 * e.length));
-  var n = 192;
-  t && (t.above && (n &= -65), t.left && (n &= -129)), r.write_shift(1, n);
-  for (var a = 1; a < 3; ++a)
-    r.write_shift(1, 0);
-  return pn({ auto: 1 }, r), r.write_shift(-4, -1), r.write_shift(-4, -1), is(e, r), r.slice(0, r.l);
+function write_row_header(ba, ws, range, R) {
+  var o = write_BrtRowHdr(R, range, ws);
+  if (o.length > 17 || (ws["!rows"] || [])[R])
+    write_record(ba, 0, o);
 }
-function P1(e) {
-  var t = dr(e);
-  return [t];
+var parse_BrtWsDim = parse_UncheckedRfX;
+var write_BrtWsDim = write_UncheckedRfX;
+function parse_BrtWsFmtInfo() {
 }
-function L1(e, t, r) {
-  return r == null && (r = U(8)), rt(t, r);
+function parse_BrtWsProp(data2, length) {
+  var z = {};
+  var f = data2[data2.l];
+  ++data2.l;
+  z.above = !(f & 64);
+  z.left = !(f & 128);
+  data2.l += 18;
+  z.name = parse_XLSBCodeName(data2);
+  return z;
 }
-function B1(e) {
-  var t = tt(e);
-  return [t];
+function write_BrtWsProp(str, outl, o) {
+  if (o == null)
+    o = new_buf(84 + 4 * str.length);
+  var f = 192;
+  if (outl) {
+    if (outl.above)
+      f &= ~64;
+    if (outl.left)
+      f &= ~128;
+  }
+  o.write_shift(1, f);
+  for (var i = 1; i < 3; ++i)
+    o.write_shift(1, 0);
+  write_BrtColor({ auto: 1 }, o);
+  o.write_shift(-4, -1);
+  o.write_shift(-4, -1);
+  write_XLSBCodeName(str, o);
+  return o.slice(0, o.l);
 }
-function M1(e, t, r) {
-  return r == null && (r = U(4)), nt(t, r);
+function parse_BrtCellBlank(data2) {
+  var cell = parse_XLSBCell(data2);
+  return [cell];
 }
-function U1(e) {
-  var t = dr(e), r = e.read_shift(1);
-  return [t, r, "b"];
+function write_BrtCellBlank(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(8);
+  return write_XLSBCell(ncell, o);
 }
-function b1(e, t, r) {
-  return r == null && (r = U(9)), rt(t, r), r.write_shift(1, e.v ? 1 : 0), r;
+function parse_BrtShortBlank(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  return [cell];
 }
-function W1(e) {
-  var t = tt(e), r = e.read_shift(1);
-  return [t, r, "b"];
+function write_BrtShortBlank(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(4);
+  return write_XLSBShortCell(ncell, o);
 }
-function H1(e, t, r) {
-  return r == null && (r = U(5)), nt(t, r), r.write_shift(1, e.v ? 1 : 0), r;
+function parse_BrtCellBool(data2) {
+  var cell = parse_XLSBCell(data2);
+  var fBool = data2.read_shift(1);
+  return [cell, fBool, "b"];
 }
-function V1(e) {
-  var t = dr(e), r = e.read_shift(1);
-  return [t, r, "e"];
+function write_BrtCellBool(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(9);
+  write_XLSBCell(ncell, o);
+  o.write_shift(1, cell.v ? 1 : 0);
+  return o;
 }
-function G1(e, t, r) {
-  return r == null && (r = U(9)), rt(t, r), r.write_shift(1, e.v), r;
+function parse_BrtShortBool(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  var fBool = data2.read_shift(1);
+  return [cell, fBool, "b"];
 }
-function X1(e) {
-  var t = tt(e), r = e.read_shift(1);
-  return [t, r, "e"];
+function write_BrtShortBool(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(5);
+  write_XLSBShortCell(ncell, o);
+  o.write_shift(1, cell.v ? 1 : 0);
+  return o;
 }
-function $1(e, t, r) {
-  return r == null && (r = U(8)), nt(t, r), r.write_shift(1, e.v), r.write_shift(2, 0), r.write_shift(1, 0), r;
+function parse_BrtCellError(data2) {
+  var cell = parse_XLSBCell(data2);
+  var bError = data2.read_shift(1);
+  return [cell, bError, "e"];
 }
-function j1(e) {
-  var t = dr(e), r = e.read_shift(4);
-  return [t, r, "s"];
+function write_BrtCellError(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(9);
+  write_XLSBCell(ncell, o);
+  o.write_shift(1, cell.v);
+  return o;
 }
-function z1(e, t, r) {
-  return r == null && (r = U(12)), rt(t, r), r.write_shift(4, t.v), r;
+function parse_BrtShortError(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  var bError = data2.read_shift(1);
+  return [cell, bError, "e"];
 }
-function K1(e) {
-  var t = tt(e), r = e.read_shift(4);
-  return [t, r, "s"];
+function write_BrtShortError(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(8);
+  write_XLSBShortCell(ncell, o);
+  o.write_shift(1, cell.v);
+  o.write_shift(2, 0);
+  o.write_shift(1, 0);
+  return o;
 }
-function Y1(e, t, r) {
-  return r == null && (r = U(8)), nt(t, r), r.write_shift(4, t.v), r;
+function parse_BrtCellIsst(data2) {
+  var cell = parse_XLSBCell(data2);
+  var isst = data2.read_shift(4);
+  return [cell, isst, "s"];
 }
-function q1(e) {
-  var t = dr(e), r = At(e);
-  return [t, r, "n"];
+function write_BrtCellIsst(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(12);
+  write_XLSBCell(ncell, o);
+  o.write_shift(4, ncell.v);
+  return o;
 }
-function J1(e, t, r) {
-  return r == null && (r = U(16)), rt(t, r), Jr(e.v, r), r;
+function parse_BrtShortIsst(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  var isst = data2.read_shift(4);
+  return [cell, isst, "s"];
 }
-function Z1(e) {
-  var t = tt(e), r = At(e);
-  return [t, r, "n"];
+function write_BrtShortIsst(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(8);
+  write_XLSBShortCell(ncell, o);
+  o.write_shift(4, ncell.v);
+  return o;
 }
-function Q1(e, t, r) {
-  return r == null && (r = U(12)), nt(t, r), Jr(e.v, r), r;
+function parse_BrtCellReal(data2) {
+  var cell = parse_XLSBCell(data2);
+  var value = parse_Xnum(data2);
+  return [cell, value, "n"];
 }
-function ex(e) {
-  var t = dr(e), r = ss(e);
-  return [t, r, "n"];
+function write_BrtCellReal(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(16);
+  write_XLSBCell(ncell, o);
+  write_Xnum(cell.v, o);
+  return o;
 }
-function rx(e, t, r) {
-  return r == null && (r = U(12)), rt(t, r), fs(e.v, r), r;
+function parse_BrtShortReal(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  var value = parse_Xnum(data2);
+  return [cell, value, "n"];
 }
-function tx(e) {
-  var t = tt(e), r = ss(e);
-  return [t, r, "n"];
+function write_BrtShortReal(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(12);
+  write_XLSBShortCell(ncell, o);
+  write_Xnum(cell.v, o);
+  return o;
 }
-function nx(e, t, r) {
-  return r == null && (r = U(8)), nt(t, r), fs(e.v, r), r;
+function parse_BrtCellRk(data2) {
+  var cell = parse_XLSBCell(data2);
+  var value = parse_RkNumber(data2);
+  return [cell, value, "n"];
 }
-function ax(e) {
-  var t = dr(e), r = N0(e);
-  return [t, r, "is"];
+function write_BrtCellRk(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(12);
+  write_XLSBCell(ncell, o);
+  write_RkNumber(cell.v, o);
+  return o;
 }
-function ix(e) {
-  var t = dr(e), r = Ke(e);
-  return [t, r, "str"];
+function parse_BrtShortRk(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  var value = parse_RkNumber(data2);
+  return [cell, value, "n"];
 }
-function sx(e, t, r) {
-  return r == null && (r = U(12 + 4 * e.v.length)), rt(t, r), Ue(e.v, r), r.length > r.l ? r.slice(0, r.l) : r;
+function write_BrtShortRk(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(8);
+  write_XLSBShortCell(ncell, o);
+  write_RkNumber(cell.v, o);
+  return o;
 }
-function fx(e) {
-  var t = tt(e), r = Ke(e);
-  return [t, r, "str"];
+function parse_BrtCellRString(data2) {
+  var cell = parse_XLSBCell(data2);
+  var value = parse_RichStr(data2);
+  return [cell, value, "is"];
 }
-function ox(e, t, r) {
-  return r == null && (r = U(8 + 4 * e.v.length)), nt(t, r), Ue(e.v, r), r.length > r.l ? r.slice(0, r.l) : r;
+function parse_BrtCellSt(data2) {
+  var cell = parse_XLSBCell(data2);
+  var value = parse_XLWideString(data2);
+  return [cell, value, "str"];
 }
-function lx(e, t, r) {
-  var n = e.l + t, a = dr(e);
-  a.r = r["!row"];
-  var i = e.read_shift(1), s = [a, i, "b"];
-  if (r.cellFormula) {
-    e.l += 2;
-    var f = In(e, n - e.l, r);
-    s[3] = _t(f, null, a, r.supbooks, r);
+function write_BrtCellSt(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(12 + 4 * cell.v.length);
+  write_XLSBCell(ncell, o);
+  write_XLWideString(cell.v, o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
+}
+function parse_BrtShortSt(data2) {
+  var cell = parse_XLSBShortCell(data2);
+  var value = parse_XLWideString(data2);
+  return [cell, value, "str"];
+}
+function write_BrtShortSt(cell, ncell, o) {
+  if (o == null)
+    o = new_buf(8 + 4 * cell.v.length);
+  write_XLSBShortCell(ncell, o);
+  write_XLWideString(cell.v, o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
+}
+function parse_BrtFmlaBool(data2, length, opts) {
+  var end = data2.l + length;
+  var cell = parse_XLSBCell(data2);
+  cell.r = opts["!row"];
+  var value = data2.read_shift(1);
+  var o = [cell, value, "b"];
+  if (opts.cellFormula) {
+    data2.l += 2;
+    var formula = parse_XLSBCellParsedFormula(data2, end - data2.l, opts);
+    o[3] = stringify_formula(formula, null, cell, opts.supbooks, opts);
   } else
-    e.l = n;
-  return s;
+    data2.l = end;
+  return o;
 }
-function cx(e, t, r) {
-  var n = e.l + t, a = dr(e);
-  a.r = r["!row"];
-  var i = e.read_shift(1), s = [a, i, "e"];
-  if (r.cellFormula) {
-    e.l += 2;
-    var f = In(e, n - e.l, r);
-    s[3] = _t(f, null, a, r.supbooks, r);
+function parse_BrtFmlaError(data2, length, opts) {
+  var end = data2.l + length;
+  var cell = parse_XLSBCell(data2);
+  cell.r = opts["!row"];
+  var value = data2.read_shift(1);
+  var o = [cell, value, "e"];
+  if (opts.cellFormula) {
+    data2.l += 2;
+    var formula = parse_XLSBCellParsedFormula(data2, end - data2.l, opts);
+    o[3] = stringify_formula(formula, null, cell, opts.supbooks, opts);
   } else
-    e.l = n;
-  return s;
+    data2.l = end;
+  return o;
 }
-function hx(e, t, r) {
-  var n = e.l + t, a = dr(e);
-  a.r = r["!row"];
-  var i = At(e), s = [a, i, "n"];
-  if (r.cellFormula) {
-    e.l += 2;
-    var f = In(e, n - e.l, r);
-    s[3] = _t(f, null, a, r.supbooks, r);
+function parse_BrtFmlaNum(data2, length, opts) {
+  var end = data2.l + length;
+  var cell = parse_XLSBCell(data2);
+  cell.r = opts["!row"];
+  var value = parse_Xnum(data2);
+  var o = [cell, value, "n"];
+  if (opts.cellFormula) {
+    data2.l += 2;
+    var formula = parse_XLSBCellParsedFormula(data2, end - data2.l, opts);
+    o[3] = stringify_formula(formula, null, cell, opts.supbooks, opts);
   } else
-    e.l = n;
-  return s;
+    data2.l = end;
+  return o;
 }
-function ux(e, t, r) {
-  var n = e.l + t, a = dr(e);
-  a.r = r["!row"];
-  var i = Ke(e), s = [a, i, "str"];
-  if (r.cellFormula) {
-    e.l += 2;
-    var f = In(e, n - e.l, r);
-    s[3] = _t(f, null, a, r.supbooks, r);
+function parse_BrtFmlaString(data2, length, opts) {
+  var end = data2.l + length;
+  var cell = parse_XLSBCell(data2);
+  cell.r = opts["!row"];
+  var value = parse_XLWideString(data2);
+  var o = [cell, value, "str"];
+  if (opts.cellFormula) {
+    data2.l += 2;
+    var formula = parse_XLSBCellParsedFormula(data2, end - data2.l, opts);
+    o[3] = stringify_formula(formula, null, cell, opts.supbooks, opts);
   } else
-    e.l = n;
-  return s;
+    data2.l = end;
+  return o;
 }
-var xx = at, dx = St;
-function px(e, t) {
-  return t == null && (t = U(4)), t.write_shift(4, e), t;
+var parse_BrtMergeCell = parse_UncheckedRfX;
+var write_BrtMergeCell = write_UncheckedRfX;
+function write_BrtBeginMergeCells(cnt, o) {
+  if (o == null)
+    o = new_buf(4);
+  o.write_shift(4, cnt);
+  return o;
 }
-function vx(e, t) {
-  var r = e.l + t, n = at(e), a = I0(e), i = Ke(e), s = Ke(e), f = Ke(e);
-  e.l = r;
-  var l = { rfx: n, relId: a, loc: i, display: f };
-  return s && (l.Tooltip = s), l;
+function parse_BrtHLink(data2, length) {
+  var end = data2.l + length;
+  var rfx = parse_UncheckedRfX(data2);
+  var relId = parse_XLNullableWideString(data2);
+  var loc = parse_XLWideString(data2);
+  var tooltip = parse_XLWideString(data2);
+  var display = parse_XLWideString(data2);
+  data2.l = end;
+  var o = { rfx, relId, loc, display };
+  if (tooltip)
+    o.Tooltip = tooltip;
+  return o;
 }
-function mx(e, t) {
-  var r = U(50 + 4 * (e[1].Target.length + (e[1].Tooltip || "").length));
-  St({ s: Me(e[0]), e: Me(e[0]) }, r), k0("rId" + t, r);
-  var n = e[1].Target.indexOf("#"), a = n == -1 ? "" : e[1].Target.slice(n + 1);
-  return Ue(a || "", r), Ue(e[1].Tooltip || "", r), Ue("", r), r.slice(0, r.l);
+function write_BrtHLink(l, rId) {
+  var o = new_buf(50 + 4 * (l[1].Target.length + (l[1].Tooltip || "").length));
+  write_UncheckedRfX({ s: decode_cell(l[0]), e: decode_cell(l[0]) }, o);
+  write_RelID("rId" + rId, o);
+  var locidx = l[1].Target.indexOf("#");
+  var loc = locidx == -1 ? "" : l[1].Target.slice(locidx + 1);
+  write_XLWideString(loc || "", o);
+  write_XLWideString(l[1].Tooltip || "", o);
+  write_XLWideString("", o);
+  return o.slice(0, o.l);
 }
-function gx() {
+function parse_BrtPane() {
 }
-function _x(e, t, r) {
-  var n = e.l + t, a = os(e), i = e.read_shift(1), s = [a];
-  if (s[2] = i, r.cellFormula) {
-    var f = f1(e, n - e.l, r);
-    s[1] = f;
+function parse_BrtArrFmla(data2, length, opts) {
+  var end = data2.l + length;
+  var rfx = parse_RfX(data2);
+  var fAlwaysCalc = data2.read_shift(1);
+  var o = [rfx];
+  o[2] = fAlwaysCalc;
+  if (opts.cellFormula) {
+    var formula = parse_XLSBArrayParsedFormula(data2, end - data2.l, opts);
+    o[1] = formula;
   } else
-    e.l = n;
-  return s;
+    data2.l = end;
+  return o;
 }
-function Ex(e, t, r) {
-  var n = e.l + t, a = at(e), i = [a];
-  if (r.cellFormula) {
-    var s = l1(e, n - e.l, r);
-    i[1] = s, e.l = n;
+function parse_BrtShrFmla(data2, length, opts) {
+  var end = data2.l + length;
+  var rfx = parse_UncheckedRfX(data2);
+  var o = [rfx];
+  if (opts.cellFormula) {
+    var formula = parse_XLSBSharedParsedFormula(data2, end - data2.l, opts);
+    o[1] = formula;
+    data2.l = end;
   } else
-    e.l = n;
-  return i;
+    data2.l = end;
+  return o;
 }
-function Tx(e, t, r) {
-  r == null && (r = U(18));
-  var n = kn(e, t);
-  r.write_shift(-4, e), r.write_shift(-4, e), r.write_shift(4, (n.width || 10) * 256), r.write_shift(4, 0);
-  var a = 0;
-  return t.hidden && (a |= 1), typeof n.width == "number" && (a |= 2), t.level && (a |= t.level << 8), r.write_shift(2, a), r;
+function write_BrtColInfo(C, col, o) {
+  if (o == null)
+    o = new_buf(18);
+  var p = col_obj_w(C, col);
+  o.write_shift(-4, C);
+  o.write_shift(-4, C);
+  o.write_shift(4, (p.width || 10) * 256);
+  o.write_shift(4, 0);
+  var flags = 0;
+  if (col.hidden)
+    flags |= 1;
+  if (typeof p.width == "number")
+    flags |= 2;
+  if (col.level)
+    flags |= col.level << 8;
+  o.write_shift(2, flags);
+  return o;
 }
-var $s = ["left", "right", "top", "bottom", "header", "footer"];
-function wx(e) {
-  var t = {};
-  return $s.forEach(function(r) {
-    t[r] = At(e);
-  }), t;
+var BrtMarginKeys = ["left", "right", "top", "bottom", "header", "footer"];
+function parse_BrtMargins(data2) {
+  var margins = {};
+  BrtMarginKeys.forEach(function(k) {
+    margins[k] = parse_Xnum(data2);
+  });
+  return margins;
 }
-function Sx(e, t) {
-  return t == null && (t = U(6 * 8)), Gs(e), $s.forEach(function(r) {
-    Jr(e[r], t);
-  }), t;
+function write_BrtMargins(margins, o) {
+  if (o == null)
+    o = new_buf(6 * 8);
+  default_margins(margins);
+  BrtMarginKeys.forEach(function(k) {
+    write_Xnum(margins[k], o);
+  });
+  return o;
 }
-function Ax(e) {
-  var t = e.read_shift(2);
-  return e.l += 28, { RTL: t & 32 };
+function parse_BrtBeginWsView(data2) {
+  var f = data2.read_shift(2);
+  data2.l += 28;
+  return { RTL: f & 32 };
 }
-function Fx(e, t, r) {
-  r == null && (r = U(30));
-  var n = 924;
-  return (((t || {}).Views || [])[0] || {}).RTL && (n |= 32), r.write_shift(2, n), r.write_shift(4, 0), r.write_shift(4, 0), r.write_shift(4, 0), r.write_shift(1, 0), r.write_shift(1, 0), r.write_shift(2, 0), r.write_shift(2, 100), r.write_shift(2, 0), r.write_shift(2, 0), r.write_shift(2, 0), r.write_shift(4, 0), r;
+function write_BrtBeginWsView(ws, Workbook, o) {
+  if (o == null)
+    o = new_buf(30);
+  var f = 924;
+  if ((((Workbook || {}).Views || [])[0] || {}).RTL)
+    f |= 32;
+  o.write_shift(2, f);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  o.write_shift(1, 0);
+  o.write_shift(1, 0);
+  o.write_shift(2, 0);
+  o.write_shift(2, 100);
+  o.write_shift(2, 0);
+  o.write_shift(2, 0);
+  o.write_shift(2, 0);
+  o.write_shift(4, 0);
+  return o;
 }
-function yx(e) {
-  var t = U(24);
-  return t.write_shift(4, 4), t.write_shift(4, 1), St(e, t), t;
+function write_BrtCellIgnoreEC(ref) {
+  var o = new_buf(24);
+  o.write_shift(4, 4);
+  o.write_shift(4, 1);
+  write_UncheckedRfX(ref, o);
+  return o;
 }
-function Cx(e, t) {
-  return t == null && (t = U(16 * 4 + 2)), t.write_shift(2, e.password ? ys(e.password) : 0), t.write_shift(4, 1), [
-    ["objects", !1],
-    ["scenarios", !1],
-    ["formatCells", !0],
-    ["formatColumns", !0],
-    ["formatRows", !0],
-    ["insertColumns", !0],
-    ["insertRows", !0],
-    ["insertHyperlinks", !0],
-    ["deleteColumns", !0],
-    ["deleteRows", !0],
-    ["selectLockedCells", !1],
-    ["sort", !0],
-    ["autoFilter", !0],
-    ["pivotTables", !0],
-    ["selectUnlockedCells", !1]
-  ].forEach(function(r) {
-    r[1] ? t.write_shift(4, e[r[0]] != null && !e[r[0]] ? 1 : 0) : t.write_shift(4, e[r[0]] != null && e[r[0]] ? 0 : 1);
-  }), t;
+function write_BrtSheetProtection(sp, o) {
+  if (o == null)
+    o = new_buf(16 * 4 + 2);
+  o.write_shift(2, sp.password ? crypto_CreatePasswordVerifier_Method1(sp.password) : 0);
+  o.write_shift(4, 1);
+  [
+    ["objects", false],
+    ["scenarios", false],
+    ["formatCells", true],
+    ["formatColumns", true],
+    ["formatRows", true],
+    ["insertColumns", true],
+    ["insertRows", true],
+    ["insertHyperlinks", true],
+    ["deleteColumns", true],
+    ["deleteRows", true],
+    ["selectLockedCells", false],
+    ["sort", true],
+    ["autoFilter", true],
+    ["pivotTables", true],
+    ["selectUnlockedCells", false]
+  ].forEach(function(n) {
+    if (n[1])
+      o.write_shift(4, sp[n[0]] != null && !sp[n[0]] ? 1 : 0);
+    else
+      o.write_shift(4, sp[n[0]] != null && sp[n[0]] ? 0 : 1);
+  });
+  return o;
 }
-function Ox() {
+function parse_BrtDVal() {
 }
-function Rx() {
+function parse_BrtDVal14() {
 }
-function Dx(e, t, r, n, a, i, s) {
-  if (t.v === void 0)
-    return !1;
-  var f = "";
-  switch (t.t) {
+function write_ws_bin_cell(ba, cell, R, C, opts, ws, last_seen) {
+  if (cell.v === void 0)
+    return false;
+  var vv = "";
+  switch (cell.t) {
     case "b":
-      f = t.v ? "1" : "0";
+      vv = cell.v ? "1" : "0";
       break;
     case "d":
-      t = tr(t), t.z = t.z || Ce[14], t.v = rr(Ze(t.v)), t.t = "n";
+      cell = dup(cell);
+      cell.z = cell.z || table_fmt[14];
+      cell.v = datenum(parseDate(cell.v));
+      cell.t = "n";
       break;
     case "n":
     case "e":
-      f = "" + t.v;
+      vv = "" + cell.v;
       break;
     default:
-      f = t.v;
+      vv = cell.v;
       break;
   }
-  var l = { r, c: n };
-  switch (l.s = Gr(a.cellXfs, t, a), t.l && i["!links"].push([_e(l), t.l]), t.c && i["!comments"].push([_e(l), t.c]), t.t) {
+  var o = { r: R, c: C };
+  o.s = get_cell_style(opts.cellXfs, cell, opts);
+  if (cell.l)
+    ws["!links"].push([encode_cell(o), cell.l]);
+  if (cell.c)
+    ws["!comments"].push([encode_cell(o), cell.c]);
+  switch (cell.t) {
     case "s":
     case "str":
-      return a.bookSST ? (f = b0(a.Strings, t.v, a.revStrings), l.t = "s", l.v = f, s ? V(e, 18, Y1(t, l)) : V(e, 7, z1(t, l))) : (l.t = "str", s ? V(e, 17, ox(t, l)) : V(e, 6, sx(t, l))), !0;
+      if (opts.bookSST) {
+        vv = get_sst_id(opts.Strings, cell.v, opts.revStrings);
+        o.t = "s";
+        o.v = vv;
+        if (last_seen)
+          write_record(ba, 18, write_BrtShortIsst(cell, o));
+        else
+          write_record(ba, 7, write_BrtCellIsst(cell, o));
+      } else {
+        o.t = "str";
+        if (last_seen)
+          write_record(ba, 17, write_BrtShortSt(cell, o));
+        else
+          write_record(ba, 6, write_BrtCellSt(cell, o));
+      }
+      return true;
     case "n":
-      return t.v == (t.v | 0) && t.v > -1e3 && t.v < 1e3 ? s ? V(e, 13, nx(t, l)) : V(e, 2, rx(t, l)) : s ? V(e, 16, Q1(t, l)) : V(e, 5, J1(t, l)), !0;
+      if (cell.v == (cell.v | 0) && cell.v > -1e3 && cell.v < 1e3) {
+        if (last_seen)
+          write_record(ba, 13, write_BrtShortRk(cell, o));
+        else
+          write_record(ba, 2, write_BrtCellRk(cell, o));
+      } else {
+        if (last_seen)
+          write_record(ba, 16, write_BrtShortReal(cell, o));
+        else
+          write_record(ba, 5, write_BrtCellReal(cell, o));
+      }
+      return true;
     case "b":
-      return l.t = "b", s ? V(e, 15, H1(t, l)) : V(e, 4, b1(t, l)), !0;
+      o.t = "b";
+      if (last_seen)
+        write_record(ba, 15, write_BrtShortBool(cell, o));
+      else
+        write_record(ba, 4, write_BrtCellBool(cell, o));
+      return true;
     case "e":
-      return l.t = "e", s ? V(e, 14, $1(t, l)) : V(e, 3, G1(t, l)), !0;
+      o.t = "e";
+      if (last_seen)
+        write_record(ba, 14, write_BrtShortError(cell, o));
+      else
+        write_record(ba, 3, write_BrtCellError(cell, o));
+      return true;
   }
-  return s ? V(e, 12, M1(t, l)) : V(e, 1, L1(t, l)), !0;
+  if (last_seen)
+    write_record(ba, 12, write_BrtShortBlank(cell, o));
+  else
+    write_record(ba, 1, write_BrtCellBlank(cell, o));
+  return true;
 }
-function Nx(e, t, r, n) {
-  var a = we(t["!ref"] || "A1"), i, s = "", f = [];
-  V(e, 145);
-  var l = Array.isArray(t), o = a.e.r;
-  t["!rows"] && (o = Math.max(a.e.r, t["!rows"].length - 1));
-  for (var c = a.s.r; c <= o; ++c) {
-    s = Ge(c), O1(e, t, a, c);
-    var p = !1;
-    if (c <= a.e.r)
-      for (var u = a.s.c; u <= a.e.c; ++u) {
-        c === a.s.r && (f[u] = ze(u)), i = f[u] + s;
-        var v = l ? (t[c] || [])[u] : t[i];
-        if (!v) {
-          p = !1;
+function write_CELLTABLE(ba, ws, idx, opts) {
+  var range = safe_decode_range(ws["!ref"] || "A1"), ref, rr = "", cols = [];
+  write_record(ba, 145);
+  var dense = Array.isArray(ws);
+  var cap = range.e.r;
+  if (ws["!rows"])
+    cap = Math.max(range.e.r, ws["!rows"].length - 1);
+  for (var R = range.s.r; R <= cap; ++R) {
+    rr = encode_row(R);
+    write_row_header(ba, ws, range, R);
+    var last_seen = false;
+    if (R <= range.e.r)
+      for (var C = range.s.c; C <= range.e.c; ++C) {
+        if (R === range.s.r)
+          cols[C] = encode_col(C);
+        ref = cols[C] + rr;
+        var cell = dense ? (ws[R] || [])[C] : ws[ref];
+        if (!cell) {
+          last_seen = false;
           continue;
         }
-        p = Dx(e, v, c, u, n, t, p);
+        last_seen = write_ws_bin_cell(ba, cell, R, C, opts, ws, last_seen);
       }
   }
-  V(e, 146);
+  write_record(ba, 146);
 }
-function Ix(e, t) {
-  !t || !t["!merges"] || (V(e, 177, px(t["!merges"].length)), t["!merges"].forEach(function(r) {
-    V(e, 176, dx(r));
-  }), V(e, 178));
+function write_MERGECELLS(ba, ws) {
+  if (!ws || !ws["!merges"])
+    return;
+  write_record(ba, 177, write_BrtBeginMergeCells(ws["!merges"].length));
+  ws["!merges"].forEach(function(m) {
+    write_record(ba, 176, write_BrtMergeCell(m));
+  });
+  write_record(ba, 178);
 }
-function kx(e, t) {
-  !t || !t["!cols"] || (V(e, 390), t["!cols"].forEach(function(r, n) {
-    r && V(e, 60, Tx(n, r));
-  }), V(e, 391));
+function write_COLINFOS(ba, ws) {
+  if (!ws || !ws["!cols"])
+    return;
+  write_record(ba, 390);
+  ws["!cols"].forEach(function(m, i) {
+    if (m)
+      write_record(ba, 60, write_BrtColInfo(i, m));
+  });
+  write_record(ba, 391);
 }
-function Px(e, t) {
-  !t || !t["!ref"] || (V(e, 648), V(e, 649, yx(we(t["!ref"]))), V(e, 650));
+function write_IGNOREECS(ba, ws) {
+  if (!ws || !ws["!ref"])
+    return;
+  write_record(ba, 648);
+  write_record(ba, 649, write_BrtCellIgnoreEC(safe_decode_range(ws["!ref"])));
+  write_record(ba, 650);
 }
-function Lx(e, t, r) {
-  t["!links"].forEach(function(n) {
-    if (!!n[1].Target) {
-      var a = me(r, -1, n[1].Target.replace(/#.*$/, ""), xe.HLINK);
-      V(e, 494, mx(n, a));
-    }
-  }), delete t["!links"];
+function write_HLINKS(ba, ws, rels) {
+  ws["!links"].forEach(function(l) {
+    if (!l[1].Target)
+      return;
+    var rId = add_rels(rels, -1, l[1].Target.replace(/#.*$/, ""), RELS.HLINK);
+    write_record(ba, 494, write_BrtHLink(l, rId));
+  });
+  delete ws["!links"];
 }
-function Bx(e, t, r, n) {
-  if (t["!comments"].length > 0) {
-    var a = me(n, -1, "../drawings/vmlDrawing" + (r + 1) + ".vml", xe.VML);
-    V(e, 551, k0("rId" + a)), t["!legacy"] = a;
+function write_LEGACYDRAWING(ba, ws, idx, rels) {
+  if (ws["!comments"].length > 0) {
+    var rId = add_rels(rels, -1, "../drawings/vmlDrawing" + (idx + 1) + ".vml", RELS.VML);
+    write_record(ba, 551, write_RelID("rId" + rId));
+    ws["!legacy"] = rId;
   }
 }
-function Mx(e, t, r, n) {
-  if (!!t["!autofilter"]) {
-    var a = t["!autofilter"], i = typeof a.ref == "string" ? a.ref : Ne(a.ref);
-    r.Workbook || (r.Workbook = { Sheets: [] }), r.Workbook.Names || (r.Workbook.Names = []);
-    var s = r.Workbook.Names, f = lr(i);
-    f.s.r == f.e.r && (f.e.r = lr(t["!ref"]).e.r, i = Ne(f));
-    for (var l = 0; l < s.length; ++l) {
-      var o = s[l];
-      if (o.Name == "_xlnm._FilterDatabase" && o.Sheet == n) {
-        o.Ref = "'" + r.SheetNames[n] + "'!" + i;
-        break;
-      }
-    }
-    l == s.length && s.push({ Name: "_xlnm._FilterDatabase", Sheet: n, Ref: "'" + r.SheetNames[n] + "'!" + i }), V(e, 161, St(we(i))), V(e, 162);
+function write_AUTOFILTER(ba, ws, wb, idx) {
+  if (!ws["!autofilter"])
+    return;
+  var data2 = ws["!autofilter"];
+  var ref = typeof data2.ref === "string" ? data2.ref : encode_range(data2.ref);
+  if (!wb.Workbook)
+    wb.Workbook = { Sheets: [] };
+  if (!wb.Workbook.Names)
+    wb.Workbook.Names = [];
+  var names = wb.Workbook.Names;
+  var range = decode_range(ref);
+  if (range.s.r == range.e.r) {
+    range.e.r = decode_range(ws["!ref"]).e.r;
+    ref = encode_range(range);
   }
+  for (var i = 0; i < names.length; ++i) {
+    var name = names[i];
+    if (name.Name != "_xlnm._FilterDatabase")
+      continue;
+    if (name.Sheet != idx)
+      continue;
+    name.Ref = "'" + wb.SheetNames[idx] + "'!" + ref;
+    break;
+  }
+  if (i == names.length)
+    names.push({ Name: "_xlnm._FilterDatabase", Sheet: idx, Ref: "'" + wb.SheetNames[idx] + "'!" + ref });
+  write_record(ba, 161, write_UncheckedRfX(safe_decode_range(ref)));
+  write_record(ba, 162);
 }
-function Ux(e, t, r) {
-  V(e, 133), V(e, 137, Fx(t, r)), V(e, 138), V(e, 134);
+function write_WSVIEWS2(ba, ws, Workbook) {
+  write_record(ba, 133);
+  {
+    write_record(ba, 137, write_BrtBeginWsView(ws, Workbook));
+    write_record(ba, 138);
+  }
+  write_record(ba, 134);
 }
-function bx(e, t) {
-  !t["!protect"] || V(e, 535, Cx(t["!protect"]));
+function write_SHEETPROTECT(ba, ws) {
+  if (!ws["!protect"])
+    return;
+  write_record(ba, 535, write_BrtSheetProtection(ws["!protect"]));
 }
-function Wx(e, t, r, n) {
-  var a = Qe(), i = r.SheetNames[e], s = r.Sheets[i] || {}, f = i;
+function write_ws_bin(idx, opts, wb, rels) {
+  var ba = buf_array();
+  var s = wb.SheetNames[idx], ws = wb.Sheets[s] || {};
+  var c = s;
   try {
-    r && r.Workbook && (f = r.Workbook.Sheets[e].CodeName || f);
-  } catch {
+    if (wb && wb.Workbook)
+      c = wb.Workbook.Sheets[idx].CodeName || c;
+  } catch (e) {
   }
-  var l = we(s["!ref"] || "A1");
-  if (l.e.c > 16383 || l.e.r > 1048575) {
-    if (t.WTF)
-      throw new Error("Range " + (s["!ref"] || "A1") + " exceeds format limit A1:XFD1048576");
-    l.e.c = Math.min(l.e.c, 16383), l.e.r = Math.min(l.e.c, 1048575);
+  var r = safe_decode_range(ws["!ref"] || "A1");
+  if (r.e.c > 16383 || r.e.r > 1048575) {
+    if (opts.WTF)
+      throw new Error("Range " + (ws["!ref"] || "A1") + " exceeds format limit A1:XFD1048576");
+    r.e.c = Math.min(r.e.c, 16383);
+    r.e.r = Math.min(r.e.c, 1048575);
   }
-  return s["!links"] = [], s["!comments"] = [], V(a, 129), (r.vbaraw || s["!outline"]) && V(a, 147, k1(f, s["!outline"])), V(a, 148, D1(l)), Ux(a, s, r.Workbook), kx(a, s), Nx(a, s, e, t), bx(a, s), Mx(a, s, r, e), Ix(a, s), Lx(a, s, n), s["!margins"] && V(a, 476, Sx(s["!margins"])), (!t || t.ignoreEC || t.ignoreEC == null) && Px(a, s), Bx(a, s, e, n), V(a, 130), a.end();
+  ws["!links"] = [];
+  ws["!comments"] = [];
+  write_record(ba, 129);
+  if (wb.vbaraw || ws["!outline"])
+    write_record(ba, 147, write_BrtWsProp(c, ws["!outline"]));
+  write_record(ba, 148, write_BrtWsDim(r));
+  write_WSVIEWS2(ba, ws, wb.Workbook);
+  write_COLINFOS(ba, ws);
+  write_CELLTABLE(ba, ws, idx, opts);
+  write_SHEETPROTECT(ba, ws);
+  write_AUTOFILTER(ba, ws, wb, idx);
+  write_MERGECELLS(ba, ws);
+  write_HLINKS(ba, ws, rels);
+  if (ws["!margins"])
+    write_record(ba, 476, write_BrtMargins(ws["!margins"]));
+  if (!opts || opts.ignoreEC || opts.ignoreEC == void 0)
+    write_IGNOREECS(ba, ws);
+  write_LEGACYDRAWING(ba, ws, idx, rels);
+  write_record(ba, 130);
+  return ba.end();
 }
-function Hx(e, t) {
-  e.l += 10;
-  var r = Ke(e);
-  return { name: r };
+function parse_BrtCsProp(data2, length) {
+  data2.l += 10;
+  var name = parse_XLWideString(data2);
+  return { name };
 }
-var Vx = [
-  ["allowRefreshQuery", !1, "bool"],
-  ["autoCompressPictures", !0, "bool"],
-  ["backupFile", !1, "bool"],
-  ["checkCompatibility", !1, "bool"],
+var WBPropsDef = [
+  ["allowRefreshQuery", false, "bool"],
+  ["autoCompressPictures", true, "bool"],
+  ["backupFile", false, "bool"],
+  ["checkCompatibility", false, "bool"],
   ["CodeName", ""],
-  ["date1904", !1, "bool"],
+  ["date1904", false, "bool"],
   ["defaultThemeVersion", 0, "int"],
-  ["filterPrivacy", !1, "bool"],
-  ["hidePivotFieldList", !1, "bool"],
-  ["promptedSolutions", !1, "bool"],
-  ["publishItems", !1, "bool"],
-  ["refreshAllConnections", !1, "bool"],
-  ["saveExternalLinkValues", !0, "bool"],
-  ["showBorderUnselectedTables", !0, "bool"],
-  ["showInkAnnotation", !0, "bool"],
+  ["filterPrivacy", false, "bool"],
+  ["hidePivotFieldList", false, "bool"],
+  ["promptedSolutions", false, "bool"],
+  ["publishItems", false, "bool"],
+  ["refreshAllConnections", false, "bool"],
+  ["saveExternalLinkValues", true, "bool"],
+  ["showBorderUnselectedTables", true, "bool"],
+  ["showInkAnnotation", true, "bool"],
   ["showObjects", "all"],
-  ["showPivotChartFilter", !1, "bool"],
+  ["showPivotChartFilter", false, "bool"],
   ["updateLinks", "userSet"]
 ];
-function Gx(e) {
-  return !e.Workbook || !e.Workbook.WBProps ? "false" : El(e.Workbook.WBProps.date1904) ? "true" : "false";
+function safe1904(wb) {
+  if (!wb.Workbook)
+    return "false";
+  if (!wb.Workbook.WBProps)
+    return "false";
+  return parsexmlbool(wb.Workbook.WBProps.date1904) ? "true" : "false";
 }
-var Xx = /* @__PURE__ */ "][*?/\\".split("");
-function js(e, t) {
-  if (e.length > 31) {
-    if (t)
-      return !1;
+var badchars = /* @__PURE__ */ "][*?/\\".split("");
+function check_ws_name(n, safe) {
+  if (n.length > 31) {
+    if (safe)
+      return false;
     throw new Error("Sheet names cannot exceed 31 chars");
   }
-  var r = !0;
-  return Xx.forEach(function(n) {
-    if (e.indexOf(n) != -1) {
-      if (!t)
-        throw new Error("Sheet name cannot contain : \\ / ? * [ ]");
-      r = !1;
-    }
-  }), r;
+  var _good = true;
+  badchars.forEach(function(c) {
+    if (n.indexOf(c) == -1)
+      return;
+    if (!safe)
+      throw new Error("Sheet name cannot contain : \\ / ? * [ ]");
+    _good = false;
+  });
+  return _good;
 }
-function $x(e, t, r) {
-  e.forEach(function(n, a) {
-    js(n);
-    for (var i = 0; i < a; ++i)
-      if (n == e[i])
+function check_wb_names(N, S, codes) {
+  N.forEach(function(n, i) {
+    check_ws_name(n);
+    for (var j = 0; j < i; ++j)
+      if (n == N[j])
         throw new Error("Duplicate Sheet Name: " + n);
-    if (r) {
-      var s = t && t[a] && t[a].CodeName || n;
-      if (s.charCodeAt(0) == 95 && s.length > 22)
-        throw new Error("Bad Code Name: Worksheet" + s);
+    if (codes) {
+      var cn = S && S[i] && S[i].CodeName || n;
+      if (cn.charCodeAt(0) == 95 && cn.length > 22)
+        throw new Error("Bad Code Name: Worksheet" + cn);
     }
   });
 }
-function jx(e) {
-  if (!e || !e.SheetNames || !e.Sheets)
+function check_wb(wb) {
+  if (!wb || !wb.SheetNames || !wb.Sheets)
     throw new Error("Invalid Workbook");
-  if (!e.SheetNames.length)
+  if (!wb.SheetNames.length)
     throw new Error("Workbook is empty");
-  var t = e.Workbook && e.Workbook.Sheets || [];
-  $x(e.SheetNames, t, !!e.vbaraw);
-  for (var r = 0; r < e.SheetNames.length; ++r)
-    d1(e.Sheets[e.SheetNames[r]], e.SheetNames[r], r);
+  var Sheets = wb.Workbook && wb.Workbook.Sheets || [];
+  check_wb_names(wb.SheetNames, Sheets, !!wb.vbaraw);
+  for (var i = 0; i < wb.SheetNames.length; ++i)
+    check_ws(wb.Sheets[wb.SheetNames[i]], wb.SheetNames[i], i);
 }
-function zs(e) {
-  var t = [Ie];
-  t[t.length] = q("workbook", null, {
-    xmlns: Tt[0],
-    "xmlns:r": Be.r
+function write_wb_xml(wb) {
+  var o = [XML_HEADER];
+  o[o.length] = writextag("workbook", null, {
+    "xmlns": XMLNS_main[0],
+    "xmlns:r": XMLNS.r
   });
-  var r = e.Workbook && (e.Workbook.Names || []).length > 0, n = { codeName: "ThisWorkbook" };
-  e.Workbook && e.Workbook.WBProps && (Vx.forEach(function(f) {
-    e.Workbook.WBProps[f[0]] != null && e.Workbook.WBProps[f[0]] != f[1] && (n[f[0]] = e.Workbook.WBProps[f[0]]);
-  }), e.Workbook.WBProps.CodeName && (n.codeName = e.Workbook.WBProps.CodeName, delete n.CodeName)), t[t.length] = q("workbookPr", null, n);
-  var a = e.Workbook && e.Workbook.Sheets || [], i = 0;
-  if (a && a[0] && !!a[0].Hidden) {
-    for (t[t.length] = "<bookViews>", i = 0; i != e.SheetNames.length && !(!a[i] || !a[i].Hidden); ++i)
-      ;
-    i == e.SheetNames.length && (i = 0), t[t.length] = '<workbookView firstSheet="' + i + '" activeTab="' + i + '"/>', t[t.length] = "</bookViews>";
+  var write_names = wb.Workbook && (wb.Workbook.Names || []).length > 0;
+  var workbookPr = { codeName: "ThisWorkbook" };
+  if (wb.Workbook && wb.Workbook.WBProps) {
+    WBPropsDef.forEach(function(x) {
+      if (wb.Workbook.WBProps[x[0]] == null)
+        return;
+      if (wb.Workbook.WBProps[x[0]] == x[1])
+        return;
+      workbookPr[x[0]] = wb.Workbook.WBProps[x[0]];
+    });
+    if (wb.Workbook.WBProps.CodeName) {
+      workbookPr.codeName = wb.Workbook.WBProps.CodeName;
+      delete workbookPr.CodeName;
+    }
   }
-  for (t[t.length] = "<sheets>", i = 0; i != e.SheetNames.length; ++i) {
-    var s = { name: ge(e.SheetNames[i].slice(0, 31)) };
-    if (s.sheetId = "" + (i + 1), s["r:id"] = "rId" + (i + 1), a[i])
-      switch (a[i].Hidden) {
+  o[o.length] = writextag("workbookPr", null, workbookPr);
+  var sheets = wb.Workbook && wb.Workbook.Sheets || [];
+  var i = 0;
+  if (sheets && sheets[0] && !!sheets[0].Hidden) {
+    o[o.length] = "<bookViews>";
+    for (i = 0; i != wb.SheetNames.length; ++i) {
+      if (!sheets[i])
+        break;
+      if (!sheets[i].Hidden)
+        break;
+    }
+    if (i == wb.SheetNames.length)
+      i = 0;
+    o[o.length] = '<workbookView firstSheet="' + i + '" activeTab="' + i + '"/>';
+    o[o.length] = "</bookViews>";
+  }
+  o[o.length] = "<sheets>";
+  for (i = 0; i != wb.SheetNames.length; ++i) {
+    var sht = { name: escapexml(wb.SheetNames[i].slice(0, 31)) };
+    sht.sheetId = "" + (i + 1);
+    sht["r:id"] = "rId" + (i + 1);
+    if (sheets[i])
+      switch (sheets[i].Hidden) {
         case 1:
-          s.state = "hidden";
+          sht.state = "hidden";
           break;
         case 2:
-          s.state = "veryHidden";
+          sht.state = "veryHidden";
           break;
       }
-    t[t.length] = q("sheet", null, s);
+    o[o.length] = writextag("sheet", null, sht);
   }
-  return t[t.length] = "</sheets>", r && (t[t.length] = "<definedNames>", e.Workbook && e.Workbook.Names && e.Workbook.Names.forEach(function(f) {
-    var l = { name: f.Name };
-    f.Comment && (l.comment = f.Comment), f.Sheet != null && (l.localSheetId = "" + f.Sheet), f.Hidden && (l.hidden = "1"), f.Ref && (t[t.length] = q("definedName", ge(f.Ref), l));
-  }), t[t.length] = "</definedNames>"), t.length > 2 && (t[t.length] = "</workbook>", t[1] = t[1].replace("/>", ">")), t.join("");
-}
-function zx(e, t) {
-  var r = {};
-  return r.Hidden = e.read_shift(4), r.iTabID = e.read_shift(4), r.strRelID = h0(e), r.name = Ke(e), r;
-}
-function Kx(e, t) {
-  return t || (t = U(127)), t.write_shift(4, e.Hidden), t.write_shift(4, e.iTabID), k0(e.strRelID, t), Ue(e.name.slice(0, 31), t), t.length > t.l ? t.slice(0, t.l) : t;
-}
-function Yx(e, t) {
-  var r = {}, n = e.read_shift(4);
-  r.defaultThemeVersion = e.read_shift(4);
-  var a = t > 8 ? Ke(e) : "";
-  return a.length > 0 && (r.CodeName = a), r.autoCompressPictures = !!(n & 65536), r.backupFile = !!(n & 64), r.checkCompatibility = !!(n & 4096), r.date1904 = !!(n & 1), r.filterPrivacy = !!(n & 8), r.hidePivotFieldList = !!(n & 1024), r.promptedSolutions = !!(n & 16), r.publishItems = !!(n & 2048), r.refreshAllConnections = !!(n & 262144), r.saveExternalLinkValues = !!(n & 128), r.showBorderUnselectedTables = !!(n & 4), r.showInkAnnotation = !!(n & 32), r.showObjects = ["all", "placeholders", "none"][n >> 13 & 3], r.showPivotChartFilter = !!(n & 32768), r.updateLinks = ["userSet", "never", "always"][n >> 8 & 3], r;
-}
-function qx(e, t) {
-  t || (t = U(72));
-  var r = 0;
-  return e && e.filterPrivacy && (r |= 8), t.write_shift(4, r), t.write_shift(4, 0), is(e && e.CodeName || "ThisWorkbook", t), t.slice(0, t.l);
-}
-function Jx(e, t, r) {
-  var n = e.l + t;
-  e.l += 4, e.l += 1;
-  var a = e.read_shift(4), i = Gl(e), s = o1(e, 0, r), f = I0(e);
-  e.l = n;
-  var l = { Name: i, Ptg: s };
-  return a < 268435455 && (l.Sheet = a), f && (l.Comment = f), l;
-}
-function Zx(e, t) {
-  V(e, 143);
-  for (var r = 0; r != t.SheetNames.length; ++r) {
-    var n = t.Workbook && t.Workbook.Sheets && t.Workbook.Sheets[r] && t.Workbook.Sheets[r].Hidden || 0, a = { Hidden: n, iTabID: r + 1, strRelID: "rId" + (r + 1), name: t.SheetNames[r] };
-    V(e, 156, Kx(a));
+  o[o.length] = "</sheets>";
+  if (write_names) {
+    o[o.length] = "<definedNames>";
+    if (wb.Workbook && wb.Workbook.Names)
+      wb.Workbook.Names.forEach(function(n) {
+        var d = { name: n.Name };
+        if (n.Comment)
+          d.comment = n.Comment;
+        if (n.Sheet != null)
+          d.localSheetId = "" + n.Sheet;
+        if (n.Hidden)
+          d.hidden = "1";
+        if (!n.Ref)
+          return;
+        o[o.length] = writextag("definedName", escapexml(n.Ref), d);
+      });
+    o[o.length] = "</definedNames>";
   }
-  V(e, 144);
-}
-function Qx(e, t) {
-  t || (t = U(127));
-  for (var r = 0; r != 4; ++r)
-    t.write_shift(4, 0);
-  return Ue("SheetJS", t), Ue(on.version, t), Ue(on.version, t), Ue("7262", t), t.length > t.l ? t.slice(0, t.l) : t;
-}
-function ed(e, t) {
-  t || (t = U(29)), t.write_shift(-4, 0), t.write_shift(-4, 460), t.write_shift(4, 28800), t.write_shift(4, 17600), t.write_shift(4, 500), t.write_shift(4, e), t.write_shift(4, e);
-  var r = 120;
-  return t.write_shift(1, r), t.length > t.l ? t.slice(0, t.l) : t;
-}
-function rd(e, t) {
-  if (!(!t.Workbook || !t.Workbook.Sheets)) {
-    for (var r = t.Workbook.Sheets, n = 0, a = -1, i = -1; n < r.length; ++n)
-      !r[n] || !r[n].Hidden && a == -1 ? a = n : r[n].Hidden == 1 && i == -1 && (i = n);
-    i > a || (V(e, 135), V(e, 158, ed(a)), V(e, 136));
+  if (o.length > 2) {
+    o[o.length] = "</workbook>";
+    o[1] = o[1].replace("/>", ">");
   }
+  return o.join("");
 }
-function td(e, t) {
-  var r = Qe();
-  return V(r, 131), V(r, 128, Qx()), V(r, 153, qx(e.Workbook && e.Workbook.WBProps || null)), rd(r, e), Zx(r, e), V(r, 132), r.end();
+function parse_BrtBundleSh(data2, length) {
+  var z = {};
+  z.Hidden = data2.read_shift(4);
+  z.iTabID = data2.read_shift(4);
+  z.strRelID = parse_RelID(data2);
+  z.name = parse_XLWideString(data2);
+  return z;
 }
-function nd(e, t, r) {
-  return (t.slice(-4) === ".bin" ? td : zs)(e);
+function write_BrtBundleSh(data2, o) {
+  if (!o)
+    o = new_buf(127);
+  o.write_shift(4, data2.Hidden);
+  o.write_shift(4, data2.iTabID);
+  write_RelID(data2.strRelID, o);
+  write_XLWideString(data2.name.slice(0, 31), o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function ad(e, t, r, n, a) {
-  return (t.slice(-4) === ".bin" ? Wx : Xs)(e, r, n, a);
+function parse_BrtWbProp(data2, length) {
+  var o = {};
+  var flags = data2.read_shift(4);
+  o.defaultThemeVersion = data2.read_shift(4);
+  var strName = length > 8 ? parse_XLWideString(data2) : "";
+  if (strName.length > 0)
+    o.CodeName = strName;
+  o.autoCompressPictures = !!(flags & 65536);
+  o.backupFile = !!(flags & 64);
+  o.checkCompatibility = !!(flags & 4096);
+  o.date1904 = !!(flags & 1);
+  o.filterPrivacy = !!(flags & 8);
+  o.hidePivotFieldList = !!(flags & 1024);
+  o.promptedSolutions = !!(flags & 16);
+  o.publishItems = !!(flags & 2048);
+  o.refreshAllConnections = !!(flags & 262144);
+  o.saveExternalLinkValues = !!(flags & 128);
+  o.showBorderUnselectedTables = !!(flags & 4);
+  o.showInkAnnotation = !!(flags & 32);
+  o.showObjects = ["all", "placeholders", "none"][flags >> 13 & 3];
+  o.showPivotChartFilter = !!(flags & 32768);
+  o.updateLinks = ["userSet", "never", "always"][flags >> 8 & 3];
+  return o;
 }
-function id(e, t, r) {
-  return (t.slice(-4) === ".bin" ? Sh : Rs)(e, r);
+function write_BrtWbProp(data2, o) {
+  if (!o)
+    o = new_buf(72);
+  var flags = 0;
+  if (data2) {
+    if (data2.filterPrivacy)
+      flags |= 8;
+  }
+  o.write_shift(4, flags);
+  o.write_shift(4, 0);
+  write_XLSBCodeName(data2 && data2.CodeName || "ThisWorkbook", o);
+  return o.slice(0, o.l);
 }
-function sd(e, t, r) {
-  return (t.slice(-4) === ".bin" ? qc : Fs)(e, r);
+function parse_BrtName(data2, length, opts) {
+  var end = data2.l + length;
+  data2.l += 4;
+  data2.l += 1;
+  var itab = data2.read_shift(4);
+  var name = parse_XLNameWideString(data2);
+  var formula = parse_XLSBNameParsedFormula(data2, 0, opts);
+  var comment = parse_XLNullableWideString(data2);
+  data2.l = end;
+  var out = { Name: name, Ptg: formula };
+  if (itab < 268435455)
+    out.Sheet = itab;
+  if (comment)
+    out.Comment = comment;
+  return out;
 }
-function fd(e, t, r) {
-  return (t.slice(-4) === ".bin" ? bh : Ps)(e);
+function write_BUNDLESHS(ba, wb) {
+  write_record(ba, 143);
+  for (var idx = 0; idx != wb.SheetNames.length; ++idx) {
+    var viz = wb.Workbook && wb.Workbook.Sheets && wb.Workbook.Sheets[idx] && wb.Workbook.Sheets[idx].Hidden || 0;
+    var d = { Hidden: viz, iTabID: idx + 1, strRelID: "rId" + (idx + 1), name: wb.SheetNames[idx] };
+    write_record(ba, 156, write_BrtBundleSh(d));
+  }
+  write_record(ba, 144);
 }
-function od(e) {
-  return (e.slice(-4) === ".bin" ? Nh : Is)();
+function write_BrtFileVersion(data2, o) {
+  if (!o)
+    o = new_buf(127);
+  for (var i = 0; i != 4; ++i)
+    o.write_shift(4, 0);
+  write_XLWideString("SheetJS", o);
+  write_XLWideString(XLSX.version, o);
+  write_XLWideString(XLSX.version, o);
+  write_XLWideString("7262", o);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function ld(e, t) {
-  var r = [];
-  return e.Props && r.push(ic(e.Props, t)), e.Custprops && r.push(sc(e.Props, e.Custprops)), r.join("");
+function write_BrtBookView(idx, o) {
+  if (!o)
+    o = new_buf(29);
+  o.write_shift(-4, 0);
+  o.write_shift(-4, 460);
+  o.write_shift(4, 28800);
+  o.write_shift(4, 17600);
+  o.write_shift(4, 500);
+  o.write_shift(4, idx);
+  o.write_shift(4, idx);
+  var flags = 120;
+  o.write_shift(1, flags);
+  return o.length > o.l ? o.slice(0, o.l) : o;
 }
-function cd() {
+function write_BOOKVIEWS(ba, wb) {
+  if (!wb.Workbook || !wb.Workbook.Sheets)
+    return;
+  var sheets = wb.Workbook.Sheets;
+  var i = 0, vistab = -1, hidden = -1;
+  for (; i < sheets.length; ++i) {
+    if (!sheets[i] || !sheets[i].Hidden && vistab == -1)
+      vistab = i;
+    else if (sheets[i].Hidden == 1 && hidden == -1)
+      hidden = i;
+  }
+  if (hidden > vistab)
+    return;
+  write_record(ba, 135);
+  write_record(ba, 158, write_BrtBookView(vistab));
+  write_record(ba, 136);
+}
+function write_wb_bin(wb, opts) {
+  var ba = buf_array();
+  write_record(ba, 131);
+  write_record(ba, 128, write_BrtFileVersion());
+  write_record(ba, 153, write_BrtWbProp(wb.Workbook && wb.Workbook.WBProps || null));
+  write_BOOKVIEWS(ba, wb);
+  write_BUNDLESHS(ba, wb);
+  write_record(ba, 132);
+  return ba.end();
+}
+function write_wb(wb, name, opts) {
+  return (name.slice(-4) === ".bin" ? write_wb_bin : write_wb_xml)(wb);
+}
+function write_ws(data2, name, opts, wb, rels) {
+  return (name.slice(-4) === ".bin" ? write_ws_bin : write_ws_xml)(data2, opts, wb, rels);
+}
+function write_sty(data2, name, opts) {
+  return (name.slice(-4) === ".bin" ? write_sty_bin : write_sty_xml)(data2, opts);
+}
+function write_sst(data2, name, opts) {
+  return (name.slice(-4) === ".bin" ? write_sst_bin : write_sst_xml)(data2, opts);
+}
+function write_cmnt(data2, name, opts) {
+  return (name.slice(-4) === ".bin" ? write_comments_bin : write_comments_xml)(data2);
+}
+function write_xlmeta(name) {
+  return (name.slice(-4) === ".bin" ? write_xlmeta_bin : write_xlmeta_xml)();
+}
+function write_props_xlml(wb, opts) {
+  var o = [];
+  if (wb.Props)
+    o.push(xlml_write_docprops(wb.Props, opts));
+  if (wb.Custprops)
+    o.push(xlml_write_custprops(wb.Props, wb.Custprops));
+  return o.join("");
+}
+function write_wb_xlml() {
   return "";
 }
-function hd(e, t) {
-  var r = ['<Style ss:ID="Default" ss:Name="Normal"><NumberFormat/></Style>'];
-  return t.cellXfs.forEach(function(n, a) {
-    var i = [];
-    i.push(q("NumberFormat", null, { "ss:Format": ge(Ce[n.numFmtId]) }));
-    var s = { "ss:ID": "s" + (21 + a) };
-    r.push(q("Style", i.join(""), s));
-  }), q("Styles", r.join(""));
+function write_sty_xlml(wb, opts) {
+  var styles = ['<Style ss:ID="Default" ss:Name="Normal"><NumberFormat/></Style>'];
+  opts.cellXfs.forEach(function(xf, id) {
+    var payload = [];
+    payload.push(writextag("NumberFormat", null, { "ss:Format": escapexml(table_fmt[xf.numFmtId]) }));
+    var o = { "ss:ID": "s" + (21 + id) };
+    styles.push(writextag("Style", payload.join(""), o));
+  });
+  return writextag("Styles", styles.join(""));
 }
-function Ks(e) {
-  return q("NamedRange", null, { "ss:Name": e.Name, "ss:RefersTo": "=" + M0(e.Ref, { r: 0, c: 0 }) });
+function write_name_xlml(n) {
+  return writextag("NamedRange", null, { "ss:Name": n.Name, "ss:RefersTo": "=" + a1_to_rc(n.Ref, { r: 0, c: 0 }) });
 }
-function ud(e) {
-  if (!((e || {}).Workbook || {}).Names)
+function write_names_xlml(wb) {
+  if (!((wb || {}).Workbook || {}).Names)
     return "";
-  for (var t = e.Workbook.Names, r = [], n = 0; n < t.length; ++n) {
-    var a = t[n];
-    a.Sheet == null && (a.Name.match(/^_xlfn\./) || r.push(Ks(a)));
+  var names = wb.Workbook.Names;
+  var out = [];
+  for (var i = 0; i < names.length; ++i) {
+    var n = names[i];
+    if (n.Sheet != null)
+      continue;
+    if (n.Name.match(/^_xlfn\./))
+      continue;
+    out.push(write_name_xlml(n));
   }
-  return q("Names", r.join(""));
+  return writextag("Names", out.join(""));
 }
-function xd(e, t, r, n) {
-  if (!e || !((n || {}).Workbook || {}).Names)
+function write_ws_xlml_names(ws, opts, idx, wb) {
+  if (!ws)
     return "";
-  for (var a = n.Workbook.Names, i = [], s = 0; s < a.length; ++s) {
-    var f = a[s];
-    f.Sheet == r && (f.Name.match(/^_xlfn\./) || i.push(Ks(f)));
+  if (!((wb || {}).Workbook || {}).Names)
+    return "";
+  var names = wb.Workbook.Names;
+  var out = [];
+  for (var i = 0; i < names.length; ++i) {
+    var n = names[i];
+    if (n.Sheet != idx)
+      continue;
+    if (n.Name.match(/^_xlfn\./))
+      continue;
+    out.push(write_name_xlml(n));
   }
-  return i.join("");
+  return out.join("");
 }
-function dd(e, t, r, n) {
-  if (!e)
+function write_ws_xlml_wsopts(ws, opts, idx, wb) {
+  if (!ws)
     return "";
-  var a = [];
-  if (e["!margins"] && (a.push("<PageSetup>"), e["!margins"].header && a.push(q("Header", null, { "x:Margin": e["!margins"].header })), e["!margins"].footer && a.push(q("Footer", null, { "x:Margin": e["!margins"].footer })), a.push(q("PageMargins", null, {
-    "x:Bottom": e["!margins"].bottom || "0.75",
-    "x:Left": e["!margins"].left || "0.7",
-    "x:Right": e["!margins"].right || "0.7",
-    "x:Top": e["!margins"].top || "0.75"
-  })), a.push("</PageSetup>")), n && n.Workbook && n.Workbook.Sheets && n.Workbook.Sheets[r])
-    if (n.Workbook.Sheets[r].Hidden)
-      a.push(q("Visible", n.Workbook.Sheets[r].Hidden == 1 ? "SheetHidden" : "SheetVeryHidden", {}));
+  var o = [];
+  if (ws["!margins"]) {
+    o.push("<PageSetup>");
+    if (ws["!margins"].header)
+      o.push(writextag("Header", null, { "x:Margin": ws["!margins"].header }));
+    if (ws["!margins"].footer)
+      o.push(writextag("Footer", null, { "x:Margin": ws["!margins"].footer }));
+    o.push(writextag("PageMargins", null, {
+      "x:Bottom": ws["!margins"].bottom || "0.75",
+      "x:Left": ws["!margins"].left || "0.7",
+      "x:Right": ws["!margins"].right || "0.7",
+      "x:Top": ws["!margins"].top || "0.75"
+    }));
+    o.push("</PageSetup>");
+  }
+  if (wb && wb.Workbook && wb.Workbook.Sheets && wb.Workbook.Sheets[idx]) {
+    if (wb.Workbook.Sheets[idx].Hidden)
+      o.push(writextag("Visible", wb.Workbook.Sheets[idx].Hidden == 1 ? "SheetHidden" : "SheetVeryHidden", {}));
     else {
-      for (var i = 0; i < r && !(n.Workbook.Sheets[i] && !n.Workbook.Sheets[i].Hidden); ++i)
-        ;
-      i == r && a.push("<Selected/>");
+      for (var i = 0; i < idx; ++i)
+        if (wb.Workbook.Sheets[i] && !wb.Workbook.Sheets[i].Hidden)
+          break;
+      if (i == idx)
+        o.push("<Selected/>");
     }
-  return ((((n || {}).Workbook || {}).Views || [])[0] || {}).RTL && a.push("<DisplayRightToLeft/>"), e["!protect"] && (a.push(Ve("ProtectContents", "True")), e["!protect"].objects && a.push(Ve("ProtectObjects", "True")), e["!protect"].scenarios && a.push(Ve("ProtectScenarios", "True")), e["!protect"].selectLockedCells != null && !e["!protect"].selectLockedCells ? a.push(Ve("EnableSelection", "NoSelection")) : e["!protect"].selectUnlockedCells != null && !e["!protect"].selectUnlockedCells && a.push(Ve("EnableSelection", "UnlockedCells")), [
-    ["formatCells", "AllowFormatCells"],
-    ["formatColumns", "AllowSizeCols"],
-    ["formatRows", "AllowSizeRows"],
-    ["insertColumns", "AllowInsertCols"],
-    ["insertRows", "AllowInsertRows"],
-    ["insertHyperlinks", "AllowInsertHyperlinks"],
-    ["deleteColumns", "AllowDeleteCols"],
-    ["deleteRows", "AllowDeleteRows"],
-    ["sort", "AllowSort"],
-    ["autoFilter", "AllowFilter"],
-    ["pivotTables", "AllowUsePivotTables"]
-  ].forEach(function(s) {
-    e["!protect"][s[0]] && a.push("<" + s[1] + "/>");
-  })), a.length == 0 ? "" : q("WorksheetOptions", a.join(""), { xmlns: fr.x });
+  }
+  if (((((wb || {}).Workbook || {}).Views || [])[0] || {}).RTL)
+    o.push("<DisplayRightToLeft/>");
+  if (ws["!protect"]) {
+    o.push(writetag("ProtectContents", "True"));
+    if (ws["!protect"].objects)
+      o.push(writetag("ProtectObjects", "True"));
+    if (ws["!protect"].scenarios)
+      o.push(writetag("ProtectScenarios", "True"));
+    if (ws["!protect"].selectLockedCells != null && !ws["!protect"].selectLockedCells)
+      o.push(writetag("EnableSelection", "NoSelection"));
+    else if (ws["!protect"].selectUnlockedCells != null && !ws["!protect"].selectUnlockedCells)
+      o.push(writetag("EnableSelection", "UnlockedCells"));
+    [
+      ["formatCells", "AllowFormatCells"],
+      ["formatColumns", "AllowSizeCols"],
+      ["formatRows", "AllowSizeRows"],
+      ["insertColumns", "AllowInsertCols"],
+      ["insertRows", "AllowInsertRows"],
+      ["insertHyperlinks", "AllowInsertHyperlinks"],
+      ["deleteColumns", "AllowDeleteCols"],
+      ["deleteRows", "AllowDeleteRows"],
+      ["sort", "AllowSort"],
+      ["autoFilter", "AllowFilter"],
+      ["pivotTables", "AllowUsePivotTables"]
+    ].forEach(function(x) {
+      if (ws["!protect"][x[0]])
+        o.push("<" + x[1] + "/>");
+    });
+  }
+  if (o.length == 0)
+    return "";
+  return writextag("WorksheetOptions", o.join(""), { xmlns: XLMLNS.x });
 }
-function pd(e) {
-  return e.map(function(t) {
-    var r = _l(t.t || ""), n = q("ss:Data", r, { xmlns: "http://www.w3.org/TR/REC-html40" });
-    return q("Comment", n, { "ss:Author": t.a });
+function write_ws_xlml_comment(comments) {
+  return comments.map(function(c) {
+    var t = xlml_unfixstr(c.t || "");
+    var d = writextag("ss:Data", t, { "xmlns": "http://www.w3.org/TR/REC-html40" });
+    return writextag("Comment", d, { "ss:Author": c.a });
   }).join("");
 }
-function vd(e, t, r, n, a, i, s) {
-  if (!e || e.v == null && e.f == null)
+function write_ws_xlml_cell(cell, ref, ws, opts, idx, wb, addr) {
+  if (!cell || cell.v == void 0 && cell.f == void 0)
     return "";
-  var f = {};
-  if (e.f && (f["ss:Formula"] = "=" + ge(M0(e.f, s))), e.F && e.F.slice(0, t.length) == t) {
-    var l = Me(e.F.slice(t.length + 1));
-    f["ss:ArrayRange"] = "RC:R" + (l.r == s.r ? "" : "[" + (l.r - s.r) + "]") + "C" + (l.c == s.c ? "" : "[" + (l.c - s.c) + "]");
+  var attr = {};
+  if (cell.f)
+    attr["ss:Formula"] = "=" + escapexml(a1_to_rc(cell.f, addr));
+  if (cell.F && cell.F.slice(0, ref.length) == ref) {
+    var end = decode_cell(cell.F.slice(ref.length + 1));
+    attr["ss:ArrayRange"] = "RC:R" + (end.r == addr.r ? "" : "[" + (end.r - addr.r) + "]") + "C" + (end.c == addr.c ? "" : "[" + (end.c - addr.c) + "]");
   }
-  if (e.l && e.l.Target && (f["ss:HRef"] = ge(e.l.Target), e.l.Tooltip && (f["x:HRefScreenTip"] = ge(e.l.Tooltip))), r["!merges"])
-    for (var o = r["!merges"], c = 0; c != o.length; ++c)
-      o[c].s.c != s.c || o[c].s.r != s.r || (o[c].e.c > o[c].s.c && (f["ss:MergeAcross"] = o[c].e.c - o[c].s.c), o[c].e.r > o[c].s.r && (f["ss:MergeDown"] = o[c].e.r - o[c].s.r));
-  var p = "", u = "";
-  switch (e.t) {
+  if (cell.l && cell.l.Target) {
+    attr["ss:HRef"] = escapexml(cell.l.Target);
+    if (cell.l.Tooltip)
+      attr["x:HRefScreenTip"] = escapexml(cell.l.Tooltip);
+  }
+  if (ws["!merges"]) {
+    var marr = ws["!merges"];
+    for (var mi = 0; mi != marr.length; ++mi) {
+      if (marr[mi].s.c != addr.c || marr[mi].s.r != addr.r)
+        continue;
+      if (marr[mi].e.c > marr[mi].s.c)
+        attr["ss:MergeAcross"] = marr[mi].e.c - marr[mi].s.c;
+      if (marr[mi].e.r > marr[mi].s.r)
+        attr["ss:MergeDown"] = marr[mi].e.r - marr[mi].s.r;
+    }
+  }
+  var t = "", p = "";
+  switch (cell.t) {
     case "z":
-      if (!n.sheetStubs)
+      if (!opts.sheetStubs)
         return "";
       break;
     case "n":
-      p = "Number", u = String(e.v);
+      t = "Number";
+      p = String(cell.v);
       break;
     case "b":
-      p = "Boolean", u = e.v ? "1" : "0";
+      t = "Boolean";
+      p = cell.v ? "1" : "0";
       break;
     case "e":
-      p = "Error", u = $t[e.v];
+      t = "Error";
+      p = BErr[cell.v];
       break;
     case "d":
-      p = "DateTime", u = new Date(e.v).toISOString(), e.z == null && (e.z = e.z || Ce[14]);
+      t = "DateTime";
+      p = new Date(cell.v).toISOString();
+      if (cell.z == null)
+        cell.z = cell.z || table_fmt[14];
       break;
     case "s":
-      p = "String", u = gl(e.v || "");
+      t = "String";
+      p = escapexlml(cell.v || "");
       break;
   }
-  var v = Gr(n.cellXfs, e, n);
-  f["ss:StyleID"] = "s" + (21 + v), f["ss:Index"] = s.c + 1;
-  var T = e.v != null ? u : "", x = e.t == "z" ? "" : '<Data ss:Type="' + p + '">' + T + "</Data>";
-  return (e.c || []).length > 0 && (x += pd(e.c)), q("Cell", x, f);
+  var os = get_cell_style(opts.cellXfs, cell, opts);
+  attr["ss:StyleID"] = "s" + (21 + os);
+  attr["ss:Index"] = addr.c + 1;
+  var _v = cell.v != null ? p : "";
+  var m = cell.t == "z" ? "" : '<Data ss:Type="' + t + '">' + _v + "</Data>";
+  if ((cell.c || []).length > 0)
+    m += write_ws_xlml_comment(cell.c);
+  return writextag("Cell", m, attr);
 }
-function md(e, t) {
-  var r = '<Row ss:Index="' + (e + 1) + '"';
-  return t && (t.hpt && !t.hpx && (t.hpx = Os(t.hpt)), t.hpx && (r += ' ss:AutoFitHeight="0" ss:Height="' + t.hpx + '"'), t.hidden && (r += ' ss:Hidden="1"')), r + ">";
-}
-function gd(e, t, r, n) {
-  if (!e["!ref"])
-    return "";
-  var a = we(e["!ref"]), i = e["!merges"] || [], s = 0, f = [];
-  e["!cols"] && e["!cols"].forEach(function(_, O) {
-    L0(_);
-    var R = !!_.width, y = kn(O, _), M = { "ss:Index": O + 1 };
-    R && (M["ss:Width"] = mn(y.width)), _.hidden && (M["ss:Hidden"] = "1"), f.push(q("Column", null, M));
-  });
-  for (var l = Array.isArray(e), o = a.s.r; o <= a.e.r; ++o) {
-    for (var c = [md(o, (e["!rows"] || [])[o])], p = a.s.c; p <= a.e.c; ++p) {
-      var u = !1;
-      for (s = 0; s != i.length; ++s)
-        if (!(i[s].s.c > p) && !(i[s].s.r > o) && !(i[s].e.c < p) && !(i[s].e.r < o)) {
-          (i[s].s.c != p || i[s].s.r != o) && (u = !0);
-          break;
-        }
-      if (!u) {
-        var v = { r: o, c: p }, T = _e(v), x = l ? (e[o] || [])[p] : e[T];
-        c.push(vd(x, T, e, t, r, n, v));
-      }
-    }
-    c.push("</Row>"), c.length > 2 && f.push(c.join(""));
+function write_ws_xlml_row(R, row) {
+  var o = '<Row ss:Index="' + (R + 1) + '"';
+  if (row) {
+    if (row.hpt && !row.hpx)
+      row.hpx = pt2px(row.hpt);
+    if (row.hpx)
+      o += ' ss:AutoFitHeight="0" ss:Height="' + row.hpx + '"';
+    if (row.hidden)
+      o += ' ss:Hidden="1"';
   }
-  return f.join("");
+  return o + ">";
 }
-function _d(e, t, r) {
-  var n = [], a = r.SheetNames[e], i = r.Sheets[a], s = i ? xd(i, t, e, r) : "";
-  return s.length > 0 && n.push("<Names>" + s + "</Names>"), s = i ? gd(i, t, e, r) : "", s.length > 0 && n.push("<Table>" + s + "</Table>"), n.push(dd(i, t, e, r)), n.join("");
+function write_ws_xlml_table(ws, opts, idx, wb) {
+  if (!ws["!ref"])
+    return "";
+  var range = safe_decode_range(ws["!ref"]);
+  var marr = ws["!merges"] || [], mi = 0;
+  var o = [];
+  if (ws["!cols"])
+    ws["!cols"].forEach(function(n, i) {
+      process_col(n);
+      var w = !!n.width;
+      var p = col_obj_w(i, n);
+      var k = { "ss:Index": i + 1 };
+      if (w)
+        k["ss:Width"] = width2px(p.width);
+      if (n.hidden)
+        k["ss:Hidden"] = "1";
+      o.push(writextag("Column", null, k));
+    });
+  var dense = Array.isArray(ws);
+  for (var R = range.s.r; R <= range.e.r; ++R) {
+    var row = [write_ws_xlml_row(R, (ws["!rows"] || [])[R])];
+    for (var C = range.s.c; C <= range.e.c; ++C) {
+      var skip = false;
+      for (mi = 0; mi != marr.length; ++mi) {
+        if (marr[mi].s.c > C)
+          continue;
+        if (marr[mi].s.r > R)
+          continue;
+        if (marr[mi].e.c < C)
+          continue;
+        if (marr[mi].e.r < R)
+          continue;
+        if (marr[mi].s.c != C || marr[mi].s.r != R)
+          skip = true;
+        break;
+      }
+      if (skip)
+        continue;
+      var addr = { r: R, c: C };
+      var ref = encode_cell(addr), cell = dense ? (ws[R] || [])[C] : ws[ref];
+      row.push(write_ws_xlml_cell(cell, ref, ws, opts, idx, wb, addr));
+    }
+    row.push("</Row>");
+    if (row.length > 2)
+      o.push(row.join(""));
+  }
+  return o.join("");
 }
-function Ed(e, t) {
-  t || (t = {}), e.SSF || (e.SSF = tr(Ce)), e.SSF && (On(), Cn(e.SSF), t.revssf = Rn(e.SSF), t.revssf[e.SSF[65535]] = 0, t.ssf = e.SSF, t.cellXfs = [], Gr(t.cellXfs, {}, { revssf: { General: 0 } }));
-  var r = [];
-  r.push(ld(e, t)), r.push(cd()), r.push(""), r.push("");
-  for (var n = 0; n < e.SheetNames.length; ++n)
-    r.push(q("Worksheet", _d(n, t, e), { "ss:Name": ge(e.SheetNames[n]) }));
-  return r[2] = hd(e, t), r[3] = ud(e), Ie + q("Workbook", r.join(""), {
-    xmlns: fr.ss,
-    "xmlns:o": fr.o,
-    "xmlns:x": fr.x,
-    "xmlns:ss": fr.ss,
-    "xmlns:dt": fr.dt,
-    "xmlns:html": fr.html
+function write_ws_xlml(idx, opts, wb) {
+  var o = [];
+  var s = wb.SheetNames[idx];
+  var ws = wb.Sheets[s];
+  var t = ws ? write_ws_xlml_names(ws, opts, idx, wb) : "";
+  if (t.length > 0)
+    o.push("<Names>" + t + "</Names>");
+  t = ws ? write_ws_xlml_table(ws, opts, idx, wb) : "";
+  if (t.length > 0)
+    o.push("<Table>" + t + "</Table>");
+  o.push(write_ws_xlml_wsopts(ws, opts, idx, wb));
+  return o.join("");
+}
+function write_xlml(wb, opts) {
+  if (!opts)
+    opts = {};
+  if (!wb.SSF)
+    wb.SSF = dup(table_fmt);
+  if (wb.SSF) {
+    make_ssf();
+    SSF_load_table(wb.SSF);
+    opts.revssf = evert_num(wb.SSF);
+    opts.revssf[wb.SSF[65535]] = 0;
+    opts.ssf = wb.SSF;
+    opts.cellXfs = [];
+    get_cell_style(opts.cellXfs, {}, { revssf: { "General": 0 } });
+  }
+  var d = [];
+  d.push(write_props_xlml(wb, opts));
+  d.push(write_wb_xlml());
+  d.push("");
+  d.push("");
+  for (var i = 0; i < wb.SheetNames.length; ++i)
+    d.push(writextag("Worksheet", write_ws_xlml(i, opts, wb), { "ss:Name": escapexml(wb.SheetNames[i]) }));
+  d[2] = write_sty_xlml(wb, opts);
+  d[3] = write_names_xlml(wb);
+  return XML_HEADER + writextag("Workbook", d.join(""), {
+    "xmlns": XLMLNS.ss,
+    "xmlns:o": XLMLNS.o,
+    "xmlns:x": XLMLNS.x,
+    "xmlns:ss": XLMLNS.ss,
+    "xmlns:dt": XLMLNS.dt,
+    "xmlns:html": XLMLNS.html
   });
 }
-var i0 = {
+var PSCLSID = {
   SI: "e0859ff2f94f6810ab9108002b27b3d9",
   DSI: "02d5cdd59c2e1b10939708002b2cf9ae",
   UDI: "05d5cdd59c2e1b10939708002b2cf9ae"
 };
-function Td(e, t) {
-  var r = [], n = [], a = [], i = 0, s, f = Na(Xa, "n"), l = Na($a, "n");
-  if (e.Props)
-    for (s = Xe(e.Props), i = 0; i < s.length; ++i)
-      (Object.prototype.hasOwnProperty.call(f, s[i]) ? r : Object.prototype.hasOwnProperty.call(l, s[i]) ? n : a).push([s[i], e.Props[s[i]]]);
-  if (e.Custprops)
-    for (s = Xe(e.Custprops), i = 0; i < s.length; ++i)
-      Object.prototype.hasOwnProperty.call(e.Props || {}, s[i]) || (Object.prototype.hasOwnProperty.call(f, s[i]) ? r : Object.prototype.hasOwnProperty.call(l, s[i]) ? n : a).push([s[i], e.Custprops[s[i]]]);
-  var o = [];
-  for (i = 0; i < a.length; ++i)
-    gs.indexOf(a[i][0]) > -1 || ps.indexOf(a[i][0]) > -1 || a[i][1] != null && o.push(a[i]);
-  n.length && Ee.utils.cfb_add(t, "/SummaryInformation", qa(n, i0.SI, l, $a)), (r.length || o.length) && Ee.utils.cfb_add(t, "/DocumentSummaryInformation", qa(r, i0.DSI, f, Xa, o.length ? o : null, i0.UDI));
+function write_xls_props(wb, cfb) {
+  var DSEntries = [], SEntries = [], CEntries = [];
+  var i = 0, Keys;
+  var DocSummaryRE = evert_key(DocSummaryPIDDSI, "n");
+  var SummaryRE = evert_key(SummaryPIDSI, "n");
+  if (wb.Props) {
+    Keys = keys(wb.Props);
+    for (i = 0; i < Keys.length; ++i)
+      (Object.prototype.hasOwnProperty.call(DocSummaryRE, Keys[i]) ? DSEntries : Object.prototype.hasOwnProperty.call(SummaryRE, Keys[i]) ? SEntries : CEntries).push([Keys[i], wb.Props[Keys[i]]]);
+  }
+  if (wb.Custprops) {
+    Keys = keys(wb.Custprops);
+    for (i = 0; i < Keys.length; ++i)
+      if (!Object.prototype.hasOwnProperty.call(wb.Props || {}, Keys[i]))
+        (Object.prototype.hasOwnProperty.call(DocSummaryRE, Keys[i]) ? DSEntries : Object.prototype.hasOwnProperty.call(SummaryRE, Keys[i]) ? SEntries : CEntries).push([Keys[i], wb.Custprops[Keys[i]]]);
+  }
+  var CEntries2 = [];
+  for (i = 0; i < CEntries.length; ++i) {
+    if (XLSPSSkip.indexOf(CEntries[i][0]) > -1 || PseudoPropsPairs.indexOf(CEntries[i][0]) > -1)
+      continue;
+    if (CEntries[i][1] == null)
+      continue;
+    CEntries2.push(CEntries[i]);
+  }
+  if (SEntries.length)
+    CFB.utils.cfb_add(cfb, "/SummaryInformation", write_PropertySetStream(SEntries, PSCLSID.SI, SummaryRE, SummaryPIDSI));
+  if (DSEntries.length || CEntries2.length)
+    CFB.utils.cfb_add(cfb, "/DocumentSummaryInformation", write_PropertySetStream(DSEntries, PSCLSID.DSI, DocSummaryRE, DocSummaryPIDDSI, CEntries2.length ? CEntries2 : null, PSCLSID.UDI));
 }
-function wd(e, t) {
-  var r = t || {}, n = Ee.utils.cfb_new({ root: "R" }), a = "/Workbook";
-  switch (r.bookType || "xls") {
+function write_xlscfb(wb, opts) {
+  var o = opts || {};
+  var cfb = CFB.utils.cfb_new({ root: "R" });
+  var wbpath = "/Workbook";
+  switch (o.bookType || "xls") {
     case "xls":
-      r.bookType = "biff8";
+      o.bookType = "biff8";
     case "xla":
-      r.bookType || (r.bookType = "xla");
+      if (!o.bookType)
+        o.bookType = "xla";
     case "biff8":
-      a = "/Workbook", r.biff = 8;
+      wbpath = "/Workbook";
+      o.biff = 8;
       break;
     case "biff5":
-      a = "/Book", r.biff = 5;
+      wbpath = "/Book";
+      o.biff = 5;
       break;
     default:
-      throw new Error("invalid type " + r.bookType + " for XLS CFB");
+      throw new Error("invalid type " + o.bookType + " for XLS CFB");
   }
-  return Ee.utils.cfb_add(n, a, Ys(e, r)), r.biff == 8 && (e.Props || e.Custprops) && Td(e, n), r.biff == 8 && e.vbaraw && Wh(n, Ee.read(e.vbaraw, { type: typeof e.vbaraw == "string" ? "binary" : "buffer" })), n;
+  CFB.utils.cfb_add(cfb, wbpath, write_biff_buf(wb, o));
+  if (o.biff == 8 && (wb.Props || wb.Custprops))
+    write_xls_props(wb, cfb);
+  if (o.biff == 8 && wb.vbaraw)
+    fill_vba_xls(cfb, CFB.read(wb.vbaraw, { type: typeof wb.vbaraw == "string" ? "binary" : "buffer" }));
+  return cfb;
 }
-var Sd = {
-  0: { f: y1 },
-  1: { f: P1 },
-  2: { f: ex },
-  3: { f: V1 },
-  4: { f: U1 },
-  5: { f: q1 },
-  6: { f: ix },
-  7: { f: j1 },
-  8: { f: ux },
-  9: { f: hx },
-  10: { f: lx },
-  11: { f: cx },
-  12: { f: B1 },
-  13: { f: tx },
-  14: { f: X1 },
-  15: { f: W1 },
-  16: { f: Z1 },
-  17: { f: fx },
-  18: { f: K1 },
-  19: { f: N0 },
+var XLSBRecordEnum = {
+  0: { f: parse_BrtRowHdr },
+  1: { f: parse_BrtCellBlank },
+  2: { f: parse_BrtCellRk },
+  3: { f: parse_BrtCellError },
+  4: { f: parse_BrtCellBool },
+  5: { f: parse_BrtCellReal },
+  6: { f: parse_BrtCellSt },
+  7: { f: parse_BrtCellIsst },
+  8: { f: parse_BrtFmlaString },
+  9: { f: parse_BrtFmlaNum },
+  10: { f: parse_BrtFmlaBool },
+  11: { f: parse_BrtFmlaError },
+  12: { f: parse_BrtShortBlank },
+  13: { f: parse_BrtShortRk },
+  14: { f: parse_BrtShortError },
+  15: { f: parse_BrtShortBool },
+  16: { f: parse_BrtShortReal },
+  17: { f: parse_BrtShortSt },
+  18: { f: parse_BrtShortIsst },
+  19: { f: parse_RichStr },
   20: {},
   21: {},
   22: {},
@@ -10439,18 +15486,18 @@ var Sd = {
   36: { T: -1 },
   37: { T: 1 },
   38: { T: -1 },
-  39: { f: Jx },
+  39: { f: parse_BrtName },
   40: {},
   42: {},
-  43: { f: ih },
-  44: { f: nh },
-  45: { f: oh },
-  46: { f: ch },
-  47: { f: lh },
+  43: { f: parse_BrtFont },
+  44: { f: parse_BrtFmt },
+  45: { f: parse_BrtFill },
+  46: { f: parse_BrtBorder },
+  47: { f: parse_BrtXF },
   48: {},
-  49: { f: Bl },
+  49: { f: parse_Int32LE },
   50: {},
-  51: { f: yh },
+  51: { f: parse_BrtMdb },
   52: { T: 1 },
   53: { T: -1 },
   54: { T: 1 },
@@ -10459,10 +15506,10 @@ var Sd = {
   57: { T: -1 },
   58: {},
   59: {},
-  60: { f: Mc },
-  62: { f: ax },
-  63: { f: Ih },
-  64: { f: Ox },
+  60: { f: parse_ColInfo },
+  62: { f: parse_BrtCellRString },
+  63: { f: parse_BrtCalcChainItem$ },
+  64: { f: parse_BrtDVal },
   65: {},
   66: {},
   67: {},
@@ -10472,13 +15519,13 @@ var Sd = {
   128: {},
   129: { T: 1 },
   130: { T: -1 },
-  131: { T: 1, f: Fr, p: 0 },
+  131: { T: 1, f: parsenoop, p: 0 },
   132: { T: -1 },
   133: { T: 1 },
   134: { T: -1 },
   135: { T: 1 },
   136: { T: -1 },
-  137: { T: 1, f: Ax },
+  137: { T: 1, f: parse_BrtBeginWsView },
   138: { T: -1 },
   139: { T: 1 },
   140: { T: -1 },
@@ -10488,19 +15535,19 @@ var Sd = {
   144: { T: -1 },
   145: { T: 1 },
   146: { T: -1 },
-  147: { f: I1 },
-  148: { f: R1, p: 16 },
-  151: { f: gx },
+  147: { f: parse_BrtWsProp },
+  148: { f: parse_BrtWsDim, p: 16 },
+  151: { f: parse_BrtPane },
   152: {},
-  153: { f: Yx },
+  153: { f: parse_BrtWbProp },
   154: {},
   155: {},
-  156: { f: zx },
+  156: { f: parse_BrtBundleSh },
   157: {},
   158: {},
-  159: { T: 1, f: zc },
+  159: { T: 1, f: parse_BrtBeginSst },
   160: { T: -1 },
-  161: { T: 1, f: at },
+  161: { T: 1, f: parse_UncheckedRfX },
   162: { T: -1 },
   163: { T: 1 },
   164: { T: -1 },
@@ -10515,7 +15562,7 @@ var Sd = {
   173: { T: -1 },
   174: {},
   175: {},
-  176: { f: xx },
+  176: { f: parse_BrtMergeCell },
   177: { T: 1 },
   178: { T: -1 },
   179: { T: 1 },
@@ -10674,9 +15721,9 @@ var Sd = {
   332: { T: 1 },
   333: { T: -1 },
   334: { T: 1 },
-  335: { f: Ah },
+  335: { f: parse_BrtMdtinfo },
   336: { T: -1 },
-  337: { f: Rh, T: 1 },
+  337: { f: parse_BrtBeginEsmdb, T: 1 },
   338: { T: -1 },
   339: { T: 1 },
   340: { T: -1 },
@@ -10694,13 +15741,13 @@ var Sd = {
   352: {},
   353: { T: 1 },
   354: { T: -1 },
-  355: { f: h0 },
+  355: { f: parse_RelID },
   357: {},
   358: {},
   359: {},
   360: { T: 1 },
   361: {},
-  362: { f: Nc },
+  362: { f: parse_ExternSheet },
   363: {},
   364: {},
   366: {},
@@ -10762,8 +15809,8 @@ var Sd = {
   423: { T: 1 },
   424: { T: -1 },
   425: { T: -1 },
-  426: { f: _x },
-  427: { f: Ex },
+  426: { f: parse_BrtArrFmla },
+  427: { f: parse_BrtShrFmla },
   428: {},
   429: { T: 1 },
   430: { T: -1 },
@@ -10812,7 +15859,7 @@ var Sd = {
   473: { T: 1 },
   474: { T: -1 },
   475: {},
-  476: { f: wx },
+  476: { f: parse_BrtMargins },
   477: {},
   478: {},
   479: { T: 1 },
@@ -10821,7 +15868,7 @@ var Sd = {
   482: { T: -1 },
   483: { T: 1 },
   484: { T: -1 },
-  485: { f: N1 },
+  485: { f: parse_BrtWsFmtInfo },
   486: { T: 1 },
   487: { T: -1 },
   488: { T: 1 },
@@ -10830,7 +15877,7 @@ var Sd = {
   491: { T: -1 },
   492: { T: 1 },
   493: { T: -1 },
-  494: { f: vx },
+  494: { f: parse_BrtHLink },
   495: { T: 1 },
   496: { T: -1 },
   497: { T: 1 },
@@ -10881,7 +15928,7 @@ var Sd = {
   542: { T: 1 },
   548: {},
   549: {},
-  550: { f: h0 },
+  550: { f: parse_RelID },
   551: {},
   552: {},
   553: {},
@@ -10953,12 +16000,12 @@ var Sd = {
   629: { T: -1 },
   630: { T: 1 },
   631: { T: -1 },
-  632: { f: Mh },
+  632: { f: parse_BrtCommentAuthor },
   633: { T: 1 },
   634: { T: -1 },
-  635: { T: 1, f: Lh },
+  635: { T: 1, f: parse_BrtBeginComment },
   636: { T: -1 },
-  637: { f: Wl },
+  637: { f: parse_BrtCommentText },
   638: { T: 1 },
   639: {},
   640: { T: -1 },
@@ -10971,7 +16018,7 @@ var Sd = {
   648: { T: 1 },
   649: {},
   650: { T: -1 },
-  651: { f: Hx },
+  651: { f: parse_BrtCsProp },
   652: {},
   653: { T: 1 },
   654: { T: -1 },
@@ -11030,7 +16077,7 @@ var Sd = {
   1050: {},
   1051: { T: 1 },
   1052: { T: 1 },
-  1053: { f: Rx },
+  1053: { f: parse_BrtDVal14 },
   1054: { T: 1 },
   1055: {},
   1056: { T: 1 },
@@ -11258,315 +16305,613 @@ var Sd = {
   5099: {},
   65535: { n: "" }
 };
-function J(e, t, r, n) {
-  var a = t;
-  if (!isNaN(a)) {
-    var i = n || (r || []).length || 0, s = e.next(4);
-    s.write_shift(2, a), s.write_shift(2, i), i > 0 && O0(r) && e.push(r);
-  }
+function write_biff_rec(ba, type, payload, length) {
+  var t = type;
+  if (isNaN(t))
+    return;
+  var len = length || (payload || []).length || 0;
+  var o = ba.next(4);
+  o.write_shift(2, t);
+  o.write_shift(2, len);
+  if (len > 0 && is_buf(payload))
+    ba.push(payload);
 }
-function Ad(e, t, r, n) {
-  var a = n || (r || []).length || 0;
-  if (a <= 8224)
-    return J(e, t, r, a);
-  var i = t;
-  if (!isNaN(i)) {
-    for (var s = r.parts || [], f = 0, l = 0, o = 0; o + (s[f] || 8224) <= 8224; )
-      o += s[f] || 8224, f++;
-    var c = e.next(4);
-    for (c.write_shift(2, i), c.write_shift(2, o), e.push(r.slice(l, l + o)), l += o; l < a; ) {
-      for (c = e.next(4), c.write_shift(2, 60), o = 0; o + (s[f] || 8224) <= 8224; )
-        o += s[f] || 8224, f++;
-      c.write_shift(2, o), e.push(r.slice(l, l + o)), l += o;
+function write_biff_continue(ba, type, payload, length) {
+  var len = length || (payload || []).length || 0;
+  if (len <= 8224)
+    return write_biff_rec(ba, type, payload, len);
+  var t = type;
+  if (isNaN(t))
+    return;
+  var parts = payload.parts || [], sidx = 0;
+  var i = 0, w = 0;
+  while (w + (parts[sidx] || 8224) <= 8224) {
+    w += parts[sidx] || 8224;
+    sidx++;
+  }
+  var o = ba.next(4);
+  o.write_shift(2, t);
+  o.write_shift(2, w);
+  ba.push(payload.slice(i, i + w));
+  i += w;
+  while (i < len) {
+    o = ba.next(4);
+    o.write_shift(2, 60);
+    w = 0;
+    while (w + (parts[sidx] || 8224) <= 8224) {
+      w += parts[sidx] || 8224;
+      sidx++;
     }
+    o.write_shift(2, w);
+    ba.push(payload.slice(i, i + w));
+    i += w;
   }
 }
-function zt(e, t, r) {
-  return e || (e = U(7)), e.write_shift(2, t), e.write_shift(2, r), e.write_shift(2, 0), e.write_shift(1, 0), e;
+function write_BIFF2Cell(out, r, c) {
+  if (!out)
+    out = new_buf(7);
+  out.write_shift(2, r);
+  out.write_shift(2, c);
+  out.write_shift(2, 0);
+  out.write_shift(1, 0);
+  return out;
 }
-function Fd(e, t, r, n) {
-  var a = U(9);
-  return zt(a, e, t), Es(r, n || "b", a), a;
+function write_BIFF2BERR(r, c, val, t) {
+  var out = new_buf(9);
+  write_BIFF2Cell(out, r, c);
+  write_Bes(val, t || "b", out);
+  return out;
 }
-function yd(e, t, r) {
-  var n = U(8 + 2 * r.length);
-  return zt(n, e, t), n.write_shift(1, r.length), n.write_shift(r.length, r, "sbcs"), n.l < n.length ? n.slice(0, n.l) : n;
+function write_BIFF2LABEL(r, c, val) {
+  var out = new_buf(8 + 2 * val.length);
+  write_BIFF2Cell(out, r, c);
+  out.write_shift(1, val.length);
+  out.write_shift(val.length, val, "sbcs");
+  return out.l < out.length ? out.slice(0, out.l) : out;
 }
-function Cd(e, t, r, n) {
-  if (t.v != null)
-    switch (t.t) {
+function write_ws_biff2_cell(ba, cell, R, C) {
+  if (cell.v != null)
+    switch (cell.t) {
       case "d":
       case "n":
-        var a = t.t == "d" ? rr(Ze(t.v)) : t.v;
-        a == (a | 0) && a >= 0 && a < 65536 ? J(e, 2, Hc(r, n, a)) : J(e, 3, Wc(r, n, a));
+        var v = cell.t == "d" ? datenum(parseDate(cell.v)) : cell.v;
+        if (v == (v | 0) && v >= 0 && v < 65536)
+          write_biff_rec(ba, 2, write_BIFF2INT(R, C, v));
+        else
+          write_biff_rec(ba, 3, write_BIFF2NUM(R, C, v));
         return;
       case "b":
       case "e":
-        J(e, 5, Fd(r, n, t.v, t.t));
+        write_biff_rec(ba, 5, write_BIFF2BERR(R, C, cell.v, cell.t));
         return;
       case "s":
       case "str":
-        J(e, 4, yd(r, n, (t.v || "").slice(0, 255)));
+        write_biff_rec(ba, 4, write_BIFF2LABEL(R, C, (cell.v || "").slice(0, 255)));
         return;
     }
-  J(e, 1, zt(null, r, n));
+  write_biff_rec(ba, 1, write_BIFF2Cell(null, R, C));
 }
-function Od(e, t, r, n) {
-  var a = Array.isArray(t), i = we(t["!ref"] || "A1"), s, f = "", l = [];
-  if (i.e.c > 255 || i.e.r > 16383) {
-    if (n.WTF)
-      throw new Error("Range " + (t["!ref"] || "A1") + " exceeds format limit A1:IV16384");
-    i.e.c = Math.min(i.e.c, 255), i.e.r = Math.min(i.e.c, 16383), s = Ne(i);
+function write_ws_biff2(ba, ws, idx, opts) {
+  var dense = Array.isArray(ws);
+  var range = safe_decode_range(ws["!ref"] || "A1"), ref, rr = "", cols = [];
+  if (range.e.c > 255 || range.e.r > 16383) {
+    if (opts.WTF)
+      throw new Error("Range " + (ws["!ref"] || "A1") + " exceeds format limit A1:IV16384");
+    range.e.c = Math.min(range.e.c, 255);
+    range.e.r = Math.min(range.e.c, 16383);
+    ref = encode_range(range);
   }
-  for (var o = i.s.r; o <= i.e.r; ++o) {
-    f = Ge(o);
-    for (var c = i.s.c; c <= i.e.c; ++c) {
-      o === i.s.r && (l[c] = ze(c)), s = l[c] + f;
-      var p = a ? (t[o] || [])[c] : t[s];
-      !p || Cd(e, p, o, c);
+  for (var R = range.s.r; R <= range.e.r; ++R) {
+    rr = encode_row(R);
+    for (var C = range.s.c; C <= range.e.c; ++C) {
+      if (R === range.s.r)
+        cols[C] = encode_col(C);
+      ref = cols[C] + rr;
+      var cell = dense ? (ws[R] || [])[C] : ws[ref];
+      if (!cell)
+        continue;
+      write_ws_biff2_cell(ba, cell, R, C);
     }
   }
 }
-function Rd(e, t) {
-  for (var r = t || {}, n = Qe(), a = 0, i = 0; i < e.SheetNames.length; ++i)
-    e.SheetNames[i] == r.sheet && (a = i);
-  if (a == 0 && !!r.sheet && e.SheetNames[0] != r.sheet)
-    throw new Error("Sheet not found: " + r.sheet);
-  return J(n, r.biff == 4 ? 1033 : r.biff == 3 ? 521 : 9, P0(e, 16, r)), Od(n, e.Sheets[e.SheetNames[a]], a, r), J(n, 10), n.end();
+function write_biff2_buf(wb, opts) {
+  var o = opts || {};
+  var ba = buf_array();
+  var idx = 0;
+  for (var i = 0; i < wb.SheetNames.length; ++i)
+    if (wb.SheetNames[i] == o.sheet)
+      idx = i;
+  if (idx == 0 && !!o.sheet && wb.SheetNames[0] != o.sheet)
+    throw new Error("Sheet not found: " + o.sheet);
+  write_biff_rec(ba, o.biff == 4 ? 1033 : o.biff == 3 ? 521 : 9, write_BOF(wb, 16, o));
+  write_ws_biff2(ba, wb.Sheets[wb.SheetNames[idx]], idx, o);
+  write_biff_rec(ba, 10);
+  return ba.end();
 }
-function Dd(e, t, r) {
-  J(e, 49, Sc({
+function write_FONTS_biff8(ba, data2, opts) {
+  write_biff_rec(ba, 49, write_Font({
     sz: 12,
     color: { theme: 1 },
     name: "Arial",
     family: 2,
     scheme: "minor"
-  }, r));
+  }, opts));
 }
-function Nd(e, t, r) {
-  !t || [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(n) {
-    for (var a = n[0]; a <= n[1]; ++a)
-      t[a] != null && J(e, 1054, yc(a, t[a], r));
+function write_FMTS_biff8(ba, NF, opts) {
+  if (!NF)
+    return;
+  [[5, 8], [23, 26], [41, 44], [50, 392]].forEach(function(r) {
+    for (var i = r[0]; i <= r[1]; ++i)
+      if (NF[i] != null)
+        write_biff_rec(ba, 1054, write_Format(i, NF[i], opts));
   });
 }
-function Id(e, t) {
-  var r = U(19);
-  r.write_shift(4, 2151), r.write_shift(4, 0), r.write_shift(4, 0), r.write_shift(2, 3), r.write_shift(1, 1), r.write_shift(4, 0), J(e, 2151, r), r = U(39), r.write_shift(4, 2152), r.write_shift(4, 0), r.write_shift(4, 0), r.write_shift(2, 3), r.write_shift(1, 0), r.write_shift(4, 0), r.write_shift(2, 1), r.write_shift(4, 4), r.write_shift(2, 0), Ss(we(t["!ref"] || "A1"), r), r.write_shift(4, 4), J(e, 2152, r);
+function write_FEAT(ba, ws) {
+  var o = new_buf(19);
+  o.write_shift(4, 2151);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  o.write_shift(2, 3);
+  o.write_shift(1, 1);
+  o.write_shift(4, 0);
+  write_biff_rec(ba, 2151, o);
+  o = new_buf(39);
+  o.write_shift(4, 2152);
+  o.write_shift(4, 0);
+  o.write_shift(4, 0);
+  o.write_shift(2, 3);
+  o.write_shift(1, 0);
+  o.write_shift(4, 0);
+  o.write_shift(2, 1);
+  o.write_shift(4, 4);
+  o.write_shift(2, 0);
+  write_Ref8U(safe_decode_range(ws["!ref"] || "A1"), o);
+  o.write_shift(4, 4);
+  write_biff_rec(ba, 2152, o);
 }
-function kd(e, t) {
-  for (var r = 0; r < 16; ++r)
-    J(e, 224, Za({ numFmtId: 0, style: !0 }, 0, t));
-  t.cellXfs.forEach(function(n) {
-    J(e, 224, Za(n, 0, t));
+function write_CELLXFS_biff8(ba, opts) {
+  for (var i = 0; i < 16; ++i)
+    write_biff_rec(ba, 224, write_XF({ numFmtId: 0, style: true }, 0, opts));
+  opts.cellXfs.forEach(function(c) {
+    write_biff_rec(ba, 224, write_XF(c, 0, opts));
   });
 }
-function Pd(e, t) {
-  for (var r = 0; r < t["!links"].length; ++r) {
-    var n = t["!links"][r];
-    J(e, 440, Pc(n)), n[1].Tooltip && J(e, 2048, Lc(n));
+function write_ws_biff8_hlinks(ba, ws) {
+  for (var R = 0; R < ws["!links"].length; ++R) {
+    var HL = ws["!links"][R];
+    write_biff_rec(ba, 440, write_HLink(HL));
+    if (HL[1].Tooltip)
+      write_biff_rec(ba, 2048, write_HLinkTooltip(HL));
   }
-  delete t["!links"];
+  delete ws["!links"];
 }
-function Ld(e, t) {
-  if (!!t) {
-    var r = 0;
-    t.forEach(function(n, a) {
-      ++r <= 256 && n && J(e, 125, Uc(kn(a, n), a));
-    });
-  }
+function write_ws_cols_biff8(ba, cols) {
+  if (!cols)
+    return;
+  var cnt = 0;
+  cols.forEach(function(col, idx) {
+    if (++cnt <= 256 && col) {
+      write_biff_rec(ba, 125, write_ColInfo(col_obj_w(idx, col), idx));
+    }
+  });
 }
-function Bd(e, t, r, n, a) {
-  var i = 16 + Gr(a.cellXfs, t, a);
-  if (t.v == null && !t.bf) {
-    J(e, 513, Zr(r, n, i));
+function write_ws_biff8_cell(ba, cell, R, C, opts) {
+  var os = 16 + get_cell_style(opts.cellXfs, cell, opts);
+  if (cell.v == null && !cell.bf) {
+    write_biff_rec(ba, 513, write_XLSCell(R, C, os));
     return;
   }
-  if (t.bf)
-    J(e, 6, s1(t, r, n, a, i));
+  if (cell.bf)
+    write_biff_rec(ba, 6, write_Formula(cell, R, C, opts, os));
   else
-    switch (t.t) {
+    switch (cell.t) {
       case "d":
       case "n":
-        var s = t.t == "d" ? rr(Ze(t.v)) : t.v;
-        J(e, 515, Dc(r, n, s, i));
+        var v = cell.t == "d" ? datenum(parseDate(cell.v)) : cell.v;
+        write_biff_rec(ba, 515, write_Number(R, C, v, os));
         break;
       case "b":
       case "e":
-        J(e, 517, Rc(r, n, t.v, i, a, t.t));
+        write_biff_rec(ba, 517, write_BoolErr(R, C, cell.v, os, opts, cell.t));
         break;
       case "s":
       case "str":
-        if (a.bookSST) {
-          var f = b0(a.Strings, t.v, a.revStrings);
-          J(e, 253, Ac(r, n, f, i));
+        if (opts.bookSST) {
+          var isst = get_sst_id(opts.Strings, cell.v, opts.revStrings);
+          write_biff_rec(ba, 253, write_LabelSst(R, C, isst, os));
         } else
-          J(e, 516, Fc(r, n, (t.v || "").slice(0, 255), i, a));
+          write_biff_rec(ba, 516, write_Label(R, C, (cell.v || "").slice(0, 255), os, opts));
         break;
       default:
-        J(e, 513, Zr(r, n, i));
+        write_biff_rec(ba, 513, write_XLSCell(R, C, os));
     }
 }
-function Md(e, t, r) {
-  var n = Qe(), a = r.SheetNames[e], i = r.Sheets[a] || {}, s = (r || {}).Workbook || {}, f = (s.Sheets || [])[e] || {}, l = Array.isArray(i), o = t.biff == 8, c, p = "", u = [], v = we(i["!ref"] || "A1"), T = o ? 65536 : 16384;
-  if (v.e.c > 255 || v.e.r >= T) {
-    if (t.WTF)
-      throw new Error("Range " + (i["!ref"] || "A1") + " exceeds format limit A1:IV16384");
-    v.e.c = Math.min(v.e.c, 255), v.e.r = Math.min(v.e.c, T - 1);
+function write_ws_biff8(idx, opts, wb) {
+  var ba = buf_array();
+  var s = wb.SheetNames[idx], ws = wb.Sheets[s] || {};
+  var _WB = (wb || {}).Workbook || {};
+  var _sheet = (_WB.Sheets || [])[idx] || {};
+  var dense = Array.isArray(ws);
+  var b8 = opts.biff == 8;
+  var ref, rr = "", cols = [];
+  var range = safe_decode_range(ws["!ref"] || "A1");
+  var MAX_ROWS = b8 ? 65536 : 16384;
+  if (range.e.c > 255 || range.e.r >= MAX_ROWS) {
+    if (opts.WTF)
+      throw new Error("Range " + (ws["!ref"] || "A1") + " exceeds format limit A1:IV16384");
+    range.e.c = Math.min(range.e.c, 255);
+    range.e.r = Math.min(range.e.c, MAX_ROWS - 1);
   }
-  J(n, 2057, P0(r, 16, t)), J(n, 13, xr(1)), J(n, 12, xr(100)), J(n, 15, Je(!0)), J(n, 17, Je(!1)), J(n, 16, Jr(1e-3)), J(n, 95, Je(!0)), J(n, 42, Je(!1)), J(n, 43, Je(!1)), J(n, 130, xr(1)), J(n, 128, Oc([0, 0])), J(n, 131, Je(!1)), J(n, 132, Je(!1)), o && Ld(n, i["!cols"]), J(n, 512, Cc(v, t)), o && (i["!links"] = []);
-  for (var x = v.s.r; x <= v.e.r; ++x) {
-    p = Ge(x);
-    for (var _ = v.s.c; _ <= v.e.c; ++_) {
-      x === v.s.r && (u[_] = ze(_)), c = u[_] + p;
-      var O = l ? (i[x] || [])[_] : i[c];
-      !O || (Bd(n, O, x, _, t), o && O.l && i["!links"].push([c, O.l]));
+  write_biff_rec(ba, 2057, write_BOF(wb, 16, opts));
+  write_biff_rec(ba, 13, writeuint16(1));
+  write_biff_rec(ba, 12, writeuint16(100));
+  write_biff_rec(ba, 15, writebool(true));
+  write_biff_rec(ba, 17, writebool(false));
+  write_biff_rec(ba, 16, write_Xnum(1e-3));
+  write_biff_rec(ba, 95, writebool(true));
+  write_biff_rec(ba, 42, writebool(false));
+  write_biff_rec(ba, 43, writebool(false));
+  write_biff_rec(ba, 130, writeuint16(1));
+  write_biff_rec(ba, 128, write_Guts([0, 0]));
+  write_biff_rec(ba, 131, writebool(false));
+  write_biff_rec(ba, 132, writebool(false));
+  if (b8)
+    write_ws_cols_biff8(ba, ws["!cols"]);
+  write_biff_rec(ba, 512, write_Dimensions(range, opts));
+  if (b8)
+    ws["!links"] = [];
+  for (var R = range.s.r; R <= range.e.r; ++R) {
+    rr = encode_row(R);
+    for (var C = range.s.c; C <= range.e.c; ++C) {
+      if (R === range.s.r)
+        cols[C] = encode_col(C);
+      ref = cols[C] + rr;
+      var cell = dense ? (ws[R] || [])[C] : ws[ref];
+      if (!cell)
+        continue;
+      write_ws_biff8_cell(ba, cell, R, C, opts);
+      if (b8 && cell.l)
+        ws["!links"].push([ref, cell.l]);
     }
   }
-  var R = f.CodeName || f.name || a;
-  return o && J(n, 574, wc((s.Views || [])[0])), o && (i["!merges"] || []).length && J(n, 229, kc(i["!merges"])), o && Pd(n, i), J(n, 442, ws(R)), o && Id(n, i), J(n, 10), n.end();
+  var cname = _sheet.CodeName || _sheet.name || s;
+  if (b8)
+    write_biff_rec(ba, 574, write_Window2((_WB.Views || [])[0]));
+  if (b8 && (ws["!merges"] || []).length)
+    write_biff_rec(ba, 229, write_MergeCells(ws["!merges"]));
+  if (b8)
+    write_ws_biff8_hlinks(ba, ws);
+  write_biff_rec(ba, 442, write_XLUnicodeString(cname));
+  if (b8)
+    write_FEAT(ba, ws);
+  write_biff_rec(ba, 10);
+  return ba.end();
 }
-function Ud(e, t, r) {
-  var n = Qe(), a = (e || {}).Workbook || {}, i = a.Sheets || [], s = a.WBProps || {}, f = r.biff == 8, l = r.biff == 5;
-  if (J(n, 2057, P0(e, 5, r)), r.bookType == "xla" && J(n, 135), J(n, 225, f ? xr(1200) : null), J(n, 193, lc(2)), l && J(n, 191), l && J(n, 192), J(n, 226), J(n, 92, gc("SheetJS", r)), J(n, 66, xr(f ? 1200 : 1252)), f && J(n, 353, xr(0)), f && J(n, 448), J(n, 317, bc(e.SheetNames.length)), f && e.vbaraw && J(n, 211), f && e.vbaraw) {
-    var o = s.CodeName || "ThisWorkbook";
-    J(n, 442, ws(o));
+function write_biff8_global(wb, bufs, opts) {
+  var A = buf_array();
+  var _WB = (wb || {}).Workbook || {};
+  var _sheets = _WB.Sheets || [];
+  var _wb = _WB.WBProps || {};
+  var b8 = opts.biff == 8, b5 = opts.biff == 5;
+  write_biff_rec(A, 2057, write_BOF(wb, 5, opts));
+  if (opts.bookType == "xla")
+    write_biff_rec(A, 135);
+  write_biff_rec(A, 225, b8 ? writeuint16(1200) : null);
+  write_biff_rec(A, 193, writezeroes(2));
+  if (b5)
+    write_biff_rec(A, 191);
+  if (b5)
+    write_biff_rec(A, 192);
+  write_biff_rec(A, 226);
+  write_biff_rec(A, 92, write_WriteAccess("SheetJS", opts));
+  write_biff_rec(A, 66, writeuint16(b8 ? 1200 : 1252));
+  if (b8)
+    write_biff_rec(A, 353, writeuint16(0));
+  if (b8)
+    write_biff_rec(A, 448);
+  write_biff_rec(A, 317, write_RRTabId(wb.SheetNames.length));
+  if (b8 && wb.vbaraw)
+    write_biff_rec(A, 211);
+  if (b8 && wb.vbaraw) {
+    var cname = _wb.CodeName || "ThisWorkbook";
+    write_biff_rec(A, 442, write_XLUnicodeString(cname));
   }
-  J(n, 156, xr(17)), J(n, 25, Je(!1)), J(n, 18, Je(!1)), J(n, 19, xr(0)), f && J(n, 431, Je(!1)), f && J(n, 444, xr(0)), J(n, 61, Tc()), J(n, 64, Je(!1)), J(n, 141, xr(0)), J(n, 34, Je(Gx(e) == "true")), J(n, 14, Je(!0)), f && J(n, 439, Je(!1)), J(n, 218, xr(0)), Dd(n, e, r), Nd(n, e.SSF, r), kd(n, r), f && J(n, 352, Je(!1));
-  var c = n.end(), p = Qe();
-  f && J(p, 140, Bc()), f && r.Strings && Ad(p, 252, Ec(r.Strings)), J(p, 10);
-  var u = p.end(), v = Qe(), T = 0, x = 0;
-  for (x = 0; x < e.SheetNames.length; ++x)
-    T += (f ? 12 : 11) + (f ? 2 : 1) * e.SheetNames[x].length;
-  var _ = c.length + T + u.length;
-  for (x = 0; x < e.SheetNames.length; ++x) {
-    var O = i[x] || {};
-    J(v, 133, _c({ pos: _, hs: O.Hidden || 0, dt: 0, name: e.SheetNames[x] }, r)), _ += t[x].length;
+  write_biff_rec(A, 156, writeuint16(17));
+  write_biff_rec(A, 25, writebool(false));
+  write_biff_rec(A, 18, writebool(false));
+  write_biff_rec(A, 19, writeuint16(0));
+  if (b8)
+    write_biff_rec(A, 431, writebool(false));
+  if (b8)
+    write_biff_rec(A, 444, writeuint16(0));
+  write_biff_rec(A, 61, write_Window1());
+  write_biff_rec(A, 64, writebool(false));
+  write_biff_rec(A, 141, writeuint16(0));
+  write_biff_rec(A, 34, writebool(safe1904(wb) == "true"));
+  write_biff_rec(A, 14, writebool(true));
+  if (b8)
+    write_biff_rec(A, 439, writebool(false));
+  write_biff_rec(A, 218, writeuint16(0));
+  write_FONTS_biff8(A, wb, opts);
+  write_FMTS_biff8(A, wb.SSF, opts);
+  write_CELLXFS_biff8(A, opts);
+  if (b8)
+    write_biff_rec(A, 352, writebool(false));
+  var a = A.end();
+  var C = buf_array();
+  if (b8)
+    write_biff_rec(C, 140, write_Country());
+  if (b8 && opts.Strings)
+    write_biff_continue(C, 252, write_SST(opts.Strings));
+  write_biff_rec(C, 10);
+  var c = C.end();
+  var B = buf_array();
+  var blen = 0, j = 0;
+  for (j = 0; j < wb.SheetNames.length; ++j)
+    blen += (b8 ? 12 : 11) + (b8 ? 2 : 1) * wb.SheetNames[j].length;
+  var start = a.length + blen + c.length;
+  for (j = 0; j < wb.SheetNames.length; ++j) {
+    var _sheet = _sheets[j] || {};
+    write_biff_rec(B, 133, write_BoundSheet8({ pos: start, hs: _sheet.Hidden || 0, dt: 0, name: wb.SheetNames[j] }, opts));
+    start += bufs[j].length;
   }
-  var R = v.end();
-  if (T != R.length)
-    throw new Error("BS8 " + T + " != " + R.length);
-  var y = [];
-  return c.length && y.push(c), R.length && y.push(R), u.length && y.push(u), He(y);
+  var b = B.end();
+  if (blen != b.length)
+    throw new Error("BS8 " + blen + " != " + b.length);
+  var out = [];
+  if (a.length)
+    out.push(a);
+  if (b.length)
+    out.push(b);
+  if (c.length)
+    out.push(c);
+  return bconcat(out);
 }
-function bd(e, t) {
-  var r = t || {}, n = [];
-  e && !e.SSF && (e.SSF = tr(Ce)), e && e.SSF && (On(), Cn(e.SSF), r.revssf = Rn(e.SSF), r.revssf[e.SSF[65535]] = 0, r.ssf = e.SSF), r.Strings = [], r.Strings.Count = 0, r.Strings.Unique = 0, W0(r), r.cellXfs = [], Gr(r.cellXfs, {}, { revssf: { General: 0 } }), e.Props || (e.Props = {});
-  for (var a = 0; a < e.SheetNames.length; ++a)
-    n[n.length] = Md(a, r, e);
-  return n.unshift(Ud(e, n, r)), He(n);
+function write_biff8_buf(wb, opts) {
+  var o = opts || {};
+  var bufs = [];
+  if (wb && !wb.SSF) {
+    wb.SSF = dup(table_fmt);
+  }
+  if (wb && wb.SSF) {
+    make_ssf();
+    SSF_load_table(wb.SSF);
+    o.revssf = evert_num(wb.SSF);
+    o.revssf[wb.SSF[65535]] = 0;
+    o.ssf = wb.SSF;
+  }
+  o.Strings = [];
+  o.Strings.Count = 0;
+  o.Strings.Unique = 0;
+  fix_write_opts(o);
+  o.cellXfs = [];
+  get_cell_style(o.cellXfs, {}, { revssf: { "General": 0 } });
+  if (!wb.Props)
+    wb.Props = {};
+  for (var i = 0; i < wb.SheetNames.length; ++i)
+    bufs[bufs.length] = write_ws_biff8(i, o, wb);
+  bufs.unshift(write_biff8_global(wb, bufs, o));
+  return bconcat(bufs);
 }
-function Ys(e, t) {
-  for (var r = 0; r <= e.SheetNames.length; ++r) {
-    var n = e.Sheets[e.SheetNames[r]];
-    if (!(!n || !n["!ref"])) {
-      var a = lr(n["!ref"]);
-      a.e.c > 255 && typeof console < "u" && console.error && console.error("Worksheet '" + e.SheetNames[r] + "' extends beyond column IV (255).  Data may be lost.");
+function write_biff_buf(wb, opts) {
+  for (var i = 0; i <= wb.SheetNames.length; ++i) {
+    var ws = wb.Sheets[wb.SheetNames[i]];
+    if (!ws || !ws["!ref"])
+      continue;
+    var range = decode_range(ws["!ref"]);
+    if (range.e.c > 255) {
+      if (typeof console != "undefined" && console.error)
+        console.error("Worksheet '" + wb.SheetNames[i] + "' extends beyond column IV (255).  Data may be lost.");
     }
   }
-  var i = t || {};
-  switch (i.biff || 2) {
+  var o = opts || {};
+  switch (o.biff || 2) {
     case 8:
     case 5:
-      return bd(e, t);
+      return write_biff8_buf(wb, opts);
     case 4:
     case 3:
     case 2:
-      return Rd(e, t);
+      return write_biff2_buf(wb, opts);
   }
-  throw new Error("invalid type " + i.bookType + " for BIFF");
+  throw new Error("invalid type " + o.bookType + " for BIFF");
 }
-function Wd(e, t, r, n) {
-  for (var a = e["!merges"] || [], i = [], s = t.s.c; s <= t.e.c; ++s) {
-    for (var f = 0, l = 0, o = 0; o < a.length; ++o)
-      if (!(a[o].s.r > r || a[o].s.c > s) && !(a[o].e.r < r || a[o].e.c < s)) {
-        if (a[o].s.r < r || a[o].s.c < s) {
-          f = -1;
-          break;
-        }
-        f = a[o].e.r - a[o].s.r + 1, l = a[o].e.c - a[o].s.c + 1;
+function make_html_row(ws, r, R, o) {
+  var M = ws["!merges"] || [];
+  var oo = [];
+  for (var C = r.s.c; C <= r.e.c; ++C) {
+    var RS = 0, CS = 0;
+    for (var j = 0; j < M.length; ++j) {
+      if (M[j].s.r > R || M[j].s.c > C)
+        continue;
+      if (M[j].e.r < R || M[j].e.c < C)
+        continue;
+      if (M[j].s.r < R || M[j].s.c < C) {
+        RS = -1;
         break;
       }
-    if (!(f < 0)) {
-      var c = _e({ r, c: s }), p = n.dense ? (e[r] || [])[s] : e[c], u = p && p.v != null && (p.h || ml(p.w || (Pr(p), p.w) || "")) || "", v = {};
-      f > 1 && (v.rowspan = f), l > 1 && (v.colspan = l), n.editable ? u = '<span contenteditable="true">' + u + "</span>" : p && (v["data-t"] = p && p.t || "z", p.v != null && (v["data-v"] = p.v), p.z != null && (v["data-z"] = p.z), p.l && (p.l.Target || "#").charAt(0) != "#" && (u = '<a href="' + p.l.Target + '">' + u + "</a>")), v.id = (n.id || "sjs") + "-" + c, i.push(q("td", u, v));
+      RS = M[j].e.r - M[j].s.r + 1;
+      CS = M[j].e.c - M[j].s.c + 1;
+      break;
     }
+    if (RS < 0)
+      continue;
+    var coord = encode_cell({ r: R, c: C });
+    var cell = o.dense ? (ws[R] || [])[C] : ws[coord];
+    var w = cell && cell.v != null && (cell.h || escapehtml(cell.w || (format_cell(cell), cell.w) || "")) || "";
+    var sp = {};
+    if (RS > 1)
+      sp.rowspan = RS;
+    if (CS > 1)
+      sp.colspan = CS;
+    if (o.editable)
+      w = '<span contenteditable="true">' + w + "</span>";
+    else if (cell) {
+      sp["data-t"] = cell && cell.t || "z";
+      if (cell.v != null)
+        sp["data-v"] = cell.v;
+      if (cell.z != null)
+        sp["data-z"] = cell.z;
+      if (cell.l && (cell.l.Target || "#").charAt(0) != "#")
+        w = '<a href="' + cell.l.Target + '">' + w + "</a>";
+    }
+    sp.id = (o.id || "sjs") + "-" + coord;
+    oo.push(writextag("td", w, sp));
   }
-  var T = "<tr>";
-  return T + i.join("") + "</tr>";
+  var preamble = "<tr>";
+  return preamble + oo.join("") + "</tr>";
 }
-var Hd = '<html><head><meta charset="utf-8"/><title>SheetJS Table Export</title></head><body>', Vd = "</body></html>";
-function Gd(e, t, r) {
-  var n = [];
-  return n.join("") + "<table" + (r && r.id ? ' id="' + r.id + '"' : "") + ">";
+var HTML_BEGIN = '<html><head><meta charset="utf-8"/><title>SheetJS Table Export</title></head><body>';
+var HTML_END = "</body></html>";
+function make_html_preamble(ws, R, o) {
+  var out = [];
+  return out.join("") + "<table" + (o && o.id ? ' id="' + o.id + '"' : "") + ">";
 }
-function qs(e, t) {
-  var r = t || {}, n = r.header != null ? r.header : Hd, a = r.footer != null ? r.footer : Vd, i = [n], s = lr(e["!ref"]);
-  r.dense = Array.isArray(e), i.push(Gd(e, s, r));
-  for (var f = s.s.r; f <= s.e.r; ++f)
-    i.push(Wd(e, s, f, r));
-  return i.push("</table>" + a), i.join("");
+function sheet_to_html(ws, opts) {
+  var o = opts || {};
+  var header = o.header != null ? o.header : HTML_BEGIN;
+  var footer = o.footer != null ? o.footer : HTML_END;
+  var out = [header];
+  var r = decode_range(ws["!ref"]);
+  o.dense = Array.isArray(ws);
+  out.push(make_html_preamble(ws, r, o));
+  for (var R = r.s.r; R <= r.e.r; ++R)
+    out.push(make_html_row(ws, r, R, o));
+  out.push("</table>" + footer);
+  return out.join("");
 }
-function Js(e, t, r) {
-  var n = r || {}, a = 0, i = 0;
-  if (n.origin != null)
-    if (typeof n.origin == "number")
-      a = n.origin;
+function sheet_add_dom(ws, table, _opts) {
+  var opts = _opts || {};
+  var or_R = 0, or_C = 0;
+  if (opts.origin != null) {
+    if (typeof opts.origin == "number")
+      or_R = opts.origin;
     else {
-      var s = typeof n.origin == "string" ? Me(n.origin) : n.origin;
-      a = s.r, i = s.c;
+      var _origin = typeof opts.origin == "string" ? decode_cell(opts.origin) : opts.origin;
+      or_R = _origin.r;
+      or_C = _origin.c;
     }
-  var f = t.getElementsByTagName("tr"), l = Math.min(n.sheetRows || 1e7, f.length), o = { s: { r: 0, c: 0 }, e: { r: a, c: i } };
-  if (e["!ref"]) {
-    var c = lr(e["!ref"]);
-    o.s.r = Math.min(o.s.r, c.s.r), o.s.c = Math.min(o.s.c, c.s.c), o.e.r = Math.max(o.e.r, c.e.r), o.e.c = Math.max(o.e.c, c.e.c), a == -1 && (o.e.r = a = c.e.r + 1);
   }
-  var p = [], u = 0, v = e["!rows"] || (e["!rows"] = []), T = 0, x = 0, _ = 0, O = 0, R = 0, y = 0;
-  for (e["!cols"] || (e["!cols"] = []); T < f.length && x < l; ++T) {
-    var M = f[T];
-    if (ii(M)) {
-      if (n.display)
+  var rows = table.getElementsByTagName("tr");
+  var sheetRows = Math.min(opts.sheetRows || 1e7, rows.length);
+  var range = { s: { r: 0, c: 0 }, e: { r: or_R, c: or_C } };
+  if (ws["!ref"]) {
+    var _range = decode_range(ws["!ref"]);
+    range.s.r = Math.min(range.s.r, _range.s.r);
+    range.s.c = Math.min(range.s.c, _range.s.c);
+    range.e.r = Math.max(range.e.r, _range.e.r);
+    range.e.c = Math.max(range.e.c, _range.e.c);
+    if (or_R == -1)
+      range.e.r = or_R = _range.e.r + 1;
+  }
+  var merges = [], midx = 0;
+  var rowinfo = ws["!rows"] || (ws["!rows"] = []);
+  var _R = 0, R = 0, _C = 0, C = 0, RS = 0, CS = 0;
+  if (!ws["!cols"])
+    ws["!cols"] = [];
+  for (; _R < rows.length && R < sheetRows; ++_R) {
+    var row = rows[_R];
+    if (is_dom_element_hidden(row)) {
+      if (opts.display)
         continue;
-      v[x] = { hidden: !0 };
+      rowinfo[R] = { hidden: true };
     }
-    var b = M.children;
-    for (_ = O = 0; _ < b.length; ++_) {
-      var re = b[_];
-      if (!(n.display && ii(re))) {
-        var D = re.hasAttribute("data-v") ? re.getAttribute("data-v") : re.hasAttribute("v") ? re.getAttribute("v") : Tl(re.innerHTML), H = re.getAttribute("data-z") || re.getAttribute("z");
-        for (u = 0; u < p.length; ++u) {
-          var L = p[u];
-          L.s.c == O + i && L.s.r < x + a && x + a <= L.e.r && (O = L.e.c + 1 - i, u = -1);
+    var elts = row.children;
+    for (_C = C = 0; _C < elts.length; ++_C) {
+      var elt = elts[_C];
+      if (opts.display && is_dom_element_hidden(elt))
+        continue;
+      var v = elt.hasAttribute("data-v") ? elt.getAttribute("data-v") : elt.hasAttribute("v") ? elt.getAttribute("v") : htmldecode(elt.innerHTML);
+      var z = elt.getAttribute("data-z") || elt.getAttribute("z");
+      for (midx = 0; midx < merges.length; ++midx) {
+        var m = merges[midx];
+        if (m.s.c == C + or_C && m.s.r < R + or_R && R + or_R <= m.e.r) {
+          C = m.e.c + 1 - or_C;
+          midx = -1;
         }
-        y = +re.getAttribute("colspan") || 1, ((R = +re.getAttribute("rowspan") || 1) > 1 || y > 1) && p.push({ s: { r: x + a, c: O + i }, e: { r: x + a + (R || 1) - 1, c: O + i + (y || 1) - 1 } });
-        var G = { t: "s", v: D }, z = re.getAttribute("data-t") || re.getAttribute("t") || "";
-        D != null && (D.length == 0 ? G.t = z || "z" : n.raw || D.trim().length == 0 || z == "s" || (D === "TRUE" ? G = { t: "b", v: !0 } : D === "FALSE" ? G = { t: "b", v: !1 } : isNaN(Nr(D)) ? isNaN(Ut(D).getDate()) || (G = { t: "d", v: Ze(D) }, n.cellDates || (G = { t: "n", v: rr(G.v) }), G.z = n.dateNF || Ce[14]) : G = { t: "n", v: Nr(D) })), G.z === void 0 && H != null && (G.z = H);
-        var j = "", Q = re.getElementsByTagName("A");
-        if (Q && Q.length)
-          for (var he = 0; he < Q.length && !(Q[he].hasAttribute("href") && (j = Q[he].getAttribute("href"), j.charAt(0) != "#")); ++he)
-            ;
-        j && j.charAt(0) != "#" && (G.l = { Target: j }), n.dense ? (e[x + a] || (e[x + a] = []), e[x + a][O + i] = G) : e[_e({ c: O + i, r: x + a })] = G, o.e.c < O + i && (o.e.c = O + i), O += y;
       }
+      CS = +elt.getAttribute("colspan") || 1;
+      if ((RS = +elt.getAttribute("rowspan") || 1) > 1 || CS > 1)
+        merges.push({ s: { r: R + or_R, c: C + or_C }, e: { r: R + or_R + (RS || 1) - 1, c: C + or_C + (CS || 1) - 1 } });
+      var o = { t: "s", v };
+      var _t = elt.getAttribute("data-t") || elt.getAttribute("t") || "";
+      if (v != null) {
+        if (v.length == 0)
+          o.t = _t || "z";
+        else if (opts.raw || v.trim().length == 0 || _t == "s")
+          ;
+        else if (v === "TRUE")
+          o = { t: "b", v: true };
+        else if (v === "FALSE")
+          o = { t: "b", v: false };
+        else if (!isNaN(fuzzynum(v)))
+          o = { t: "n", v: fuzzynum(v) };
+        else if (!isNaN(fuzzydate(v).getDate())) {
+          o = { t: "d", v: parseDate(v) };
+          if (!opts.cellDates)
+            o = { t: "n", v: datenum(o.v) };
+          o.z = opts.dateNF || table_fmt[14];
+        }
+      }
+      if (o.z === void 0 && z != null)
+        o.z = z;
+      var l = "", Aelts = elt.getElementsByTagName("A");
+      if (Aelts && Aelts.length) {
+        for (var Aelti = 0; Aelti < Aelts.length; ++Aelti)
+          if (Aelts[Aelti].hasAttribute("href")) {
+            l = Aelts[Aelti].getAttribute("href");
+            if (l.charAt(0) != "#")
+              break;
+          }
+      }
+      if (l && l.charAt(0) != "#")
+        o.l = { Target: l };
+      if (opts.dense) {
+        if (!ws[R + or_R])
+          ws[R + or_R] = [];
+        ws[R + or_R][C + or_C] = o;
+      } else
+        ws[encode_cell({ c: C + or_C, r: R + or_R })] = o;
+      if (range.e.c < C + or_C)
+        range.e.c = C + or_C;
+      C += CS;
     }
-    ++x;
+    ++R;
   }
-  return p.length && (e["!merges"] = (e["!merges"] || []).concat(p)), o.e.r = Math.max(o.e.r, x - 1 + a), e["!ref"] = Ne(o), x >= l && (e["!fullref"] = Ne((o.e.r = f.length - T + x - 1 + a, o))), e;
+  if (merges.length)
+    ws["!merges"] = (ws["!merges"] || []).concat(merges);
+  range.e.r = Math.max(range.e.r, R - 1 + or_R);
+  ws["!ref"] = encode_range(range);
+  if (R >= sheetRows)
+    ws["!fullref"] = encode_range((range.e.r = rows.length - _R + R - 1 + or_R, range));
+  return ws;
 }
-function Zs(e, t) {
-  var r = t || {}, n = r.dense ? [] : {};
-  return Js(n, e, t);
+function parse_dom_table(table, _opts) {
+  var opts = _opts || {};
+  var ws = opts.dense ? [] : {};
+  return sheet_add_dom(ws, table, _opts);
 }
-function Xd(e, t) {
-  return et(Zs(e, t), t);
+function table_to_book(table, opts) {
+  return sheet_to_workbook(parse_dom_table(table, opts), opts);
 }
-function ii(e) {
-  var t = "", r = $d(e);
-  return r && (t = r(e).getPropertyValue("display")), t || (t = e.style && e.style.display), t === "none";
+function is_dom_element_hidden(element) {
+  var display = "";
+  var get_computed_style = get_get_computed_style_function(element);
+  if (get_computed_style)
+    display = get_computed_style(element).getPropertyValue("display");
+  if (!display)
+    display = element.style && element.style.display;
+  return display === "none";
 }
-function $d(e) {
-  return e.ownerDocument.defaultView && typeof e.ownerDocument.defaultView.getComputedStyle == "function" ? e.ownerDocument.defaultView.getComputedStyle : typeof getComputedStyle == "function" ? getComputedStyle : null;
+function get_get_computed_style_function(element) {
+  if (element.ownerDocument.defaultView && typeof element.ownerDocument.defaultView.getComputedStyle === "function")
+    return element.ownerDocument.defaultView.getComputedStyle;
+  if (typeof getComputedStyle === "function")
+    return getComputedStyle;
+  return null;
 }
-var jd = /* @__PURE__ */ function() {
-  var e = [
+var write_styles_ods = /* @__PURE__ */ function() {
+  var master_styles = [
     "<office:master-styles>",
     '<style:master-page style:name="mp1" style:page-layout-name="mp1">',
     "<style:header/>",
@@ -11575,7 +16920,8 @@ var jd = /* @__PURE__ */ function() {
     '<style:footer-left style:display="false"/>',
     "</style:master-page>",
     "</office:master-styles>"
-  ].join(""), t = "<office:document-styles " + bt({
+  ].join("");
+  var payload = "<office:document-styles " + wxt_helper({
     "xmlns:office": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
     "xmlns:table": "urn:oasis:names:tc:opendocument:xmlns:table:1.0",
     "xmlns:style": "urn:oasis:names:tc:opendocument:xmlns:style:1.0",
@@ -11588,138 +16934,174 @@ var jd = /* @__PURE__ */ function() {
     "xmlns:svg": "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0",
     "xmlns:of": "urn:oasis:names:tc:opendocument:xmlns:of:1.2",
     "office:version": "1.2"
-  }) + ">" + e + "</office:document-styles>";
-  return function() {
-    return Ie + t;
+  }) + ">" + master_styles + "</office:document-styles>";
+  return function wso() {
+    return XML_HEADER + payload;
   };
-}(), si = /* @__PURE__ */ function() {
-  var e = function(i) {
-    return ge(i).replace(/  +/g, function(s) {
-      return '<text:s text:c="' + s.length + '"/>';
+}();
+var write_content_ods = /* @__PURE__ */ function() {
+  var write_text_p = function(text) {
+    return escapexml(text).replace(/  +/g, function($$) {
+      return '<text:s text:c="' + $$.length + '"/>';
     }).replace(/\t/g, "<text:tab/>").replace(/\n/g, "</text:p><text:p>").replace(/^ /, "<text:s/>").replace(/ $/, "<text:s/>");
-  }, t = `          <table:table-cell />
-`, r = `          <table:covered-table-cell/>
-`, n = function(i, s, f) {
-    var l = [];
-    l.push('      <table:table table:name="' + ge(s.SheetNames[f]) + `" table:style-name="ta1">
-`);
-    var o = 0, c = 0, p = lr(i["!ref"] || "A1"), u = i["!merges"] || [], v = 0, T = Array.isArray(i);
-    if (i["!cols"])
-      for (c = 0; c <= p.e.c; ++c)
-        l.push("        <table:table-column" + (i["!cols"][c] ? ' table:style-name="co' + i["!cols"][c].ods + '"' : "") + `></table:table-column>
-`);
-    var x = "", _ = i["!rows"] || [];
-    for (o = 0; o < p.s.r; ++o)
-      x = _[o] ? ' table:style-name="ro' + _[o].ods + '"' : "", l.push("        <table:table-row" + x + `></table:table-row>
-`);
-    for (; o <= p.e.r; ++o) {
-      for (x = _[o] ? ' table:style-name="ro' + _[o].ods + '"' : "", l.push("        <table:table-row" + x + `>
-`), c = 0; c < p.s.c; ++c)
-        l.push(t);
-      for (; c <= p.e.c; ++c) {
-        var O = !1, R = {}, y = "";
-        for (v = 0; v != u.length; ++v)
-          if (!(u[v].s.c > c) && !(u[v].s.r > o) && !(u[v].e.c < c) && !(u[v].e.r < o)) {
-            (u[v].s.c != c || u[v].s.r != o) && (O = !0), R["table:number-columns-spanned"] = u[v].e.c - u[v].s.c + 1, R["table:number-rows-spanned"] = u[v].e.r - u[v].s.r + 1;
-            break;
+  };
+  var null_cell_xml = "          <table:table-cell />\n";
+  var covered_cell_xml = "          <table:covered-table-cell/>\n";
+  var write_ws2 = function(ws, wb, i) {
+    var o = [];
+    o.push('      <table:table table:name="' + escapexml(wb.SheetNames[i]) + '" table:style-name="ta1">\n');
+    var R = 0, C = 0, range = decode_range(ws["!ref"] || "A1");
+    var marr = ws["!merges"] || [], mi = 0;
+    var dense = Array.isArray(ws);
+    if (ws["!cols"]) {
+      for (C = 0; C <= range.e.c; ++C)
+        o.push("        <table:table-column" + (ws["!cols"][C] ? ' table:style-name="co' + ws["!cols"][C].ods + '"' : "") + "></table:table-column>\n");
+    }
+    var H = "", ROWS = ws["!rows"] || [];
+    for (R = 0; R < range.s.r; ++R) {
+      H = ROWS[R] ? ' table:style-name="ro' + ROWS[R].ods + '"' : "";
+      o.push("        <table:table-row" + H + "></table:table-row>\n");
+    }
+    for (; R <= range.e.r; ++R) {
+      H = ROWS[R] ? ' table:style-name="ro' + ROWS[R].ods + '"' : "";
+      o.push("        <table:table-row" + H + ">\n");
+      for (C = 0; C < range.s.c; ++C)
+        o.push(null_cell_xml);
+      for (; C <= range.e.c; ++C) {
+        var skip = false, ct = {}, textp = "";
+        for (mi = 0; mi != marr.length; ++mi) {
+          if (marr[mi].s.c > C)
+            continue;
+          if (marr[mi].s.r > R)
+            continue;
+          if (marr[mi].e.c < C)
+            continue;
+          if (marr[mi].e.r < R)
+            continue;
+          if (marr[mi].s.c != C || marr[mi].s.r != R)
+            skip = true;
+          ct["table:number-columns-spanned"] = marr[mi].e.c - marr[mi].s.c + 1;
+          ct["table:number-rows-spanned"] = marr[mi].e.r - marr[mi].s.r + 1;
+          break;
+        }
+        if (skip) {
+          o.push(covered_cell_xml);
+          continue;
+        }
+        var ref = encode_cell({ r: R, c: C }), cell = dense ? (ws[R] || [])[C] : ws[ref];
+        if (cell && cell.f) {
+          ct["table:formula"] = escapexml(csf_to_ods_formula(cell.f));
+          if (cell.F) {
+            if (cell.F.slice(0, ref.length) == ref) {
+              var _Fref = decode_range(cell.F);
+              ct["table:number-matrix-columns-spanned"] = _Fref.e.c - _Fref.s.c + 1;
+              ct["table:number-matrix-rows-spanned"] = _Fref.e.r - _Fref.s.r + 1;
+            }
           }
-        if (O) {
-          l.push(r);
+        }
+        if (!cell) {
+          o.push(null_cell_xml);
           continue;
         }
-        var M = _e({ r: o, c }), b = T ? (i[o] || [])[c] : i[M];
-        if (b && b.f && (R["table:formula"] = ge(u1(b.f)), b.F && b.F.slice(0, M.length) == M)) {
-          var re = lr(b.F);
-          R["table:number-matrix-columns-spanned"] = re.e.c - re.s.c + 1, R["table:number-matrix-rows-spanned"] = re.e.r - re.s.r + 1;
-        }
-        if (!b) {
-          l.push(t);
-          continue;
-        }
-        switch (b.t) {
+        switch (cell.t) {
           case "b":
-            y = b.v ? "TRUE" : "FALSE", R["office:value-type"] = "boolean", R["office:boolean-value"] = b.v ? "true" : "false";
+            textp = cell.v ? "TRUE" : "FALSE";
+            ct["office:value-type"] = "boolean";
+            ct["office:boolean-value"] = cell.v ? "true" : "false";
             break;
           case "n":
-            y = b.w || String(b.v || 0), R["office:value-type"] = "float", R["office:value"] = b.v || 0;
+            textp = cell.w || String(cell.v || 0);
+            ct["office:value-type"] = "float";
+            ct["office:value"] = cell.v || 0;
             break;
           case "s":
           case "str":
-            y = b.v == null ? "" : b.v, R["office:value-type"] = "string";
+            textp = cell.v == null ? "" : cell.v;
+            ct["office:value-type"] = "string";
             break;
           case "d":
-            y = b.w || Ze(b.v).toISOString(), R["office:value-type"] = "date", R["office:date-value"] = Ze(b.v).toISOString(), R["table:style-name"] = "ce1";
+            textp = cell.w || parseDate(cell.v).toISOString();
+            ct["office:value-type"] = "date";
+            ct["office:date-value"] = parseDate(cell.v).toISOString();
+            ct["table:style-name"] = "ce1";
             break;
           default:
-            l.push(t);
+            o.push(null_cell_xml);
             continue;
         }
-        var D = e(y);
-        if (b.l && b.l.Target) {
-          var H = b.l.Target;
-          H = H.charAt(0) == "#" ? "#" + x1(H.slice(1)) : H, H.charAt(0) != "#" && !H.match(/^\w+:/) && (H = "../" + H), D = q("text:a", D, { "xlink:href": H.replace(/&/g, "&amp;") });
+        var text_p = write_text_p(textp);
+        if (cell.l && cell.l.Target) {
+          var _tgt = cell.l.Target;
+          _tgt = _tgt.charAt(0) == "#" ? "#" + csf_to_ods_3D(_tgt.slice(1)) : _tgt;
+          if (_tgt.charAt(0) != "#" && !_tgt.match(/^\w+:/))
+            _tgt = "../" + _tgt;
+          text_p = writextag("text:a", text_p, { "xlink:href": _tgt.replace(/&/g, "&amp;") });
         }
-        l.push("          " + q("table:table-cell", q("text:p", D, {}), R) + `
-`);
+        o.push("          " + writextag("table:table-cell", writextag("text:p", text_p, {}), ct) + "\n");
       }
-      l.push(`        </table:table-row>
-`);
+      o.push("        </table:table-row>\n");
     }
-    return l.push(`      </table:table>
-`), l.join("");
-  }, a = function(i, s) {
-    i.push(` <office:automatic-styles>
-`), i.push(`  <number:date-style style:name="N37" number:automatic-order="true">
-`), i.push(`   <number:month number:style="long"/>
-`), i.push(`   <number:text>/</number:text>
-`), i.push(`   <number:day number:style="long"/>
-`), i.push(`   <number:text>/</number:text>
-`), i.push(`   <number:year/>
-`), i.push(`  </number:date-style>
-`);
-    var f = 0;
-    s.SheetNames.map(function(o) {
-      return s.Sheets[o];
-    }).forEach(function(o) {
-      if (!!o && o["!cols"]) {
-        for (var c = 0; c < o["!cols"].length; ++c)
-          if (o["!cols"][c]) {
-            var p = o["!cols"][c];
-            if (p.width == null && p.wpx == null && p.wch == null)
+    o.push("      </table:table>\n");
+    return o.join("");
+  };
+  var write_automatic_styles_ods = function(o, wb) {
+    o.push(" <office:automatic-styles>\n");
+    o.push('  <number:date-style style:name="N37" number:automatic-order="true">\n');
+    o.push('   <number:month number:style="long"/>\n');
+    o.push("   <number:text>/</number:text>\n");
+    o.push('   <number:day number:style="long"/>\n');
+    o.push("   <number:text>/</number:text>\n");
+    o.push("   <number:year/>\n");
+    o.push("  </number:date-style>\n");
+    var cidx = 0;
+    wb.SheetNames.map(function(n) {
+      return wb.Sheets[n];
+    }).forEach(function(ws) {
+      if (!ws)
+        return;
+      if (ws["!cols"]) {
+        for (var C = 0; C < ws["!cols"].length; ++C)
+          if (ws["!cols"][C]) {
+            var colobj = ws["!cols"][C];
+            if (colobj.width == null && colobj.wpx == null && colobj.wch == null)
               continue;
-            L0(p), p.ods = f;
-            var u = o["!cols"][c].wpx + "px";
-            i.push('  <style:style style:name="co' + f + `" style:family="table-column">
-`), i.push('   <style:table-column-properties fo:break-before="auto" style:column-width="' + u + `"/>
-`), i.push(`  </style:style>
-`), ++f;
+            process_col(colobj);
+            colobj.ods = cidx;
+            var w = ws["!cols"][C].wpx + "px";
+            o.push('  <style:style style:name="co' + cidx + '" style:family="table-column">\n');
+            o.push('   <style:table-column-properties fo:break-before="auto" style:column-width="' + w + '"/>\n');
+            o.push("  </style:style>\n");
+            ++cidx;
           }
       }
     });
-    var l = 0;
-    s.SheetNames.map(function(o) {
-      return s.Sheets[o];
-    }).forEach(function(o) {
-      if (!!o && o["!rows"]) {
-        for (var c = 0; c < o["!rows"].length; ++c)
-          if (o["!rows"][c]) {
-            o["!rows"][c].ods = l;
-            var p = o["!rows"][c].hpx + "px";
-            i.push('  <style:style style:name="ro' + l + `" style:family="table-row">
-`), i.push('   <style:table-row-properties fo:break-before="auto" style:row-height="' + p + `"/>
-`), i.push(`  </style:style>
-`), ++l;
+    var ridx = 0;
+    wb.SheetNames.map(function(n) {
+      return wb.Sheets[n];
+    }).forEach(function(ws) {
+      if (!ws)
+        return;
+      if (ws["!rows"]) {
+        for (var R = 0; R < ws["!rows"].length; ++R)
+          if (ws["!rows"][R]) {
+            ws["!rows"][R].ods = ridx;
+            var h2 = ws["!rows"][R].hpx + "px";
+            o.push('  <style:style style:name="ro' + ridx + '" style:family="table-row">\n');
+            o.push('   <style:table-row-properties fo:break-before="auto" style:row-height="' + h2 + '"/>\n');
+            o.push("  </style:style>\n");
+            ++ridx;
           }
       }
-    }), i.push(`  <style:style style:name="ta1" style:family="table" style:master-page-name="mp1">
-`), i.push(`   <style:table-properties table:display="true" style:writing-mode="lr-tb"/>
-`), i.push(`  </style:style>
-`), i.push(`  <style:style style:name="ce1" style:family="table-cell" style:parent-style-name="Default" style:data-style-name="N37"/>
-`), i.push(` </office:automatic-styles>
-`);
+    });
+    o.push('  <style:style style:name="ta1" style:family="table" style:master-page-name="mp1">\n');
+    o.push('   <style:table-properties table:display="true" style:writing-mode="lr-tb"/>\n');
+    o.push("  </style:style>\n");
+    o.push('  <style:style style:name="ce1" style:family="table-cell" style:parent-style-name="Default" style:data-style-name="N37"/>\n');
+    o.push(" </office:automatic-styles>\n");
   };
-  return function(s, f) {
-    var l = [Ie], o = bt({
+  return function wcx(wb, opts) {
+    var o = [XML_HEADER];
+    var attr = wxt_helper({
       "xmlns:office": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
       "xmlns:table": "urn:oasis:names:tc:opendocument:xmlns:table:1.0",
       "xmlns:style": "urn:oasis:names:tc:opendocument:xmlns:style:1.0",
@@ -11757,773 +17139,1377 @@ var jd = /* @__PURE__ */ function() {
       "xmlns:formx": "urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0",
       "xmlns:css3t": "http://www.w3.org/TR/css3-text/",
       "office:version": "1.2"
-    }), c = bt({
+    });
+    var fods = wxt_helper({
       "xmlns:config": "urn:oasis:names:tc:opendocument:xmlns:config:1.0",
       "office:mimetype": "application/vnd.oasis.opendocument.spreadsheet"
     });
-    f.bookType == "fods" ? (l.push("<office:document" + o + c + `>
-`), l.push(xs().replace(/office:document-meta/g, "office:meta"))) : l.push("<office:document-content" + o + `>
-`), a(l, s), l.push(`  <office:body>
-`), l.push(`    <office:spreadsheet>
-`);
-    for (var p = 0; p != s.SheetNames.length; ++p)
-      l.push(n(s.Sheets[s.SheetNames[p]], s, p));
-    return l.push(`    </office:spreadsheet>
-`), l.push(`  </office:body>
-`), f.bookType == "fods" ? l.push("</office:document>") : l.push("</office:document-content>"), l.join("");
+    if (opts.bookType == "fods") {
+      o.push("<office:document" + attr + fods + ">\n");
+      o.push(write_meta_ods().replace(/office:document-meta/g, "office:meta"));
+    } else
+      o.push("<office:document-content" + attr + ">\n");
+    write_automatic_styles_ods(o, wb);
+    o.push("  <office:body>\n");
+    o.push("    <office:spreadsheet>\n");
+    for (var i = 0; i != wb.SheetNames.length; ++i)
+      o.push(write_ws2(wb.Sheets[wb.SheetNames[i]], wb, i));
+    o.push("    </office:spreadsheet>\n");
+    o.push("  </office:body>\n");
+    if (opts.bookType == "fods")
+      o.push("</office:document>");
+    else
+      o.push("</office:document-content>");
+    return o.join("");
   };
 }();
-function Qs(e, t) {
-  if (t.bookType == "fods")
-    return si(e, t);
-  var r = A0(), n = "", a = [], i = [];
-  return n = "mimetype", ce(r, n, "application/vnd.oasis.opendocument.spreadsheet"), n = "content.xml", ce(r, n, si(e, t)), a.push([n, "text/xml"]), i.push([n, "ContentFile"]), n = "styles.xml", ce(r, n, jd(e, t)), a.push([n, "text/xml"]), i.push([n, "StylesFile"]), n = "meta.xml", ce(r, n, Ie + xs()), a.push([n, "text/xml"]), i.push([n, "MetadataFile"]), n = "manifest.rdf", ce(r, n, ac(i)), a.push([n, "application/rdf+xml"]), n = "META-INF/manifest.xml", ce(r, n, tc(a)), r;
+function write_ods(wb, opts) {
+  if (opts.bookType == "fods")
+    return write_content_ods(wb, opts);
+  var zip = zip_new();
+  var f = "";
+  var manifest = [];
+  var rdf = [];
+  f = "mimetype";
+  zip_add_file(zip, f, "application/vnd.oasis.opendocument.spreadsheet");
+  f = "content.xml";
+  zip_add_file(zip, f, write_content_ods(wb, opts));
+  manifest.push([f, "text/xml"]);
+  rdf.push([f, "ContentFile"]);
+  f = "styles.xml";
+  zip_add_file(zip, f, write_styles_ods(wb, opts));
+  manifest.push([f, "text/xml"]);
+  rdf.push([f, "StylesFile"]);
+  f = "meta.xml";
+  zip_add_file(zip, f, XML_HEADER + write_meta_ods());
+  manifest.push([f, "text/xml"]);
+  rdf.push([f, "MetadataFile"]);
+  f = "manifest.rdf";
+  zip_add_file(zip, f, write_rdf(rdf));
+  manifest.push([f, "application/rdf+xml"]);
+  f = "META-INF/manifest.xml";
+  zip_add_file(zip, f, write_manifest(manifest));
+  return zip;
 }
 /*! sheetjs (C) 2013-present SheetJS -- http://sheetjs.com */
-function En(e) {
-  return new DataView(e.buffer, e.byteOffset, e.byteLength);
+function u8_to_dataview(array) {
+  return new DataView(array.buffer, array.byteOffset, array.byteLength);
 }
-function zd(e) {
-  return typeof TextEncoder < "u" ? new TextEncoder().encode(e) : _r(Rr(e));
+function stru8(str) {
+  return typeof TextEncoder != "undefined" ? new TextEncoder().encode(str) : s2a(utf8write(str));
 }
-function Kd(e, t) {
-  e:
-    for (var r = 0; r <= e.length - t.length; ++r) {
-      for (var n = 0; n < t.length; ++n)
-        if (e[r + n] != t[n])
-          continue e;
-      return !0;
+function u8contains(body, search) {
+  outer:
+    for (var L = 0; L <= body.length - search.length; ++L) {
+      for (var j = 0; j < search.length; ++j)
+        if (body[L + j] != search[j])
+          continue outer;
+      return true;
     }
-  return !1;
+  return false;
 }
-function Vr(e) {
-  var t = e.reduce(function(a, i) {
-    return a + i.length;
-  }, 0), r = new Uint8Array(t), n = 0;
-  return e.forEach(function(a) {
-    r.set(a, n), n += a.length;
-  }), r;
+function u8concat(u8a) {
+  var len = u8a.reduce(function(acc, x) {
+    return acc + x.length;
+  }, 0);
+  var out = new Uint8Array(len);
+  var off = 0;
+  u8a.forEach(function(u8) {
+    out.set(u8, off);
+    off += u8.length;
+  });
+  return out;
 }
-function Yd(e, t, r) {
-  var n = Math.floor(r == 0 ? 0 : Math.LOG10E * Math.log(Math.abs(r))) + 6176 - 20, a = r / Math.pow(10, n - 6176);
-  e[t + 15] |= n >> 7, e[t + 14] |= (n & 127) << 1;
-  for (var i = 0; a >= 1; ++i, a /= 256)
-    e[t + i] = a & 255;
-  e[t + 15] |= r >= 0 ? 0 : 128;
+function writeDecimal128LE(buf, offset, value) {
+  var exp = Math.floor(value == 0 ? 0 : Math.LOG10E * Math.log(Math.abs(value))) + 6176 - 20;
+  var mantissa = value / Math.pow(10, exp - 6176);
+  buf[offset + 15] |= exp >> 7;
+  buf[offset + 14] |= (exp & 127) << 1;
+  for (var i = 0; mantissa >= 1; ++i, mantissa /= 256)
+    buf[offset + i] = mantissa & 255;
+  buf[offset + 15] |= value >= 0 ? 0 : 128;
 }
-function Wt(e, t) {
-  var r = t ? t[0] : 0, n = e[r] & 127;
-  e:
-    if (e[r++] >= 128 && (n |= (e[r] & 127) << 7, e[r++] < 128 || (n |= (e[r] & 127) << 14, e[r++] < 128) || (n |= (e[r] & 127) << 21, e[r++] < 128) || (n += (e[r] & 127) * Math.pow(2, 28), ++r, e[r++] < 128) || (n += (e[r] & 127) * Math.pow(2, 35), ++r, e[r++] < 128) || (n += (e[r] & 127) * Math.pow(2, 42), ++r, e[r++] < 128)))
-      break e;
-  return t && (t[0] = r), n;
-}
-function ve(e) {
-  var t = new Uint8Array(7);
-  t[0] = e & 127;
-  var r = 1;
-  e:
-    if (e > 127) {
-      if (t[r - 1] |= 128, t[r] = e >> 7 & 127, ++r, e <= 16383 || (t[r - 1] |= 128, t[r] = e >> 14 & 127, ++r, e <= 2097151) || (t[r - 1] |= 128, t[r] = e >> 21 & 127, ++r, e <= 268435455) || (t[r - 1] |= 128, t[r] = e / 256 >>> 21 & 127, ++r, e <= 34359738367) || (t[r - 1] |= 128, t[r] = e / 65536 >>> 21 & 127, ++r, e <= 4398046511103))
-        break e;
-      t[r - 1] |= 128, t[r] = e / 16777216 >>> 21 & 127, ++r;
+function parse_varint49(buf, ptr) {
+  var l = ptr ? ptr[0] : 0;
+  var usz = buf[l] & 127;
+  varint:
+    if (buf[l++] >= 128) {
+      usz |= (buf[l] & 127) << 7;
+      if (buf[l++] < 128)
+        break varint;
+      usz |= (buf[l] & 127) << 14;
+      if (buf[l++] < 128)
+        break varint;
+      usz |= (buf[l] & 127) << 21;
+      if (buf[l++] < 128)
+        break varint;
+      usz += (buf[l] & 127) * Math.pow(2, 28);
+      ++l;
+      if (buf[l++] < 128)
+        break varint;
+      usz += (buf[l] & 127) * Math.pow(2, 35);
+      ++l;
+      if (buf[l++] < 128)
+        break varint;
+      usz += (buf[l] & 127) * Math.pow(2, 42);
+      ++l;
+      if (buf[l++] < 128)
+        break varint;
     }
-  return t.slice(0, r);
+  if (ptr)
+    ptr[0] = l;
+  return usz;
 }
-function vt(e) {
-  var t = 0, r = e[t] & 127;
-  e:
-    if (e[t++] >= 128) {
-      if (r |= (e[t] & 127) << 7, e[t++] < 128 || (r |= (e[t] & 127) << 14, e[t++] < 128) || (r |= (e[t] & 127) << 21, e[t++] < 128))
-        break e;
-      r |= (e[t] & 127) << 28;
+function write_varint49(v) {
+  var usz = new Uint8Array(7);
+  usz[0] = v & 127;
+  var L = 1;
+  sz:
+    if (v > 127) {
+      usz[L - 1] |= 128;
+      usz[L] = v >> 7 & 127;
+      ++L;
+      if (v <= 16383)
+        break sz;
+      usz[L - 1] |= 128;
+      usz[L] = v >> 14 & 127;
+      ++L;
+      if (v <= 2097151)
+        break sz;
+      usz[L - 1] |= 128;
+      usz[L] = v >> 21 & 127;
+      ++L;
+      if (v <= 268435455)
+        break sz;
+      usz[L - 1] |= 128;
+      usz[L] = v / 256 >>> 21 & 127;
+      ++L;
+      if (v <= 34359738367)
+        break sz;
+      usz[L - 1] |= 128;
+      usz[L] = v / 65536 >>> 21 & 127;
+      ++L;
+      if (v <= 4398046511103)
+        break sz;
+      usz[L - 1] |= 128;
+      usz[L] = v / 16777216 >>> 21 & 127;
+      ++L;
     }
-  return r;
+  return usz.slice(0, L);
 }
-function ke(e) {
-  for (var t = [], r = [0]; r[0] < e.length; ) {
-    var n = r[0], a = Wt(e, r), i = a & 7;
-    a = Math.floor(a / 8);
-    var s = 0, f;
-    if (a == 0)
+function varint_to_i32(buf) {
+  var l = 0, i32 = buf[l] & 127;
+  varint:
+    if (buf[l++] >= 128) {
+      i32 |= (buf[l] & 127) << 7;
+      if (buf[l++] < 128)
+        break varint;
+      i32 |= (buf[l] & 127) << 14;
+      if (buf[l++] < 128)
+        break varint;
+      i32 |= (buf[l] & 127) << 21;
+      if (buf[l++] < 128)
+        break varint;
+      i32 |= (buf[l] & 127) << 28;
+    }
+  return i32;
+}
+function parse_shallow(buf) {
+  var out = [], ptr = [0];
+  while (ptr[0] < buf.length) {
+    var off = ptr[0];
+    var num = parse_varint49(buf, ptr);
+    var type = num & 7;
+    num = Math.floor(num / 8);
+    var len = 0;
+    var res;
+    if (num == 0)
       break;
-    switch (i) {
+    switch (type) {
       case 0:
         {
-          for (var l = r[0]; e[r[0]++] >= 128; )
+          var l = ptr[0];
+          while (buf[ptr[0]++] >= 128)
             ;
-          f = e.slice(l, r[0]);
+          res = buf.slice(l, ptr[0]);
         }
         break;
       case 5:
-        s = 4, f = e.slice(r[0], r[0] + s), r[0] += s;
+        len = 4;
+        res = buf.slice(ptr[0], ptr[0] + len);
+        ptr[0] += len;
         break;
       case 1:
-        s = 8, f = e.slice(r[0], r[0] + s), r[0] += s;
+        len = 8;
+        res = buf.slice(ptr[0], ptr[0] + len);
+        ptr[0] += len;
         break;
       case 2:
-        s = Wt(e, r), f = e.slice(r[0], r[0] + s), r[0] += s;
+        len = parse_varint49(buf, ptr);
+        res = buf.slice(ptr[0], ptr[0] + len);
+        ptr[0] += len;
         break;
       case 3:
       case 4:
       default:
-        throw new Error("PB Type ".concat(i, " for Field ").concat(a, " at offset ").concat(n));
+        throw new Error("PB Type ".concat(type, " for Field ").concat(num, " at offset ").concat(off));
     }
-    var o = { data: f, type: i };
-    t[a] == null ? t[a] = [o] : t[a].push(o);
+    var v = { data: res, type };
+    if (out[num] == null)
+      out[num] = [v];
+    else
+      out[num].push(v);
   }
-  return t;
+  return out;
 }
-function be(e) {
-  var t = [];
-  return e.forEach(function(r, n) {
-    r.forEach(function(a) {
-      !a.data || (t.push(ve(n * 8 + a.type)), a.type == 2 && t.push(ve(a.data.length)), t.push(a.data));
+function write_shallow(proto) {
+  var out = [];
+  proto.forEach(function(field, idx) {
+    field.forEach(function(item) {
+      if (!item.data)
+        return;
+      out.push(write_varint49(idx * 8 + item.type));
+      if (item.type == 2)
+        out.push(write_varint49(item.data.length));
+      out.push(item.data);
     });
-  }), Vr(t);
+  });
+  return u8concat(out);
 }
-function mr(e) {
-  for (var t, r = [], n = [0]; n[0] < e.length; ) {
-    var a = Wt(e, n), i = ke(e.slice(n[0], n[0] + a));
-    n[0] += a;
-    var s = {
-      id: vt(i[1][0].data),
+function parse_iwa_file(buf) {
+  var _a;
+  var out = [], ptr = [0];
+  while (ptr[0] < buf.length) {
+    var len = parse_varint49(buf, ptr);
+    var ai = parse_shallow(buf.slice(ptr[0], ptr[0] + len));
+    ptr[0] += len;
+    var res = {
+      id: varint_to_i32(ai[1][0].data),
       messages: []
     };
-    i[2].forEach(function(f) {
-      var l = ke(f.data), o = vt(l[3][0].data);
-      s.messages.push({
-        meta: l,
-        data: e.slice(n[0], n[0] + o)
-      }), n[0] += o;
-    }), (t = i[3]) != null && t[0] && (s.merge = vt(i[3][0].data) >>> 0 > 0), r.push(s);
+    ai[2].forEach(function(b) {
+      var mi = parse_shallow(b.data);
+      var fl = varint_to_i32(mi[3][0].data);
+      res.messages.push({
+        meta: mi,
+        data: buf.slice(ptr[0], ptr[0] + fl)
+      });
+      ptr[0] += fl;
+    });
+    if ((_a = ai[3]) == null ? void 0 : _a[0])
+      res.merge = varint_to_i32(ai[3][0].data) >>> 0 > 0;
+    out.push(res);
   }
-  return r;
+  return out;
 }
-function lt(e) {
-  var t = [];
-  return e.forEach(function(r) {
-    var n = [];
-    n[1] = [{ data: ve(r.id), type: 0 }], n[2] = [], r.merge != null && (n[3] = [{ data: ve(+!!r.merge), type: 0 }]);
-    var a = [];
-    r.messages.forEach(function(s) {
-      a.push(s.data), s.meta[3] = [{ type: 0, data: ve(s.data.length) }], n[2].push({ data: be(s.meta), type: 2 });
+function write_iwa_file(ias) {
+  var bufs = [];
+  ias.forEach(function(ia) {
+    var ai = [];
+    ai[1] = [{ data: write_varint49(ia.id), type: 0 }];
+    ai[2] = [];
+    if (ia.merge != null)
+      ai[3] = [{ data: write_varint49(+!!ia.merge), type: 0 }];
+    var midata = [];
+    ia.messages.forEach(function(mi) {
+      midata.push(mi.data);
+      mi.meta[3] = [{ type: 0, data: write_varint49(mi.data.length) }];
+      ai[2].push({ data: write_shallow(mi.meta), type: 2 });
     });
-    var i = be(n);
-    t.push(ve(i.length)), t.push(i), a.forEach(function(s) {
-      return t.push(s);
+    var aipayload = write_shallow(ai);
+    bufs.push(write_varint49(aipayload.length));
+    bufs.push(aipayload);
+    midata.forEach(function(mid) {
+      return bufs.push(mid);
     });
-  }), Vr(t);
+  });
+  return u8concat(bufs);
 }
-function qd(e, t) {
-  if (e != 0)
-    throw new Error("Unexpected Snappy chunk type ".concat(e));
-  for (var r = [0], n = Wt(t, r), a = []; r[0] < t.length; ) {
-    var i = t[r[0]] & 3;
-    if (i == 0) {
-      var s = t[r[0]++] >> 2;
-      if (s < 60)
-        ++s;
+function parse_snappy_chunk(type, buf) {
+  if (type != 0)
+    throw new Error("Unexpected Snappy chunk type ".concat(type));
+  var ptr = [0];
+  var usz = parse_varint49(buf, ptr);
+  var chunks = [];
+  while (ptr[0] < buf.length) {
+    var tag = buf[ptr[0]] & 3;
+    if (tag == 0) {
+      var len = buf[ptr[0]++] >> 2;
+      if (len < 60)
+        ++len;
       else {
-        var f = s - 59;
-        s = t[r[0]], f > 1 && (s |= t[r[0] + 1] << 8), f > 2 && (s |= t[r[0] + 2] << 16), f > 3 && (s |= t[r[0] + 3] << 24), s >>>= 0, s++, r[0] += f;
+        var c = len - 59;
+        len = buf[ptr[0]];
+        if (c > 1)
+          len |= buf[ptr[0] + 1] << 8;
+        if (c > 2)
+          len |= buf[ptr[0] + 2] << 16;
+        if (c > 3)
+          len |= buf[ptr[0] + 3] << 24;
+        len >>>= 0;
+        len++;
+        ptr[0] += c;
       }
-      a.push(t.slice(r[0], r[0] + s)), r[0] += s;
+      chunks.push(buf.slice(ptr[0], ptr[0] + len));
+      ptr[0] += len;
       continue;
     } else {
-      var l = 0, o = 0;
-      if (i == 1 ? (o = (t[r[0]] >> 2 & 7) + 4, l = (t[r[0]++] & 224) << 3, l |= t[r[0]++]) : (o = (t[r[0]++] >> 2) + 1, i == 2 ? (l = t[r[0]] | t[r[0] + 1] << 8, r[0] += 2) : (l = (t[r[0]] | t[r[0] + 1] << 8 | t[r[0] + 2] << 16 | t[r[0] + 3] << 24) >>> 0, r[0] += 4)), a = [Vr(a)], l == 0)
+      var offset = 0, length = 0;
+      if (tag == 1) {
+        length = (buf[ptr[0]] >> 2 & 7) + 4;
+        offset = (buf[ptr[0]++] & 224) << 3;
+        offset |= buf[ptr[0]++];
+      } else {
+        length = (buf[ptr[0]++] >> 2) + 1;
+        if (tag == 2) {
+          offset = buf[ptr[0]] | buf[ptr[0] + 1] << 8;
+          ptr[0] += 2;
+        } else {
+          offset = (buf[ptr[0]] | buf[ptr[0] + 1] << 8 | buf[ptr[0] + 2] << 16 | buf[ptr[0] + 3] << 24) >>> 0;
+          ptr[0] += 4;
+        }
+      }
+      chunks = [u8concat(chunks)];
+      if (offset == 0)
         throw new Error("Invalid offset 0");
-      if (l > a[0].length)
+      if (offset > chunks[0].length)
         throw new Error("Invalid offset beyond length");
-      if (o >= l)
-        for (a.push(a[0].slice(-l)), o -= l; o >= a[a.length - 1].length; )
-          a.push(a[a.length - 1]), o -= a[a.length - 1].length;
-      a.push(a[0].slice(-l, -l + o));
+      if (length >= offset) {
+        chunks.push(chunks[0].slice(-offset));
+        length -= offset;
+        while (length >= chunks[chunks.length - 1].length) {
+          chunks.push(chunks[chunks.length - 1]);
+          length -= chunks[chunks.length - 1].length;
+        }
+      }
+      chunks.push(chunks[0].slice(-offset, -offset + length));
     }
   }
-  var c = Vr(a);
-  if (c.length != n)
-    throw new Error("Unexpected length: ".concat(c.length, " != ").concat(n));
-  return c;
+  var o = u8concat(chunks);
+  if (o.length != usz)
+    throw new Error("Unexpected length: ".concat(o.length, " != ").concat(usz));
+  return o;
 }
-function gr(e) {
-  for (var t = [], r = 0; r < e.length; ) {
-    var n = e[r++], a = e[r] | e[r + 1] << 8 | e[r + 2] << 16;
-    r += 3, t.push(qd(n, e.slice(r, r + a))), r += a;
+function decompress_iwa_file(buf) {
+  var out = [];
+  var l = 0;
+  while (l < buf.length) {
+    var t = buf[l++];
+    var len = buf[l] | buf[l + 1] << 8 | buf[l + 2] << 16;
+    l += 3;
+    out.push(parse_snappy_chunk(t, buf.slice(l, l + len)));
+    l += len;
   }
-  if (r !== e.length)
+  if (l !== buf.length)
     throw new Error("data is not a valid framed stream!");
-  return Vr(t);
+  return u8concat(out);
 }
-function ct(e) {
-  for (var t = [], r = 0; r < e.length; ) {
-    var n = Math.min(e.length - r, 268435455), a = new Uint8Array(4);
-    t.push(a);
-    var i = ve(n), s = i.length;
-    t.push(i), n <= 60 ? (s++, t.push(new Uint8Array([n - 1 << 2]))) : n <= 256 ? (s += 2, t.push(new Uint8Array([240, n - 1 & 255]))) : n <= 65536 ? (s += 3, t.push(new Uint8Array([244, n - 1 & 255, n - 1 >> 8 & 255]))) : n <= 16777216 ? (s += 4, t.push(new Uint8Array([248, n - 1 & 255, n - 1 >> 8 & 255, n - 1 >> 16 & 255]))) : n <= 4294967296 && (s += 5, t.push(new Uint8Array([252, n - 1 & 255, n - 1 >> 8 & 255, n - 1 >> 16 & 255, n - 1 >>> 24 & 255]))), t.push(e.slice(r, r + n)), s += n, a[0] = 0, a[1] = s & 255, a[2] = s >> 8 & 255, a[3] = s >> 16 & 255, r += n;
+function compress_iwa_file(buf) {
+  var out = [];
+  var l = 0;
+  while (l < buf.length) {
+    var c = Math.min(buf.length - l, 268435455);
+    var frame = new Uint8Array(4);
+    out.push(frame);
+    var usz = write_varint49(c);
+    var L = usz.length;
+    out.push(usz);
+    if (c <= 60) {
+      L++;
+      out.push(new Uint8Array([c - 1 << 2]));
+    } else if (c <= 256) {
+      L += 2;
+      out.push(new Uint8Array([240, c - 1 & 255]));
+    } else if (c <= 65536) {
+      L += 3;
+      out.push(new Uint8Array([244, c - 1 & 255, c - 1 >> 8 & 255]));
+    } else if (c <= 16777216) {
+      L += 4;
+      out.push(new Uint8Array([248, c - 1 & 255, c - 1 >> 8 & 255, c - 1 >> 16 & 255]));
+    } else if (c <= 4294967296) {
+      L += 5;
+      out.push(new Uint8Array([252, c - 1 & 255, c - 1 >> 8 & 255, c - 1 >> 16 & 255, c - 1 >>> 24 & 255]));
+    }
+    out.push(buf.slice(l, l + c));
+    L += c;
+    frame[0] = 0;
+    frame[1] = L & 255;
+    frame[2] = L >> 8 & 255;
+    frame[3] = L >> 16 & 255;
+    l += c;
   }
-  return Vr(t);
+  return u8concat(out);
 }
-function s0(e, t) {
-  var r = new Uint8Array(32), n = En(r), a = 12, i = 0;
-  switch (r[0] = 5, e.t) {
+function write_new_storage(cell, sst) {
+  var out = new Uint8Array(32), dv = u8_to_dataview(out), l = 12, flags = 0;
+  out[0] = 5;
+  switch (cell.t) {
     case "n":
-      r[1] = 2, Yd(r, a, e.v), i |= 1, a += 16;
+      out[1] = 2;
+      writeDecimal128LE(out, l, cell.v);
+      flags |= 1;
+      l += 16;
       break;
     case "b":
-      r[1] = 6, n.setFloat64(a, e.v ? 1 : 0, !0), i |= 2, a += 8;
+      out[1] = 6;
+      dv.setFloat64(l, cell.v ? 1 : 0, true);
+      flags |= 2;
+      l += 8;
       break;
     case "s":
-      if (t.indexOf(e.v) == -1)
-        throw new Error("Value ".concat(e.v, " missing from SST!"));
-      r[1] = 3, n.setUint32(a, t.indexOf(e.v), !0), i |= 8, a += 4;
+      if (sst.indexOf(cell.v) == -1)
+        throw new Error("Value ".concat(cell.v, " missing from SST!"));
+      out[1] = 3;
+      dv.setUint32(l, sst.indexOf(cell.v), true);
+      flags |= 8;
+      l += 4;
       break;
     default:
-      throw "unsupported cell type " + e.t;
+      throw "unsupported cell type " + cell.t;
   }
-  return n.setUint32(8, i, !0), r.slice(0, a);
+  dv.setUint32(8, flags, true);
+  return out.slice(0, l);
 }
-function f0(e, t) {
-  var r = new Uint8Array(32), n = En(r), a = 12, i = 0;
-  switch (r[0] = 3, e.t) {
+function write_old_storage(cell, sst) {
+  var out = new Uint8Array(32), dv = u8_to_dataview(out), l = 12, flags = 0;
+  out[0] = 3;
+  switch (cell.t) {
     case "n":
-      r[2] = 2, n.setFloat64(a, e.v, !0), i |= 32, a += 8;
+      out[2] = 2;
+      dv.setFloat64(l, cell.v, true);
+      flags |= 32;
+      l += 8;
       break;
     case "b":
-      r[2] = 6, n.setFloat64(a, e.v ? 1 : 0, !0), i |= 32, a += 8;
+      out[2] = 6;
+      dv.setFloat64(l, cell.v ? 1 : 0, true);
+      flags |= 32;
+      l += 8;
       break;
     case "s":
-      if (t.indexOf(e.v) == -1)
-        throw new Error("Value ".concat(e.v, " missing from SST!"));
-      r[2] = 3, n.setUint32(a, t.indexOf(e.v), !0), i |= 16, a += 4;
+      if (sst.indexOf(cell.v) == -1)
+        throw new Error("Value ".concat(cell.v, " missing from SST!"));
+      out[2] = 3;
+      dv.setUint32(l, sst.indexOf(cell.v), true);
+      flags |= 16;
+      l += 4;
       break;
     default:
-      throw "unsupported cell type " + e.t;
+      throw "unsupported cell type " + cell.t;
   }
-  return n.setUint32(4, i, !0), r.slice(0, a);
+  dv.setUint32(4, flags, true);
+  return out.slice(0, l);
 }
-function Br(e) {
-  var t = ke(e);
-  return Wt(t[1][0].data);
+function parse_TSP_Reference(buf) {
+  var pb = parse_shallow(buf);
+  return parse_varint49(pb[1][0].data);
 }
-function Jd(e, t, r) {
-  var n, a, i, s;
-  if (!((n = e[6]) != null && n[0]) || !((a = e[7]) != null && a[0]))
+function write_tile_row(tri, data2, SST) {
+  var _a, _b, _c, _d;
+  if (!((_a = tri[6]) == null ? void 0 : _a[0]) || !((_b = tri[7]) == null ? void 0 : _b[0]))
     throw "Mutation only works on post-BNC storages!";
-  var f = ((s = (i = e[8]) == null ? void 0 : i[0]) == null ? void 0 : s.data) && vt(e[8][0].data) > 0 || !1;
-  if (f)
+  var wide_offsets = ((_d = (_c = tri[8]) == null ? void 0 : _c[0]) == null ? void 0 : _d.data) && varint_to_i32(tri[8][0].data) > 0 || false;
+  if (wide_offsets)
     throw "Math only works with normal offsets";
-  for (var l = 0, o = En(e[7][0].data), c = 0, p = [], u = En(e[4][0].data), v = 0, T = [], x = 0; x < t.length; ++x) {
-    if (t[x] == null) {
-      o.setUint16(x * 2, 65535, !0), u.setUint16(x * 2, 65535);
+  var cnt = 0;
+  var dv = u8_to_dataview(tri[7][0].data), last_offset = 0, cell_storage = [];
+  var _dv = u8_to_dataview(tri[4][0].data), _last_offset = 0, _cell_storage = [];
+  for (var C = 0; C < data2.length; ++C) {
+    if (data2[C] == null) {
+      dv.setUint16(C * 2, 65535, true);
+      _dv.setUint16(C * 2, 65535);
       continue;
     }
-    o.setUint16(x * 2, c, !0), u.setUint16(x * 2, v, !0);
-    var _, O;
-    switch (typeof t[x]) {
+    dv.setUint16(C * 2, last_offset, true);
+    _dv.setUint16(C * 2, _last_offset, true);
+    var celload, _celload;
+    switch (typeof data2[C]) {
       case "string":
-        _ = s0({ t: "s", v: t[x] }, r), O = f0({ t: "s", v: t[x] }, r);
+        celload = write_new_storage({ t: "s", v: data2[C] }, SST);
+        _celload = write_old_storage({ t: "s", v: data2[C] }, SST);
         break;
       case "number":
-        _ = s0({ t: "n", v: t[x] }, r), O = f0({ t: "n", v: t[x] }, r);
+        celload = write_new_storage({ t: "n", v: data2[C] }, SST);
+        _celload = write_old_storage({ t: "n", v: data2[C] }, SST);
         break;
       case "boolean":
-        _ = s0({ t: "b", v: t[x] }, r), O = f0({ t: "b", v: t[x] }, r);
+        celload = write_new_storage({ t: "b", v: data2[C] }, SST);
+        _celload = write_old_storage({ t: "b", v: data2[C] }, SST);
         break;
       default:
-        throw new Error("Unsupported value " + t[x]);
+        throw new Error("Unsupported value " + data2[C]);
     }
-    p.push(_), c += _.length, T.push(O), v += O.length, ++l;
+    cell_storage.push(celload);
+    last_offset += celload.length;
+    _cell_storage.push(_celload);
+    _last_offset += _celload.length;
+    ++cnt;
   }
-  for (e[2][0].data = ve(l); x < e[7][0].data.length / 2; ++x)
-    o.setUint16(x * 2, 65535, !0), u.setUint16(x * 2, 65535, !0);
-  return e[6][0].data = Vr(p), e[3][0].data = Vr(T), l;
+  tri[2][0].data = write_varint49(cnt);
+  for (; C < tri[7][0].data.length / 2; ++C) {
+    dv.setUint16(C * 2, 65535, true);
+    _dv.setUint16(C * 2, 65535, true);
+  }
+  tri[6][0].data = u8concat(cell_storage);
+  tri[3][0].data = u8concat(_cell_storage);
+  return cnt;
 }
-function Zd(e, t) {
-  if (!t || !t.numbers)
+function write_numbers_iwa(wb, opts) {
+  if (!opts || !opts.numbers)
     throw new Error("Must pass a `numbers` option -- check the README");
-  var r = e.Sheets[e.SheetNames[0]];
-  e.SheetNames.length > 1 && console.error("The Numbers writer currently writes only the first table");
-  var n = lr(r["!ref"]);
-  n.s.r = n.s.c = 0;
-  var a = !1;
-  n.e.c > 9 && (a = !0, n.e.c = 9), n.e.r > 49 && (a = !0, n.e.r = 49), a && console.error("The Numbers writer is currently limited to ".concat(Ne(n)));
-  var i = Tn(r, { range: n, header: 1 }), s = ["~Sh33tJ5~"];
-  i.forEach(function(B) {
-    return B.forEach(function(C) {
-      typeof C == "string" && s.push(C);
+  var ws = wb.Sheets[wb.SheetNames[0]];
+  if (wb.SheetNames.length > 1)
+    console.error("The Numbers writer currently writes only the first table");
+  var range = decode_range(ws["!ref"]);
+  range.s.r = range.s.c = 0;
+  var trunc = false;
+  if (range.e.c > 9) {
+    trunc = true;
+    range.e.c = 9;
+  }
+  if (range.e.r > 49) {
+    trunc = true;
+    range.e.r = 49;
+  }
+  if (trunc)
+    console.error("The Numbers writer is currently limited to ".concat(encode_range(range)));
+  var data2 = sheet_to_json(ws, { range, header: 1 });
+  var SST = ["~Sh33tJ5~"];
+  data2.forEach(function(row) {
+    return row.forEach(function(cell) {
+      if (typeof cell == "string")
+        SST.push(cell);
     });
   });
-  var f = {}, l = [], o = Ee.read(t.numbers, { type: "base64" });
-  o.FileIndex.map(function(B, C) {
-    return [B, o.FullPaths[C]];
-  }).forEach(function(B) {
-    var C = B[0], F = B[1];
-    if (C.type == 2 && !!C.name.match(/\.iwa/)) {
-      var X = C.content, se = gr(X), fe = mr(se);
-      fe.forEach(function(ie) {
-        l.push(ie.id), f[ie.id] = { deps: [], location: F, type: vt(ie.messages[0].meta[1][0].data) };
-      });
-    }
-  }), l.sort(function(B, C) {
-    return B - C;
+  var dependents = {};
+  var indices = [];
+  var cfb = CFB.read(opts.numbers, { type: "base64" });
+  cfb.FileIndex.map(function(fi, idx) {
+    return [fi, cfb.FullPaths[idx]];
+  }).forEach(function(row) {
+    var fi = row[0], fp = row[1];
+    if (fi.type != 2)
+      return;
+    if (!fi.name.match(/\.iwa/))
+      return;
+    var old_content = fi.content;
+    var raw1 = decompress_iwa_file(old_content);
+    var x2 = parse_iwa_file(raw1);
+    x2.forEach(function(packet2) {
+      indices.push(packet2.id);
+      dependents[packet2.id] = { deps: [], location: fp, type: varint_to_i32(packet2.messages[0].meta[1][0].data) };
+    });
   });
-  var c = l.filter(function(B) {
-    return B > 1;
-  }).map(function(B) {
-    return [B, ve(B)];
+  indices.sort(function(x2, y2) {
+    return x2 - y2;
   });
-  o.FileIndex.map(function(B, C) {
-    return [B, o.FullPaths[C]];
-  }).forEach(function(B) {
-    var C = B[0];
-    if (B[1], !!C.name.match(/\.iwa/)) {
-      var F = mr(gr(C.content));
-      F.forEach(function(X) {
-        X.messages.forEach(function(se) {
-          c.forEach(function(fe) {
-            X.messages.some(function(ie) {
-              return vt(ie.meta[1][0].data) != 11006 && Kd(ie.data, fe[1]);
-            }) && f[fe[0]].deps.push(X.id);
-          });
+  var indices_varint = indices.filter(function(x2) {
+    return x2 > 1;
+  }).map(function(x2) {
+    return [x2, write_varint49(x2)];
+  });
+  cfb.FileIndex.map(function(fi, idx) {
+    return [fi, cfb.FullPaths[idx]];
+  }).forEach(function(row) {
+    var fi = row[0];
+    row[1];
+    if (!fi.name.match(/\.iwa/))
+      return;
+    var x2 = parse_iwa_file(decompress_iwa_file(fi.content));
+    x2.forEach(function(ia) {
+      ia.messages.forEach(function(m) {
+        indices_varint.forEach(function(ivi) {
+          if (ia.messages.some(function(mess) {
+            return varint_to_i32(mess.meta[1][0].data) != 11006 && u8contains(mess.data, ivi[1]);
+          })) {
+            dependents[ivi[0]].deps.push(ia.id);
+          }
         });
       });
-    }
+    });
   });
-  for (var p = Ee.find(o, f[1].location), u = mr(gr(p.content)), v, T = 0; T < u.length; ++T) {
-    var x = u[T];
-    x.id == 1 && (v = x);
+  var entry = CFB.find(cfb, dependents[1].location);
+  var x = parse_iwa_file(decompress_iwa_file(entry.content));
+  var docroot;
+  for (var xi = 0; xi < x.length; ++xi) {
+    var packet = x[xi];
+    if (packet.id == 1)
+      docroot = packet;
   }
-  var _ = Br(ke(v.messages[0].data)[1][0].data);
-  for (p = Ee.find(o, f[_].location), u = mr(gr(p.content)), T = 0; T < u.length; ++T)
-    x = u[T], x.id == _ && (v = x);
-  for (_ = Br(ke(v.messages[0].data)[2][0].data), p = Ee.find(o, f[_].location), u = mr(gr(p.content)), T = 0; T < u.length; ++T)
-    x = u[T], x.id == _ && (v = x);
-  for (_ = Br(ke(v.messages[0].data)[2][0].data), p = Ee.find(o, f[_].location), u = mr(gr(p.content)), T = 0; T < u.length; ++T)
-    x = u[T], x.id == _ && (v = x);
-  var O = ke(v.messages[0].data);
+  var sheetrootref = parse_TSP_Reference(parse_shallow(docroot.messages[0].data)[1][0].data);
+  entry = CFB.find(cfb, dependents[sheetrootref].location);
+  x = parse_iwa_file(decompress_iwa_file(entry.content));
+  for (xi = 0; xi < x.length; ++xi) {
+    packet = x[xi];
+    if (packet.id == sheetrootref)
+      docroot = packet;
+  }
+  sheetrootref = parse_TSP_Reference(parse_shallow(docroot.messages[0].data)[2][0].data);
+  entry = CFB.find(cfb, dependents[sheetrootref].location);
+  x = parse_iwa_file(decompress_iwa_file(entry.content));
+  for (xi = 0; xi < x.length; ++xi) {
+    packet = x[xi];
+    if (packet.id == sheetrootref)
+      docroot = packet;
+  }
+  sheetrootref = parse_TSP_Reference(parse_shallow(docroot.messages[0].data)[2][0].data);
+  entry = CFB.find(cfb, dependents[sheetrootref].location);
+  x = parse_iwa_file(decompress_iwa_file(entry.content));
+  for (xi = 0; xi < x.length; ++xi) {
+    packet = x[xi];
+    if (packet.id == sheetrootref)
+      docroot = packet;
+  }
+  var pb = parse_shallow(docroot.messages[0].data);
   {
-    O[6][0].data = ve(n.e.r + 1), O[7][0].data = ve(n.e.c + 1);
-    var R = Br(O[46][0].data), y = Ee.find(o, f[R].location), M = mr(gr(y.content));
+    pb[6][0].data = write_varint49(range.e.r + 1);
+    pb[7][0].data = write_varint49(range.e.c + 1);
+    var cruidsref = parse_TSP_Reference(pb[46][0].data);
+    var oldbucket = CFB.find(cfb, dependents[cruidsref].location);
+    var _x = parse_iwa_file(decompress_iwa_file(oldbucket.content));
     {
-      for (var b = 0; b < M.length && M[b].id != R; ++b)
-        ;
-      if (M[b].id != R)
+      for (var j = 0; j < _x.length; ++j) {
+        if (_x[j].id == cruidsref)
+          break;
+      }
+      if (_x[j].id != cruidsref)
         throw "Bad ColumnRowUIDMapArchive";
-      var re = ke(M[b].messages[0].data);
-      re[1] = [], re[2] = [], re[3] = [];
-      for (var D = 0; D <= n.e.c; ++D) {
-        var H = [];
-        H[1] = H[2] = [{ type: 0, data: ve(D + 420690) }], re[1].push({ type: 2, data: be(H) }), re[2].push({ type: 0, data: ve(D) }), re[3].push({ type: 0, data: ve(D) });
+      var cruids = parse_shallow(_x[j].messages[0].data);
+      cruids[1] = [];
+      cruids[2] = [], cruids[3] = [];
+      for (var C = 0; C <= range.e.c; ++C) {
+        var uuid = [];
+        uuid[1] = uuid[2] = [{ type: 0, data: write_varint49(C + 420690) }];
+        cruids[1].push({ type: 2, data: write_shallow(uuid) });
+        cruids[2].push({ type: 0, data: write_varint49(C) });
+        cruids[3].push({ type: 0, data: write_varint49(C) });
       }
-      re[4] = [], re[5] = [], re[6] = [];
-      for (var L = 0; L <= n.e.r; ++L)
-        H = [], H[1] = H[2] = [{ type: 0, data: ve(L + 726270) }], re[4].push({ type: 2, data: be(H) }), re[5].push({ type: 0, data: ve(L) }), re[6].push({ type: 0, data: ve(L) });
-      M[b].messages[0].data = be(re);
+      cruids[4] = [];
+      cruids[5] = [], cruids[6] = [];
+      for (var R = 0; R <= range.e.r; ++R) {
+        uuid = [];
+        uuid[1] = uuid[2] = [{ type: 0, data: write_varint49(R + 726270) }];
+        cruids[4].push({ type: 2, data: write_shallow(uuid) });
+        cruids[5].push({ type: 0, data: write_varint49(R) });
+        cruids[6].push({ type: 0, data: write_varint49(R) });
+      }
+      _x[j].messages[0].data = write_shallow(cruids);
     }
-    y.content = ct(lt(M)), y.size = y.content.length, delete O[46];
-    var G = ke(O[4][0].data);
+    oldbucket.content = compress_iwa_file(write_iwa_file(_x));
+    oldbucket.size = oldbucket.content.length;
+    delete pb[46];
+    var store = parse_shallow(pb[4][0].data);
     {
-      G[7][0].data = ve(n.e.r + 1);
-      var z = ke(G[1][0].data), j = Br(z[2][0].data);
-      y = Ee.find(o, f[j].location), M = mr(gr(y.content));
+      store[7][0].data = write_varint49(range.e.r + 1);
+      var row_headers = parse_shallow(store[1][0].data);
+      var row_header_ref = parse_TSP_Reference(row_headers[2][0].data);
+      oldbucket = CFB.find(cfb, dependents[row_header_ref].location);
+      _x = parse_iwa_file(decompress_iwa_file(oldbucket.content));
       {
-        if (M[0].id != j)
+        if (_x[0].id != row_header_ref)
           throw "Bad HeaderStorageBucket";
-        var Q = ke(M[0].messages[0].data);
-        for (L = 0; L < i.length; ++L) {
-          var he = ke(Q[2][0].data);
-          he[1][0].data = ve(L), he[4][0].data = ve(i[L].length), Q[2][L] = { type: Q[2][0].type, data: be(he) };
+        var base_bucket = parse_shallow(_x[0].messages[0].data);
+        for (R = 0; R < data2.length; ++R) {
+          var _bucket = parse_shallow(base_bucket[2][0].data);
+          _bucket[1][0].data = write_varint49(R);
+          _bucket[4][0].data = write_varint49(data2[R].length);
+          base_bucket[2][R] = { type: base_bucket[2][0].type, data: write_shallow(_bucket) };
         }
-        M[0].messages[0].data = be(Q);
+        _x[0].messages[0].data = write_shallow(base_bucket);
       }
-      y.content = ct(lt(M)), y.size = y.content.length;
-      var oe = Br(G[2][0].data);
-      y = Ee.find(o, f[oe].location), M = mr(gr(y.content));
+      oldbucket.content = compress_iwa_file(write_iwa_file(_x));
+      oldbucket.size = oldbucket.content.length;
+      var col_header_ref = parse_TSP_Reference(store[2][0].data);
+      oldbucket = CFB.find(cfb, dependents[col_header_ref].location);
+      _x = parse_iwa_file(decompress_iwa_file(oldbucket.content));
       {
-        if (M[0].id != oe)
+        if (_x[0].id != col_header_ref)
           throw "Bad HeaderStorageBucket";
-        for (Q = ke(M[0].messages[0].data), D = 0; D <= n.e.c; ++D)
-          he = ke(Q[2][0].data), he[1][0].data = ve(D), he[4][0].data = ve(n.e.r + 1), Q[2][D] = { type: Q[2][0].type, data: be(he) };
-        M[0].messages[0].data = be(Q);
+        base_bucket = parse_shallow(_x[0].messages[0].data);
+        for (C = 0; C <= range.e.c; ++C) {
+          _bucket = parse_shallow(base_bucket[2][0].data);
+          _bucket[1][0].data = write_varint49(C);
+          _bucket[4][0].data = write_varint49(range.e.r + 1);
+          base_bucket[2][C] = { type: base_bucket[2][0].type, data: write_shallow(_bucket) };
+        }
+        _x[0].messages[0].data = write_shallow(base_bucket);
       }
-      y.content = ct(lt(M)), y.size = y.content.length;
-      var Oe = Br(G[4][0].data);
+      oldbucket.content = compress_iwa_file(write_iwa_file(_x));
+      oldbucket.size = oldbucket.content.length;
+      var sstref = parse_TSP_Reference(store[4][0].data);
       (function() {
-        for (var B = Ee.find(o, f[Oe].location), C = mr(gr(B.content)), F, X = 0; X < C.length; ++X) {
-          var se = C[X];
-          se.id == Oe && (F = se);
+        var sentry = CFB.find(cfb, dependents[sstref].location);
+        var sx = parse_iwa_file(decompress_iwa_file(sentry.content));
+        var sstroot;
+        for (var sxi = 0; sxi < sx.length; ++sxi) {
+          var packet2 = sx[sxi];
+          if (packet2.id == sstref)
+            sstroot = packet2;
         }
-        var fe = ke(F.messages[0].data);
+        var sstdata = parse_shallow(sstroot.messages[0].data);
         {
-          fe[3] = [];
-          var ie = [];
-          s.forEach(function(ue, Ye) {
-            ie[1] = [{ type: 0, data: ve(Ye) }], ie[2] = [{ type: 0, data: ve(1) }], ie[3] = [{ type: 2, data: zd(ue) }], fe[3].push({ type: 2, data: be(ie) });
+          sstdata[3] = [];
+          var newsst = [];
+          SST.forEach(function(str, i) {
+            newsst[1] = [{ type: 0, data: write_varint49(i) }];
+            newsst[2] = [{ type: 0, data: write_varint49(1) }];
+            newsst[3] = [{ type: 2, data: stru8(str) }];
+            sstdata[3].push({ type: 2, data: write_shallow(newsst) });
           });
         }
-        F.messages[0].data = be(fe);
-        var ee = lt(C), Te = ct(ee);
-        B.content = Te, B.size = B.content.length;
+        sstroot.messages[0].data = write_shallow(sstdata);
+        var sy = write_iwa_file(sx);
+        var raw32 = compress_iwa_file(sy);
+        sentry.content = raw32;
+        sentry.size = sentry.content.length;
       })();
-      var Re = ke(G[3][0].data);
+      var tile = parse_shallow(store[3][0].data);
       {
-        var pr = Re[1][0];
-        delete Re[2];
-        var Pe = ke(pr.data);
+        var t = tile[1][0];
+        delete tile[2];
+        var tl = parse_shallow(t.data);
         {
-          var cr = Br(Pe[2][0].data);
+          var tileref = parse_TSP_Reference(tl[2][0].data);
           (function() {
-            for (var B = Ee.find(o, f[cr].location), C = mr(gr(B.content)), F, X = 0; X < C.length; ++X) {
-              var se = C[X];
-              se.id == cr && (F = se);
+            var tentry = CFB.find(cfb, dependents[tileref].location);
+            var tx = parse_iwa_file(decompress_iwa_file(tentry.content));
+            var tileroot;
+            for (var sxi = 0; sxi < tx.length; ++sxi) {
+              var packet2 = tx[sxi];
+              if (packet2.id == tileref)
+                tileroot = packet2;
             }
-            var fe = ke(F.messages[0].data);
+            var tiledata = parse_shallow(tileroot.messages[0].data);
             {
-              delete fe[6], delete Re[7];
-              var ie = new Uint8Array(fe[5][0].data);
-              fe[5] = [];
-              for (var ee = 0, Te = 0; Te <= n.e.r; ++Te) {
-                var ue = ke(ie);
-                ee += Jd(ue, i[Te], s), ue[1][0].data = ve(Te), fe[5].push({ data: be(ue), type: 2 });
+              delete tiledata[6];
+              delete tile[7];
+              var rowload = new Uint8Array(tiledata[5][0].data);
+              tiledata[5] = [];
+              var cnt = 0;
+              for (var R2 = 0; R2 <= range.e.r; ++R2) {
+                var tilerow = parse_shallow(rowload);
+                cnt += write_tile_row(tilerow, data2[R2], SST);
+                tilerow[1][0].data = write_varint49(R2);
+                tiledata[5].push({ data: write_shallow(tilerow), type: 2 });
               }
-              fe[1] = [{ type: 0, data: ve(n.e.c + 1) }], fe[2] = [{ type: 0, data: ve(n.e.r + 1) }], fe[3] = [{ type: 0, data: ve(ee) }], fe[4] = [{ type: 0, data: ve(n.e.r + 1) }];
+              tiledata[1] = [{ type: 0, data: write_varint49(range.e.c + 1) }];
+              tiledata[2] = [{ type: 0, data: write_varint49(range.e.r + 1) }];
+              tiledata[3] = [{ type: 0, data: write_varint49(cnt) }];
+              tiledata[4] = [{ type: 0, data: write_varint49(range.e.r + 1) }];
             }
-            F.messages[0].data = be(fe);
-            var Ye = lt(C), pe = ct(Ye);
-            B.content = pe, B.size = B.content.length;
+            tileroot.messages[0].data = write_shallow(tiledata);
+            var ty = write_iwa_file(tx);
+            var raw32 = compress_iwa_file(ty);
+            tentry.content = raw32;
+            tentry.size = tentry.content.length;
           })();
         }
-        pr.data = be(Pe);
+        t.data = write_shallow(tl);
       }
-      G[3][0].data = be(Re);
+      store[3][0].data = write_shallow(tile);
     }
-    O[4][0].data = be(G);
+    pb[4][0].data = write_shallow(store);
   }
-  v.messages[0].data = be(O);
-  var nr = lt(u), A = ct(nr);
-  return p.content = A, p.size = p.content.length, o;
+  docroot.messages[0].data = write_shallow(pb);
+  var y = write_iwa_file(x);
+  var raw3 = compress_iwa_file(y);
+  entry.content = raw3;
+  entry.size = entry.content.length;
+  return cfb;
 }
-function Qd(e) {
-  return function(r) {
-    for (var n = 0; n != e.length; ++n) {
-      var a = e[n];
-      r[a[0]] === void 0 && (r[a[0]] = a[1]), a[2] === "n" && (r[a[0]] = Number(r[a[0]]));
+function fix_opts_func(defaults2) {
+  return function fix_opts(opts) {
+    for (var i = 0; i != defaults2.length; ++i) {
+      var d = defaults2[i];
+      if (opts[d[0]] === void 0)
+        opts[d[0]] = d[1];
+      if (d[2] === "n")
+        opts[d[0]] = Number(opts[d[0]]);
     }
   };
 }
-function W0(e) {
-  Qd([
-    ["cellDates", !1],
-    ["bookSST", !1],
+function fix_write_opts(opts) {
+  fix_opts_func([
+    ["cellDates", false],
+    ["bookSST", false],
     ["bookType", "xlsx"],
-    ["compression", !1],
-    ["WTF", !1]
-  ])(e);
+    ["compression", false],
+    ["WTF", false]
+  ])(opts);
 }
-function e2(e, t) {
-  return t.bookType == "ods" ? Qs(e, t) : t.bookType == "numbers" ? Zd(e, t) : t.bookType == "xlsb" ? r2(e, t) : t2(e, t);
+function write_zip(wb, opts) {
+  if (opts.bookType == "ods")
+    return write_ods(wb, opts);
+  if (opts.bookType == "numbers")
+    return write_numbers_iwa(wb, opts);
+  if (opts.bookType == "xlsb")
+    return write_zip_xlsxb(wb, opts);
+  return write_zip_xlsx(wb, opts);
 }
-function r2(e, t) {
-  ut = 1024, e && !e.SSF && (e.SSF = tr(Ce)), e && e.SSF && (On(), Cn(e.SSF), t.revssf = Rn(e.SSF), t.revssf[e.SSF[65535]] = 0, t.ssf = e.SSF), t.rels = {}, t.wbrels = {}, t.Strings = [], t.Strings.Count = 0, t.Strings.Unique = 0, Lt ? t.revStrings = /* @__PURE__ */ new Map() : (t.revStrings = {}, t.revStrings.foo = [], delete t.revStrings.foo);
-  var r = t.bookType == "xlsb" ? "bin" : "xml", n = Ls.indexOf(t.bookType) > -1, a = cs();
-  W0(t = t || {});
-  var i = A0(), s = "", f = 0;
-  if (t.cellXfs = [], Gr(t.cellXfs, {}, { revssf: { General: 0 } }), e.Props || (e.Props = {}), s = "docProps/core.xml", ce(i, s, ds(e.Props, t)), a.coreprops.push(s), me(t.rels, 2, s, xe.CORE_PROPS), s = "docProps/app.xml", !(e.Props && e.Props.SheetNames))
-    if (!e.Workbook || !e.Workbook.Sheets)
-      e.Props.SheetNames = e.SheetNames;
-    else {
-      for (var l = [], o = 0; o < e.SheetNames.length; ++o)
-        (e.Workbook.Sheets[o] || {}).Hidden != 2 && l.push(e.SheetNames[o]);
-      e.Props.SheetNames = l;
-    }
-  for (e.Props.Worksheets = e.Props.SheetNames.length, ce(i, s, vs(e.Props)), a.extprops.push(s), me(t.rels, 3, s, xe.EXT_PROPS), e.Custprops !== e.Props && Xe(e.Custprops || {}).length > 0 && (s = "docProps/custom.xml", ce(i, s, ms(e.Custprops)), a.custprops.push(s), me(t.rels, 4, s, xe.CUST_PROPS)), f = 1; f <= e.SheetNames.length; ++f) {
-    var c = { "!id": {} }, p = e.Sheets[e.SheetNames[f - 1]], u = (p || {})["!type"] || "sheet";
-    switch (u) {
-      case "chart":
-      default:
-        s = "xl/worksheets/sheet" + f + "." + r, ce(i, s, ad(f - 1, s, t, e, c)), a.sheets.push(s), me(t.wbrels, -1, "worksheets/sheet" + f + "." + r, xe.WS[0]);
-    }
-    if (p) {
-      var v = p["!comments"], T = !1, x = "";
-      v && v.length > 0 && (x = "xl/comments" + f + "." + r, ce(i, x, fd(v, x)), a.comments.push(x), me(c, -1, "../comments" + f + "." + r, xe.CMNT), T = !0), p["!legacy"] && T && ce(i, "xl/drawings/vmlDrawing" + f + ".vml", ks(f, p["!comments"])), delete p["!comments"], delete p["!legacy"];
-    }
-    c["!id"].rId1 && ce(i, us(s), dt(c));
+function write_zip_xlsxb(wb, opts) {
+  _shapeid = 1024;
+  if (wb && !wb.SSF) {
+    wb.SSF = dup(table_fmt);
   }
-  return t.Strings != null && t.Strings.length > 0 && (s = "xl/sharedStrings." + r, ce(i, s, sd(t.Strings, s, t)), a.strs.push(s), me(t.wbrels, -1, "sharedStrings." + r, xe.SST)), s = "xl/workbook." + r, ce(i, s, nd(e, s)), a.workbooks.push(s), me(t.rels, 1, s, xe.WB), s = "xl/theme/theme1.xml", ce(i, s, Ns(e.Themes, t)), a.themes.push(s), me(t.wbrels, -1, "theme/theme1.xml", xe.THEME), s = "xl/styles." + r, ce(i, s, id(e, s, t)), a.styles.push(s), me(t.wbrels, -1, "styles." + r, xe.STY), e.vbaraw && n && (s = "xl/vbaProject.bin", ce(i, s, e.vbaraw), a.vba.push(s), me(t.wbrels, -1, "vbaProject.bin", xe.VBA)), s = "xl/metadata." + r, ce(i, s, od(s)), a.metadata.push(s), me(t.wbrels, -1, "metadata." + r, xe.XLMETA), ce(i, "[Content_Types].xml", hs(a, t)), ce(i, "_rels/.rels", dt(t.rels)), ce(i, "xl/_rels/workbook." + r + ".rels", dt(t.wbrels)), delete t.revssf, delete t.ssf, i;
-}
-function t2(e, t) {
-  ut = 1024, e && !e.SSF && (e.SSF = tr(Ce)), e && e.SSF && (On(), Cn(e.SSF), t.revssf = Rn(e.SSF), t.revssf[e.SSF[65535]] = 0, t.ssf = e.SSF), t.rels = {}, t.wbrels = {}, t.Strings = [], t.Strings.Count = 0, t.Strings.Unique = 0, Lt ? t.revStrings = /* @__PURE__ */ new Map() : (t.revStrings = {}, t.revStrings.foo = [], delete t.revStrings.foo);
-  var r = "xml", n = Ls.indexOf(t.bookType) > -1, a = cs();
-  W0(t = t || {});
-  var i = A0(), s = "", f = 0;
-  if (t.cellXfs = [], Gr(t.cellXfs, {}, { revssf: { General: 0 } }), e.Props || (e.Props = {}), s = "docProps/core.xml", ce(i, s, ds(e.Props, t)), a.coreprops.push(s), me(t.rels, 2, s, xe.CORE_PROPS), s = "docProps/app.xml", !(e.Props && e.Props.SheetNames))
-    if (!e.Workbook || !e.Workbook.Sheets)
-      e.Props.SheetNames = e.SheetNames;
-    else {
-      for (var l = [], o = 0; o < e.SheetNames.length; ++o)
-        (e.Workbook.Sheets[o] || {}).Hidden != 2 && l.push(e.SheetNames[o]);
-      e.Props.SheetNames = l;
-    }
-  e.Props.Worksheets = e.Props.SheetNames.length, ce(i, s, vs(e.Props)), a.extprops.push(s), me(t.rels, 3, s, xe.EXT_PROPS), e.Custprops !== e.Props && Xe(e.Custprops || {}).length > 0 && (s = "docProps/custom.xml", ce(i, s, ms(e.Custprops)), a.custprops.push(s), me(t.rels, 4, s, xe.CUST_PROPS));
-  var c = ["SheetJ5"];
-  for (t.tcid = 0, f = 1; f <= e.SheetNames.length; ++f) {
-    var p = { "!id": {} }, u = e.Sheets[e.SheetNames[f - 1]], v = (u || {})["!type"] || "sheet";
-    switch (v) {
+  if (wb && wb.SSF) {
+    make_ssf();
+    SSF_load_table(wb.SSF);
+    opts.revssf = evert_num(wb.SSF);
+    opts.revssf[wb.SSF[65535]] = 0;
+    opts.ssf = wb.SSF;
+  }
+  opts.rels = {};
+  opts.wbrels = {};
+  opts.Strings = [];
+  opts.Strings.Count = 0;
+  opts.Strings.Unique = 0;
+  if (browser_has_Map)
+    opts.revStrings = /* @__PURE__ */ new Map();
+  else {
+    opts.revStrings = {};
+    opts.revStrings.foo = [];
+    delete opts.revStrings.foo;
+  }
+  var wbext = opts.bookType == "xlsb" ? "bin" : "xml";
+  var vbafmt = VBAFMTS.indexOf(opts.bookType) > -1;
+  var ct = new_ct();
+  fix_write_opts(opts = opts || {});
+  var zip = zip_new();
+  var f = "", rId = 0;
+  opts.cellXfs = [];
+  get_cell_style(opts.cellXfs, {}, { revssf: { "General": 0 } });
+  if (!wb.Props)
+    wb.Props = {};
+  f = "docProps/core.xml";
+  zip_add_file(zip, f, write_core_props(wb.Props, opts));
+  ct.coreprops.push(f);
+  add_rels(opts.rels, 2, f, RELS.CORE_PROPS);
+  f = "docProps/app.xml";
+  if (wb.Props && wb.Props.SheetNames)
+    ;
+  else if (!wb.Workbook || !wb.Workbook.Sheets)
+    wb.Props.SheetNames = wb.SheetNames;
+  else {
+    var _sn = [];
+    for (var _i = 0; _i < wb.SheetNames.length; ++_i)
+      if ((wb.Workbook.Sheets[_i] || {}).Hidden != 2)
+        _sn.push(wb.SheetNames[_i]);
+    wb.Props.SheetNames = _sn;
+  }
+  wb.Props.Worksheets = wb.Props.SheetNames.length;
+  zip_add_file(zip, f, write_ext_props(wb.Props));
+  ct.extprops.push(f);
+  add_rels(opts.rels, 3, f, RELS.EXT_PROPS);
+  if (wb.Custprops !== wb.Props && keys(wb.Custprops || {}).length > 0) {
+    f = "docProps/custom.xml";
+    zip_add_file(zip, f, write_cust_props(wb.Custprops));
+    ct.custprops.push(f);
+    add_rels(opts.rels, 4, f, RELS.CUST_PROPS);
+  }
+  for (rId = 1; rId <= wb.SheetNames.length; ++rId) {
+    var wsrels = { "!id": {} };
+    var ws = wb.Sheets[wb.SheetNames[rId - 1]];
+    var _type = (ws || {})["!type"] || "sheet";
+    switch (_type) {
       case "chart":
       default:
-        s = "xl/worksheets/sheet" + f + "." + r, ce(i, s, Xs(f - 1, t, e, p)), a.sheets.push(s), me(t.wbrels, -1, "worksheets/sheet" + f + "." + r, xe.WS[0]);
+        f = "xl/worksheets/sheet" + rId + "." + wbext;
+        zip_add_file(zip, f, write_ws(rId - 1, f, opts, wb, wsrels));
+        ct.sheets.push(f);
+        add_rels(opts.wbrels, -1, "worksheets/sheet" + rId + "." + wbext, RELS.WS[0]);
     }
-    if (u) {
-      var T = u["!comments"], x = !1, _ = "";
-      if (T && T.length > 0) {
-        var O = !1;
-        T.forEach(function(R) {
-          R[1].forEach(function(y) {
-            y.T == !0 && (O = !0);
-          });
-        }), O && (_ = "xl/threadedComments/threadedComment" + f + "." + r, ce(i, _, kh(T, c, t)), a.threadedcomments.push(_), me(p, -1, "../threadedComments/threadedComment" + f + "." + r, xe.TCMNT)), _ = "xl/comments" + f + "." + r, ce(i, _, Ps(T)), a.comments.push(_), me(p, -1, "../comments" + f + "." + r, xe.CMNT), x = !0;
+    if (ws) {
+      var comments = ws["!comments"];
+      var need_vml = false;
+      var cf = "";
+      if (comments && comments.length > 0) {
+        cf = "xl/comments" + rId + "." + wbext;
+        zip_add_file(zip, cf, write_cmnt(comments, cf));
+        ct.comments.push(cf);
+        add_rels(wsrels, -1, "../comments" + rId + "." + wbext, RELS.CMNT);
+        need_vml = true;
       }
-      u["!legacy"] && x && ce(i, "xl/drawings/vmlDrawing" + f + ".vml", ks(f, u["!comments"])), delete u["!comments"], delete u["!legacy"];
+      if (ws["!legacy"]) {
+        if (need_vml)
+          zip_add_file(zip, "xl/drawings/vmlDrawing" + rId + ".vml", write_comments_vml(rId, ws["!comments"]));
+      }
+      delete ws["!comments"];
+      delete ws["!legacy"];
     }
-    p["!id"].rId1 && ce(i, us(s), dt(p));
+    if (wsrels["!id"].rId1)
+      zip_add_file(zip, get_rels_path(f), write_rels(wsrels));
   }
-  return t.Strings != null && t.Strings.length > 0 && (s = "xl/sharedStrings." + r, ce(i, s, Fs(t.Strings, t)), a.strs.push(s), me(t.wbrels, -1, "sharedStrings." + r, xe.SST)), s = "xl/workbook." + r, ce(i, s, zs(e)), a.workbooks.push(s), me(t.rels, 1, s, xe.WB), s = "xl/theme/theme1.xml", ce(i, s, Ns(e.Themes, t)), a.themes.push(s), me(t.wbrels, -1, "theme/theme1.xml", xe.THEME), s = "xl/styles." + r, ce(i, s, Rs(e, t)), a.styles.push(s), me(t.wbrels, -1, "styles." + r, xe.STY), e.vbaraw && n && (s = "xl/vbaProject.bin", ce(i, s, e.vbaraw), a.vba.push(s), me(t.wbrels, -1, "vbaProject.bin", xe.VBA)), s = "xl/metadata." + r, ce(i, s, Is()), a.metadata.push(s), me(t.wbrels, -1, "metadata." + r, xe.XLMETA), c.length > 1 && (s = "xl/persons/person.xml", ce(i, s, Ph(c)), a.people.push(s), me(t.wbrels, -1, "persons/person.xml", xe.PEOPLE)), ce(i, "[Content_Types].xml", hs(a, t)), ce(i, "_rels/.rels", dt(t.rels)), ce(i, "xl/_rels/workbook." + r + ".rels", dt(t.wbrels)), delete t.revssf, delete t.ssf, i;
+  if (opts.Strings != null && opts.Strings.length > 0) {
+    f = "xl/sharedStrings." + wbext;
+    zip_add_file(zip, f, write_sst(opts.Strings, f, opts));
+    ct.strs.push(f);
+    add_rels(opts.wbrels, -1, "sharedStrings." + wbext, RELS.SST);
+  }
+  f = "xl/workbook." + wbext;
+  zip_add_file(zip, f, write_wb(wb, f));
+  ct.workbooks.push(f);
+  add_rels(opts.rels, 1, f, RELS.WB);
+  f = "xl/theme/theme1.xml";
+  zip_add_file(zip, f, write_theme(wb.Themes, opts));
+  ct.themes.push(f);
+  add_rels(opts.wbrels, -1, "theme/theme1.xml", RELS.THEME);
+  f = "xl/styles." + wbext;
+  zip_add_file(zip, f, write_sty(wb, f, opts));
+  ct.styles.push(f);
+  add_rels(opts.wbrels, -1, "styles." + wbext, RELS.STY);
+  if (wb.vbaraw && vbafmt) {
+    f = "xl/vbaProject.bin";
+    zip_add_file(zip, f, wb.vbaraw);
+    ct.vba.push(f);
+    add_rels(opts.wbrels, -1, "vbaProject.bin", RELS.VBA);
+  }
+  f = "xl/metadata." + wbext;
+  zip_add_file(zip, f, write_xlmeta(f));
+  ct.metadata.push(f);
+  add_rels(opts.wbrels, -1, "metadata." + wbext, RELS.XLMETA);
+  zip_add_file(zip, "[Content_Types].xml", write_ct(ct, opts));
+  zip_add_file(zip, "_rels/.rels", write_rels(opts.rels));
+  zip_add_file(zip, "xl/_rels/workbook." + wbext + ".rels", write_rels(opts.wbrels));
+  delete opts.revssf;
+  delete opts.ssf;
+  return zip;
 }
-function n2(e, t) {
-  var r = "";
-  switch ((t || {}).type || "base64") {
+function write_zip_xlsx(wb, opts) {
+  _shapeid = 1024;
+  if (wb && !wb.SSF) {
+    wb.SSF = dup(table_fmt);
+  }
+  if (wb && wb.SSF) {
+    make_ssf();
+    SSF_load_table(wb.SSF);
+    opts.revssf = evert_num(wb.SSF);
+    opts.revssf[wb.SSF[65535]] = 0;
+    opts.ssf = wb.SSF;
+  }
+  opts.rels = {};
+  opts.wbrels = {};
+  opts.Strings = [];
+  opts.Strings.Count = 0;
+  opts.Strings.Unique = 0;
+  if (browser_has_Map)
+    opts.revStrings = /* @__PURE__ */ new Map();
+  else {
+    opts.revStrings = {};
+    opts.revStrings.foo = [];
+    delete opts.revStrings.foo;
+  }
+  var wbext = "xml";
+  var vbafmt = VBAFMTS.indexOf(opts.bookType) > -1;
+  var ct = new_ct();
+  fix_write_opts(opts = opts || {});
+  var zip = zip_new();
+  var f = "", rId = 0;
+  opts.cellXfs = [];
+  get_cell_style(opts.cellXfs, {}, { revssf: { "General": 0 } });
+  if (!wb.Props)
+    wb.Props = {};
+  f = "docProps/core.xml";
+  zip_add_file(zip, f, write_core_props(wb.Props, opts));
+  ct.coreprops.push(f);
+  add_rels(opts.rels, 2, f, RELS.CORE_PROPS);
+  f = "docProps/app.xml";
+  if (wb.Props && wb.Props.SheetNames)
+    ;
+  else if (!wb.Workbook || !wb.Workbook.Sheets)
+    wb.Props.SheetNames = wb.SheetNames;
+  else {
+    var _sn = [];
+    for (var _i = 0; _i < wb.SheetNames.length; ++_i)
+      if ((wb.Workbook.Sheets[_i] || {}).Hidden != 2)
+        _sn.push(wb.SheetNames[_i]);
+    wb.Props.SheetNames = _sn;
+  }
+  wb.Props.Worksheets = wb.Props.SheetNames.length;
+  zip_add_file(zip, f, write_ext_props(wb.Props));
+  ct.extprops.push(f);
+  add_rels(opts.rels, 3, f, RELS.EXT_PROPS);
+  if (wb.Custprops !== wb.Props && keys(wb.Custprops || {}).length > 0) {
+    f = "docProps/custom.xml";
+    zip_add_file(zip, f, write_cust_props(wb.Custprops));
+    ct.custprops.push(f);
+    add_rels(opts.rels, 4, f, RELS.CUST_PROPS);
+  }
+  var people = ["SheetJ5"];
+  opts.tcid = 0;
+  for (rId = 1; rId <= wb.SheetNames.length; ++rId) {
+    var wsrels = { "!id": {} };
+    var ws = wb.Sheets[wb.SheetNames[rId - 1]];
+    var _type = (ws || {})["!type"] || "sheet";
+    switch (_type) {
+      case "chart":
+      default:
+        f = "xl/worksheets/sheet" + rId + "." + wbext;
+        zip_add_file(zip, f, write_ws_xml(rId - 1, opts, wb, wsrels));
+        ct.sheets.push(f);
+        add_rels(opts.wbrels, -1, "worksheets/sheet" + rId + "." + wbext, RELS.WS[0]);
+    }
+    if (ws) {
+      var comments = ws["!comments"];
+      var need_vml = false;
+      var cf = "";
+      if (comments && comments.length > 0) {
+        var needtc = false;
+        comments.forEach(function(carr) {
+          carr[1].forEach(function(c) {
+            if (c.T == true)
+              needtc = true;
+          });
+        });
+        if (needtc) {
+          cf = "xl/threadedComments/threadedComment" + rId + "." + wbext;
+          zip_add_file(zip, cf, write_tcmnt_xml(comments, people, opts));
+          ct.threadedcomments.push(cf);
+          add_rels(wsrels, -1, "../threadedComments/threadedComment" + rId + "." + wbext, RELS.TCMNT);
+        }
+        cf = "xl/comments" + rId + "." + wbext;
+        zip_add_file(zip, cf, write_comments_xml(comments));
+        ct.comments.push(cf);
+        add_rels(wsrels, -1, "../comments" + rId + "." + wbext, RELS.CMNT);
+        need_vml = true;
+      }
+      if (ws["!legacy"]) {
+        if (need_vml)
+          zip_add_file(zip, "xl/drawings/vmlDrawing" + rId + ".vml", write_comments_vml(rId, ws["!comments"]));
+      }
+      delete ws["!comments"];
+      delete ws["!legacy"];
+    }
+    if (wsrels["!id"].rId1)
+      zip_add_file(zip, get_rels_path(f), write_rels(wsrels));
+  }
+  if (opts.Strings != null && opts.Strings.length > 0) {
+    f = "xl/sharedStrings." + wbext;
+    zip_add_file(zip, f, write_sst_xml(opts.Strings, opts));
+    ct.strs.push(f);
+    add_rels(opts.wbrels, -1, "sharedStrings." + wbext, RELS.SST);
+  }
+  f = "xl/workbook." + wbext;
+  zip_add_file(zip, f, write_wb_xml(wb));
+  ct.workbooks.push(f);
+  add_rels(opts.rels, 1, f, RELS.WB);
+  f = "xl/theme/theme1.xml";
+  zip_add_file(zip, f, write_theme(wb.Themes, opts));
+  ct.themes.push(f);
+  add_rels(opts.wbrels, -1, "theme/theme1.xml", RELS.THEME);
+  f = "xl/styles." + wbext;
+  zip_add_file(zip, f, write_sty_xml(wb, opts));
+  ct.styles.push(f);
+  add_rels(opts.wbrels, -1, "styles." + wbext, RELS.STY);
+  if (wb.vbaraw && vbafmt) {
+    f = "xl/vbaProject.bin";
+    zip_add_file(zip, f, wb.vbaraw);
+    ct.vba.push(f);
+    add_rels(opts.wbrels, -1, "vbaProject.bin", RELS.VBA);
+  }
+  f = "xl/metadata." + wbext;
+  zip_add_file(zip, f, write_xlmeta_xml());
+  ct.metadata.push(f);
+  add_rels(opts.wbrels, -1, "metadata." + wbext, RELS.XLMETA);
+  if (people.length > 1) {
+    f = "xl/persons/person.xml";
+    zip_add_file(zip, f, write_people_xml(people));
+    ct.people.push(f);
+    add_rels(opts.wbrels, -1, "persons/person.xml", RELS.PEOPLE);
+  }
+  zip_add_file(zip, "[Content_Types].xml", write_ct(ct, opts));
+  zip_add_file(zip, "_rels/.rels", write_rels(opts.rels));
+  zip_add_file(zip, "xl/_rels/workbook." + wbext + ".rels", write_rels(opts.wbrels));
+  delete opts.revssf;
+  delete opts.ssf;
+  return zip;
+}
+function firstbyte(f, o) {
+  var x = "";
+  switch ((o || {}).type || "base64") {
     case "buffer":
-      return [e[0], e[1], e[2], e[3], e[4], e[5], e[6], e[7]];
+      return [f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]];
     case "base64":
-      r = kr(e.slice(0, 12));
+      x = Base64_decode(f.slice(0, 12));
       break;
     case "binary":
-      r = e;
+      x = f;
       break;
     case "array":
-      return [e[0], e[1], e[2], e[3], e[4], e[5], e[6], e[7]];
+      return [f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]];
     default:
-      throw new Error("Unrecognized type " + (t && t.type || "undefined"));
+      throw new Error("Unrecognized type " + (o && o.type || "undefined"));
   }
-  return [r.charCodeAt(0), r.charCodeAt(1), r.charCodeAt(2), r.charCodeAt(3), r.charCodeAt(4), r.charCodeAt(5), r.charCodeAt(6), r.charCodeAt(7)];
+  return [x.charCodeAt(0), x.charCodeAt(1), x.charCodeAt(2), x.charCodeAt(3), x.charCodeAt(4), x.charCodeAt(5), x.charCodeAt(6), x.charCodeAt(7)];
 }
-function ef(e, t) {
-  switch (t.type) {
+function write_cfb_ctr(cfb, o) {
+  switch (o.type) {
     case "base64":
     case "binary":
       break;
     case "buffer":
     case "array":
-      t.type = "";
+      o.type = "";
       break;
     case "file":
-      return Gt(t.file, Ee.write(e, { type: de ? "buffer" : "" }));
+      return write_dl(o.file, CFB.write(cfb, { type: has_buf ? "buffer" : "" }));
     case "string":
-      throw new Error("'string' output type invalid for '" + t.bookType + "' files");
+      throw new Error("'string' output type invalid for '" + o.bookType + "' files");
     default:
-      throw new Error("Unrecognized type " + t.type);
+      throw new Error("Unrecognized type " + o.type);
   }
-  return Ee.write(e, t);
+  return CFB.write(cfb, o);
 }
-function a2(e, t) {
-  var r = tr(t || {}), n = e2(e, r);
-  return i2(n, r);
+function write_zip_type(wb, opts) {
+  var o = dup(opts || {});
+  var z = write_zip(wb, o);
+  return write_zip_denouement(z, o);
 }
-function i2(e, t) {
-  var r = {}, n = de ? "nodebuffer" : typeof Uint8Array < "u" ? "array" : "string";
-  if (t.compression && (r.compression = "DEFLATE"), t.password)
-    r.type = n;
+function write_zip_denouement(z, o) {
+  var oopts = {};
+  var ftype = has_buf ? "nodebuffer" : typeof Uint8Array !== "undefined" ? "array" : "string";
+  if (o.compression)
+    oopts.compression = "DEFLATE";
+  if (o.password)
+    oopts.type = ftype;
   else
-    switch (t.type) {
+    switch (o.type) {
       case "base64":
-        r.type = "base64";
+        oopts.type = "base64";
         break;
       case "binary":
-        r.type = "string";
+        oopts.type = "string";
         break;
       case "string":
-        throw new Error("'string' output type invalid for '" + t.bookType + "' files");
+        throw new Error("'string' output type invalid for '" + o.bookType + "' files");
       case "buffer":
       case "file":
-        r.type = n;
+        oopts.type = ftype;
         break;
       default:
-        throw new Error("Unrecognized type " + t.type);
+        throw new Error("Unrecognized type " + o.type);
     }
-  var a = e.FullPaths ? Ee.write(e, { fileType: "zip", type: { nodebuffer: "buffer", string: "binary" }[r.type] || r.type, compression: !!t.compression }) : e.generate(r);
-  if (typeof Deno < "u" && typeof a == "string") {
-    if (t.type == "binary" || t.type == "base64")
-      return a;
-    a = new Uint8Array(yn(a));
+  var out = z.FullPaths ? CFB.write(z, { fileType: "zip", type: { "nodebuffer": "buffer", "string": "binary" }[oopts.type] || oopts.type, compression: !!o.compression }) : z.generate(oopts);
+  if (typeof Deno !== "undefined") {
+    if (typeof out == "string") {
+      if (o.type == "binary" || o.type == "base64")
+        return out;
+      out = new Uint8Array(s2ab(out));
+    }
   }
-  return t.password && typeof encrypt_agile < "u" ? ef(encrypt_agile(a, t.password), t) : t.type === "file" ? Gt(t.file, a) : t.type == "string" ? Nt(a) : a;
+  if (o.password && typeof encrypt_agile !== "undefined")
+    return write_cfb_ctr(encrypt_agile(out, o.password), o);
+  if (o.type === "file")
+    return write_dl(o.file, out);
+  return o.type == "string" ? utf8read(out) : out;
 }
-function s2(e, t) {
-  var r = t || {}, n = wd(e, r);
-  return ef(n, r);
+function write_cfb_type(wb, opts) {
+  var o = opts || {};
+  var cfb = write_xlscfb(wb, o);
+  return write_cfb_ctr(cfb, o);
 }
-function Ar(e, t, r) {
-  r || (r = "");
-  var n = r + e;
-  switch (t.type) {
+function write_string_type(out, opts, bom) {
+  if (!bom)
+    bom = "";
+  var o = bom + out;
+  switch (opts.type) {
     case "base64":
-      return Mt(Rr(n));
+      return Base64_encode(utf8write(o));
     case "binary":
-      return Rr(n);
+      return utf8write(o);
     case "string":
-      return e;
+      return out;
     case "file":
-      return Gt(t.file, n, "utf8");
-    case "buffer":
-      return de ? Lr(n, "utf8") : typeof TextEncoder < "u" ? new TextEncoder().encode(n) : Ar(n, { type: "binary" }).split("").map(function(a) {
-        return a.charCodeAt(0);
-      });
+      return write_dl(opts.file, o, "utf8");
+    case "buffer": {
+      if (has_buf)
+        return Buffer_from(o, "utf8");
+      else if (typeof TextEncoder !== "undefined")
+        return new TextEncoder().encode(o);
+      else
+        return write_string_type(o, { type: "binary" }).split("").map(function(c) {
+          return c.charCodeAt(0);
+        });
+    }
   }
-  throw new Error("Unrecognized type " + t.type);
+  throw new Error("Unrecognized type " + opts.type);
 }
-function f2(e, t) {
-  switch (t.type) {
+function write_stxt_type(out, opts) {
+  switch (opts.type) {
     case "base64":
-      return Mt(e);
+      return Base64_encode(out);
     case "binary":
-      return e;
+      return out;
     case "string":
-      return e;
+      return out;
     case "file":
-      return Gt(t.file, e, "binary");
-    case "buffer":
-      return de ? Lr(e, "binary") : e.split("").map(function(r) {
-        return r.charCodeAt(0);
-      });
+      return write_dl(opts.file, out, "binary");
+    case "buffer": {
+      if (has_buf)
+        return Buffer_from(out, "binary");
+      else
+        return out.split("").map(function(c) {
+          return c.charCodeAt(0);
+        });
+    }
   }
-  throw new Error("Unrecognized type " + t.type);
+  throw new Error("Unrecognized type " + opts.type);
 }
-function nn(e, t) {
-  switch (t.type) {
+function write_binary_type(out, opts) {
+  switch (opts.type) {
     case "string":
     case "base64":
     case "binary":
-      for (var r = "", n = 0; n < e.length; ++n)
-        r += String.fromCharCode(e[n]);
-      return t.type == "base64" ? Mt(r) : t.type == "string" ? Nt(r) : r;
+      var bstr = "";
+      for (var i = 0; i < out.length; ++i)
+        bstr += String.fromCharCode(out[i]);
+      return opts.type == "base64" ? Base64_encode(bstr) : opts.type == "string" ? utf8read(bstr) : bstr;
     case "file":
-      return Gt(t.file, e);
+      return write_dl(opts.file, out);
     case "buffer":
-      return e;
+      return out;
     default:
-      throw new Error("Unrecognized type " + t.type);
+      throw new Error("Unrecognized type " + opts.type);
   }
 }
-function rf(e, t) {
-  Po(), jx(e);
-  var r = tr(t || {});
-  if (r.cellStyles && (r.cellNF = !0, r.sheetStubs = !0), r.type == "array") {
-    r.type = "binary";
-    var n = rf(e, r);
-    return r.type = "array", yn(n);
+function writeSync(wb, opts) {
+  reset_cp();
+  check_wb(wb);
+  var o = dup(opts || {});
+  if (o.cellStyles) {
+    o.cellNF = true;
+    o.sheetStubs = true;
   }
-  var a = 0;
-  if (r.sheet && (typeof r.sheet == "number" ? a = r.sheet : a = e.SheetNames.indexOf(r.sheet), !e.SheetNames[a]))
-    throw new Error("Sheet not found: " + r.sheet + " : " + typeof r.sheet);
-  switch (r.bookType || "xlsb") {
+  if (o.type == "array") {
+    o.type = "binary";
+    var out = writeSync(wb, o);
+    o.type = "array";
+    return s2ab(out);
+  }
+  var idx = 0;
+  if (o.sheet) {
+    if (typeof o.sheet == "number")
+      idx = o.sheet;
+    else
+      idx = wb.SheetNames.indexOf(o.sheet);
+    if (!wb.SheetNames[idx])
+      throw new Error("Sheet not found: " + o.sheet + " : " + typeof o.sheet);
+  }
+  switch (o.bookType || "xlsb") {
     case "xml":
     case "xlml":
-      return Ar(Ed(e, r), r);
+      return write_string_type(write_xlml(wb, o), o);
     case "slk":
     case "sylk":
-      return Ar(Gc.from_sheet(e.Sheets[e.SheetNames[a]], r), r);
+      return write_string_type(SYLK.from_sheet(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "htm":
     case "html":
-      return Ar(qs(e.Sheets[e.SheetNames[a]], r), r);
+      return write_string_type(sheet_to_html(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "txt":
-      return f2(tf(e.Sheets[e.SheetNames[a]], r), r);
+      return write_stxt_type(sheet_to_txt(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "csv":
-      return Ar(H0(e.Sheets[e.SheetNames[a]], r), r, "\uFEFF");
+      return write_string_type(sheet_to_csv(wb.Sheets[wb.SheetNames[idx]], o), o, "\uFEFF");
     case "dif":
-      return Ar(Xc.from_sheet(e.Sheets[e.SheetNames[a]], r), r);
+      return write_string_type(DIF.from_sheet(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "dbf":
-      return nn(Vc.from_sheet(e.Sheets[e.SheetNames[a]], r), r);
+      return write_binary_type(DBF.from_sheet(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "prn":
-      return Ar($c.from_sheet(e.Sheets[e.SheetNames[a]], r), r);
+      return write_string_type(PRN.from_sheet(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "rtf":
-      return Ar(Zc.from_sheet(e.Sheets[e.SheetNames[a]], r), r);
+      return write_string_type(RTF.from_sheet(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "eth":
-      return Ar(As.from_sheet(e.Sheets[e.SheetNames[a]], r), r);
+      return write_string_type(ETH.from_sheet(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "fods":
-      return Ar(Qs(e, r), r);
+      return write_string_type(write_ods(wb, o), o);
     case "wk1":
-      return nn(Qa.sheet_to_wk1(e.Sheets[e.SheetNames[a]], r), r);
+      return write_binary_type(WK_.sheet_to_wk1(wb.Sheets[wb.SheetNames[idx]], o), o);
     case "wk3":
-      return nn(Qa.book_to_wk3(e, r), r);
+      return write_binary_type(WK_.book_to_wk3(wb, o), o);
     case "biff2":
-      r.biff || (r.biff = 2);
+      if (!o.biff)
+        o.biff = 2;
     case "biff3":
-      r.biff || (r.biff = 3);
+      if (!o.biff)
+        o.biff = 3;
     case "biff4":
-      return r.biff || (r.biff = 4), nn(Ys(e, r), r);
+      if (!o.biff)
+        o.biff = 4;
+      return write_binary_type(write_biff_buf(wb, o), o);
     case "biff5":
-      r.biff || (r.biff = 5);
+      if (!o.biff)
+        o.biff = 5;
     case "biff8":
     case "xla":
     case "xls":
-      return r.biff || (r.biff = 8), s2(e, r);
+      if (!o.biff)
+        o.biff = 8;
+      return write_cfb_type(wb, o);
     case "xlsx":
     case "xlsm":
     case "xlam":
     case "xlsb":
     case "numbers":
     case "ods":
-      return a2(e, r);
+      return write_zip_type(wb, o);
     default:
-      throw new Error("Unrecognized bookType |" + r.bookType + "|");
+      throw new Error("Unrecognized bookType |" + o.bookType + "|");
   }
 }
-function o2(e) {
-  if (!e.bookType) {
-    var t = {
-      xls: "biff8",
-      htm: "html",
-      slk: "sylk",
-      socialcalc: "eth",
-      Sh33tJS: "WTF"
-    }, r = e.file.slice(e.file.lastIndexOf(".")).toLowerCase();
-    r.match(/^\.[a-z]+$/) && (e.bookType = r.slice(1)), e.bookType = t[e.bookType] || e.bookType;
-  }
+function resolve_book_type(o) {
+  if (o.bookType)
+    return;
+  var _BT = {
+    "xls": "biff8",
+    "htm": "html",
+    "slk": "sylk",
+    "socialcalc": "eth",
+    "Sh33tJS": "WTF"
+  };
+  var ext = o.file.slice(o.file.lastIndexOf(".")).toLowerCase();
+  if (ext.match(/^\.[a-z]+$/))
+    o.bookType = ext.slice(1);
+  o.bookType = _BT[o.bookType] || o.bookType;
 }
-function l2(e, t, r) {
-  var n = r || {};
-  return n.type = "file", n.file = t, o2(n), rf(e, n);
+function writeFileSync(wb, filename, opts) {
+  var o = opts || {};
+  o.type = "file";
+  o.file = filename;
+  resolve_book_type(o);
+  return writeSync(wb, o);
 }
-function c2(e, t, r, n, a, i, s, f) {
-  var l = Ge(r), o = f.defval, c = f.raw || !Object.prototype.hasOwnProperty.call(f, "raw"), p = !0, u = a === 1 ? [] : {};
-  if (a !== 1)
+function make_json_row(sheet, r, R, cols, header, hdr, dense, o) {
+  var rr = encode_row(R);
+  var defval = o.defval, raw = o.raw || !Object.prototype.hasOwnProperty.call(o, "raw");
+  var isempty = true;
+  var row = header === 1 ? [] : {};
+  if (header !== 1) {
     if (Object.defineProperty)
       try {
-        Object.defineProperty(u, "__rowNum__", { value: r, enumerable: !1 });
-      } catch {
-        u.__rowNum__ = r;
+        Object.defineProperty(row, "__rowNum__", { value: R, enumerable: false });
+      } catch (e) {
+        row.__rowNum__ = R;
       }
     else
-      u.__rowNum__ = r;
-  if (!s || e[r])
-    for (var v = t.s.c; v <= t.e.c; ++v) {
-      var T = s ? e[r][v] : e[n[v] + l];
-      if (T === void 0 || T.t === void 0) {
-        if (o === void 0)
+      row.__rowNum__ = R;
+  }
+  if (!dense || sheet[R])
+    for (var C = r.s.c; C <= r.e.c; ++C) {
+      var val = dense ? sheet[R][C] : sheet[cols[C] + rr];
+      if (val === void 0 || val.t === void 0) {
+        if (defval === void 0)
           continue;
-        i[v] != null && (u[i[v]] = o);
+        if (hdr[C] != null) {
+          row[hdr[C]] = defval;
+        }
         continue;
       }
-      var x = T.v;
-      switch (T.t) {
+      var v = val.v;
+      switch (val.t) {
         case "z":
-          if (x == null)
+          if (v == null)
             break;
           continue;
         case "e":
-          x = x == 0 ? null : void 0;
+          v = v == 0 ? null : void 0;
           break;
         case "s":
         case "d":
@@ -12531,318 +18517,488 @@ function c2(e, t, r, n, a, i, s, f) {
         case "n":
           break;
         default:
-          throw new Error("unrecognized type " + T.t);
+          throw new Error("unrecognized type " + val.t);
       }
-      if (i[v] != null) {
-        if (x == null)
-          if (T.t == "e" && x === null)
-            u[i[v]] = null;
-          else if (o !== void 0)
-            u[i[v]] = o;
-          else if (c && x === null)
-            u[i[v]] = null;
+      if (hdr[C] != null) {
+        if (v == null) {
+          if (val.t == "e" && v === null)
+            row[hdr[C]] = null;
+          else if (defval !== void 0)
+            row[hdr[C]] = defval;
+          else if (raw && v === null)
+            row[hdr[C]] = null;
           else
             continue;
-        else
-          u[i[v]] = c && (T.t !== "n" || T.t === "n" && f.rawNumbers !== !1) ? x : Pr(T, x, f);
-        x != null && (p = !1);
+        } else {
+          row[hdr[C]] = raw && (val.t !== "n" || val.t === "n" && o.rawNumbers !== false) ? v : format_cell(val, v, o);
+        }
+        if (v != null)
+          isempty = false;
       }
     }
-  return { row: u, isempty: p };
+  return { row, isempty };
 }
-function Tn(e, t) {
-  if (e == null || e["!ref"] == null)
+function sheet_to_json(sheet, opts) {
+  if (sheet == null || sheet["!ref"] == null)
     return [];
-  var r = { t: "n", v: 0 }, n = 0, a = 1, i = [], s = 0, f = "", l = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } }, o = t || {}, c = o.range != null ? o.range : e["!ref"];
-  switch (o.header === 1 ? n = 1 : o.header === "A" ? n = 2 : Array.isArray(o.header) ? n = 3 : o.header == null && (n = 0), typeof c) {
+  var val = { t: "n", v: 0 }, header = 0, offset = 1, hdr = [], v = 0, vv = "";
+  var r = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } };
+  var o = opts || {};
+  var range = o.range != null ? o.range : sheet["!ref"];
+  if (o.header === 1)
+    header = 1;
+  else if (o.header === "A")
+    header = 2;
+  else if (Array.isArray(o.header))
+    header = 3;
+  else if (o.header == null)
+    header = 0;
+  switch (typeof range) {
     case "string":
-      l = we(c);
+      r = safe_decode_range(range);
       break;
     case "number":
-      l = we(e["!ref"]), l.s.r = c;
+      r = safe_decode_range(sheet["!ref"]);
+      r.s.r = range;
       break;
     default:
-      l = c;
+      r = range;
   }
-  n > 0 && (a = 0);
-  var p = Ge(l.s.r), u = [], v = [], T = 0, x = 0, _ = Array.isArray(e), O = l.s.r, R = 0, y = {};
-  _ && !e[O] && (e[O] = []);
-  var M = o.skipHidden && e["!cols"] || [], b = o.skipHidden && e["!rows"] || [];
-  for (R = l.s.c; R <= l.e.c; ++R)
-    if (!(M[R] || {}).hidden)
-      switch (u[R] = ze(R), r = _ ? e[O][R] : e[u[R] + p], n) {
-        case 1:
-          i[R] = R - l.s.c;
-          break;
-        case 2:
-          i[R] = u[R];
-          break;
-        case 3:
-          i[R] = o.header[R - l.s.c];
-          break;
-        default:
-          if (r == null && (r = { w: "__EMPTY", t: "s" }), f = s = Pr(r, null, o), x = y[s] || 0, !x)
-            y[s] = 1;
-          else {
-            do
-              f = s + "_" + x++;
-            while (y[f]);
-            y[s] = x, y[f] = 1;
-          }
-          i[R] = f;
-      }
-  for (O = l.s.r + a; O <= l.e.r; ++O)
-    if (!(b[O] || {}).hidden) {
-      var re = c2(e, l, O, u, n, i, _, o);
-      (re.isempty === !1 || (n === 1 ? o.blankrows !== !1 : !!o.blankrows)) && (v[T++] = re.row);
-    }
-  return v.length = T, v;
-}
-var fi = /"/g;
-function h2(e, t, r, n, a, i, s, f) {
-  for (var l = !0, o = [], c = "", p = Ge(r), u = t.s.c; u <= t.e.c; ++u)
-    if (!!n[u]) {
-      var v = f.dense ? (e[r] || [])[u] : e[n[u] + p];
-      if (v == null)
-        c = "";
-      else if (v.v != null) {
-        l = !1, c = "" + (f.rawNumbers && v.t == "n" ? v.v : Pr(v, null, f));
-        for (var T = 0, x = 0; T !== c.length; ++T)
-          if ((x = c.charCodeAt(T)) === a || x === i || x === 34 || f.forceQuotes) {
-            c = '"' + c.replace(fi, '""') + '"';
-            break;
-          }
-        c == "ID" && (c = '"ID"');
-      } else
-        v.f != null && !v.F ? (l = !1, c = "=" + v.f, c.indexOf(",") >= 0 && (c = '"' + c.replace(fi, '""') + '"')) : c = "";
-      o.push(c);
-    }
-  return f.blankrows === !1 && l ? null : o.join(s);
-}
-function H0(e, t) {
-  var r = [], n = t == null ? {} : t;
-  if (e == null || e["!ref"] == null)
-    return "";
-  var a = we(e["!ref"]), i = n.FS !== void 0 ? n.FS : ",", s = i.charCodeAt(0), f = n.RS !== void 0 ? n.RS : `
-`, l = f.charCodeAt(0), o = new RegExp((i == "|" ? "\\|" : i) + "+$"), c = "", p = [];
-  n.dense = Array.isArray(e);
-  for (var u = n.skipHidden && e["!cols"] || [], v = n.skipHidden && e["!rows"] || [], T = a.s.c; T <= a.e.c; ++T)
-    (u[T] || {}).hidden || (p[T] = ze(T));
-  for (var x = 0, _ = a.s.r; _ <= a.e.r; ++_)
-    (v[_] || {}).hidden || (c = h2(e, a, _, p, s, l, i, n), c != null && (n.strip && (c = c.replace(o, "")), (c || n.blankrows !== !1) && r.push((x++ ? f : "") + c)));
-  return delete n.dense, r.join("");
-}
-function tf(e, t) {
-  t || (t = {}), t.FS = "	", t.RS = `
-`;
-  var r = H0(e, t);
-  return r;
-}
-function u2(e) {
-  var t = "", r, n = "";
-  if (e == null || e["!ref"] == null)
-    return [];
-  var a = we(e["!ref"]), i = "", s = [], f, l = [], o = Array.isArray(e);
-  for (f = a.s.c; f <= a.e.c; ++f)
-    s[f] = ze(f);
-  for (var c = a.s.r; c <= a.e.r; ++c)
-    for (i = Ge(c), f = a.s.c; f <= a.e.c; ++f)
-      if (t = s[f] + i, r = o ? (e[c] || [])[f] : e[t], n = "", r !== void 0) {
-        if (r.F != null) {
-          if (t = r.F, !r.f)
-            continue;
-          n = r.f, t.indexOf(":") == -1 && (t = t + ":" + t);
-        }
-        if (r.f != null)
-          n = r.f;
+  if (header > 0)
+    offset = 0;
+  var rr = encode_row(r.s.r);
+  var cols = [];
+  var out = [];
+  var outi = 0, counter = 0;
+  var dense = Array.isArray(sheet);
+  var R = r.s.r, C = 0;
+  var header_cnt = {};
+  if (dense && !sheet[R])
+    sheet[R] = [];
+  var colinfo = o.skipHidden && sheet["!cols"] || [];
+  var rowinfo = o.skipHidden && sheet["!rows"] || [];
+  for (C = r.s.c; C <= r.e.c; ++C) {
+    if ((colinfo[C] || {}).hidden)
+      continue;
+    cols[C] = encode_col(C);
+    val = dense ? sheet[R][C] : sheet[cols[C] + rr];
+    switch (header) {
+      case 1:
+        hdr[C] = C - r.s.c;
+        break;
+      case 2:
+        hdr[C] = cols[C];
+        break;
+      case 3:
+        hdr[C] = o.header[C - r.s.c];
+        break;
+      default:
+        if (val == null)
+          val = { w: "__EMPTY", t: "s" };
+        vv = v = format_cell(val, null, o);
+        counter = header_cnt[v] || 0;
+        if (!counter)
+          header_cnt[v] = 1;
         else {
-          if (r.t == "z")
-            continue;
-          if (r.t == "n" && r.v != null)
-            n = "" + r.v;
-          else if (r.t == "b")
-            n = r.v ? "TRUE" : "FALSE";
-          else if (r.w !== void 0)
-            n = "'" + r.w;
-          else {
-            if (r.v === void 0)
-              continue;
-            r.t == "s" ? n = "'" + r.v : n = "" + r.v;
-          }
+          do {
+            vv = v + "_" + counter++;
+          } while (header_cnt[vv]);
+          header_cnt[v] = counter;
+          header_cnt[vv] = 1;
         }
-        l[l.length] = t + "=" + n;
-      }
-  return l;
-}
-function nf(e, t, r) {
-  var n = r || {}, a = +!n.skipHeader, i = e || {}, s = 0, f = 0;
-  if (i && n.origin != null)
-    if (typeof n.origin == "number")
-      s = n.origin;
-    else {
-      var l = typeof n.origin == "string" ? Me(n.origin) : n.origin;
-      s = l.r, f = l.c;
+        hdr[C] = vv;
     }
-  var o, c = { s: { c: 0, r: 0 }, e: { c: f, r: s + t.length - 1 + a } };
-  if (i["!ref"]) {
-    var p = we(i["!ref"]);
-    c.e.c = Math.max(c.e.c, p.e.c), c.e.r = Math.max(c.e.r, p.e.r), s == -1 && (s = p.e.r + 1, c.e.r = s + t.length - 1 + a);
-  } else
-    s == -1 && (s = 0, c.e.r = t.length - 1 + a);
-  var u = n.header || [], v = 0;
-  t.forEach(function(x, _) {
-    Xe(x).forEach(function(O) {
-      (v = u.indexOf(O)) == -1 && (u[v = u.length] = O);
-      var R = x[O], y = "z", M = "", b = _e({ c: f + v, r: s + _ + a });
-      o = Ht(i, b), R && typeof R == "object" && !(R instanceof Date) ? i[b] = R : (typeof R == "number" ? y = "n" : typeof R == "boolean" ? y = "b" : typeof R == "string" ? y = "s" : R instanceof Date ? (y = "d", n.cellDates || (y = "n", R = rr(R)), M = n.dateNF || Ce[14]) : R === null && n.nullError && (y = "e", R = 0), o ? (o.t = y, o.v = R, delete o.w, delete o.R, M && (o.z = M)) : i[b] = o = { t: y, v: R }, M && (o.z = M));
-    });
-  }), c.e.c = Math.max(c.e.c, f + u.length - 1);
-  var T = Ge(s);
-  if (a)
-    for (v = 0; v < u.length; ++v)
-      i[ze(v + f) + T] = { t: "s", v: u[v] };
-  return i["!ref"] = Ne(c), i;
-}
-function x2(e, t) {
-  return nf(null, e, t);
-}
-function Ht(e, t, r) {
-  if (typeof t == "string") {
-    if (Array.isArray(e)) {
-      var n = Me(t);
-      return e[n.r] || (e[n.r] = []), e[n.r][n.c] || (e[n.r][n.c] = { t: "z" });
-    }
-    return e[t] || (e[t] = { t: "z" });
   }
-  return typeof t != "number" ? Ht(e, _e(t)) : Ht(e, _e({ r: t, c: r || 0 }));
+  for (R = r.s.r + offset; R <= r.e.r; ++R) {
+    if ((rowinfo[R] || {}).hidden)
+      continue;
+    var row = make_json_row(sheet, r, R, cols, header, hdr, dense, o);
+    if (row.isempty === false || (header === 1 ? o.blankrows !== false : !!o.blankrows))
+      out[outi++] = row.row;
+  }
+  out.length = outi;
+  return out;
 }
-function d2(e, t) {
-  if (typeof t == "number") {
-    if (t >= 0 && e.SheetNames.length > t)
-      return t;
-    throw new Error("Cannot find sheet # " + t);
-  } else if (typeof t == "string") {
-    var r = e.SheetNames.indexOf(t);
-    if (r > -1)
-      return r;
-    throw new Error("Cannot find sheet name |" + t + "|");
+var qreg = /"/g;
+function make_csv_row(sheet, r, R, cols, fs, rs, FS, o) {
+  var isempty = true;
+  var row = [], txt = "", rr = encode_row(R);
+  for (var C = r.s.c; C <= r.e.c; ++C) {
+    if (!cols[C])
+      continue;
+    var val = o.dense ? (sheet[R] || [])[C] : sheet[cols[C] + rr];
+    if (val == null)
+      txt = "";
+    else if (val.v != null) {
+      isempty = false;
+      txt = "" + (o.rawNumbers && val.t == "n" ? val.v : format_cell(val, null, o));
+      for (var i = 0, cc = 0; i !== txt.length; ++i)
+        if ((cc = txt.charCodeAt(i)) === fs || cc === rs || cc === 34 || o.forceQuotes) {
+          txt = '"' + txt.replace(qreg, '""') + '"';
+          break;
+        }
+      if (txt == "ID")
+        txt = '"ID"';
+    } else if (val.f != null && !val.F) {
+      isempty = false;
+      txt = "=" + val.f;
+      if (txt.indexOf(",") >= 0)
+        txt = '"' + txt.replace(qreg, '""') + '"';
+    } else
+      txt = "";
+    row.push(txt);
+  }
+  if (o.blankrows === false && isempty)
+    return null;
+  return row.join(FS);
+}
+function sheet_to_csv(sheet, opts) {
+  var out = [];
+  var o = opts == null ? {} : opts;
+  if (sheet == null || sheet["!ref"] == null)
+    return "";
+  var r = safe_decode_range(sheet["!ref"]);
+  var FS = o.FS !== void 0 ? o.FS : ",", fs = FS.charCodeAt(0);
+  var RS = o.RS !== void 0 ? o.RS : "\n", rs = RS.charCodeAt(0);
+  var endregex = new RegExp((FS == "|" ? "\\|" : FS) + "+$");
+  var row = "", cols = [];
+  o.dense = Array.isArray(sheet);
+  var colinfo = o.skipHidden && sheet["!cols"] || [];
+  var rowinfo = o.skipHidden && sheet["!rows"] || [];
+  for (var C = r.s.c; C <= r.e.c; ++C)
+    if (!(colinfo[C] || {}).hidden)
+      cols[C] = encode_col(C);
+  var w = 0;
+  for (var R = r.s.r; R <= r.e.r; ++R) {
+    if ((rowinfo[R] || {}).hidden)
+      continue;
+    row = make_csv_row(sheet, r, R, cols, fs, rs, FS, o);
+    if (row == null) {
+      continue;
+    }
+    if (o.strip)
+      row = row.replace(endregex, "");
+    if (row || o.blankrows !== false)
+      out.push((w++ ? RS : "") + row);
+  }
+  delete o.dense;
+  return out.join("");
+}
+function sheet_to_txt(sheet, opts) {
+  if (!opts)
+    opts = {};
+  opts.FS = "	";
+  opts.RS = "\n";
+  var s = sheet_to_csv(sheet, opts);
+  return s;
+}
+function sheet_to_formulae(sheet) {
+  var y = "", x, val = "";
+  if (sheet == null || sheet["!ref"] == null)
+    return [];
+  var r = safe_decode_range(sheet["!ref"]), rr = "", cols = [], C;
+  var cmds = [];
+  var dense = Array.isArray(sheet);
+  for (C = r.s.c; C <= r.e.c; ++C)
+    cols[C] = encode_col(C);
+  for (var R = r.s.r; R <= r.e.r; ++R) {
+    rr = encode_row(R);
+    for (C = r.s.c; C <= r.e.c; ++C) {
+      y = cols[C] + rr;
+      x = dense ? (sheet[R] || [])[C] : sheet[y];
+      val = "";
+      if (x === void 0)
+        continue;
+      else if (x.F != null) {
+        y = x.F;
+        if (!x.f)
+          continue;
+        val = x.f;
+        if (y.indexOf(":") == -1)
+          y = y + ":" + y;
+      }
+      if (x.f != null)
+        val = x.f;
+      else if (x.t == "z")
+        continue;
+      else if (x.t == "n" && x.v != null)
+        val = "" + x.v;
+      else if (x.t == "b")
+        val = x.v ? "TRUE" : "FALSE";
+      else if (x.w !== void 0)
+        val = "'" + x.w;
+      else if (x.v === void 0)
+        continue;
+      else if (x.t == "s")
+        val = "'" + x.v;
+      else
+        val = "" + x.v;
+      cmds[cmds.length] = y + "=" + val;
+    }
+  }
+  return cmds;
+}
+function sheet_add_json(_ws, js, opts) {
+  var o = opts || {};
+  var offset = +!o.skipHeader;
+  var ws = _ws || {};
+  var _R = 0, _C = 0;
+  if (ws && o.origin != null) {
+    if (typeof o.origin == "number")
+      _R = o.origin;
+    else {
+      var _origin = typeof o.origin == "string" ? decode_cell(o.origin) : o.origin;
+      _R = _origin.r;
+      _C = _origin.c;
+    }
+  }
+  var cell;
+  var range = { s: { c: 0, r: 0 }, e: { c: _C, r: _R + js.length - 1 + offset } };
+  if (ws["!ref"]) {
+    var _range = safe_decode_range(ws["!ref"]);
+    range.e.c = Math.max(range.e.c, _range.e.c);
+    range.e.r = Math.max(range.e.r, _range.e.r);
+    if (_R == -1) {
+      _R = _range.e.r + 1;
+      range.e.r = _R + js.length - 1 + offset;
+    }
+  } else {
+    if (_R == -1) {
+      _R = 0;
+      range.e.r = js.length - 1 + offset;
+    }
+  }
+  var hdr = o.header || [], C = 0;
+  js.forEach(function(JS, R) {
+    keys(JS).forEach(function(k) {
+      if ((C = hdr.indexOf(k)) == -1)
+        hdr[C = hdr.length] = k;
+      var v = JS[k];
+      var t = "z";
+      var z = "";
+      var ref = encode_cell({ c: _C + C, r: _R + R + offset });
+      cell = ws_get_cell_stub(ws, ref);
+      if (v && typeof v === "object" && !(v instanceof Date)) {
+        ws[ref] = v;
+      } else {
+        if (typeof v == "number")
+          t = "n";
+        else if (typeof v == "boolean")
+          t = "b";
+        else if (typeof v == "string")
+          t = "s";
+        else if (v instanceof Date) {
+          t = "d";
+          if (!o.cellDates) {
+            t = "n";
+            v = datenum(v);
+          }
+          z = o.dateNF || table_fmt[14];
+        } else if (v === null && o.nullError) {
+          t = "e";
+          v = 0;
+        }
+        if (!cell)
+          ws[ref] = cell = { t, v };
+        else {
+          cell.t = t;
+          cell.v = v;
+          delete cell.w;
+          delete cell.R;
+          if (z)
+            cell.z = z;
+        }
+        if (z)
+          cell.z = z;
+      }
+    });
+  });
+  range.e.c = Math.max(range.e.c, _C + hdr.length - 1);
+  var __R = encode_row(_R);
+  if (offset)
+    for (C = 0; C < hdr.length; ++C)
+      ws[encode_col(C + _C) + __R] = { t: "s", v: hdr[C] };
+  ws["!ref"] = encode_range(range);
+  return ws;
+}
+function json_to_sheet(js, opts) {
+  return sheet_add_json(null, js, opts);
+}
+function ws_get_cell_stub(ws, R, C) {
+  if (typeof R == "string") {
+    if (Array.isArray(ws)) {
+      var RC = decode_cell(R);
+      if (!ws[RC.r])
+        ws[RC.r] = [];
+      return ws[RC.r][RC.c] || (ws[RC.r][RC.c] = { t: "z" });
+    }
+    return ws[R] || (ws[R] = { t: "z" });
+  }
+  if (typeof R != "number")
+    return ws_get_cell_stub(ws, encode_cell(R));
+  return ws_get_cell_stub(ws, encode_cell({ r: R, c: C || 0 }));
+}
+function wb_sheet_idx(wb, sh) {
+  if (typeof sh == "number") {
+    if (sh >= 0 && wb.SheetNames.length > sh)
+      return sh;
+    throw new Error("Cannot find sheet # " + sh);
+  } else if (typeof sh == "string") {
+    var idx = wb.SheetNames.indexOf(sh);
+    if (idx > -1)
+      return idx;
+    throw new Error("Cannot find sheet name |" + sh + "|");
   } else
-    throw new Error("Cannot find sheet |" + t + "|");
+    throw new Error("Cannot find sheet |" + sh + "|");
 }
-function p2() {
+function book_new() {
   return { SheetNames: [], Sheets: {} };
 }
-function v2(e, t, r, n) {
-  var a = 1;
-  if (!r)
-    for (; a <= 65535 && e.SheetNames.indexOf(r = "Sheet" + a) != -1; ++a, r = void 0)
-      ;
-  if (!r || e.SheetNames.length >= 65535)
-    throw new Error("Too many worksheets");
-  if (n && e.SheetNames.indexOf(r) >= 0) {
-    var i = r.match(/(^.*?)(\d+)$/);
-    a = i && +i[2] || 0;
-    var s = i && i[1] || r;
-    for (++a; a <= 65535 && e.SheetNames.indexOf(r = s + a) != -1; ++a)
-      ;
+function book_append_sheet(wb, ws, name, roll) {
+  var i = 1;
+  if (!name) {
+    for (; i <= 65535; ++i, name = void 0)
+      if (wb.SheetNames.indexOf(name = "Sheet" + i) == -1)
+        break;
   }
-  if (js(r), e.SheetNames.indexOf(r) >= 0)
-    throw new Error("Worksheet with name |" + r + "| already exists!");
-  return e.SheetNames.push(r), e.Sheets[r] = t, r;
+  if (!name || wb.SheetNames.length >= 65535)
+    throw new Error("Too many worksheets");
+  if (roll && wb.SheetNames.indexOf(name) >= 0) {
+    var m = name.match(/(^.*?)(\d+)$/);
+    i = m && +m[2] || 0;
+    var root = m && m[1] || name;
+    for (++i; i <= 65535; ++i)
+      if (wb.SheetNames.indexOf(name = root + i) == -1)
+        break;
+  }
+  check_ws_name(name);
+  if (wb.SheetNames.indexOf(name) >= 0)
+    throw new Error("Worksheet with name |" + name + "| already exists!");
+  wb.SheetNames.push(name);
+  wb.Sheets[name] = ws;
+  return name;
 }
-function m2(e, t, r) {
-  e.Workbook || (e.Workbook = {}), e.Workbook.Sheets || (e.Workbook.Sheets = []);
-  var n = d2(e, t);
-  switch (e.Workbook.Sheets[n] || (e.Workbook.Sheets[n] = {}), r) {
+function book_set_sheet_visibility(wb, sh, vis) {
+  if (!wb.Workbook)
+    wb.Workbook = {};
+  if (!wb.Workbook.Sheets)
+    wb.Workbook.Sheets = [];
+  var idx = wb_sheet_idx(wb, sh);
+  if (!wb.Workbook.Sheets[idx])
+    wb.Workbook.Sheets[idx] = {};
+  switch (vis) {
     case 0:
     case 1:
     case 2:
       break;
     default:
-      throw new Error("Bad sheet visibility setting " + r);
+      throw new Error("Bad sheet visibility setting " + vis);
   }
-  e.Workbook.Sheets[n].Hidden = r;
+  wb.Workbook.Sheets[idx].Hidden = vis;
 }
-function g2(e, t) {
-  return e.z = t, e;
+function cell_set_number_format(cell, fmt) {
+  cell.z = fmt;
+  return cell;
 }
-function af(e, t, r) {
-  return t ? (e.l = { Target: t }, r && (e.l.Tooltip = r)) : delete e.l, e;
+function cell_set_hyperlink(cell, target, tooltip) {
+  if (!target) {
+    delete cell.l;
+  } else {
+    cell.l = { Target: target };
+    if (tooltip)
+      cell.l.Tooltip = tooltip;
+  }
+  return cell;
 }
-function _2(e, t, r) {
-  return af(e, "#" + t, r);
+function cell_set_internal_link(cell, range, tooltip) {
+  return cell_set_hyperlink(cell, "#" + range, tooltip);
 }
-function E2(e, t, r) {
-  e.c || (e.c = []), e.c.push({ t, a: r || "SheetJS" });
+function cell_add_comment(cell, text, author) {
+  if (!cell.c)
+    cell.c = [];
+  cell.c.push({ t: text, a: author || "SheetJS" });
 }
-function T2(e, t, r, n) {
-  for (var a = typeof t != "string" ? t : we(t), i = typeof t == "string" ? t : Ne(t), s = a.s.r; s <= a.e.r; ++s)
-    for (var f = a.s.c; f <= a.e.c; ++f) {
-      var l = Ht(e, s, f);
-      l.t = "n", l.F = i, delete l.v, s == a.s.r && f == a.s.c && (l.f = r, n && (l.D = !0));
+function sheet_set_array_formula(ws, range, formula, dynamic) {
+  var rng = typeof range != "string" ? range : safe_decode_range(range);
+  var rngstr = typeof range == "string" ? range : encode_range(range);
+  for (var R = rng.s.r; R <= rng.e.r; ++R)
+    for (var C = rng.s.c; C <= rng.e.c; ++C) {
+      var cell = ws_get_cell_stub(ws, R, C);
+      cell.t = "n";
+      cell.F = rngstr;
+      delete cell.v;
+      if (R == rng.s.r && C == rng.s.c) {
+        cell.f = formula;
+        if (dynamic)
+          cell.D = true;
+      }
     }
-  return e;
+  return ws;
 }
-var w2 = {
-  encode_col: ze,
-  encode_row: Ge,
-  encode_cell: _e,
-  encode_range: Ne,
-  decode_col: D0,
-  decode_row: R0,
-  split_cell: Ll,
-  decode_cell: Me,
-  decode_range: lr,
-  format_cell: Pr,
-  sheet_add_aoa: as,
-  sheet_add_json: nf,
-  sheet_add_dom: Js,
-  aoa_to_sheet: wt,
-  json_to_sheet: x2,
-  table_to_sheet: Zs,
-  table_to_book: Xd,
-  sheet_to_csv: H0,
-  sheet_to_txt: tf,
-  sheet_to_json: Tn,
-  sheet_to_html: qs,
-  sheet_to_formulae: u2,
-  sheet_to_row_object_array: Tn,
-  sheet_get_cell: Ht,
-  book_new: p2,
-  book_append_sheet: v2,
-  book_set_sheet_visibility: m2,
-  cell_set_number_format: g2,
-  cell_set_hyperlink: af,
-  cell_set_internal_link: _2,
-  cell_add_comment: E2,
-  sheet_set_array_formula: T2,
+var utils = {
+  encode_col,
+  encode_row,
+  encode_cell,
+  encode_range,
+  decode_col,
+  decode_row,
+  split_cell,
+  decode_cell,
+  decode_range,
+  format_cell,
+  sheet_add_aoa,
+  sheet_add_json,
+  sheet_add_dom,
+  aoa_to_sheet,
+  json_to_sheet,
+  table_to_sheet: parse_dom_table,
+  table_to_book,
+  sheet_to_csv,
+  sheet_to_txt,
+  sheet_to_json,
+  sheet_to_html,
+  sheet_to_formulae,
+  sheet_to_row_object_array: sheet_to_json,
+  sheet_get_cell: ws_get_cell_stub,
+  book_new,
+  book_append_sheet,
+  book_set_sheet_visibility,
+  cell_set_number_format,
+  cell_set_hyperlink,
+  cell_set_internal_link,
+  cell_add_comment,
+  sheet_set_array_formula,
   consts: {
     SHEET_VISIBLE: 0,
     SHEET_HIDDEN: 1,
     SHEET_VERY_HIDDEN: 2
   }
 };
-function C2({
-  data: e,
-  header: t,
-  filename: r = `${new Date()}.xlsx`,
-  json2sheetOpts: n = {},
-  write2excelOpts: a = { bookType: "xlsx" }
+function jsonToSheetXlsx({
+  data: data2,
+  header,
+  filename = `${new Date()}.xlsx`,
+  json2sheetOpts = {},
+  write2excelOpts = { bookType: "xlsx" }
 }) {
-  const i = [...e];
-  t && (i.unshift(t), n.skipHeader = !0);
-  const s = w2.json_to_sheet(i, n), f = {
-    SheetNames: [r],
+  const arrData = [...data2];
+  if (header) {
+    arrData.unshift(header);
+    json2sheetOpts.skipHeader = true;
+  }
+  const worksheet = utils.json_to_sheet(arrData, json2sheetOpts);
+  const workbook = {
+    SheetNames: [filename],
     Sheets: {
-      [r]: s
+      [filename]: worksheet
     }
   };
-  l2(f, r, a);
+  writeFileSync(workbook, filename, write2excelOpts);
 }
 export {
-  No as BaseCRUD,
-  A2 as CompatibleWithDefaultConfig,
-  F2 as formatOption,
-  C2 as jsonToSheetXlsx,
-  y2 as useBaseCRUD
+  BaseCRUD,
+  CompatibleWithDefaultConfig,
+  formatOption,
+  jsonToSheetXlsx,
+  useBaseCRUD
 };
