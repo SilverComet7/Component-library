@@ -1,5 +1,4 @@
 import { BaseCRUD } from "./crud";
-import { ref } from "vue-demi";
 type Base<T> = {
   _id: string;
   creator?: string;
@@ -8,21 +7,19 @@ type Base<T> = {
 
 type No_IdBase<T> = Exclude<Base<T>, "_id">;
 
-export function useBaseCRUD<S, T>(routePath: string, axiosInstance?: any, filterCondition?: any) {
-  const activityTemplateGroupInstance = new BaseCRUD<S, Base<T>>(routePath, axiosInstance);
-  const tableList = ref<any[]>([]);
-  const editRow = ref({} as Base<T>);
-  const totalNumber = ref(0);
+export function useBaseCRUD<S, T>(
+  routePath: string,
+  axiosInstance?: any,
+  filterCondition?: any
+) {
+  const activityTemplateGroupInstance = new BaseCRUD<S, Base<T>>(
+    routePath,
+    axiosInstance
+  );
 
   const getList = async (filterCondition?: any) => {
-    const [resData] = await activityTemplateGroupInstance.getList(
-      filterCondition
-    );
-    totalNumber.value = resData.total ?? 0;
-    tableList.value = resData.data;
+    return await activityTemplateGroupInstance.getList(filterCondition);
   };
-
-  getList(filterCondition);
 
   const getMethod = async (row: Base<T>) => {
     const [resData] = await activityTemplateGroupInstance.get(row._id);
@@ -45,9 +42,6 @@ export function useBaseCRUD<S, T>(routePath: string, axiosInstance?: any, filter
   };
 
   return {
-    tableList,
-    totalNumber,
-    editRow,
     getList,
     getMethod,
     postMethod,
