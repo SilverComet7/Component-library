@@ -14,7 +14,7 @@ export default defineConfig({
   },
   build: {
     outDir: "lib",
-    minify:false,
+    minify:false, // 不压缩代码
     lib: {
       entry: "./src/index.ts",
       name: "method",

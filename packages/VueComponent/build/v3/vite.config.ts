@@ -8,7 +8,7 @@ export default defineConfig({
   ],
   build: {
     outDir: resolve(__dirname, '../../lib/v3'),
-    minify: false, // 不压缩代码,方便开发调试
+    minify: false, // 不压缩代码,让用户进行混淆
     lib: {
       entry: resolve(__dirname, '../../index.ts'),
       name: 'commonVueCmp',

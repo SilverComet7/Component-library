@@ -10,8 +10,9 @@
   },
   "type": "module",
   "license": "ISC",
-  "dependencies": {
-
+  "files": ["lib"],
+  "repository": {
+    "url": "https://github.com/SilverComet7/Component-library/blob/master/packages/CoreMethod/README.md"
   },
   "devDependencies": {
     "typescript": "^4.7.4",
