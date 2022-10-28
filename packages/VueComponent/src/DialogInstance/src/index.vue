@@ -7,6 +7,7 @@
     </slot>
     <el-dialog v-model='dialogVisible' title='配置' append-to-body show-close>
       <slot :content='localContent'>
+          弹窗组件内容
       </slot>
       <template #footer>
         <span class='dialog-footer'>
@@ -19,19 +20,19 @@
 </template>
 
 <script>
-import { ref, unref, defineComponent } from 'vue-demi';
-import { cloneDeep } from 'lodash';
-import { ElButton, ElDialog } from 'element-plus';
+import { defineComponent, ref, unref } from "vue";
+import { cloneDeep } from "lodash";
+import { ElButton, ElDialog } from "element-plus";
 
 export default defineComponent({
-  components: { ElButton, ElDialog },
-  props: {
-    buttonName: { type: String, default: '创建' },
-    content: { type: Array, default: [] },
-    checkHandle: Function,
-  },
-  emits: ['update:content'],
-  setup(props) {
+    components: { ElButton, ElDialog },
+    props: {
+        buttonName: { type: String, default: "创建" },
+        content: { type: Array, default: [] },
+        checkHandle: Function,
+    },
+    emits: ["update:content"],
+    setup(props) {
     const localContent = ref();
     const dialogVisible = ref(false);
 

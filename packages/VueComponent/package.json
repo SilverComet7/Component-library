@@ -9,15 +9,21 @@
     "build3": "npx vue-demi-switch 3 && vite build --config build/v3/vite.config.ts"
   },
   "type": "module",
-  "keywords": ["vue2","vue3","vue-demi"],
+  "keywords": [
+    "vue2",
+    "vue3",
+    "vue-demi"
+  ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@vueuse/core": "^8.9.4",
-    "vue-demi": "latest",
-    "element-plus": "2.2.10",
-    "vite": "^3.0.3",
+  "dependencies": {
     "vue": "^3.0.0",
+    "@vueuse/core": "^8.9.4",
+    "element-plus": "2.2.10"
+  },
+  "devDependencies": {
+    "vue-demi": "latest",
+    "vite": "^3.0.3",
     "@vitejs/plugin-vue": "latest"
   },
   "peerDependencies": {

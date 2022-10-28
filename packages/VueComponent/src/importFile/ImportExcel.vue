@@ -2,24 +2,24 @@
   <div>
     <input v-show="false" ref="inputRef" type="file" accept=".xlsx, .xls" @change="handleInputClick" />
     <div @click="handleUpload">
-      <slot></slot>
+      <slot>导入</slot>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, unref } from 'vue-demi';
-import * as XLSX from 'xlsx';
-import type { JSON2SheetOpts, WritingOptions, BookType } from 'xlsx';
+import { defineComponent, ref, unref } from "vue";
+import type { BookType, JSON2SheetOpts, WritingOptions } from "xlsx";
+import * as XLSX from "xlsx";
 
 export interface ExcelData<T = any> {
-  header: string[];
-  results: T[];
-  meta: { sheetName: string };
+    header: string[];
+    results: T[];
+    meta: { sheetName: string };
 }
 
 export interface JsonToSheet<T = any> {
-  data: T[];
-  header?: T;
+    data: T[];
+    header?: T;
   filename?: string;
   json2sheetOpts?: JSON2SheetOpts;
   write2excelOpts?: WritingOptions;
