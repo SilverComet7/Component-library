@@ -1,6 +1,6 @@
-# 核心需求
+# 核心需求  
 
-1. 通过一份代码来维护能在vue2 vue3项目中共用的组件库，支持第三方UI框架，如Element-UI
+1. 通过一份代码来维护能在vue2 vue3项目中共用的二次封装Element-UI组件库
 2. 用户无需引用依赖和样式
 
 # vue-demi+postInstall方案 构建适配vue2 vue3的通用组件库
