@@ -14,15 +14,17 @@
   "repository": {
     "url": "https://github.com/SilverComet7/Component-library/blob/master/packages/CoreMethod/README.md"
   },
-  "devDependencies": {
+  "dependencies": {
     "typescript": "^4.7.4",
-    "@vitest/coverage-c8": "^0.22.1",
     "@vueuse/core": "^8.9.4",
     "lodash": "latest",
-    "vite": "latest",
-    "vitest": "^0.22.1",
     "vue-demi": "latest",
     "xlsx": "latest",
     "axios": "latest"
+  },
+  "devDependencies": {
+    "@vitest/coverage-c8": "^0.22.1",
+    "vite": "latest",
+    "vitest": "^0.22.1"
   }
 }

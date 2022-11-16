@@ -7,13 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@vueuse/core": "^8.9.4"
+    "vite": "latest",
+    "vite-plugin-dts": "^1.2.0",
+    "vite-plugin-vue2": "2.0.1"
   },
   "dependencies": {
     "@vue/composition-api": "^1.6.2",
-    "vite": "latest",
-    "vite-plugin-dts": "^1.2.0",
-    "vite-plugin-vue2": "2.0.1",
     "vue": "2.6.14",
     "vue-demi": "^0.13.1",
     "sass": "^1.43.4",

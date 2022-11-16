@@ -19,7 +19,8 @@
   "dependencies": {
     "vue": "^3.0.0",
     "@vueuse/core": "^8.9.4",
-    "element-plus": "2.2.10"
+    "element-plus": "2.2.10",
+    "xlsx": "latest"
   },
   "devDependencies": {
     "vue-demi": "latest",
