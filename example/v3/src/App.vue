@@ -13,7 +13,7 @@ import { DialogInstance } from "../../../packages/VueComponent/lib/v3/index.js";
         </a>
     </div>
 <!--    <ImportExcel>导入测试</ImportExcel>-->
-    <DialogInstance>DialogInstance</DialogInstance>
+    <DialogInstance>testSlot</DialogInstance>
 </template>
 
 <style scoped>
