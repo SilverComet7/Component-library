@@ -14,6 +14,9 @@
   "repository": {
     "url": "https://github.com/SilverComet7/Component-library/blob/master/packages/CoreMethod/README.md"
   },
+  "publishConfig": {
+    "registry": "http://192.168.0.20:4873/"
+  },
   "dependencies": {
     "typescript": "^4.7.4",
     "@vueuse/core": "^8.9.4",
