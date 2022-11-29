@@ -6,7 +6,7 @@ interface CompatibleWithDefaultConfigParams {
 
 type PartialCompatibleWithDefaultConfigParams = Partial<CompatibleWithDefaultConfigParams>
 
-// todo  {name:'',book:[1,2,3],test:{age:1,ss:{1233}}}
+// todo 对象深层次兼容
 export function CompatibleWithDefaultConfig(
   defaultConfig: CompatibleWithDefaultConfigParams,
   listData: Array<PartialCompatibleWithDefaultConfigParams> | PartialCompatibleWithDefaultConfigParams = {}
