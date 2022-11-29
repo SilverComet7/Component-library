@@ -6,7 +6,6 @@ interface Option {
   color?: string;
 }
 
-
 // element-ui 表格格式化 ， 选项格式化
 export function formatOption(
   rowOrId: NeedFormatType,

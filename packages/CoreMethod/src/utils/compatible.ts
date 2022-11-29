@@ -3,10 +3,13 @@ import { cloneDeep } from "lodash";
 interface CompatibleWithDefaultConfigParams {
   [key: string]: any;
 }
+
+type PartialCompatibleWithDefaultConfigParams = Partial<CompatibleWithDefaultConfigParams>
+
 // todo  {name:'',book:[1,2,3],test:{age:1,ss:{1233}}}
 export function CompatibleWithDefaultConfig(
   defaultConfig: CompatibleWithDefaultConfigParams,
-  listData: Array<any> | CompatibleWithDefaultConfigParams = {}
+  listData: Array<PartialCompatibleWithDefaultConfigParams> | PartialCompatibleWithDefaultConfigParams = {}
 ) {
   for (const key in defaultConfig) {
     if (Object.prototype.hasOwnProperty.call(defaultConfig, key)) {

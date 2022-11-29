@@ -9,12 +9,16 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom","ES2015"],
     "isolatedModules": true,
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "lib/types",
+    "emitDecoratorMetadata": true,
+    "emitDeclarationOnly": true
   },
-  "include": ["./**/*.ts", "./**/*.d.ts", "./**/*.tsx", "./**/*.vue"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
