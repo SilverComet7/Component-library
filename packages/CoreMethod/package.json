@@ -4,7 +4,7 @@
     "description": "gmtool internal common method",
     "main": "lib/index.js",
     "scripts": {
-        "build": "vite build && tsc -p ./tsconfig.json -emitDeclarationOnly ",
+        "build": "vite build ",
         "test": "vitest",
         "coverage": "vitest run --coverage"
     },
