@@ -7,7 +7,8 @@
         "build": "vite build ",
         "test": "vitest",
         "coverage": "vitest run --coverage",
-        "patch": "npm version patch"
+        "patch": "npm version patch",
+        "publish": "pnpm publish"
     },
     "type": "module",
     "license": "ISC",
